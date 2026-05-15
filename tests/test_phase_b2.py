@@ -74,3 +74,29 @@ def test_staged_rule_graph_timestamp_auto():
         workbook_name="X", nodes=[], edges=[], intent=_make_intent()
     )
     assert graph.generated_at  # não vazio
+
+
+def test_graph_node_with_formula():
+    n = GraphNode(
+        id="S!C1", label="Total", node_type=GraphNodeType.INTERMEDIATE,
+        formula="=SUM(A1:B1)", current_value=100, is_user_output=True,
+    )
+    assert n.formula == "=SUM(A1:B1)"
+    assert n.node_type == GraphNodeType.INTERMEDIATE
+
+
+def test_graph_node_static_type():
+    n = GraphNode(
+        id="S!D1", label="Versão", node_type=GraphNodeType.STATIC,
+        current_value="1.0",
+    )
+    assert n.node_type == GraphNodeType.STATIC
+    assert n.formula is None
+
+
+def test_staged_rule_graph_timestamp_iso_format():
+    graph = StagedRuleGraph(
+        workbook_name="X", nodes=[], edges=[], intent=_make_intent()
+    )
+    assert "T" in graph.generated_at
+    assert "+" in graph.generated_at or "Z" in graph.generated_at

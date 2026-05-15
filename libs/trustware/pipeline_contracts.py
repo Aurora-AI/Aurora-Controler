@@ -198,11 +198,11 @@ class GraphNodeType(str, Enum):
 
 class GraphNode(BaseModel):
     """Nó do grafo visual de regras de negócio — Phase B2."""
-    id: str                          # node_id canônico: "Sheet!A1"
-    label: str                       # nome legível (label do IntentCapture ou coordenada)
+    id: str = Field(..., description="Node ID canônico: 'Sheet!A1'")
+    label: str = Field(..., description="Nome legível para exibição (ex: nome do parâmetro ou coordenada)")
     node_type: GraphNodeType
-    formula: str | None = None
-    current_value: Any = None
+    formula: str | None = Field(default=None, description="Fórmula da célula (None para nós folha/input)")
+    current_value: Any = Field(default=None, description="Valor atual da célula ou resultado do cálculo")
     is_user_input: bool = False      # pinned como parâmetro pelo IntentCapture
     is_user_output: bool = False     # monitorado pelo IntentCapture
 
