@@ -13,7 +13,10 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
+_HERE = Path(__file__).resolve().parent
+for _p in [str(_HERE), str(REPO_ROOT / "libs" / "trustware")]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from pipeline_contracts import StagedRuleGraph
 from hitl_loop import run_hitl
@@ -32,10 +35,21 @@ def main() -> None:
         print(f"Erro: arquivo nao encontrado: {graph_path}", file=sys.stderr)
         sys.exit(1)
 
-    graph = StagedRuleGraph.model_validate(json.loads(graph_path.read_text("utf-8")))
+    try:
+        graph = StagedRuleGraph.model_validate(json.loads(graph_path.read_text(encoding="utf-8")))
+    except json.JSONDecodeError as exc:
+        print(f"Erro: JSON invalido em {graph_path}: {exc}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as exc:  # pydantic.ValidationError or other schema error
+        print(f"Erro: schema invalido em {graph_path}: {exc}", file=sys.stderr)
+        sys.exit(1)
     print(f"Grafo carregado: {graph.workbook_name} ({len(graph.nodes)} nos, {len(graph.edges)} arestas)")
 
-    audit = run_hitl(graph)
+    try:
+        audit = run_hitl(graph)
+    except Exception as exc:
+        print(f"Erro durante simulacao: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     out_path = Path(f"{prefix}_b3_audit.json")
     out_path.write_text(

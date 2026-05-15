@@ -309,8 +309,11 @@ from unittest.mock import patch
 
 
 def test_phase_b3_package_imports_cleanly():
-    sys.path.insert(0, str(REPO_ROOT / "src"))
+    src_path = str(REPO_ROOT / "src")
+    if src_path not in sys.path:
+        sys.path.insert(0, src_path)
     import phase_b3  # noqa: F401
+    assert phase_b3.__file__  # confirms package was found
 
 
 def test_run_hitl_roundtrip_json():
