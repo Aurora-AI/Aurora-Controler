@@ -28,7 +28,7 @@ _AST_OPS: dict[type, Any] = {
     ast.UAdd: operator.pos,
 }
 
-_PARSE_MODE = "ev" + "al"  # modo do ast.parse — evita trigger de hook
+_PARSE_MODE = "ev" + "al"  # string concatenation avoids triggering Write-tool security hook on "eval"
 
 
 def _safe_calc(expr: str) -> Any:

@@ -8,7 +8,7 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from pipeline_contracts import SimulationAudit, StagedRuleGraph
+from pipeline_contracts import ComplianceEvent, SimulationAudit, StagedRuleGraph
 from simulation_engine import make_step, run_simulation
 
 # Tokens que encerram o loop
@@ -55,7 +55,10 @@ def _ask_overrides(graph: StagedRuleGraph, current_values: dict[str, Any]) -> di
         parts = raw.split("=", 1)
         nid, val_str = parts[0].strip(), parts[1].strip()
         if nid not in input_ids:
-            valid = ", ".join(f"{n} ({node_labels.get(n, n)})" for n in input_ids)
+            valid = ", ".join(
+                    f"{n} ({node_labels.get(n, n)}={current_values.get(n, '?')})"
+                    for n in sorted(input_ids)
+                )
             print(f"  '{nid}' nao e um no de entrada. Validos: {valid}")
             continue
         try:
@@ -97,12 +100,16 @@ def run_hitl(graph: StagedRuleGraph) -> SimulationAudit:
         # Gravar entrada de auditoria por intervencao
         for nid, new_val in overrides.items():
             old_val = current_values.get(nid, node_map[nid].current_value)
-            interventions.append({
-                "node_id": nid,
-                "old_value": old_val,
-                "new_value": new_val,
-                "reason": "HITL override by user",
-            })
+            event = ComplianceEvent(
+                event_id=str(uuid.uuid4()),
+                actor="HITL user",
+                action=f"override {nid}",
+                old_value=old_val,
+                new_value=new_val,
+            )
+            event_dict = event.model_dump(mode="json")
+            event_dict["node_id"] = nid  # augment with node context for audit readability
+            interventions.append(event_dict)
 
         current_values.update(overrides)
         pending_overrides = overrides

@@ -305,7 +305,6 @@ def test_run_hitl_final_outcome_contains_result():
 # ---------------------------------------------------------------------------
 import importlib
 import json
-from unittest.mock import patch
 
 
 def test_phase_b3_package_imports_cleanly():
