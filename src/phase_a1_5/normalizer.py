@@ -4,8 +4,11 @@ Normalização determinística de fórmulas e entidades.
 """
 import sys
 import re
+import logging
 from pathlib import Path
 from typing import List, Dict, Optional, Any
+
+_log = logging.getLogger(__name__)
 
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -117,10 +120,14 @@ def tokenize_formula(formula: str, locale: str = 'en-US') -> list[FormulaToken]:
                 position=item.position if hasattr(item, 'position') else 0
             ))
         return tokens
-    except Exception:
+    except Exception as exc:
+        _log.debug(
+            "tokenize_formula: falha ao tokenizar %r (%s) — usando token degenerado",
+            formula[:80], exc
+        )
         return [FormulaToken(
             type=FormulaTokenType.FUNCTION,
-            value=formula[1:],
+            value=formula[1:] if formula.startswith('=') else formula,
             position=0
         )]
 
@@ -255,8 +262,11 @@ def extract_dependencies(tokens: list[FormulaToken], current_sheet: str, max_row
                     for cell in expanded:
                         full_ref = f"{sheet}!{cell}" if sheet != current_sheet else cell
                         dependencies.add(full_ref)
-                except (ValueError, IndexError):
-                    pass
+                except (ValueError, IndexError) as exc:
+                    _log.debug(
+                        "extract_dependencies: não resolveu referência %r em %r (%s)",
+                        token_val, current_sheet, exc
+                    )
     return sorted(dependencies)
 
 def _looks_like_cell_ref(value: str) -> bool:
@@ -282,8 +292,11 @@ def normalize_workbook(raw_ir: WorkbookIR) -> NormalizedWorkbookIR:
             try:
                 _, r = parse_cell_coordinate(c.coordinate)
                 rows.append(r)
-            except Exception:
-                pass
+            except Exception as exc:
+                _log.debug(
+                    "normalize_workbook: coordenada inválida %r (%s)",
+                    c.coordinate, exc
+                )
         
         max_row = max(rows) if rows else 2000
         
