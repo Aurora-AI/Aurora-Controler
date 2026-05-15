@@ -1,5 +1,5 @@
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
 
@@ -186,7 +186,7 @@ class IntentCapture(BaseModel):
     input_parameters: list[InputParameter]      # células que o usuário quer variar
     output_metrics: list[OutputMetric]          # células que o usuário quer monitorar
     scenario_description: str | None = None
-    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class StagedRuleGraph(BaseModel):
     """Grafo visual de regras de negócio (Fase B2)."""
