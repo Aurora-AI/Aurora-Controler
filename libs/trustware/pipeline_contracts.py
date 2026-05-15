@@ -166,6 +166,28 @@ class IntentSpec(BaseModel):
     confidence_score: float
     context_tokens: List[str]
 
+class InputParameter(BaseModel):
+    """Parâmetro de entrada identificado para simulação — Phase B1."""
+    node_id: str                            # ex: "Planilha1!B5"
+    label: str                              # nome legível inferido do contexto
+    current_value: Any = None
+    suggested_range: list[float] | None = None  # [min, max]
+
+class OutputMetric(BaseModel):
+    """Métrica de saída que o usuário quer monitorar — Phase B1."""
+    node_id: str
+    label: str
+    current_value: Any = None
+
+class IntentCapture(BaseModel):
+    """Intenção estruturada capturada via chat — Phase B1."""
+    workbook_name: str
+    user_goal: str                              # resumo em 1-2 frases
+    input_parameters: list[InputParameter]      # células que o usuário quer variar
+    output_metrics: list[OutputMetric]          # células que o usuário quer monitorar
+    scenario_description: str | None = None
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
 class StagedRuleGraph(BaseModel):
     """Grafo visual de regras de negócio (Fase B2)."""
     rules: List[Dict[str, Any]]
