@@ -10,6 +10,7 @@ from __future__ import annotations
 import ast
 import operator
 import re
+from collections import deque
 from typing import Any
 
 from pipeline_contracts import GraphEdge, GraphNode, SimulationStep, StagedRuleGraph
@@ -71,9 +72,14 @@ def _eval_formula(formula: str, sheet: str, values: dict[str, Any]) -> Any:
     def _replace(match: re.Match) -> str:
         col_row = match.group(0)
         node_id = f"{sheet}!{col_row}"
-        val = values.get(node_id, 0.0)
+        if node_id not in values:
+            raise KeyError(f"Cell ref not in computed values: {node_id}")
+        val = values[node_id]
         return str(val)
 
+    # NOTE: _is_complex_formula must be called first to filter out
+    # formulas with function calls (IF, SUM, etc.) before reaching here.
+    # _CELL_REF_RE would match cell refs inside those too.
     substituted = _CELL_REF_RE.sub(_replace, expr)
     return _safe_calc(substituted)
 
@@ -83,8 +89,6 @@ def _eval_formula(formula: str, sheet: str, values: dict[str, Any]) -> Any:
 # ---------------------------------------------------------------------------
 def _build_topo_order(nodes: list[GraphNode], edges: list[GraphEdge]) -> list[str]:
     """Retorna node_ids em ordem topologica (dependencias primeiro)."""
-    from collections import deque
-
     in_degree: dict[str, int] = {n.id: 0 for n in nodes}
     adj: dict[str, list[str]] = {n.id: [] for n in nodes}
 
@@ -126,6 +130,12 @@ def run_simulation(
     values.update(input_overrides)
 
     unevaluated: list[str] = []
+
+    # Nodes absent from topo are in cycles — treat as unevaluated
+    topo_set = set(topo)
+    for n in graph.nodes:
+        if n.id not in topo_set:
+            unevaluated.append(n.id)
 
     for nid in topo:
         node = node_map[nid]

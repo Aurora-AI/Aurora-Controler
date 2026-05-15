@@ -211,3 +211,20 @@ def test_make_step_structure():
     assert step.run_number == 1
     assert step.input_values == {"S!A1": 7.0}
     assert "S!C1" in step.output_values
+
+
+def test_run_simulation_missing_ref():
+    """Formula referencing a node not in graph goes to unevaluated."""
+    import copy
+    node_missing = GraphNode(
+        id="S!D1", label="Missing", node_type=GraphNodeType.INTERMEDIATE,
+        formula="=Z99*2", current_value=0.0,
+    )
+    g = StagedRuleGraph(
+        workbook_name="Test",
+        nodes=[*_SIM_GRAPH.nodes, node_missing],
+        edges=[*_SIM_GRAPH.edges],
+        intent=_SIM_GRAPH.intent,
+    )
+    values, unevaluated = run_simulation(g, {})
+    assert "S!D1" in unevaluated  # Z99 not in graph, should be unevaluated
