@@ -95,11 +95,6 @@ class ExecutionDAG(BaseModel):
     cycles: list[CycleInfo] = []
     graph_metadata: dict = {}  # estatísticas: num_nodes, num_edges, etc.
 
-class FormulaRegistryMap(BaseModel):
-    """Mapeamento de padrões de fórmulas resolvidos (Fase A2.5)."""
-    patterns: Dict[str, str] = Field(..., description="Map de hash de fórmula para template resolvido")
-    determinism_score: float = Field(..., ge=0.0, le=1.0)
-
 class DomainModuleContract(BaseModel):
     """Contratos gerados pela tradução semântica (Fase A3)."""
     module_name: str
