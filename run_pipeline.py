@@ -33,7 +33,15 @@ from pipeline_contracts import CertifiedModule
 import math
 
 
-def run(xlsx_path: Path, skip_llm: bool = True):
+def _setup_b_paths():
+    """Adiciona módulos das fases B ao sys.path."""
+    for phase in ["phase_b1", "phase_b2", "phase_b3"]:
+        p = str(REPO_ROOT / "src" / phase)
+        if p not in sys.path:
+            sys.path.insert(0, p)
+
+
+def run(xlsx_path: Path, skip_llm: bool = True, run_hitl_flag: bool = False):
     out_dir = REPO_ROOT / "output"
     out_dir.mkdir(exist_ok=True)
     stem = xlsx_path.stem
@@ -180,7 +188,49 @@ def run(xlsx_path: Path, skip_llm: bool = True):
         for r in failed_results[:5]:
             print(f"     • {r.node_id}: esperado={r.expected_value}, obtido={r.actual_value}")
 
-    print(f"\n[DONE] Pipeline completo. Artefatos em: {out_dir}")
+    print(f"\n[DONE] Pipeline A0→A4 completo. Artefatos em: {out_dir}")
+
+    # ── B1: Intent Capture ────────────────────────────────────
+    if not skip_llm:
+        print("\n[B1] Capturando intenção do usuário via chat...")
+        _setup_b_paths()
+        from context_builder import load_summary_from_prefix
+        from chat_loop import run_chat
+        summary = load_summary_from_prefix(str(out_dir / stem))
+        intent = run_chat(summary)
+        (out_dir / f"{stem}_b1_intent.json").write_text(
+            intent.model_dump_json(indent=2), encoding="utf-8"
+        )
+        print(f"     Objetivo: {intent.user_goal}")
+        print(f"     Entradas: {len(intent.input_parameters)} | Saídas: {len(intent.output_metrics)}")
+
+        # ── B2: Visual Assembly ───────────────────────────────
+        print("\n[B2] Montando grafo visual...")
+        from graph_assembler import load_graph_from_prefix
+        from html_visualizer import save_html
+        graph, _, _ = load_graph_from_prefix(str(out_dir / stem))
+        (out_dir / f"{stem}_b2_graph.json").write_text(
+            graph.model_dump_json(indent=2), encoding="utf-8"
+        )
+        save_html(graph, out_dir / f"{stem}_b2_graph.html")
+        print(f"     {len(graph.nodes)} nós | {len(graph.edges)} arestas")
+        print(f"     HTML: output/{stem}_b2_graph.html")
+
+        # ── B3: Simulation + HITL ─────────────────────────────
+        if run_hitl_flag:
+            print("\n[B3] Iniciando simulação HITL interativa...")
+            from hitl_loop import run_hitl
+            audit = run_hitl(graph)
+            (out_dir / f"{stem}_b3_audit.json").write_text(
+                json.dumps(audit.model_dump(mode="json"), ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            print(f"     Rodadas: {len(audit.steps)} | Intervenções: {len(audit.hitl_interventions)}")
+            print(f"     Outcome: {audit.final_outcome}")
+        else:
+            print("\n[B3] Simulação HITL pulada (use --hitl para ativar).")
+    else:
+        print("\n[B1/B2/B3] Fases B puladas (use --llm para ativar).")
 
 
 if __name__ == "__main__":
@@ -188,10 +238,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="EXRS Full Pipeline Runner")
     parser.add_argument("xlsx", type=Path, help="Caminho para o arquivo .xlsx")
     parser.add_argument("--llm", action="store_true", help="Ativar LLM para fórmulas UNRESOLVED")
+    parser.add_argument("--hitl", action="store_true", help="Ativar simulação HITL interativa (B3)")
     args = parser.parse_args()
 
     if not args.xlsx.exists():
         print(f"Erro: arquivo não encontrado: {args.xlsx}")
         sys.exit(1)
 
-    run(args.xlsx, skip_llm=not args.llm)
+    run(args.xlsx, skip_llm=not args.llm, run_hitl_flag=args.hitl)
