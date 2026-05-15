@@ -214,7 +214,7 @@ def _build_kpi_cards(results: list[ValidationResult]) -> str:
     failed  = sum(1 for r in results if r.status == "FAILED")
     errors  = sum(1 for r in results if r.status == "ERROR")
     skipped = sum(1 for r in results if r.status in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP"))
-    parity  = f"{passed/total*100:.1f}%" if total else "—"
+    parity  = _pct(passed, total)
 
     return f"""
 <div class="kpi-grid">
@@ -248,15 +248,16 @@ def _build_kpi_cards(results: list[ValidationResult]) -> str:
 def _build_parity_bar(results: list[ValidationResult]) -> str:
     total  = len(results)
     passed = sum(1 for r in results if r.status == "PASSED")
-    pct    = round(passed / total * 100, 1) if total else 0
+    pct_str = _pct(passed, total)
+    pct_num = round(passed / total * 100, 1) if total else 0
     return f"""
 <div class="section">
   <div class="section-header">
     <span>📊 Paridade Geral</span>
-    <span style="color:var(--green);font-weight:700">{pct}% ({passed}/{total})</span>
+    <span style="color:var(--green);font-weight:700">{pct_str} ({passed}/{total})</span>
   </div>
   <div class="pbar-wrap">
-    <div class="pbar-fill" style="width:{pct}%"></div>
+    <div class="pbar-fill" style="width:{pct_num}%"></div>
   </div>
 </div>
 """
@@ -295,8 +296,9 @@ def _build_pattern_breakdown(
                 color, label = "gray", pc or "Desconhecido"
 
         total_cls = stats["passed"] + stats["failed"] + stats["error"] + stats["skip"]
-        pct_cls   = round(stats["passed"] / total_cls * 100, 1) if total_cls else 0
-        bar_w     = max(4, pct_cls)
+        pct_cls_str = _pct(stats["passed"], total_cls)
+        pct_cls_num = round(stats["passed"] / total_cls * 100, 1) if total_cls else 0
+        bar_w       = max(4, pct_cls_num)
 
         rows.append(f"""
 <tr class="pattern-row">
@@ -307,7 +309,7 @@ def _build_pattern_breakdown(
   <td style="color:var(--red)">{stats['error']}</td>
   <td style="color:var(--muted)">{stats['skip']}</td>
   <td style="min-width:120px">
-    {pct_cls}%
+    {pct_cls_str}
     <div class="ptn-bar" style="width:{bar_w}%;max-width:100%"></div>
   </td>
 </tr>""")
@@ -438,7 +440,7 @@ def generate_html_report(
     now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     total  = len(results)
     passed = sum(1 for r in results if r.status == "PASSED")
-    pct    = f"{passed/total*100:.1f}%" if total else "—"
+    pct    = _pct(passed, total)
 
     body = "\n".join([
         _build_kpi_cards(results),
