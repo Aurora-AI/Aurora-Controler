@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 import tempfile
 
-REPO_ROOT = Path(r"C:\Projetos\ExcelReverseEngine")
+REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a4"))
 sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
 

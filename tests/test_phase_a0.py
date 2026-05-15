@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 # Garantir que o repositório esteja no path
-REPO_ROOT = Path("C:/Projetos/ExcelReverseEngine")
+REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a0"))
 sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
 
