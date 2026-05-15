@@ -181,9 +181,15 @@ def test_gabarito_match(sheet, desc, formula_str, gabarito, ctx):
     o gabarito pré-calculado (col D).
     """
     if gabarito is None:
-        pytest.skip(f"Gabarito ausente para: {desc}")
+        pytest.skip(
+            f"[fixture-gap] Gabarito ausente para: {desc!r}. "
+            "Adicione o valor esperado na coluna D do fixture."
+        )
     if not formula_str or not str(formula_str).startswith("="):
-        pytest.skip(f"Fórmula ausente/inválida para: {desc}")
+        pytest.skip(
+            f"[fixture-gap] Fórmula ausente/inválida para: {desc!r}. "
+            "Coluna B deve conter uma fórmula começando com '='."
+        )
 
     result = evaluate_formula(formula_str, dict(ctx), sheet, expand_range)
 
