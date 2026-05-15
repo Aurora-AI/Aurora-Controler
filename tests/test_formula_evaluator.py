@@ -438,3 +438,18 @@ class TestEndToEnd:
         large = ev("=LARGE(A1:A5,rank)", {"S!A1":10,"S!A2":20,"S!A3":30,"S!A4":40,"S!A5":5,"S!rank":4})
         # rank de 10 (desc) = 4 → 4o maior = 10
         assert rank == 4
+
+
+# ── _sdiv unit tests ─────────────────────────────────────────────────────────
+
+def test_sdiv_string_zero_returns_div0():
+    """_sdiv com denominador string '0' deve retornar #DIV/0!, não #VALUE!"""
+    from formula_evaluator import _sdiv, _DIV0
+    result = _sdiv(10, "0")
+    assert result == _DIV0, f"Esperado #DIV/0!, obtido {result!r}"
+
+def test_sdiv_string_nonzero_divides():
+    """_sdiv com denominador string '5' deve dividir normalmente."""
+    from formula_evaluator import _sdiv
+    result = _sdiv(10, "5")
+    assert result == 2.0, f"Esperado 2.0, obtido {result!r}"

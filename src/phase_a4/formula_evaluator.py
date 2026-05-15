@@ -62,13 +62,25 @@ class _Blank(float):
 _XL_BLANK = _Blank(0)
 
 def _sdiv(a, b):
-    """Divisão segura: retorna ExcelError em vez de lançar ZeroDivisionError."""
-    if isinstance(b, (int, float)) and b == 0:
-        return _DIV0
+    """Divisão segura: retorna ExcelError em vez de lançar ZeroDivisionError.
+    Converte strings numéricas antes de verificar divisão por zero (comportamento Excel).
+    """
+    if isinstance(b, str):
+        try:
+            b = float(b)
+        except (ValueError, TypeError):
+            return _VAL
+    if isinstance(a, str):
+        try:
+            a = float(a)
+        except (ValueError, TypeError):
+            return _VAL
     if isinstance(b, ExcelError):
         return b
     if isinstance(a, ExcelError):
         return a
+    if isinstance(b, (int, float)) and b == 0:
+        return _DIV0
     try:
         return a / b
     except ZeroDivisionError:
