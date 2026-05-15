@@ -1,6 +1,16 @@
 """
-EXRS Phase A4 — Repair Orchestrator
-Identifica divergências e aciona o LLM para correção ou escala para auditoria humana.
+EXRS Phase A4 — Repair Orchestrator  [STUB MVP]
+
+Estado atual: apenas agrega estatísticas de divergência (identify_repair_candidates).
+O loop de reparo automático via LLM NÃO está implementado nesta fase.
+
+Para implementar o reparo automático no futuro:
+  1. Integrar litellm (ou anthropic SDK) como feito na Phase A3 (src/phase_a3/translator.py)
+  2. Para cada ValidationResult com status="FAILED" e pattern_class != EXTERNAL_REF:
+     - Chamar generate_repair_prompt(mismatch, function)
+     - Enviar ao LLM e extrair o bloco de código Python corrigido
+     - Re-executar via execute_in_sandbox e validar novamente
+  3. Registrar repair_attempts no MismatchReport
 """
 import sys, os
 from pathlib import Path
@@ -15,7 +25,6 @@ from pipeline_contracts import (
     ValidationResult, MismatchReport, DomainModule, DomainFunction,
     FormulaRegistryMap, PatternClass
 )
-# Note: I'll need to use litellm or similar here too if I want automated repair.
 
 def identify_repair_candidates(results: List[ValidationResult], fmap: FormulaRegistryMap) -> MismatchReport:
     """Consolida todos os resultados em um MismatchReport sumário."""
@@ -50,6 +59,3 @@ Código atual:
 Por favor, analise a lógica e corrija o código Python para garantir a paridade com o Excel.
 Retorne APENAS o código Python corrigido dentro de um bloco de código.
 """
-
-# No MVP, vamos apenas listar os reparos necessários.
-# A execução real do litellm seria similar à Phase A3.
