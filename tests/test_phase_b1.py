@@ -269,3 +269,37 @@ def test_run_chat_with_mocked_llm(monkeypatch):
             )
     assert isinstance(result, IntentCapture)
     assert result.workbook_name == "Pasta1"
+
+
+# ── __main__ / integração ─────────────────────────────────────────────────
+
+def test_phase_b1_package_imports_cleanly():
+    """O pacote phase_b1 importa sem erros."""
+    import importlib
+    import sys as _sys
+    _src = str(REPO_ROOT / "src")
+    if _src not in _sys.path:
+        _sys.path.insert(0, _src)
+    import phase_b1
+    import context_builder
+    import intent_extractor
+    import chat_loop
+    assert True
+
+
+def test_intent_capture_saved_to_json(tmp_path):
+    """IntentCapture serializa para JSON e pode ser recarregado."""
+    ic = IntentCapture(
+        workbook_name="Pasta1",
+        user_goal="Simular desconto",
+        input_parameters=[
+            InputParameter(node_id="S!A1", label="Desconto", suggested_range=[0.0, 0.3])
+        ],
+        output_metrics=[OutputMetric(node_id="S!C1", label="Lucro")],
+    )
+    out_file = tmp_path / "Pasta1_b1_intent.json"
+    out_file.write_text(ic.model_dump_json(indent=2), encoding="utf-8")
+
+    loaded = IntentCapture.model_validate_json(out_file.read_text())
+    assert loaded.workbook_name == "Pasta1"
+    assert loaded.input_parameters[0].suggested_range == [0.0, 0.3]
