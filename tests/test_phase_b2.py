@@ -198,3 +198,76 @@ def test_build_graph_node_has_current_value():
     graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
     a1 = next(n for n in graph.nodes if n.id == "S!A1")
     assert a1.current_value == 0.1
+
+
+# ── html_visualizer ───────────────────────────────────────────────────────
+
+from html_visualizer import generate_html, _node_color
+
+
+_SAMPLE_GRAPH = StagedRuleGraph(
+    workbook_name="TestWB",
+    nodes=[
+        GraphNode(id="S!A1", label="Desconto", node_type=GraphNodeType.INPUT,
+                  is_user_input=True, current_value=0.1),
+        GraphNode(id="S!B1", label="B1", node_type=GraphNodeType.INTERMEDIATE,
+                  formula="=A1+A2"),
+        GraphNode(id="S!C1", label="Lucro", node_type=GraphNodeType.OUTPUT,
+                  is_user_output=True, formula="=B1*2"),
+    ],
+    edges=[
+        GraphEdge(source="S!A1", target="S!B1"),
+        GraphEdge(source="S!B1", target="S!C1"),
+    ],
+    intent=_SAMPLE_INTENT,
+)
+
+
+def test_node_color_by_type():
+    assert _node_color(GraphNodeType.INPUT) != _node_color(GraphNodeType.OUTPUT)
+    assert _node_color(GraphNodeType.INTERMEDIATE) != _node_color(GraphNodeType.INPUT)
+    # Retorna string de cor hex
+    assert _node_color(GraphNodeType.INPUT).startswith("#")
+
+
+def test_generate_html_is_valid_html():
+    html = generate_html(_SAMPLE_GRAPH)
+    assert html.strip().startswith("<!DOCTYPE html>")
+    assert "<html" in html
+    assert "</html>" in html
+
+
+def test_generate_html_includes_visjs():
+    html = generate_html(_SAMPLE_GRAPH)
+    assert "vis-network" in html
+
+
+def test_generate_html_includes_workbook_name():
+    html = generate_html(_SAMPLE_GRAPH)
+    assert "TestWB" in html
+
+
+def test_generate_html_includes_user_goal():
+    html = generate_html(_SAMPLE_GRAPH)
+    assert "Simular impacto do desconto" in html
+
+
+def test_generate_html_includes_node_ids():
+    html = generate_html(_SAMPLE_GRAPH)
+    assert "S!A1" in html
+    assert "S!C1" in html
+
+
+def test_generate_html_includes_edges():
+    html = generate_html(_SAMPLE_GRAPH)
+    # As arestas devem estar no JSON de edges do vis.js
+    assert '"from"' in html or "from:" in html
+
+
+def test_generate_html_save_to_file(tmp_path):
+    from html_visualizer import save_html
+    out = tmp_path / "graph.html"
+    save_html(_SAMPLE_GRAPH, out)
+    assert out.exists()
+    content = out.read_text(encoding="utf-8")
+    assert "TestWB" in content
