@@ -100,3 +100,101 @@ def test_staged_rule_graph_timestamp_iso_format():
     )
     assert "T" in graph.generated_at
     assert "+" in graph.generated_at or "Z" in graph.generated_at
+
+
+# ── graph_assembler ───────────────────────────────────────────────────────
+
+from graph_assembler import build_graph, _get_label, _filter_nodes
+
+
+_SAMPLE_DAG = {
+    "nodes": [
+        {"id": "S!A1", "sheet": "S", "coordinate": "A1", "formula_raw": None, "dependencies": []},
+        {"id": "S!A2", "sheet": "S", "coordinate": "A2", "formula_raw": None, "dependencies": []},
+        {"id": "S!B1", "sheet": "S", "coordinate": "B1", "formula_raw": "=A1+A2",
+         "dependencies": ["S!A1", "S!A2"]},
+        {"id": "S!C1", "sheet": "S", "coordinate": "C1", "formula_raw": "=B1*2",
+         "dependencies": ["S!B1"]},
+    ],
+    "edges": [],
+    "topological_order": ["S!A1", "S!A2", "S!B1", "S!C1"],
+}
+
+_SAMPLE_NORM_IR = {
+    "file_path": "test.xlsx",
+    "sheets": [{
+        "name": "S", "index": 0, "state": "visible",
+        "cells": [
+            {"coordinate": "A1", "formula_raw": None, "value_static": 0.1, "data_type": "n"},
+            {"coordinate": "A2", "formula_raw": None, "value_static": 200, "data_type": "n"},
+            {"coordinate": "B1", "formula_raw": "=A1+A2", "value_static": None, "data_type": "n"},
+            {"coordinate": "C1", "formula_raw": "=B1*2", "value_static": None, "data_type": "n"},
+        ],
+    }],
+}
+
+_SAMPLE_INTENT = IntentCapture(
+    workbook_name="TestWB",
+    user_goal="Simular impacto do desconto",
+    input_parameters=[InputParameter(node_id="S!A1", label="Taxa de desconto")],
+    output_metrics=[OutputMetric(node_id="S!C1", label="Lucro líquido")],
+)
+
+
+def test_get_label_uses_intent_label():
+    assert _get_label("S!A1", _SAMPLE_INTENT) == "Taxa de desconto"
+    assert _get_label("S!C1", _SAMPLE_INTENT) == "Lucro líquido"
+
+
+def test_get_label_falls_back_to_coordinate():
+    assert _get_label("S!B1", _SAMPLE_INTENT) == "B1"
+
+
+def test_filter_nodes_includes_formula_nodes():
+    filtered = _filter_nodes(_SAMPLE_DAG["nodes"], _SAMPLE_INTENT)
+    ids = [n["id"] for n in filtered]
+    assert "S!B1" in ids  # tem fórmula
+    assert "S!C1" in ids  # tem fórmula
+
+
+def test_filter_nodes_includes_user_inputs_even_if_static():
+    filtered = _filter_nodes(_SAMPLE_DAG["nodes"], _SAMPLE_INTENT)
+    ids = [n["id"] for n in filtered]
+    assert "S!A1" in ids  # user input, mesmo sendo estático
+
+
+def test_filter_nodes_excludes_unrelated_statics():
+    filtered = _filter_nodes(_SAMPLE_DAG["nodes"], _SAMPLE_INTENT)
+    ids = [n["id"] for n in filtered]
+    assert "S!A2" not in ids  # estático, não selecionado pelo usuário
+
+
+def test_build_graph_returns_staged_rule_graph():
+    graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
+    assert isinstance(graph, StagedRuleGraph)
+    assert graph.workbook_name == "TestWB"
+
+
+def test_build_graph_marks_user_input():
+    graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
+    a1 = next(n for n in graph.nodes if n.id == "S!A1")
+    assert a1.is_user_input is True
+    assert a1.node_type == GraphNodeType.INPUT
+
+
+def test_build_graph_marks_user_output():
+    graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
+    c1 = next(n for n in graph.nodes if n.id == "S!C1")
+    assert c1.is_user_output is True
+
+
+def test_build_graph_edges_connect_dependencies():
+    graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
+    edge_pairs = {(e.source, e.target) for e in graph.edges}
+    assert ("S!B1", "S!C1") in edge_pairs
+
+
+def test_build_graph_node_has_current_value():
+    graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
+    a1 = next(n for n in graph.nodes if n.id == "S!A1")
+    assert a1.current_value == 0.1
