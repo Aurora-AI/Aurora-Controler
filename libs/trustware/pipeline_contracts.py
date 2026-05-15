@@ -326,7 +326,7 @@ class CertifiedModule(BaseModel):
 class ComplianceEvent(BaseModel):
     """Registro de evento de compliance para auditoria global."""
     event_id: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     actor: str = Field(..., description="Quem realizou a ação (agente/usuário)")
     action: str = Field(..., description="O que foi feito")
     old_value: Optional[Any] = None
