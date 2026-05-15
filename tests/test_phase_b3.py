@@ -130,3 +130,84 @@ def test_simulation_audit_serialization():
     a2 = SimulationAudit.model_validate(data)
     assert a2.simulation_id == "abc"
     assert isinstance(a2.steps[0], SimulationStep)
+
+
+# ---------------------------------------------------------------------------
+# Task 2 — simulation_engine tests
+# ---------------------------------------------------------------------------
+from simulation_engine import (
+    _is_complex_formula,
+    _safe_calc,
+    _build_topo_order,
+    _eval_formula,
+    run_simulation,
+    make_step,
+)
+
+
+def test_is_complex_formula_sum():
+    assert _is_complex_formula("=SUM(B1:B10)") is True
+
+
+def test_is_complex_formula_range():
+    assert _is_complex_formula("=A1:B10") is True
+
+
+def test_is_complex_formula_simple():
+    assert _is_complex_formula("=A1*2") is False
+
+
+def test_is_complex_formula_literal():
+    assert _is_complex_formula("=42") is False
+
+
+def test_safe_calc_addition():
+    assert _safe_calc("1+2") == 3
+
+
+def test_safe_calc_multiply():
+    assert _safe_calc("3*4") == 12
+
+
+def test_safe_calc_power():
+    assert _safe_calc("2**8") == 256
+
+
+def test_safe_calc_unary():
+    assert _safe_calc("-5") == -5
+
+
+def test_eval_formula_substitutes_ref():
+    # =A1*2 com A1=10 deve retornar 20.0
+    node = _SIM_GRAPH.nodes[1]  # S!B1, formula="=A1*2"
+    result = _eval_formula(node.formula, "S", {"S!A1": 10.0})
+    assert result == 20.0
+
+
+def test_topo_order_respects_dependency():
+    order = _build_topo_order(_SIM_GRAPH.nodes, _SIM_GRAPH.edges)
+    assert order.index("S!A1") < order.index("S!B1")
+    assert order.index("S!B1") < order.index("S!C1")
+
+
+def test_run_simulation_base():
+    values, unevaluated = run_simulation(_SIM_GRAPH, {})
+    assert values["S!A1"] == 10.0
+    assert values["S!B1"] == 20.0
+    # S!C1 usa SUM (complexa) — mantem current_value
+    assert values["S!C1"] == 200.0
+    assert "S!C1" in unevaluated
+
+
+def test_run_simulation_with_override():
+    values, unevaluated = run_simulation(_SIM_GRAPH, {"S!A1": 5.0})
+    assert values["S!A1"] == 5.0
+    assert values["S!B1"] == 10.0  # =A1*2 -> 5*2
+
+
+def test_make_step_structure():
+    values, unevaluated = run_simulation(_SIM_GRAPH, {"S!A1": 7.0})
+    step = make_step(1, {"S!A1": 7.0}, values, unevaluated, _SIM_GRAPH)
+    assert step.run_number == 1
+    assert step.input_values == {"S!A1": 7.0}
+    assert "S!C1" in step.output_values
