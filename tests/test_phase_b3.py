@@ -228,3 +228,66 @@ def test_run_simulation_missing_ref():
     )
     values, unevaluated = run_simulation(g, {})
     assert "S!D1" in unevaluated  # Z99 not in graph, should be unevaluated
+
+
+# ---------------------------------------------------------------------------
+# Task 3 — hitl_loop tests
+# ---------------------------------------------------------------------------
+from unittest.mock import patch
+from hitl_loop import _print_step, run_hitl
+
+
+def test_print_step_shows_run_number(capsys):
+    step = SimulationStep(
+        run_number=1,
+        input_values={"S!A1": 10.0},
+        output_values={"S!C1": 200.0},
+        all_computed={"S!A1": 10.0, "S!B1": 20.0, "S!C1": 200.0},
+        unevaluated_nodes=["S!C1"],
+    )
+    _print_step(step, _SIM_GRAPH)
+    captured = capsys.readouterr()
+    assert "Rodada 1" in captured.out
+    assert "S!A1" in captured.out or "Input" in captured.out
+
+
+def test_run_hitl_no_intervention():
+    # Simula usuario digitando "" (ENTER) para sair imediatamente
+    with patch("builtins.input", side_effect=[""]):
+        audit = run_hitl(_SIM_GRAPH)
+    assert audit.simulation_id
+    assert len(audit.steps) >= 1
+    assert audit.hitl_interventions == []
+    assert audit.final_outcome
+
+
+def test_run_hitl_one_intervention():
+    # Usuario digita "S!A1=5.0" depois "" para sair
+    with patch("builtins.input", side_effect=["S!A1=5.0", ""]):
+        audit = run_hitl(_SIM_GRAPH)
+    assert len(audit.hitl_interventions) == 1
+    event = audit.hitl_interventions[0]
+    assert event["node_id"] == "S!A1"
+    assert event["new_value"] == 5.0
+
+
+def test_run_hitl_unique_ids():
+    with patch("builtins.input", side_effect=[""]):
+        a1 = run_hitl(_SIM_GRAPH)
+    with patch("builtins.input", side_effect=[""]):
+        a2 = run_hitl(_SIM_GRAPH)
+    assert a1.simulation_id != a2.simulation_id
+
+
+def test_run_hitl_records_old_value():
+    with patch("builtins.input", side_effect=["S!A1=99.0", ""]):
+        audit = run_hitl(_SIM_GRAPH)
+    event = audit.hitl_interventions[0]
+    assert event["old_value"] == 10.0  # current_value do no S!A1
+
+
+def test_run_hitl_invalid_input_ignored():
+    # Entrada invalida nao deve gerar excecao nem intervencao
+    with patch("builtins.input", side_effect=["INVALIDO", "nao=existe=isso", ""]):
+        audit = run_hitl(_SIM_GRAPH)
+    assert audit.hitl_interventions == []
