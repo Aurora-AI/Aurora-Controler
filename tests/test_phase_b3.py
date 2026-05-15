@@ -248,7 +248,7 @@ def test_print_step_shows_run_number(capsys):
     _print_step(step, _SIM_GRAPH)
     captured = capsys.readouterr()
     assert "Rodada 1" in captured.out
-    assert "S!A1" in captured.out or "Input" in captured.out
+    assert "Input" in captured.out  # label for S!A1 from graph
 
 
 def test_run_hitl_no_intervention():
@@ -291,3 +291,10 @@ def test_run_hitl_invalid_input_ignored():
     with patch("builtins.input", side_effect=["INVALIDO", "nao=existe=isso", ""]):
         audit = run_hitl(_SIM_GRAPH)
     assert audit.hitl_interventions == []
+
+
+def test_run_hitl_final_outcome_contains_result():
+    with patch("builtins.input", side_effect=[""]):
+        audit = run_hitl(_SIM_GRAPH)
+    # S!C1 is the output node with label "Result"
+    assert "Result" in audit.final_outcome

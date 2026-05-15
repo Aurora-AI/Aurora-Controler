@@ -32,13 +32,21 @@ def _print_step(step, graph: StagedRuleGraph) -> None:
 
 
 def _ask_overrides(graph: StagedRuleGraph, current_values: dict[str, Any]) -> dict[str, Any] | None:
-    """Solicita um override de input ao usuario. Retorna None para encerrar, {} para continuar sem override."""
+    """Solicita um override de input ao usuario.
+
+    Returns:
+        {nid: val} com exatamente um override quando o usuario fornece uma entrada valida.
+        None quando o usuario digita um done-token para encerrar.
+    """
     input_ids = {n.id for n in graph.nodes if n.is_user_input}
     node_labels = {n.id: n.label for n in graph.nodes}
     print("\nDigite um override (ex: S!A1=100) ou ENTER para encerrar:")
 
     while True:
-        raw = input("> ").strip()
+        try:
+            raw = input("> ").strip()
+        except EOFError:
+            return None
         if raw.lower() in _DONE_TOKENS:
             return None
         if "=" not in raw:
@@ -51,10 +59,9 @@ def _ask_overrides(graph: StagedRuleGraph, current_values: dict[str, Any]) -> di
             print(f"  '{nid}' nao e um no de entrada. Validos: {valid}")
             continue
         try:
-            val = float(val_str)
+            val: Any = float(val_str)
         except ValueError:
-            print(f"  '{val_str}' nao e um numero valido.")
-            continue
+            val = val_str  # accept string values (e.g. categories, dates)
         print(f"  Registrado: {node_labels.get(nid, nid)} = {val}")
         return {nid: val}
 
