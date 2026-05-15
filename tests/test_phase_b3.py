@@ -1,6 +1,7 @@
 """Testes da Phase B3 — Simulation + HITL."""
 import sys
 from pathlib import Path
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for p in [
@@ -43,6 +44,26 @@ _SIM_GRAPH = StagedRuleGraph(
 )
 
 
+@pytest.fixture
+def sim_graph() -> StagedRuleGraph:
+    return StagedRuleGraph(
+        workbook_name="SimTest",
+        nodes=[
+            GraphNode(id="S!A1", label="Input", node_type=GraphNodeType.INPUT,
+                      is_user_input=True, current_value=10.0),
+            GraphNode(id="S!B1", label="Calc", node_type=GraphNodeType.INTERMEDIATE,
+                      formula="=A1*2", current_value=20.0),
+            GraphNode(id="S!C1", label="Result", node_type=GraphNodeType.OUTPUT,
+                      is_user_output=True, formula="=SUM(B1:B10)", current_value=200.0),
+        ],
+        edges=[
+            GraphEdge(source="S!A1", target="S!B1"),
+            GraphEdge(source="S!B1", target="S!C1"),
+        ],
+        intent=_make_intent(),
+    )
+
+
 def test_simulation_step_creation():
     step = SimulationStep(
         run_number=1,
@@ -52,7 +73,8 @@ def test_simulation_step_creation():
     )
     assert step.run_number == 1
     assert step.unevaluated_nodes == []
-    assert step.timestamp
+    from datetime import datetime as _dt
+    _dt.fromisoformat(step.timestamp)  # proves it is valid ISO-8601
 
 
 def test_simulation_step_unevaluated():
@@ -107,3 +129,4 @@ def test_simulation_audit_serialization():
     data = audit.model_dump()
     a2 = SimulationAudit.model_validate(data)
     assert a2.simulation_id == "abc"
+    assert isinstance(a2.steps[0], SimulationStep)

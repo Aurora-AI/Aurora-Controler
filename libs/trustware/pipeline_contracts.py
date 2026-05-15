@@ -221,6 +221,7 @@ class StagedRuleGraph(BaseModel):
     intent: IntentCapture
     generated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
+
 class SimulationStep(BaseModel):
     """Uma rodada de simulacao com inputs e outputs computados — Phase B3."""
     run_number: int = Field(..., description="Numero sequencial da rodada (comeca em 1)")
@@ -228,14 +229,17 @@ class SimulationStep(BaseModel):
     output_values: dict[str, Any] = Field(..., description="Valores das metricas monitoradas computadas")
     all_computed: dict[str, Any] = Field(..., description="Valores de todos os nos avaliados")
     unevaluated_nodes: list[str] = Field(default_factory=list, description="node_ids nao avaliados (formulas complexas)")
-    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    timestamp: str = Field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat(),
+        description="ISO-8601 UTC timestamp de quando a rodada foi executada",
+    )
 
 
 class SimulationAudit(BaseModel):
     """Passo a passo da simulacao com HITL (Fase B3)."""
     simulation_id: str
     steps: list[SimulationStep]
-    hitl_interventions: List[Dict[str, Any]]  # ComplianceEvent.model_dump(mode="json")
+    hitl_interventions: list[dict[str, Any]]  # ComplianceEvent.model_dump(mode="json")
     final_outcome: str
 
 # ==========================================
