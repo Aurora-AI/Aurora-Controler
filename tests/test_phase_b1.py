@@ -138,3 +138,72 @@ def test_build_workbook_summary_output_candidates_have_formula():
     outputs = summary["output_candidates"]
     assert len(outputs) >= 1
     assert "formula" in outputs[0]
+
+
+# ── intent_extractor ───────────────────────────────────────────────────────
+
+from intent_extractor import extract_intent, build_extraction_prompt
+
+
+def _mock_completion(json_payload: dict):
+    """Retorna um MagicMock que simula litellm.completion() com JSON no conteúdo."""
+    mock_resp = MagicMock()
+    mock_resp.choices[0].message.content = json.dumps(json_payload)
+    return mock_resp
+
+
+_SAMPLE_INTENT_JSON = {
+    "user_goal": "Simular impacto de desconto no lucro",
+    "input_parameters": [
+        {"node_id": "S!A1", "label": "Taxa de desconto", "suggested_range": [0.0, 0.3]}
+    ],
+    "output_metrics": [
+        {"node_id": "S!C1", "label": "Lucro líquido"}
+    ],
+    "scenario_description": "Reduzir desconto de 10% para 5%",
+}
+
+
+def test_extract_intent_returns_intent_capture():
+    messages = [
+        {"role": "user", "content": "quero simular o impacto do desconto no lucro"}
+    ]
+    summary = {
+        "workbook_name": "Pasta1",
+        "sheets": ["S"],
+        "input_candidates": [{"node_id": "S!A1", "current_value": 0.1}],
+        "output_candidates": [{"node_id": "S!C1", "formula": "=B1*2"}],
+    }
+    with patch("intent_extractor.completion", return_value=_mock_completion(_SAMPLE_INTENT_JSON)):
+        result = extract_intent(messages=messages, summary=summary)
+
+    assert isinstance(result, IntentCapture)
+    assert result.user_goal == "Simular impacto de desconto no lucro"
+    assert result.workbook_name == "Pasta1"
+    assert len(result.input_parameters) == 1
+    assert result.input_parameters[0].node_id == "S!A1"
+    assert result.input_parameters[0].suggested_range == [0.0, 0.3]
+    assert len(result.output_metrics) == 1
+    assert result.output_metrics[0].node_id == "S!C1"
+
+
+def test_extract_intent_handles_missing_optional_fields():
+    payload = {
+        "user_goal": "Analisar lucro",
+        "input_parameters": [{"node_id": "S!A1", "label": "Receita"}],
+        "output_metrics": [{"node_id": "S!C1", "label": "Lucro"}],
+    }
+    with patch("intent_extractor.completion", return_value=_mock_completion(payload)):
+        result = extract_intent(
+            messages=[{"role": "user", "content": "analisar lucro"}],
+            summary={"workbook_name": "WB", "sheets": [], "input_candidates": [], "output_candidates": []},
+        )
+    assert result.scenario_description is None
+    assert result.input_parameters[0].suggested_range is None
+
+
+def test_build_extraction_prompt_contains_workbook_name():
+    messages = [{"role": "user", "content": "teste"}]
+    summary = {"workbook_name": "MinhaPlilha", "sheets": ["Aba1"], "input_candidates": [], "output_candidates": []}
+    prompt = build_extraction_prompt(messages, summary)
+    assert "MinhaPlilha" in prompt
