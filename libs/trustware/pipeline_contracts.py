@@ -188,10 +188,38 @@ class IntentCapture(BaseModel):
     scenario_description: str | None = None
     timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
+class GraphNodeType(str, Enum):
+    """Tipo de nó no grafo visual de regras de negócio."""
+    INPUT = "input"               # célula folha (sem dependências)
+    OUTPUT = "output"             # fórmula final (sem dependentes)
+    INTERMEDIATE = "intermediate" # fórmula com dependentes
+    STATIC = "static"             # valor estático fora do caminho crítico
+
+
+class GraphNode(BaseModel):
+    """Nó do grafo visual de regras de negócio — Phase B2."""
+    id: str                          # node_id canônico: "Sheet!A1"
+    label: str                       # nome legível (label do IntentCapture ou coordenada)
+    node_type: GraphNodeType
+    formula: str | None = None
+    current_value: Any = None
+    is_user_input: bool = False      # pinned como parâmetro pelo IntentCapture
+    is_user_output: bool = False     # monitorado pelo IntentCapture
+
+
+class GraphEdge(BaseModel):
+    """Aresta dirigida: source alimenta target."""
+    source: str  # node_id de origem
+    target: str  # node_id de destino
+
+
 class StagedRuleGraph(BaseModel):
-    """Grafo visual de regras de negócio (Fase B2)."""
-    rules: List[Dict[str, Any]]
-    visual_layout: Dict[str, Any] = Field(..., description="Metadados para renderização visual")
+    """Grafo visual de regras de negócio — Phase B2."""
+    workbook_name: str
+    nodes: list[GraphNode]
+    edges: list[GraphEdge]
+    intent: IntentCapture
+    generated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class SimulationAudit(BaseModel):
     """Passo a passo da simulação com HITL (Fase B3)."""
