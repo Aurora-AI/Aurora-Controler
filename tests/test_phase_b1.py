@@ -207,3 +207,65 @@ def test_build_extraction_prompt_contains_workbook_name():
     summary = {"workbook_name": "MinhaPlilha", "sheets": ["Aba1"], "input_candidates": [], "output_candidates": []}
     prompt = build_extraction_prompt(messages, summary)
     assert "MinhaPlilha" in prompt
+
+
+# ── chat_loop ──────────────────────────────────────────────────────────────
+
+from chat_loop import build_system_prompt, _is_done_signal
+
+
+def test_is_done_signal_detects_keywords():
+    assert _is_done_signal("ok") is True
+    assert _is_done_signal("OK") is True
+    assert _is_done_signal("pronto") is True
+    assert _is_done_signal("done") is True
+    assert _is_done_signal("Pode capturar") is True
+    assert _is_done_signal("quero simular mais") is False
+
+
+def test_build_system_prompt_contains_workbook_name():
+    summary = {
+        "workbook_name": "Pasta1",
+        "sheets": ["Planilha1"],
+        "input_candidates": [{"node_id": "Planilha1!B5", "current_value": 100}],
+        "output_candidates": [{"node_id": "Planilha1!D20", "formula": "=B5*C5"}],
+    }
+    prompt = build_system_prompt(summary)
+    assert "Pasta1" in prompt
+    assert "Planilha1!B5" in prompt
+    assert "Planilha1!D20" in prompt
+
+
+def test_run_chat_with_mocked_llm(monkeypatch):
+    from chat_loop import run_chat
+
+    inputs = iter(["quero simular o impacto do desconto no lucro", "ok"])
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+
+    mock_chat_resp = MagicMock()
+    mock_chat_resp.choices[0].message.content = "Entendido! Quais valores de desconto quer testar?"
+
+    mock_extract_resp = MagicMock()
+    mock_extract_resp.choices[0].message.content = json.dumps({
+        "user_goal": "Simular desconto",
+        "input_parameters": [{"node_id": "S!A1", "label": "Desconto"}],
+        "output_metrics": [{"node_id": "S!C1", "label": "Lucro"}],
+    })
+
+    call_count = {"n": 0}
+    def mock_completion(**kwargs):
+        call_count["n"] += 1
+        return mock_chat_resp if call_count["n"] == 1 else mock_extract_resp
+
+    with patch("chat_loop.completion", side_effect=mock_completion):
+        with patch("intent_extractor.completion", return_value=mock_extract_resp):
+            result = run_chat(
+                summary={
+                    "workbook_name": "Pasta1",
+                    "sheets": ["S"],
+                    "input_candidates": [{"node_id": "S!A1", "current_value": 0.1}],
+                    "output_candidates": [{"node_id": "S!C1", "formula": "=B1*2"}],
+                }
+            )
+    assert isinstance(result, IntentCapture)
+    assert result.workbook_name == "Pasta1"
