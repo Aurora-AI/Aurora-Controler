@@ -1,0 +1,513 @@
+{
+  "original_file": "Planilha-Ponto-de-equilibrio.xlsx",
+  "domain_module": {
+    "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Planilha-Ponto-de-equilibrio.xlsx",
+    "imports": [],
+    "functions": [],
+    "generated_at": "2026-05-14T17:52:54.806492",
+    "translation_metadata": {
+      "total_unresolved": 0,
+      "total_functions": 0
+    }
+  },
+  "validation_report": {
+    "total_nodes": 61,
+    "passed": 61,
+    "failed": 0,
+    "skipped_no_cache": 0,
+    "results": [
+      {
+        "node_id": "PE!O6",
+        "expected_value": 0.1,
+        "actual_value": 0.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O10",
+        "expected_value": 0.1,
+        "actual_value": 0.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O14",
+        "expected_value": 0.1,
+        "actual_value": 0.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O18",
+        "expected_value": 0.1,
+        "actual_value": 0.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O22",
+        "expected_value": 0.1,
+        "actual_value": 0.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!Q10",
+        "expected_value": 0.05,
+        "actual_value": 0.05,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!Q18",
+        "expected_value": 0.05,
+        "actual_value": 0.05,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!Q13",
+        "expected_value": 8000,
+        "actual_value": 8000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!S21",
+        "expected_value": 8000,
+        "actual_value": 8000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O5",
+        "expected_value": 10000,
+        "actual_value": 10000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O9",
+        "expected_value": 10000,
+        "actual_value": 10000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O13",
+        "expected_value": 10000,
+        "actual_value": 10000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O17",
+        "expected_value": 10000,
+        "actual_value": 10000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!O21",
+        "expected_value": 10000,
+        "actual_value": 10000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!Q17",
+        "expected_value": 2500,
+        "actual_value": 2500,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!Q21",
+        "expected_value": 2500,
+        "actual_value": 2500,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Y12",
+        "expected_value": 30,
+        "actual_value": 30,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Y16",
+        "expected_value": 30,
+        "actual_value": 30,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Y20",
+        "expected_value": 30,
+        "actual_value": 30,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Y24",
+        "expected_value": 30,
+        "actual_value": 30,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O8",
+        "expected_value": 0.2,
+        "actual_value": 0.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O12",
+        "expected_value": 0.2,
+        "actual_value": 0.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O16",
+        "expected_value": 0.2,
+        "actual_value": 0.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O20",
+        "expected_value": 0.2,
+        "actual_value": 0.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O24",
+        "expected_value": 0.2,
+        "actual_value": 0.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Q12",
+        "expected_value": 0.05,
+        "actual_value": 0.05,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Q20",
+        "expected_value": 0.05,
+        "actual_value": 0.05,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Q15",
+        "expected_value": 20000,
+        "actual_value": 20000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W17",
+        "expected_value": 20000,
+        "actual_value": 20000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!S23",
+        "expected_value": 20000,
+        "actual_value": 20000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W25",
+        "expected_value": 20000,
+        "actual_value": 20000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O7",
+        "expected_value": 152,
+        "actual_value": 152,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O11",
+        "expected_value": 152,
+        "actual_value": 152,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O15",
+        "expected_value": 152,
+        "actual_value": 152,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O19",
+        "expected_value": 152,
+        "actual_value": 152,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!O23",
+        "expected_value": 152,
+        "actual_value": 152,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Q19",
+        "expected_value": 3000,
+        "actual_value": 3000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Q23",
+        "expected_value": 3000,
+        "actual_value": 3000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W10",
+        "expected_value": 0,
+        "actual_value": 0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W12",
+        "expected_value": 0,
+        "actual_value": 0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W5",
+        "expected_value": 100000,
+        "actual_value": 100000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W9",
+        "expected_value": 200000,
+        "actual_value": 200000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W13",
+        "expected_value": 180000,
+        "actual_value": 180000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W17",
+        "expected_value": 250000,
+        "actual_value": 250000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W21",
+        "expected_value": 205000,
+        "actual_value": 205000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W7",
+        "expected_value": 760,
+        "actual_value": 760.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W11",
+        "expected_value": 1013.3333333333331,
+        "actual_value": 1013.3333333333331,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W15",
+        "expected_value": 100760,
+        "actual_value": 100760.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W19",
+        "expected_value": 21013.33333333333,
+        "actual_value": 21013.33333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W23",
+        "expected_value": 115760,
+        "actual_value": 115760.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W7",
+        "expected_value": 0,
+        "actual_value": 0.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W11",
+        "expected_value": 10000,
+        "actual_value": 10000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "PE!W19",
+        "expected_value": 12500,
+        "actual_value": 12500.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Z8",
+        "expected_value": 25.333333333333332,
+        "actual_value": 25.333333333333332,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W9",
+        "expected_value": 0,
+        "actual_value": 0.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Z12",
+        "expected_value": 33.77777777777777,
+        "actual_value": 33.77777777777777,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W13",
+        "expected_value": 50.66666666666666,
+        "actual_value": 50.66666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Z16",
+        "expected_value": 3358.6666666666665,
+        "actual_value": 3358.6666666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Z20",
+        "expected_value": 700.4444444444442,
+        "actual_value": 700.4444444444442,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!W21",
+        "expected_value": 1050.6666666666665,
+        "actual_value": 1050.6666666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Ponto de Equilíbrio!Z24",
+        "expected_value": 3858.6666666666665,
+        "actual_value": 3858.6666666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      }
+    ],
+    "repair_attempts": 0
+  },
+  "certification_status": "PASSED",
+  "certified_at": "2026-05-14T17:52:54.856990",
+  "certified_by": "EXRS Phase A4"
+}

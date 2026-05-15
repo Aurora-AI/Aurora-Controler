@@ -1,0 +1,1574 @@
+{
+  "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Pasta1.xlsx",
+  "patterns": [
+    {
+      "node_id": "Planilha1!D2",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C2)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E2",
+      "formula_raw": "=SUMIF(N:N,C2,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F2",
+      "formula_raw": "=E2/D2",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G2",
+      "formula_raw": "=F2/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H2",
+      "formula_raw": "=IF(F2>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O2",
+      "formula_raw": "=_xlfn.XLOOKUP(L2,$C$21:$C$35,$D$21:$D$35,)*M2",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D3",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C3)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E3",
+      "formula_raw": "=SUMIF(N:N,C3,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F3",
+      "formula_raw": "=E3/D3",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G3",
+      "formula_raw": "=F3/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H3",
+      "formula_raw": "=IF(F3>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O3",
+      "formula_raw": "=_xlfn.XLOOKUP(L3,$C$21:$C$35,$D$21:$D$35,)*M3",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!Q3",
+      "formula_raw": "=C2",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Planilha1!D4",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C4)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E4",
+      "formula_raw": "=SUMIF(N:N,C4,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F4",
+      "formula_raw": "=E4/D4",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G4",
+      "formula_raw": "=F4/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H4",
+      "formula_raw": "=IF(F4>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O4",
+      "formula_raw": "=_xlfn.XLOOKUP(L4,$C$21:$C$35,$D$21:$D$35,)*M4",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!Q4",
+      "formula_raw": "=Planilha2!B2",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Planilha1!D5",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C5)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E5",
+      "formula_raw": "=SUMIF(N:N,C5,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F5",
+      "formula_raw": "=E5/D5",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G5",
+      "formula_raw": "=F5/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H5",
+      "formula_raw": "=IF(F5>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O5",
+      "formula_raw": "=_xlfn.XLOOKUP(L5,$C$21:$C$35,$D$21:$D$35,)*M5",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!Q5",
+      "formula_raw": "=C9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Planilha1!D6",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C6)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E6",
+      "formula_raw": "=SUMIF(N:N,C6,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F6",
+      "formula_raw": "=E6/D6",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G6",
+      "formula_raw": "=F6/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H6",
+      "formula_raw": "=IF(F6>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O6",
+      "formula_raw": "=_xlfn.XLOOKUP(L6,$C$21:$C$35,$D$21:$D$35,)*M6",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D7",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C7)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E7",
+      "formula_raw": "=SUMIF(N:N,C7,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F7",
+      "formula_raw": "=E7/D7",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G7",
+      "formula_raw": "=F7/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H7",
+      "formula_raw": "=IF(F7>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O7",
+      "formula_raw": "=_xlfn.XLOOKUP(L7,$C$21:$C$35,$D$21:$D$35,)*M7",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!Q7",
+      "formula_raw": "=D21+N2",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!D8",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C8)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E8",
+      "formula_raw": "=SUMIF(N:N,C8,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F8",
+      "formula_raw": "=E8/D8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G8",
+      "formula_raw": "=F8/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H8",
+      "formula_raw": "=IF(F8>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O8",
+      "formula_raw": "=_xlfn.XLOOKUP(L8,$C$21:$C$35,$D$21:$D$35,)*M8",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D9",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C9)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E9",
+      "formula_raw": "=SUMIF(N:N,C9,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F9",
+      "formula_raw": "=E9/D9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G9",
+      "formula_raw": "=F9/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H9",
+      "formula_raw": "=IF(F9>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O9",
+      "formula_raw": "=_xlfn.XLOOKUP(L9,$C$21:$C$35,$D$21:$D$35,)*M9",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D10",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C10)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E10",
+      "formula_raw": "=SUMIF(N:N,C10,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F10",
+      "formula_raw": "=E10/D10",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G10",
+      "formula_raw": "=F10/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H10",
+      "formula_raw": "=IF(F10>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O10",
+      "formula_raw": "=_xlfn.XLOOKUP(L10,$C$21:$C$35,$D$21:$D$35,)*M10",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D11",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C11)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E11",
+      "formula_raw": "=SUMIF(N:N,C11,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F11",
+      "formula_raw": "=E11/D11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G11",
+      "formula_raw": "=F11/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H11",
+      "formula_raw": "=IF(F11>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O11",
+      "formula_raw": "=_xlfn.XLOOKUP(L11,$C$21:$C$35,$D$21:$D$35,)*M11",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D12",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C12)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E12",
+      "formula_raw": "=SUMIF(N:N,C12,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F12",
+      "formula_raw": "=E12/D12",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G12",
+      "formula_raw": "=F12/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H12",
+      "formula_raw": "=IF(F12>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O12",
+      "formula_raw": "=_xlfn.XLOOKUP(L12,$C$21:$C$35,$D$21:$D$35,)*M12",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D13",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C13)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E13",
+      "formula_raw": "=SUMIF(N:N,C13,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F13",
+      "formula_raw": "=E13/D13",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G13",
+      "formula_raw": "=F13/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H13",
+      "formula_raw": "=IF(F13>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O13",
+      "formula_raw": "=_xlfn.XLOOKUP(L13,$C$21:$C$35,$D$21:$D$35,)*M13",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D14",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C14)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E14",
+      "formula_raw": "=SUMIF(N:N,C14,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F14",
+      "formula_raw": "=E14/D14",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G14",
+      "formula_raw": "=F14/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H14",
+      "formula_raw": "=IF(F14>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O14",
+      "formula_raw": "=_xlfn.XLOOKUP(L14,$C$21:$C$35,$D$21:$D$35,)*M14",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D15",
+      "formula_raw": "=COUNTIF($N$2:$N$76,C15)",
+      "pattern_class": "aggregation",
+      "matched_rule": "countif",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!E15",
+      "formula_raw": "=SUMIF(N:N,C15,O:O)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sumif",
+      "confidence": 1.0,
+      "logic_density_index": 0.5714
+    },
+    {
+      "node_id": "Planilha1!F15",
+      "formula_raw": "=E15/D15",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!G15",
+      "formula_raw": "=F15/$E$18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Planilha1!H15",
+      "formula_raw": "=IF(F15>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+      "pattern_class": "conditional",
+      "matched_rule": "if_simple",
+      "confidence": 1.0,
+      "logic_density_index": 0.5556
+    },
+    {
+      "node_id": "Planilha1!O15",
+      "formula_raw": "=_xlfn.XLOOKUP(L15,$C$21:$C$35,$D$21:$D$35,)*M15",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O16",
+      "formula_raw": "=_xlfn.XLOOKUP(L16,$C$21:$C$35,$D$21:$D$35,)*M16",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O17",
+      "formula_raw": "=_xlfn.XLOOKUP(L17,$C$21:$C$35,$D$21:$D$35,)*M17",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D18",
+      "formula_raw": "=COUNT(O2:O76)",
+      "pattern_class": "aggregation",
+      "matched_rule": "count",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Planilha1!E18",
+      "formula_raw": "=SUM(O2:O76)",
+      "pattern_class": "aggregation",
+      "matched_rule": "sum",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Planilha1!O18",
+      "formula_raw": "=_xlfn.XLOOKUP(L18,$C$21:$C$35,$D$21:$D$35,)*M18",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O19",
+      "formula_raw": "=_xlfn.XLOOKUP(L19,$C$21:$C$35,$D$21:$D$35,)*M19",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O20",
+      "formula_raw": "=_xlfn.XLOOKUP(L20,$C$21:$C$35,$D$21:$D$35,)*M20",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O21",
+      "formula_raw": "=_xlfn.XLOOKUP(L21,$C$21:$C$35,$D$21:$D$35,)*M21",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O22",
+      "formula_raw": "=_xlfn.XLOOKUP(L22,$C$21:$C$35,$D$21:$D$35,)*M22",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O23",
+      "formula_raw": "=_xlfn.XLOOKUP(L23,$C$21:$C$35,$D$21:$D$35,)*M23",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O24",
+      "formula_raw": "=_xlfn.XLOOKUP(L24,$C$21:$C$35,$D$21:$D$35,)*M24",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O25",
+      "formula_raw": "=_xlfn.XLOOKUP(L25,$C$21:$C$35,$D$21:$D$35,)*M25",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O26",
+      "formula_raw": "=_xlfn.XLOOKUP(L26,$C$21:$C$35,$D$21:$D$35,)*M26",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O27",
+      "formula_raw": "=_xlfn.XLOOKUP(L27,$C$21:$C$35,$D$21:$D$35,)*M27",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O28",
+      "formula_raw": "=_xlfn.XLOOKUP(L28,$C$21:$C$35,$D$21:$D$35,)*M28",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O29",
+      "formula_raw": "=_xlfn.XLOOKUP(L29,$C$21:$C$35,$D$21:$D$35,)*M29",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O30",
+      "formula_raw": "=_xlfn.XLOOKUP(L30,$C$21:$C$35,$D$21:$D$35,)*M30",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O31",
+      "formula_raw": "=_xlfn.XLOOKUP(L31,$C$21:$C$35,$D$21:$D$35,)*M31",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O32",
+      "formula_raw": "=_xlfn.XLOOKUP(L32,$C$21:$C$35,$D$21:$D$35,)*M32",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O33",
+      "formula_raw": "=_xlfn.XLOOKUP(L33,$C$21:$C$35,$D$21:$D$35,)*M33",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O34",
+      "formula_raw": "=_xlfn.XLOOKUP(L34,$C$21:$C$35,$D$21:$D$35,)*M34",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O35",
+      "formula_raw": "=_xlfn.XLOOKUP(L35,$C$21:$C$35,$D$21:$D$35,)*M35",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O36",
+      "formula_raw": "=_xlfn.XLOOKUP(L36,$C$21:$C$35,$D$21:$D$35,)*M36",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O37",
+      "formula_raw": "=_xlfn.XLOOKUP(L37,$C$21:$C$35,$D$21:$D$35,)*M37",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D38",
+      "formula_raw": "=LARGE(O2:O76,1)",
+      "pattern_class": "ranking",
+      "matched_rule": "large_small",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!O38",
+      "formula_raw": "=_xlfn.XLOOKUP(L38,$C$21:$C$35,$D$21:$D$35,)*M38",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D39",
+      "formula_raw": "=SMALL(O2:O76,1)",
+      "pattern_class": "ranking",
+      "matched_rule": "large_small",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!O39",
+      "formula_raw": "=_xlfn.XLOOKUP(L39,$C$21:$C$35,$D$21:$D$35,)*M39",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D40",
+      "formula_raw": "=AVERAGE(O2:O76)",
+      "pattern_class": "aggregation",
+      "matched_rule": "average",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Planilha1!O40",
+      "formula_raw": "=_xlfn.XLOOKUP(L40,$C$21:$C$35,$D$21:$D$35,)*M40",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!D41",
+      "formula_raw": "=SUM(O2:O76)/D18",
+      "pattern_class": "aggregation",
+      "matched_rule": "sum",
+      "confidence": 1.0,
+      "logic_density_index": 0.8
+    },
+    {
+      "node_id": "Planilha1!O41",
+      "formula_raw": "=_xlfn.XLOOKUP(L41,$C$21:$C$35,$D$21:$D$35,)*M41",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O42",
+      "formula_raw": "=_xlfn.XLOOKUP(L42,$C$21:$C$35,$D$21:$D$35,)*M42",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O43",
+      "formula_raw": "=_xlfn.XLOOKUP(L43,$C$21:$C$35,$D$21:$D$35,)*M43",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O44",
+      "formula_raw": "=_xlfn.XLOOKUP(L44,$C$21:$C$35,$D$21:$D$35,)*M44",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O45",
+      "formula_raw": "=_xlfn.XLOOKUP(L45,$C$21:$C$35,$D$21:$D$35,)*M45",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O46",
+      "formula_raw": "=_xlfn.XLOOKUP(L46,$C$21:$C$35,$D$21:$D$35,)*M46",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O47",
+      "formula_raw": "=_xlfn.XLOOKUP(L47,$C$21:$C$35,$D$21:$D$35,)*M47",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O48",
+      "formula_raw": "=_xlfn.XLOOKUP(L48,$C$21:$C$35,$D$21:$D$35,)*M48",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O49",
+      "formula_raw": "=_xlfn.XLOOKUP(L49,$C$21:$C$35,$D$21:$D$35,)*M49",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O50",
+      "formula_raw": "=_xlfn.XLOOKUP(L50,$C$21:$C$35,$D$21:$D$35,)*M50",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O51",
+      "formula_raw": "=_xlfn.XLOOKUP(L51,$C$21:$C$35,$D$21:$D$35,)*M51",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O52",
+      "formula_raw": "=_xlfn.XLOOKUP(L52,$C$21:$C$35,$D$21:$D$35,)*M52",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O53",
+      "formula_raw": "=_xlfn.XLOOKUP(L53,$C$21:$C$35,$D$21:$D$35,)*M53",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O54",
+      "formula_raw": "=_xlfn.XLOOKUP(L54,$C$21:$C$35,$D$21:$D$35,)*M54",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O55",
+      "formula_raw": "=_xlfn.XLOOKUP(L55,$C$21:$C$35,$D$21:$D$35,)*M55",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O56",
+      "formula_raw": "=_xlfn.XLOOKUP(L56,$C$21:$C$35,$D$21:$D$35,)*M56",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O57",
+      "formula_raw": "=_xlfn.XLOOKUP(L57,$C$21:$C$35,$D$21:$D$35,)*M57",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O58",
+      "formula_raw": "=_xlfn.XLOOKUP(L58,$C$21:$C$35,$D$21:$D$35,)*M58",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O59",
+      "formula_raw": "=_xlfn.XLOOKUP(L59,$C$21:$C$35,$D$21:$D$35,)*M59",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O60",
+      "formula_raw": "=_xlfn.XLOOKUP(L60,$C$21:$C$35,$D$21:$D$35,)*M60",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O61",
+      "formula_raw": "=_xlfn.XLOOKUP(L61,$C$21:$C$35,$D$21:$D$35,)*M61",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O62",
+      "formula_raw": "=_xlfn.XLOOKUP(L62,$C$21:$C$35,$D$21:$D$35,)*M62",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O63",
+      "formula_raw": "=_xlfn.XLOOKUP(L63,$C$21:$C$35,$D$21:$D$35,)*M63",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O64",
+      "formula_raw": "=_xlfn.XLOOKUP(L64,$C$21:$C$35,$D$21:$D$35,)*M64",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O65",
+      "formula_raw": "=_xlfn.XLOOKUP(L65,$C$21:$C$35,$D$21:$D$35,)*M65",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O66",
+      "formula_raw": "=_xlfn.XLOOKUP(L66,$C$21:$C$35,$D$21:$D$35,)*M66",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O67",
+      "formula_raw": "=_xlfn.XLOOKUP(L67,$C$21:$C$35,$D$21:$D$35,)*M67",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O68",
+      "formula_raw": "=_xlfn.XLOOKUP(L68,$C$21:$C$35,$D$21:$D$35,)*M68",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O69",
+      "formula_raw": "=_xlfn.XLOOKUP(L69,$C$21:$C$35,$D$21:$D$35,)*M69",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O70",
+      "formula_raw": "=_xlfn.XLOOKUP(L70,$C$21:$C$35,$D$21:$D$35,)*M70",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O71",
+      "formula_raw": "=_xlfn.XLOOKUP(L71,$C$21:$C$35,$D$21:$D$35,)*M71",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O72",
+      "formula_raw": "=_xlfn.XLOOKUP(L72,$C$21:$C$35,$D$21:$D$35,)*M72",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O73",
+      "formula_raw": "=_xlfn.XLOOKUP(L73,$C$21:$C$35,$D$21:$D$35,)*M73",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O74",
+      "formula_raw": "=_xlfn.XLOOKUP(L74,$C$21:$C$35,$D$21:$D$35,)*M74",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O75",
+      "formula_raw": "=_xlfn.XLOOKUP(L75,$C$21:$C$35,$D$21:$D$35,)*M75",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    },
+    {
+      "node_id": "Planilha1!O76",
+      "formula_raw": "=_xlfn.XLOOKUP(L76,$C$21:$C$35,$D$21:$D$35,)*M76",
+      "pattern_class": "lookup",
+      "matched_rule": "index_match",
+      "confidence": 1.0,
+      "logic_density_index": 0.5
+    }
+  ],
+  "registry_used": [
+    {
+      "rule_name": "sum",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "SUM",
+        "SOMA",
+        "SUBTOTAL"
+      ],
+      "description": "Soma de valores em um range"
+    },
+    {
+      "rule_name": "average",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "AVERAGE",
+        "MÉDIA",
+        "MEDIA",
+        "AVERAGEA"
+      ],
+      "description": "Média aritmética de valores"
+    },
+    {
+      "rule_name": "count",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "COUNT",
+        "CONT.NÚM",
+        "COUNTA",
+        "CONT.VALORES"
+      ],
+      "description": "Contagem de células não vazias"
+    },
+    {
+      "rule_name": "countif",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "COUNTIF",
+        "CONT.SE",
+        "COUNTIFS",
+        "CONT.SES"
+      ],
+      "description": "Contagem condicional"
+    },
+    {
+      "rule_name": "sumif",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "SUMIF",
+        "SOMASE",
+        "SUMIFS",
+        "SOMASES",
+        "AVERAGEIF",
+        "MÉDIASE",
+        "AVERAGEIFS",
+        "MÉDIASES"
+      ],
+      "description": "Soma ou média condicional"
+    },
+    {
+      "rule_name": "min_max",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "MIN",
+        "MÍNIMO",
+        "MAX",
+        "MÁXIMO"
+      ],
+      "description": "Valor mínimo ou máximo em um range"
+    },
+    {
+      "rule_name": "if_simple",
+      "pattern_class": "conditional",
+      "function_names": [
+        "IF",
+        "SE"
+      ],
+      "description": "Condicional simples IF/SE"
+    },
+    {
+      "rule_name": "if_nested",
+      "pattern_class": "conditional",
+      "function_names": [
+        "IFS",
+        "SES",
+        "IFERROR",
+        "SEERRO",
+        "IFNA",
+        "SENA"
+      ],
+      "description": "Condicional aninhado ou de tratamento de erro"
+    },
+    {
+      "rule_name": "boolean_operators",
+      "pattern_class": "conditional",
+      "function_names": [
+        "AND",
+        "E",
+        "OR",
+        "OU",
+        "NOT",
+        "NÃO"
+      ],
+      "description": "Operadores booleanos"
+    },
+    {
+      "rule_name": "vlookup",
+      "pattern_class": "lookup",
+      "function_names": [
+        "VLOOKUP",
+        "PROCV"
+      ],
+      "description": "Busca vertical"
+    },
+    {
+      "rule_name": "hlookup",
+      "pattern_class": "lookup",
+      "function_names": [
+        "HLOOKUP",
+        "PROCH"
+      ],
+      "description": "Busca horizontal"
+    },
+    {
+      "rule_name": "index_match",
+      "pattern_class": "lookup",
+      "function_names": [
+        "INDEX",
+        "ÍNDICE",
+        "MATCH",
+        "CORRESP",
+        "XLOOKUP",
+        "PROCX",
+        "_XLFN.XLOOKUP",
+        "_XLFN.PROCX"
+      ],
+      "description": "Busca avançada com INDEX/MATCH ou XLOOKUP"
+    },
+    {
+      "rule_name": "date_extraction",
+      "pattern_class": "date_logic",
+      "function_names": [
+        "YEAR",
+        "ANO",
+        "MONTH",
+        "MÊS",
+        "DAY",
+        "DIA",
+        "WEEKDAY",
+        "DIA.DA.SEMANA"
+      ],
+      "description": "Extração de componentes de data"
+    },
+    {
+      "rule_name": "date_arithmetic",
+      "pattern_class": "date_logic",
+      "function_names": [
+        "DATE",
+        "DATA",
+        "EDATE",
+        "DATAM",
+        "EOMONTH",
+        "FIMMÊS",
+        "DATEDIF",
+        "DATADIF"
+      ],
+      "description": "Aritmética e construção de datas"
+    },
+    {
+      "rule_name": "now_today",
+      "pattern_class": "date_logic",
+      "function_names": [
+        "NOW",
+        "AGORA",
+        "TODAY",
+        "HOJE"
+      ],
+      "description": "Data/hora atual (volátil)"
+    },
+    {
+      "rule_name": "text_case",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "UPPER",
+        "MAIÚSCULA",
+        "LOWER",
+        "MINÚSCULA",
+        "PROPER",
+        "PRI.MAIÚSCULA"
+      ],
+      "description": "Transformação de caixa de texto"
+    },
+    {
+      "rule_name": "text_extraction",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "LEFT",
+        "ESQUERDA",
+        "RIGHT",
+        "DIREITA",
+        "MID",
+        "EXT.TEXTO",
+        "LEN",
+        "NÚM.CARACT"
+      ],
+      "description": "Extração e medição de substrings"
+    },
+    {
+      "rule_name": "text_join",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "CONCATENATE",
+        "CONCATENAR",
+        "CONCAT",
+        "TEXTJOIN",
+        "UNIRTEXTO",
+        "&"
+      ],
+      "description": "Concatenação de texto"
+    },
+    {
+      "rule_name": "text_search",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "FIND",
+        "PROCURAR",
+        "SEARCH",
+        "PESQUISAR",
+        "SUBSTITUTE",
+        "SUBSTITUIR"
+      ],
+      "description": "Busca e substituição em texto"
+    },
+    {
+      "rule_name": "rank",
+      "pattern_class": "ranking",
+      "function_names": [
+        "RANK",
+        "ORDEM",
+        "RANK.EQ",
+        "ORDEM.EQ",
+        "RANK.AVG",
+        "ORDEM.MÉD"
+      ],
+      "description": "Ordenação e ranking de valores"
+    },
+    {
+      "rule_name": "large_small",
+      "pattern_class": "ranking",
+      "function_names": [
+        "LARGE",
+        "MAIOR",
+        "SMALL",
+        "MENOR"
+      ],
+      "description": "k-ésimo maior ou menor valor"
+    },
+    {
+      "rule_name": "comparison_operators",
+      "pattern_class": "threshold_logic",
+      "function_names": [
+        "=",
+        ">",
+        "<",
+        ">=",
+        "<=",
+        "<>"
+      ],
+      "description": "Operadores de comparação em fórmulas"
+    },
+    {
+      "rule_name": "rounding",
+      "pattern_class": "threshold_logic",
+      "function_names": [
+        "ROUND",
+        "ARRED",
+        "ROUNDUP",
+        "ARREDONDAR.PARA.CIMA",
+        "ROUNDDOWN",
+        "ARREDONDAR.PARA.BAIXO",
+        "CEILING",
+        "TETO",
+        "FLOOR",
+        "PISO"
+      ],
+      "description": "Arredondamento e truncamento numérico"
+    },
+    {
+      "rule_name": "abs_sign",
+      "pattern_class": "threshold_logic",
+      "function_names": [
+        "ABS",
+        "SIGN",
+        "SINAL"
+      ],
+      "description": "Valor absoluto e sinal"
+    },
+    {
+      "rule_name": "basic_arithmetic",
+      "pattern_class": "arithmetic",
+      "function_names": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "^",
+        "%"
+      ],
+      "description": "Operações aritméticas básicas (operadores inline)"
+    },
+    {
+      "rule_name": "product_power",
+      "pattern_class": "arithmetic",
+      "function_names": [
+        "PRODUCT",
+        "MULT",
+        "POWER",
+        "POTÊNCIA",
+        "SQRT",
+        "RAIZ"
+      ],
+      "description": "Produto, potência e raiz"
+    }
+  ],
+  "unresolved_count": 0,
+  "metadata": {
+    "total_formulas": 155,
+    "registry_size": 26
+  }
+}

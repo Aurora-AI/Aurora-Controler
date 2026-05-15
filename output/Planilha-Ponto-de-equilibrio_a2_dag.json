@@ -1,0 +1,2301 @@
+{
+  "nodes": [
+    {
+      "id": "PE!B2",
+      "sheet": "PE",
+      "coordinate": "B2",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!H2",
+      "sheet": "PE",
+      "coordinate": "H2",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!N2",
+      "sheet": "PE",
+      "coordinate": "N2",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!V2",
+      "sheet": "PE",
+      "coordinate": "V2",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!G4",
+      "sheet": "PE",
+      "coordinate": "G4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!H4",
+      "sheet": "PE",
+      "coordinate": "H4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!C5",
+      "sheet": "PE",
+      "coordinate": "C5",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!I5",
+      "sheet": "PE",
+      "coordinate": "I5",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!J5",
+      "sheet": "PE",
+      "coordinate": "J5",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!N5",
+      "sheet": "PE",
+      "coordinate": "N5",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O5",
+      "sheet": "PE",
+      "coordinate": "O5",
+      "formula_raw": "=C17",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C17"
+      ]
+    },
+    {
+      "id": "PE!V5",
+      "sheet": "PE",
+      "coordinate": "V5",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W5",
+      "sheet": "PE",
+      "coordinate": "W5",
+      "formula_raw": "=O5/O6",
+      "data_type": "e",
+      "dependencies": [
+        "PE!O5",
+        "PE!O6"
+      ]
+    },
+    {
+      "id": "PE!J6",
+      "sheet": "PE",
+      "coordinate": "J6",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O6",
+      "sheet": "PE",
+      "coordinate": "O6",
+      "formula_raw": "=C9",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C9"
+      ]
+    },
+    {
+      "id": "PE!V7",
+      "sheet": "PE",
+      "coordinate": "V7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W7",
+      "sheet": "PE",
+      "coordinate": "W7",
+      "formula_raw": "=W5*Q6",
+      "data_type": "e",
+      "dependencies": [
+        "PE!Q6",
+        "PE!W5"
+      ]
+    },
+    {
+      "id": "PE!C8",
+      "sheet": "PE",
+      "coordinate": "C8",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!H8",
+      "sheet": "PE",
+      "coordinate": "H8",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!C9",
+      "sheet": "PE",
+      "coordinate": "C9",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!I9",
+      "sheet": "PE",
+      "coordinate": "I9",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!J9",
+      "sheet": "PE",
+      "coordinate": "J9",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!N9",
+      "sheet": "PE",
+      "coordinate": "N9",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O9",
+      "sheet": "PE",
+      "coordinate": "O9",
+      "formula_raw": "=C17",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C17"
+      ]
+    },
+    {
+      "id": "PE!V9",
+      "sheet": "PE",
+      "coordinate": "V9",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W9",
+      "sheet": "PE",
+      "coordinate": "W9",
+      "formula_raw": "=O9/(O10-Q10)",
+      "data_type": "e",
+      "dependencies": [
+        "PE!O10",
+        "PE!O9",
+        "PE!Q10"
+      ]
+    },
+    {
+      "id": "PE!J10",
+      "sheet": "PE",
+      "coordinate": "J10",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O10",
+      "sheet": "PE",
+      "coordinate": "O10",
+      "formula_raw": "=C9",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C9"
+      ]
+    },
+    {
+      "id": "PE!P10",
+      "sheet": "PE",
+      "coordinate": "P10",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!Q10",
+      "sheet": "PE",
+      "coordinate": "Q10",
+      "formula_raw": "=C13",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C13"
+      ]
+    },
+    {
+      "id": "PE!W10",
+      "sheet": "PE",
+      "coordinate": "W10",
+      "formula_raw": "=K9",
+      "data_type": "e",
+      "dependencies": [
+        "PE!K9"
+      ]
+    },
+    {
+      "id": "PE!I11",
+      "sheet": "PE",
+      "coordinate": "I11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!V11",
+      "sheet": "PE",
+      "coordinate": "V11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W11",
+      "sheet": "PE",
+      "coordinate": "W11",
+      "formula_raw": "=W9*Q10",
+      "data_type": "e",
+      "dependencies": [
+        "PE!Q10",
+        "PE!W9"
+      ]
+    },
+    {
+      "id": "PE!C12",
+      "sheet": "PE",
+      "coordinate": "C12",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!C13",
+      "sheet": "PE",
+      "coordinate": "C13",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!I13",
+      "sheet": "PE",
+      "coordinate": "I13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!J13",
+      "sheet": "PE",
+      "coordinate": "J13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!N13",
+      "sheet": "PE",
+      "coordinate": "N13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O13",
+      "sheet": "PE",
+      "coordinate": "O13",
+      "formula_raw": "=C17",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C17"
+      ]
+    },
+    {
+      "id": "PE!P13",
+      "sheet": "PE",
+      "coordinate": "P13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!Q13",
+      "sheet": "PE",
+      "coordinate": "Q13",
+      "formula_raw": "=C14",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C14"
+      ]
+    },
+    {
+      "id": "PE!V13",
+      "sheet": "PE",
+      "coordinate": "V13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W13",
+      "sheet": "PE",
+      "coordinate": "W13",
+      "formula_raw": "=(O13+Q13)/O14",
+      "data_type": "e",
+      "dependencies": [
+        "PE!O13",
+        "PE!O14",
+        "PE!Q13"
+      ]
+    },
+    {
+      "id": "PE!C14",
+      "sheet": "PE",
+      "coordinate": "C14",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!J14",
+      "sheet": "PE",
+      "coordinate": "J14",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O14",
+      "sheet": "PE",
+      "coordinate": "O14",
+      "formula_raw": "=C9",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C9"
+      ]
+    },
+    {
+      "id": "PE!I15",
+      "sheet": "PE",
+      "coordinate": "I15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!V15",
+      "sheet": "PE",
+      "coordinate": "V15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W15",
+      "sheet": "PE",
+      "coordinate": "W15",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!C16",
+      "sheet": "PE",
+      "coordinate": "C16",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!H16",
+      "sheet": "PE",
+      "coordinate": "H16",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!C17",
+      "sheet": "PE",
+      "coordinate": "C17",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!I17",
+      "sheet": "PE",
+      "coordinate": "I17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!J17",
+      "sheet": "PE",
+      "coordinate": "J17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!N17",
+      "sheet": "PE",
+      "coordinate": "N17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O17",
+      "sheet": "PE",
+      "coordinate": "O17",
+      "formula_raw": "=C17",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C17"
+      ]
+    },
+    {
+      "id": "PE!P17",
+      "sheet": "PE",
+      "coordinate": "P17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!Q17",
+      "sheet": "PE",
+      "coordinate": "Q17",
+      "formula_raw": "=C21",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C21"
+      ]
+    },
+    {
+      "id": "PE!V17",
+      "sheet": "PE",
+      "coordinate": "V17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W17",
+      "sheet": "PE",
+      "coordinate": "W17",
+      "formula_raw": "=(O17+Q17)/(O18-Q18)",
+      "data_type": "e",
+      "dependencies": [
+        "PE!O17",
+        "PE!O18",
+        "PE!Q17",
+        "PE!Q18"
+      ]
+    },
+    {
+      "id": "PE!J18",
+      "sheet": "PE",
+      "coordinate": "J18",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O18",
+      "sheet": "PE",
+      "coordinate": "O18",
+      "formula_raw": "=C9",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C9"
+      ]
+    },
+    {
+      "id": "PE!P18",
+      "sheet": "PE",
+      "coordinate": "P18",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!Q18",
+      "sheet": "PE",
+      "coordinate": "Q18",
+      "formula_raw": "=C13",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C13"
+      ]
+    },
+    {
+      "id": "PE!I19",
+      "sheet": "PE",
+      "coordinate": "I19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!V19",
+      "sheet": "PE",
+      "coordinate": "V19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W19",
+      "sheet": "PE",
+      "coordinate": "W19",
+      "formula_raw": "=W17*Q18",
+      "data_type": "e",
+      "dependencies": [
+        "PE!Q18",
+        "PE!W17"
+      ]
+    },
+    {
+      "id": "PE!C20",
+      "sheet": "PE",
+      "coordinate": "C20",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!C21",
+      "sheet": "PE",
+      "coordinate": "C21",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!I21",
+      "sheet": "PE",
+      "coordinate": "I21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!J21",
+      "sheet": "PE",
+      "coordinate": "J21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!N21",
+      "sheet": "PE",
+      "coordinate": "N21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O21",
+      "sheet": "PE",
+      "coordinate": "O21",
+      "formula_raw": "=C17",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C17"
+      ]
+    },
+    {
+      "id": "PE!P21",
+      "sheet": "PE",
+      "coordinate": "P21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!Q21",
+      "sheet": "PE",
+      "coordinate": "Q21",
+      "formula_raw": "=C21",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C21"
+      ]
+    },
+    {
+      "id": "PE!R21",
+      "sheet": "PE",
+      "coordinate": "R21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!S21",
+      "sheet": "PE",
+      "coordinate": "S21",
+      "formula_raw": "=C14",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C14"
+      ]
+    },
+    {
+      "id": "PE!V21",
+      "sheet": "PE",
+      "coordinate": "V21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W21",
+      "sheet": "PE",
+      "coordinate": "W21",
+      "formula_raw": "=(O21+Q21+S21)/O22",
+      "data_type": "e",
+      "dependencies": [
+        "PE!O21",
+        "PE!O22",
+        "PE!Q21",
+        "PE!S21"
+      ]
+    },
+    {
+      "id": "PE!J22",
+      "sheet": "PE",
+      "coordinate": "J22",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!O22",
+      "sheet": "PE",
+      "coordinate": "O22",
+      "formula_raw": "=C9",
+      "data_type": "e",
+      "dependencies": [
+        "PE!C9"
+      ]
+    },
+    {
+      "id": "PE!I23",
+      "sheet": "PE",
+      "coordinate": "I23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!V23",
+      "sheet": "PE",
+      "coordinate": "V23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "PE!W23",
+      "sheet": "PE",
+      "coordinate": "W23",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!B4",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "B4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!G4",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "G4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!N4",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "N4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!V4",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y4",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y4",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!G6",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "G6",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!H6",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "H6",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!C7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!I7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!N7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "N7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O7",
+      "formula_raw": "=C19",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C19"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!V7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W7",
+      "formula_raw": "=O7/O8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!O7",
+        "Ponto de Equilíbrio!O8"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z7",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z7",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J8",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J8",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O8",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O8",
+      "formula_raw": "=C11",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y8",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y8",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z8",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z8",
+      "formula_raw": "=W7/Y8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!W7",
+        "Ponto de Equilíbrio!Y8"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!V9",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V9",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W9",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W9",
+      "formula_raw": "=W7*Q8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Q8",
+        "Ponto de Equilíbrio!W7"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!C10",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C10",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!H10",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "H10",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!C11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C11",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!I11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!N11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "N11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O11",
+      "formula_raw": "=C19",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C19"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!V11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W11",
+      "formula_raw": "=O11/(O12-Q12)",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!O11",
+        "Ponto de Equilíbrio!O12",
+        "Ponto de Equilíbrio!Q12"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z11",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J12",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O12",
+      "formula_raw": "=C11",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!P12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "P12",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Q12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Q12",
+      "formula_raw": "=C15",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C15"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!W12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W12",
+      "formula_raw": "=K11",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!K11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y12",
+      "formula_raw": "=$Y$8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Y8"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z12",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z12",
+      "formula_raw": "=W11/Y12",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!W11",
+        "Ponto de Equilíbrio!Y12"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!I13",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!V13",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V13",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W13",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W13",
+      "formula_raw": "=W11*Q12",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Q12",
+        "Ponto de Equilíbrio!W11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!C14",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C14",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!C15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C15",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!I15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!N15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "N15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O15",
+      "formula_raw": "=C19",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C19"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!P15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "P15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Q15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Q15",
+      "formula_raw": "=C16",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C16"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!V15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W15",
+      "formula_raw": "=(O15+Q15)/O16",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!O15",
+        "Ponto de Equilíbrio!O16",
+        "Ponto de Equilíbrio!Q15"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z15",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z15",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!C16",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C16",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J16",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J16",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O16",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O16",
+      "formula_raw": "=C11",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y16",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y16",
+      "formula_raw": "=$Y$8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Y8"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z16",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z16",
+      "formula_raw": "=W15/Y16",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!W15",
+        "Ponto de Equilíbrio!Y16"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!I17",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!V17",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V17",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W17",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W17",
+      "formula_raw": "=C16",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C16"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!C18",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C18",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!H18",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "H18",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!C19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C19",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!I19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!N19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "N19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O19",
+      "formula_raw": "=C19",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C19"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!P19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "P19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Q19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Q19",
+      "formula_raw": "=C23",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C23"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!V19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W19",
+      "formula_raw": "=(O19+Q19)/(O20-Q20)",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!O19",
+        "Ponto de Equilíbrio!O20",
+        "Ponto de Equilíbrio!Q19",
+        "Ponto de Equilíbrio!Q20"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z19",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z19",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J20",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J20",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O20",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O20",
+      "formula_raw": "=C11",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!P20",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "P20",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Q20",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Q20",
+      "formula_raw": "=C15",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C15"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y20",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y20",
+      "formula_raw": "=$Y$8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Y8"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z20",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z20",
+      "formula_raw": "=W19/Y20",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!W19",
+        "Ponto de Equilíbrio!Y20"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!I21",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!V21",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V21",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W21",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W21",
+      "formula_raw": "=W19*Q20",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Q20",
+        "Ponto de Equilíbrio!W19"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!C22",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C22",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!C23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "C23",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!I23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!N23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "N23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O23",
+      "formula_raw": "=C19",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C19"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!P23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "P23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Q23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Q23",
+      "formula_raw": "=C23",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C23"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!R23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "R23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!S23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "S23",
+      "formula_raw": "=C16",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C16"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!V23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W23",
+      "formula_raw": "=(O23+Q23+S23)/O24",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!O23",
+        "Ponto de Equilíbrio!O24",
+        "Ponto de Equilíbrio!Q23",
+        "Ponto de Equilíbrio!S23"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z23",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z23",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!J24",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "J24",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!O24",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "O24",
+      "formula_raw": "=C11",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C11"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Y24",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Y24",
+      "formula_raw": "=$Y$8",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!Y8"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!Z24",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Z24",
+      "formula_raw": "=W23/Y24",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!W23",
+        "Ponto de Equilíbrio!Y24"
+      ]
+    },
+    {
+      "id": "Ponto de Equilíbrio!I25",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "I25",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!V25",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "V25",
+      "formula_raw": null,
+      "data_type": "s",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!W25",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "W25",
+      "formula_raw": "=C16",
+      "data_type": "e",
+      "dependencies": [
+        "Ponto de Equilíbrio!C16"
+      ]
+    },
+    {
+      "id": "PE!Q6",
+      "sheet": "PE",
+      "coordinate": "Q6",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "PE!K9",
+      "sheet": "PE",
+      "coordinate": "K9",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!Q8",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "Q8",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    },
+    {
+      "id": "Ponto de Equilíbrio!K11",
+      "sheet": "Ponto de Equilíbrio",
+      "coordinate": "K11",
+      "formula_raw": null,
+      "data_type": "n",
+      "dependencies": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "PE!C17",
+      "target": "PE!O5"
+    },
+    {
+      "source": "PE!O5",
+      "target": "PE!W5"
+    },
+    {
+      "source": "PE!O6",
+      "target": "PE!W5"
+    },
+    {
+      "source": "PE!C9",
+      "target": "PE!O6"
+    },
+    {
+      "source": "PE!Q6",
+      "target": "PE!W7"
+    },
+    {
+      "source": "PE!W5",
+      "target": "PE!W7"
+    },
+    {
+      "source": "PE!C17",
+      "target": "PE!O9"
+    },
+    {
+      "source": "PE!O10",
+      "target": "PE!W9"
+    },
+    {
+      "source": "PE!O9",
+      "target": "PE!W9"
+    },
+    {
+      "source": "PE!Q10",
+      "target": "PE!W9"
+    },
+    {
+      "source": "PE!C9",
+      "target": "PE!O10"
+    },
+    {
+      "source": "PE!C13",
+      "target": "PE!Q10"
+    },
+    {
+      "source": "PE!K9",
+      "target": "PE!W10"
+    },
+    {
+      "source": "PE!Q10",
+      "target": "PE!W11"
+    },
+    {
+      "source": "PE!W9",
+      "target": "PE!W11"
+    },
+    {
+      "source": "PE!C17",
+      "target": "PE!O13"
+    },
+    {
+      "source": "PE!C14",
+      "target": "PE!Q13"
+    },
+    {
+      "source": "PE!O13",
+      "target": "PE!W13"
+    },
+    {
+      "source": "PE!O14",
+      "target": "PE!W13"
+    },
+    {
+      "source": "PE!Q13",
+      "target": "PE!W13"
+    },
+    {
+      "source": "PE!C9",
+      "target": "PE!O14"
+    },
+    {
+      "source": "PE!C17",
+      "target": "PE!O17"
+    },
+    {
+      "source": "PE!C21",
+      "target": "PE!Q17"
+    },
+    {
+      "source": "PE!O17",
+      "target": "PE!W17"
+    },
+    {
+      "source": "PE!O18",
+      "target": "PE!W17"
+    },
+    {
+      "source": "PE!Q17",
+      "target": "PE!W17"
+    },
+    {
+      "source": "PE!Q18",
+      "target": "PE!W17"
+    },
+    {
+      "source": "PE!C9",
+      "target": "PE!O18"
+    },
+    {
+      "source": "PE!C13",
+      "target": "PE!Q18"
+    },
+    {
+      "source": "PE!Q18",
+      "target": "PE!W19"
+    },
+    {
+      "source": "PE!W17",
+      "target": "PE!W19"
+    },
+    {
+      "source": "PE!C17",
+      "target": "PE!O21"
+    },
+    {
+      "source": "PE!C21",
+      "target": "PE!Q21"
+    },
+    {
+      "source": "PE!C14",
+      "target": "PE!S21"
+    },
+    {
+      "source": "PE!O21",
+      "target": "PE!W21"
+    },
+    {
+      "source": "PE!O22",
+      "target": "PE!W21"
+    },
+    {
+      "source": "PE!Q21",
+      "target": "PE!W21"
+    },
+    {
+      "source": "PE!S21",
+      "target": "PE!W21"
+    },
+    {
+      "source": "PE!C9",
+      "target": "PE!O22"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C19",
+      "target": "Ponto de Equilíbrio!O7"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O7",
+      "target": "Ponto de Equilíbrio!W7"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O8",
+      "target": "Ponto de Equilíbrio!W7"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C11",
+      "target": "Ponto de Equilíbrio!O8"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W7",
+      "target": "Ponto de Equilíbrio!Z8"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y8",
+      "target": "Ponto de Equilíbrio!Z8"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q8",
+      "target": "Ponto de Equilíbrio!W9"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W7",
+      "target": "Ponto de Equilíbrio!W9"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C19",
+      "target": "Ponto de Equilíbrio!O11"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O11",
+      "target": "Ponto de Equilíbrio!W11"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O12",
+      "target": "Ponto de Equilíbrio!W11"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q12",
+      "target": "Ponto de Equilíbrio!W11"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C11",
+      "target": "Ponto de Equilíbrio!O12"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C15",
+      "target": "Ponto de Equilíbrio!Q12"
+    },
+    {
+      "source": "Ponto de Equilíbrio!K11",
+      "target": "Ponto de Equilíbrio!W12"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y8",
+      "target": "Ponto de Equilíbrio!Y12"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W11",
+      "target": "Ponto de Equilíbrio!Z12"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y12",
+      "target": "Ponto de Equilíbrio!Z12"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q12",
+      "target": "Ponto de Equilíbrio!W13"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W11",
+      "target": "Ponto de Equilíbrio!W13"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C19",
+      "target": "Ponto de Equilíbrio!O15"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C16",
+      "target": "Ponto de Equilíbrio!Q15"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O15",
+      "target": "Ponto de Equilíbrio!W15"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O16",
+      "target": "Ponto de Equilíbrio!W15"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q15",
+      "target": "Ponto de Equilíbrio!W15"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C11",
+      "target": "Ponto de Equilíbrio!O16"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y8",
+      "target": "Ponto de Equilíbrio!Y16"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W15",
+      "target": "Ponto de Equilíbrio!Z16"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y16",
+      "target": "Ponto de Equilíbrio!Z16"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C16",
+      "target": "Ponto de Equilíbrio!W17"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C19",
+      "target": "Ponto de Equilíbrio!O19"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C23",
+      "target": "Ponto de Equilíbrio!Q19"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O19",
+      "target": "Ponto de Equilíbrio!W19"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O20",
+      "target": "Ponto de Equilíbrio!W19"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q19",
+      "target": "Ponto de Equilíbrio!W19"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q20",
+      "target": "Ponto de Equilíbrio!W19"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C11",
+      "target": "Ponto de Equilíbrio!O20"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C15",
+      "target": "Ponto de Equilíbrio!Q20"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y8",
+      "target": "Ponto de Equilíbrio!Y20"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W19",
+      "target": "Ponto de Equilíbrio!Z20"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y20",
+      "target": "Ponto de Equilíbrio!Z20"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q20",
+      "target": "Ponto de Equilíbrio!W21"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W19",
+      "target": "Ponto de Equilíbrio!W21"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C19",
+      "target": "Ponto de Equilíbrio!O23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C23",
+      "target": "Ponto de Equilíbrio!Q23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C16",
+      "target": "Ponto de Equilíbrio!S23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O23",
+      "target": "Ponto de Equilíbrio!W23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!O24",
+      "target": "Ponto de Equilíbrio!W23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Q23",
+      "target": "Ponto de Equilíbrio!W23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!S23",
+      "target": "Ponto de Equilíbrio!W23"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C11",
+      "target": "Ponto de Equilíbrio!O24"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y8",
+      "target": "Ponto de Equilíbrio!Y24"
+    },
+    {
+      "source": "Ponto de Equilíbrio!W23",
+      "target": "Ponto de Equilíbrio!Z24"
+    },
+    {
+      "source": "Ponto de Equilíbrio!Y24",
+      "target": "Ponto de Equilíbrio!Z24"
+    },
+    {
+      "source": "Ponto de Equilíbrio!C16",
+      "target": "Ponto de Equilíbrio!W25"
+    }
+  ],
+  "topological_order": [
+    "PE!B2",
+    "PE!H2",
+    "PE!N2",
+    "PE!V2",
+    "PE!G4",
+    "PE!H4",
+    "PE!C5",
+    "PE!I5",
+    "PE!J5",
+    "PE!N5",
+    "PE!V5",
+    "PE!J6",
+    "PE!V7",
+    "PE!C8",
+    "PE!H8",
+    "PE!C9",
+    "PE!I9",
+    "PE!J9",
+    "PE!N9",
+    "PE!V9",
+    "PE!J10",
+    "PE!P10",
+    "PE!I11",
+    "PE!V11",
+    "PE!C12",
+    "PE!C13",
+    "PE!I13",
+    "PE!J13",
+    "PE!N13",
+    "PE!P13",
+    "PE!V13",
+    "PE!C14",
+    "PE!J14",
+    "PE!I15",
+    "PE!V15",
+    "PE!W15",
+    "PE!C16",
+    "PE!H16",
+    "PE!C17",
+    "PE!I17",
+    "PE!J17",
+    "PE!N17",
+    "PE!P17",
+    "PE!V17",
+    "PE!J18",
+    "PE!P18",
+    "PE!I19",
+    "PE!V19",
+    "PE!C20",
+    "PE!C21",
+    "PE!I21",
+    "PE!J21",
+    "PE!N21",
+    "PE!P21",
+    "PE!R21",
+    "PE!V21",
+    "PE!J22",
+    "PE!I23",
+    "PE!V23",
+    "PE!W23",
+    "Ponto de Equilíbrio!B4",
+    "Ponto de Equilíbrio!G4",
+    "Ponto de Equilíbrio!N4",
+    "Ponto de Equilíbrio!V4",
+    "Ponto de Equilíbrio!Y4",
+    "Ponto de Equilíbrio!G6",
+    "Ponto de Equilíbrio!H6",
+    "Ponto de Equilíbrio!C7",
+    "Ponto de Equilíbrio!I7",
+    "Ponto de Equilíbrio!J7",
+    "Ponto de Equilíbrio!N7",
+    "Ponto de Equilíbrio!V7",
+    "Ponto de Equilíbrio!Y7",
+    "Ponto de Equilíbrio!Z7",
+    "Ponto de Equilíbrio!J8",
+    "Ponto de Equilíbrio!Y8",
+    "Ponto de Equilíbrio!V9",
+    "Ponto de Equilíbrio!C10",
+    "Ponto de Equilíbrio!H10",
+    "Ponto de Equilíbrio!C11",
+    "Ponto de Equilíbrio!I11",
+    "Ponto de Equilíbrio!J11",
+    "Ponto de Equilíbrio!N11",
+    "Ponto de Equilíbrio!V11",
+    "Ponto de Equilíbrio!Y11",
+    "Ponto de Equilíbrio!Z11",
+    "Ponto de Equilíbrio!J12",
+    "Ponto de Equilíbrio!P12",
+    "Ponto de Equilíbrio!I13",
+    "Ponto de Equilíbrio!V13",
+    "Ponto de Equilíbrio!C14",
+    "Ponto de Equilíbrio!C15",
+    "Ponto de Equilíbrio!I15",
+    "Ponto de Equilíbrio!J15",
+    "Ponto de Equilíbrio!N15",
+    "Ponto de Equilíbrio!P15",
+    "Ponto de Equilíbrio!V15",
+    "Ponto de Equilíbrio!Y15",
+    "Ponto de Equilíbrio!Z15",
+    "Ponto de Equilíbrio!C16",
+    "Ponto de Equilíbrio!J16",
+    "Ponto de Equilíbrio!I17",
+    "Ponto de Equilíbrio!V17",
+    "Ponto de Equilíbrio!C18",
+    "Ponto de Equilíbrio!H18",
+    "Ponto de Equilíbrio!C19",
+    "Ponto de Equilíbrio!I19",
+    "Ponto de Equilíbrio!J19",
+    "Ponto de Equilíbrio!N19",
+    "Ponto de Equilíbrio!P19",
+    "Ponto de Equilíbrio!V19",
+    "Ponto de Equilíbrio!Y19",
+    "Ponto de Equilíbrio!Z19",
+    "Ponto de Equilíbrio!J20",
+    "Ponto de Equilíbrio!P20",
+    "Ponto de Equilíbrio!I21",
+    "Ponto de Equilíbrio!V21",
+    "Ponto de Equilíbrio!C22",
+    "Ponto de Equilíbrio!C23",
+    "Ponto de Equilíbrio!I23",
+    "Ponto de Equilíbrio!J23",
+    "Ponto de Equilíbrio!N23",
+    "Ponto de Equilíbrio!P23",
+    "Ponto de Equilíbrio!R23",
+    "Ponto de Equilíbrio!V23",
+    "Ponto de Equilíbrio!Y23",
+    "Ponto de Equilíbrio!Z23",
+    "Ponto de Equilíbrio!J24",
+    "Ponto de Equilíbrio!I25",
+    "Ponto de Equilíbrio!V25",
+    "PE!Q6",
+    "PE!K9",
+    "Ponto de Equilíbrio!Q8",
+    "Ponto de Equilíbrio!K11",
+    "PE!O6",
+    "PE!O10",
+    "PE!O14",
+    "PE!O18",
+    "PE!O22",
+    "PE!Q10",
+    "PE!Q18",
+    "PE!Q13",
+    "PE!S21",
+    "PE!O5",
+    "PE!O9",
+    "PE!O13",
+    "PE!O17",
+    "PE!O21",
+    "PE!Q17",
+    "PE!Q21",
+    "Ponto de Equilíbrio!Y12",
+    "Ponto de Equilíbrio!Y16",
+    "Ponto de Equilíbrio!Y20",
+    "Ponto de Equilíbrio!Y24",
+    "Ponto de Equilíbrio!O8",
+    "Ponto de Equilíbrio!O12",
+    "Ponto de Equilíbrio!O16",
+    "Ponto de Equilíbrio!O20",
+    "Ponto de Equilíbrio!O24",
+    "Ponto de Equilíbrio!Q12",
+    "Ponto de Equilíbrio!Q20",
+    "Ponto de Equilíbrio!Q15",
+    "Ponto de Equilíbrio!W17",
+    "Ponto de Equilíbrio!S23",
+    "Ponto de Equilíbrio!W25",
+    "Ponto de Equilíbrio!O7",
+    "Ponto de Equilíbrio!O11",
+    "Ponto de Equilíbrio!O15",
+    "Ponto de Equilíbrio!O19",
+    "Ponto de Equilíbrio!O23",
+    "Ponto de Equilíbrio!Q19",
+    "Ponto de Equilíbrio!Q23",
+    "PE!W10",
+    "Ponto de Equilíbrio!W12",
+    "PE!W5",
+    "PE!W9",
+    "PE!W13",
+    "PE!W17",
+    "PE!W21",
+    "Ponto de Equilíbrio!W7",
+    "Ponto de Equilíbrio!W11",
+    "Ponto de Equilíbrio!W15",
+    "Ponto de Equilíbrio!W19",
+    "Ponto de Equilíbrio!W23",
+    "PE!W7",
+    "PE!W11",
+    "PE!W19",
+    "Ponto de Equilíbrio!Z8",
+    "Ponto de Equilíbrio!W9",
+    "Ponto de Equilíbrio!Z12",
+    "Ponto de Equilíbrio!W13",
+    "Ponto de Equilíbrio!Z16",
+    "Ponto de Equilíbrio!Z20",
+    "Ponto de Equilíbrio!W21",
+    "Ponto de Equilíbrio!Z24"
+  ],
+  "has_cycles": false,
+  "cycles": [],
+  "graph_metadata": {
+    "num_nodes": 195,
+    "num_edges": 94,
+    "num_sheets": 3
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "product_name": "Excel Reverse Engineering System",
+  "slug": "excel-reverse-engine",
+  "owner": "Aurora",
+  "status": "pre-alpha",
+  "canonical_spec": "docs/ARCHITECTURE.md",
+  "trustware_schemas": "libs/trustware/",
+  "source_repository": "https://github.com/aurora/excel-reverse-engine",
+  "backlog": "docs/BACKLOG.md",
+  "created": "2026-05-04",
+  "dependencies": {
+    "aurora-factory": ">=9.0"
+  }
+}

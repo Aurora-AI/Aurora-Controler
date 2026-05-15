@@ -1,0 +1,4097 @@
+{
+  "original_file": "Simulador Completo.xlsx",
+  "domain_module": {
+    "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Simulador Completo.xlsx",
+    "imports": [],
+    "functions": [],
+    "generated_at": "2026-05-14T16:40:56.963073",
+    "translation_metadata": {
+      "total_unresolved": 12,
+      "total_functions": 0
+    }
+  },
+  "validation_report": {
+    "total_nodes": 509,
+    "passed": 123,
+    "failed": 386,
+    "skipped_no_cache": 0,
+    "results": [
+      {
+        "node_id": "Cálculos!O6",
+        "expected_value": 0.0244,
+        "actual_value": 0.0244,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD6",
+        "expected_value": 0.0272,
+        "actual_value": 0.0272,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O7",
+        "expected_value": 0.0575,
+        "actual_value": 0.0575,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD7",
+        "expected_value": 0.061,
+        "actual_value": 0.061,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J8",
+        "expected_value": 0.04775,
+        "actual_value": 0.04775,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O8",
+        "expected_value": 0.04105,
+        "actual_value": 0.04105,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T8",
+        "expected_value": 0.03685,
+        "actual_value": 0.03685,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y8",
+        "expected_value": 0.03395,
+        "actual_value": 0.03395,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD8",
+        "expected_value": 0.0442,
+        "actual_value": 0.0442,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J9",
+        "expected_value": 0.03613333333333333,
+        "actual_value": 0.03613333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O9",
+        "expected_value": 0.0353,
+        "actual_value": 0.0353,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T9",
+        "expected_value": 0.0286,
+        "actual_value": 0.0286,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y9",
+        "expected_value": 0.024166666666666666,
+        "actual_value": 0.024166666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD9",
+        "expected_value": 0.03796666666666667,
+        "actual_value": 0.03796666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J10",
+        "expected_value": 0.0302,
+        "actual_value": 0.0302,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O10",
+        "expected_value": 0.032,
+        "actual_value": 0.032,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T10",
+        "expected_value": 0.024375,
+        "actual_value": 0.024375,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y10",
+        "expected_value": 0.020975,
+        "actual_value": 0.020975,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD10",
+        "expected_value": 0.034475,
+        "actual_value": 0.034475,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J11",
+        "expected_value": 0.02656,
+        "actual_value": 0.02656,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O11",
+        "expected_value": 0.029720000000000003,
+        "actual_value": 0.029720000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T11",
+        "expected_value": 0.02182,
+        "actual_value": 0.02182,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y11",
+        "expected_value": 0.019,
+        "actual_value": 0.019,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD11",
+        "expected_value": 0.032,
+        "actual_value": 0.032,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J12",
+        "expected_value": 0.024183333333333334,
+        "actual_value": 0.024183333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O12",
+        "expected_value": 0.02791666666666667,
+        "actual_value": 0.02791666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T12",
+        "expected_value": 0.02,
+        "actual_value": 0.02,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y12",
+        "expected_value": 0.017400000000000002,
+        "actual_value": 0.017400000000000002,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD12",
+        "expected_value": 0.030100000000000002,
+        "actual_value": 0.030100000000000002,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J13",
+        "expected_value": 0.022414285714285716,
+        "actual_value": 0.022414285714285716,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O13",
+        "expected_value": 0.0265,
+        "actual_value": 0.0265,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T13",
+        "expected_value": 0.019014285714285713,
+        "actual_value": 0.019014285714285713,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y13",
+        "expected_value": 0.016485714285714288,
+        "actual_value": 0.016485714285714288,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD13",
+        "expected_value": 0.028528571428571427,
+        "actual_value": 0.028528571428571427,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J14",
+        "expected_value": 0.0210625,
+        "actual_value": 0.0210625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O14",
+        "expected_value": 0.0252875,
+        "actual_value": 0.0252875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T14",
+        "expected_value": 0.0185625,
+        "actual_value": 0.0185625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y14",
+        "expected_value": 0.0155,
+        "actual_value": 0.0155,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD14",
+        "expected_value": 0.027225,
+        "actual_value": 0.027225,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J15",
+        "expected_value": 0.019944444444444445,
+        "actual_value": 0.019944444444444445,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O15",
+        "expected_value": 0.0238,
+        "actual_value": 0.0238,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T15",
+        "expected_value": 0.017222222222222222,
+        "actual_value": 0.017222222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y15",
+        "expected_value": 0.015033333333333334,
+        "actual_value": 0.015033333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD15",
+        "expected_value": 0.02567777777777778,
+        "actual_value": 0.02567777777777778,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J16",
+        "expected_value": 0.01905,
+        "actual_value": 0.01905,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O16",
+        "expected_value": 0.02278,
+        "actual_value": 0.02278,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T16",
+        "expected_value": 0.01653,
+        "actual_value": 0.01653,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y16",
+        "expected_value": 0.01424,
+        "actual_value": 0.01424,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD16",
+        "expected_value": 0.0243,
+        "actual_value": 0.0243,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J17",
+        "expected_value": 0.018363636363636363,
+        "actual_value": 0.018363636363636363,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O17",
+        "expected_value": 0.021863636363636363,
+        "actual_value": 0.021863636363636363,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T17",
+        "expected_value": 0.015918181818181817,
+        "actual_value": 0.015918181818181817,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y17",
+        "expected_value": 0.013890909090909091,
+        "actual_value": 0.013890909090909091,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD17",
+        "expected_value": 0.023,
+        "actual_value": 0.023,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J18",
+        "expected_value": 0.017708333333333333,
+        "actual_value": 0.017708333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O18",
+        "expected_value": 0.02105,
+        "actual_value": 0.02105,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T18",
+        "expected_value": 0.015516666666666666,
+        "actual_value": 0.015516666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y18",
+        "expected_value": 0.013608333333333333,
+        "actual_value": 0.013608333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD18",
+        "expected_value": 0.021825,
+        "actual_value": 0.021825,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J21",
+        "expected_value": 0.021,
+        "actual_value": 0.021,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O21",
+        "expected_value": 0.025,
+        "actual_value": 0.025,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD21",
+        "expected_value": 0.028,
+        "actual_value": 0.028,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J22",
+        "expected_value": 0.0516,
+        "actual_value": 0.0516,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O22",
+        "expected_value": 0.061,
+        "actual_value": 0.061,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD22",
+        "expected_value": 0.065,
+        "actual_value": 0.065,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J23",
+        "expected_value": 0.0528,
+        "actual_value": 0.0528,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O23",
+        "expected_value": 0.0447,
+        "actual_value": 0.0447,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T23",
+        "expected_value": 0.0398,
+        "actual_value": 0.0398,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y23",
+        "expected_value": 0.0364,
+        "actual_value": 0.0364,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD23",
+        "expected_value": 0.0485,
+        "actual_value": 0.0485,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J24",
+        "expected_value": 0.040466666666666665,
+        "actual_value": 0.040466666666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O24",
+        "expected_value": 0.03946666666666667,
+        "actual_value": 0.03946666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T24",
+        "expected_value": 0.031266666666666665,
+        "actual_value": 0.031266666666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y24",
+        "expected_value": 0.02606666666666667,
+        "actual_value": 0.02606666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD24",
+        "expected_value": 0.042866666666666664,
+        "actual_value": 0.042866666666666664,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J25",
+        "expected_value": 0.0343,
+        "actual_value": 0.0343,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O25",
+        "expected_value": 0.0367,
+        "actual_value": 0.0367,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T25",
+        "expected_value": 0.027,
+        "actual_value": 0.027,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y25",
+        "expected_value": 0.0229,
+        "actual_value": 0.0229,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD25",
+        "expected_value": 0.04,
+        "actual_value": 0.04,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J26",
+        "expected_value": 0.0306,
+        "actual_value": 0.0306,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O26",
+        "expected_value": 0.0349,
+        "actual_value": 0.0349,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T26",
+        "expected_value": 0.0245,
+        "actual_value": 0.0245,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y26",
+        "expected_value": 0.020999999999999998,
+        "actual_value": 0.020999999999999998,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD26",
+        "expected_value": 0.0381,
+        "actual_value": 0.0381,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J27",
+        "expected_value": 0.028233333333333333,
+        "actual_value": 0.028233333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O27",
+        "expected_value": 0.03353333333333333,
+        "actual_value": 0.03353333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T27",
+        "expected_value": 0.02273333333333333,
+        "actual_value": 0.02273333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y27",
+        "expected_value": 0.019433333333333334,
+        "actual_value": 0.019433333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD27",
+        "expected_value": 0.03673333333333333,
+        "actual_value": 0.03673333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J28",
+        "expected_value": 0.026542857142857142,
+        "actual_value": 0.026542857142857142,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O28",
+        "expected_value": 0.032542857142857144,
+        "actual_value": 0.032542857142857144,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T28",
+        "expected_value": 0.021942857142857142,
+        "actual_value": 0.021942857142857142,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y28",
+        "expected_value": 0.018642857142857145,
+        "actual_value": 0.018642857142857145,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD28",
+        "expected_value": 0.03564285714285714,
+        "actual_value": 0.03564285714285714,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J29",
+        "expected_value": 0.0253,
+        "actual_value": 0.0253,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O29",
+        "expected_value": 0.0317,
+        "actual_value": 0.0317,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T29",
+        "expected_value": 0.0218,
+        "actual_value": 0.0218,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y29",
+        "expected_value": 0.0177,
+        "actual_value": 0.0177,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD29",
+        "expected_value": 0.0348,
+        "actual_value": 0.0348,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J30",
+        "expected_value": 0.024288888888888888,
+        "actual_value": 0.024288888888888888,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O30",
+        "expected_value": 0.03028888888888889,
+        "actual_value": 0.03028888888888889,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T30",
+        "expected_value": 0.020388888888888887,
+        "actual_value": 0.020388888888888887,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y30",
+        "expected_value": 0.017388888888888888,
+        "actual_value": 0.017388888888888888,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD30",
+        "expected_value": 0.033388888888888885,
+        "actual_value": 0.033388888888888885,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J31",
+        "expected_value": 0.0235,
+        "actual_value": 0.0235,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O31",
+        "expected_value": 0.0295,
+        "actual_value": 0.0295,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T31",
+        "expected_value": 0.0198,
+        "actual_value": 0.0198,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y31",
+        "expected_value": 0.0166,
+        "actual_value": 0.0166,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD31",
+        "expected_value": 0.032100000000000004,
+        "actual_value": 0.032100000000000004,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J32",
+        "expected_value": 0.022990909090909093,
+        "actual_value": 0.022990909090909093,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O32",
+        "expected_value": 0.02879090909090909,
+        "actual_value": 0.02879090909090909,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T32",
+        "expected_value": 0.01929090909090909,
+        "actual_value": 0.01929090909090909,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y32",
+        "expected_value": 0.01639090909090909,
+        "actual_value": 0.01639090909090909,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD32",
+        "expected_value": 0.03079090909090909,
+        "actual_value": 0.03079090909090909,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!J33",
+        "expected_value": 0.022466666666666666,
+        "actual_value": 0.022466666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!O33",
+        "expected_value": 0.02816666666666667,
+        "actual_value": 0.02816666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!T33",
+        "expected_value": 0.019066666666666666,
+        "actual_value": 0.019066666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!Y33",
+        "expected_value": 0.01626666666666667,
+        "actual_value": 0.01626666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Cálculos!AD33",
+        "expected_value": 0.029566666666666668,
+        "actual_value": 0.029566666666666668,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Simulador!E2",
+        "expected_value": "SUPERVISOR",
+        "actual_value": "SUPERVISOR",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Simulador!N5",
+        "expected_value": "SUPERVISOR",
+        "actual_value": "SUPERVISOR",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Simulador!P5",
+        "expected_value": "SUPERVISOR",
+        "actual_value": "SUPERVISOR",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "BD!C3",
+        "expected_value": 1000,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =[1]SIMULADOR!E3"
+      },
+      {
+        "node_id": "BD!C18",
+        "expected_value": 0.0255,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =[1]SIMULADOR!E31"
+      },
+      {
+        "node_id": "BD!C19",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =[1]SIMULADOR!E28"
+      },
+      {
+        "node_id": "BD!C20",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =[1]SIMULADOR!E29"
+      },
+      {
+        "node_id": "Cálculos!E3",
+        "expected_value": 1000,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!H2"
+      },
+      {
+        "node_id": "Cálculos!D20",
+        "expected_value": "AO MÊS",
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!D9=1,\"ESCOLHA UM TI"
+      },
+      {
+        "node_id": "Cálculos!E22",
+        "expected_value": 0.0199,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D12"
+      },
+      {
+        "node_id": "Cálculos!E24",
+        "expected_value": 0.0289,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D13"
+      },
+      {
+        "node_id": "Cálculos!E25",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D14"
+      },
+      {
+        "node_id": "Cálculos!E26",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D15"
+      },
+      {
+        "node_id": "Cálculos!E28",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D18"
+      },
+      {
+        "node_id": "Cálculos!E29",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D19"
+      },
+      {
+        "node_id": "Cálculos!E31",
+        "expected_value": 0.0255,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: ='[1]Simulador Taxa AM e Ant.Tx Fixa'!D21"
+      },
+      {
+        "node_id": "Simulador!G6",
+        "expected_value": 0.0199,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =[1]SIMULADOR!C6"
+      },
+      {
+        "node_id": "Simulador!H6",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2,[1]SIMULADOR!D6)"
+      },
+      {
+        "node_id": "Simulador!N6",
+        "expected_value": 0.0272,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC6,IF('[1]Simulador Taxa AM e Ant.T"
+      },
+      {
+        "node_id": "Simulador!G7",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H5,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!D"
+      },
+      {
+        "node_id": "Simulador!H7",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F7,[1]SIMULADOR!D7)"
+      },
+      {
+        "node_id": "Simulador!N7",
+        "expected_value": 0.061,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC7,IF('[1]Simulador Taxa AM e Ant.T"
+      },
+      {
+        "node_id": "Simulador!G8",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H6,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!D"
+      },
+      {
+        "node_id": "Simulador!H8",
+        "expected_value": 1250,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F8,[1]SIMULADOR!D8)"
+      },
+      {
+        "node_id": "Simulador!N8",
+        "expected_value": 0.0884,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC8,IF('[1]Simulador Taxa AM e Ant.T"
+      },
+      {
+        "node_id": "Simulador!G9",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H7,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!D"
+      },
+      {
+        "node_id": "Simulador!H9",
+        "expected_value": 833.3333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F9,[1]SIMULADOR!D9)"
+      },
+      {
+        "node_id": "Simulador!N9",
+        "expected_value": 0.1139,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC9,IF('[1]Simulador Taxa AM e Ant.T"
+      },
+      {
+        "node_id": "Simulador!G10",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H8,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!D"
+      },
+      {
+        "node_id": "Simulador!H10",
+        "expected_value": 625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F10,[1]SIMULADOR!D10)"
+      },
+      {
+        "node_id": "Simulador!N10",
+        "expected_value": 0.1379,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC10,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G11",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H9,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!D"
+      },
+      {
+        "node_id": "Simulador!H11",
+        "expected_value": 500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F11,[1]SIMULADOR!D11)"
+      },
+      {
+        "node_id": "Simulador!N11",
+        "expected_value": 0.16,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC11,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G12",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H10,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H12",
+        "expected_value": 416.6666666666667,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F12,[1]SIMULADOR!D12)"
+      },
+      {
+        "node_id": "Simulador!N12",
+        "expected_value": 0.1806,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC12,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G13",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H11,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H13",
+        "expected_value": 357.14285714285717,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F13,[1]SIMULADOR!D13)"
+      },
+      {
+        "node_id": "Simulador!N13",
+        "expected_value": 0.1997,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC13,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G14",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H12,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H14",
+        "expected_value": 312.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F14,[1]SIMULADOR!D14)"
+      },
+      {
+        "node_id": "Simulador!N14",
+        "expected_value": 0.2178,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC14,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G15",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H13,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H15",
+        "expected_value": 277.77777777777777,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F15,[1]SIMULADOR!D15)"
+      },
+      {
+        "node_id": "Simulador!N15",
+        "expected_value": 0.2311,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC15,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G16",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H14,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H16",
+        "expected_value": 250,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F16,[1]SIMULADOR!D16)"
+      },
+      {
+        "node_id": "Simulador!N16",
+        "expected_value": 0.243,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC16,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G17",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H15,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H17",
+        "expected_value": 227.27272727272728,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F17,[1]SIMULADOR!D17)"
+      },
+      {
+        "node_id": "Simulador!N17",
+        "expected_value": 0.253,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC17,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!G18",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$9=3,[1]BD!H16,IF('[1]Simulador Taxa AM e Ant.Tx Fixa'!"
+      },
+      {
+        "node_id": "Simulador!H18",
+        "expected_value": 208.33333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$24=2,$H$2/F18,[1]SIMULADOR!D18)"
+      },
+      {
+        "node_id": "Simulador!N18",
+        "expected_value": 0.2619,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF($D$2=1,[1]SIMULADOR!AC18,IF('[1]Simulador Taxa AM e Ant."
+      },
+      {
+        "node_id": "Simulador!P6",
+        "expected_value": 0.028,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P7",
+        "expected_value": 0.065,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P8",
+        "expected_value": 0.097,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P9",
+        "expected_value": 0.1286,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P10",
+        "expected_value": 0.16,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P11",
+        "expected_value": 0.1905,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P12",
+        "expected_value": 0.2204,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P13",
+        "expected_value": 0.2495,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P14",
+        "expected_value": 0.2784,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P15",
+        "expected_value": 0.30054,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P16",
+        "expected_value": 0.321,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P17",
+        "expected_value": 0.1528,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "Simulador!P18",
+        "expected_value": 0.1633,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$24=1,\"SELECIONE CUSTO LOJA OU PORTADOR\",IF(D$24=2,HLOO"
+      },
+      {
+        "node_id": "BD!E5",
+        "expected_value": 1025.5,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1025.5, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E6",
+        "expected_value": 1038.4105159219946,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1038.4105159219946, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E7",
+        "expected_value": 1051.4280198456347,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1051.4280198456347, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E8",
+        "expected_value": 1064.552477862145,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1064.552477862145, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E9",
+        "expected_value": 1077.7838425207303,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1077.7838425207303, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E10",
+        "expected_value": 1091.1220528500448,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1091.1220528500448, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E11",
+        "expected_value": 1104.5670343857616,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1104.5670343857616, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E12",
+        "expected_value": 1118.1186992042174,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1118.1186992042174, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E13",
+        "expected_value": 1131.7769459621063,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1131.7769459621063, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E14",
+        "expected_value": 1145.5416599421858,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1145.5416599421858, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!E15",
+        "expected_value": 1159.4127131049509,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1159.4127131049509, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!J15",
+        "expected_value": 38.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!E16",
+        "expected_value": 1173.3899641462376,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1173.3899641462376, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "BD!J16",
+        "expected_value": 38.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K6",
+        "expected_value": 1020.6,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P6",
+        "expected_value": 1024.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U6",
+        "expected_value": 1019.6,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z6",
+        "expected_value": 1019.6,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE6",
+        "expected_value": 1027.2,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K7",
+        "expected_value": 1049.1,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P7",
+        "expected_value": 1057.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U7",
+        "expected_value": 1054,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z7",
+        "expected_value": 1049.2,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE7",
+        "expected_value": 1061,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K8",
+        "expected_value": 547.75,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P8",
+        "expected_value": 541.05,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U8",
+        "expected_value": 536.85,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z8",
+        "expected_value": 533.95,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE8",
+        "expected_value": 544.2,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K9",
+        "expected_value": 369.4666666666667,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P9",
+        "expected_value": 368.6333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U9",
+        "expected_value": 361.93333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z9",
+        "expected_value": 357.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE9",
+        "expected_value": 371.3,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K10",
+        "expected_value": 280.2,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P10",
+        "expected_value": 282,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U10",
+        "expected_value": 274.375,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z10",
+        "expected_value": 270.975,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE10",
+        "expected_value": 284.475,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K11",
+        "expected_value": 226.56,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P11",
+        "expected_value": 229.71999999999997,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U11",
+        "expected_value": 221.82,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z11",
+        "expected_value": 219,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE11",
+        "expected_value": 232,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K12",
+        "expected_value": 190.85,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P12",
+        "expected_value": 194.58333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U12",
+        "expected_value": 186.66666666666666,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z12",
+        "expected_value": 184.0666666666667,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE12",
+        "expected_value": 196.76666666666665,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K13",
+        "expected_value": 165.27142857142857,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P13",
+        "expected_value": 169.35714285714286,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U13",
+        "expected_value": 161.87142857142857,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z13",
+        "expected_value": 159.34285714285716,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE13",
+        "expected_value": 171.3857142857143,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K14",
+        "expected_value": 146.0625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P14",
+        "expected_value": 150.2875,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U14",
+        "expected_value": 143.5625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z14",
+        "expected_value": 140.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE14",
+        "expected_value": 152.225,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K15",
+        "expected_value": 131.05555555555554,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P15",
+        "expected_value": 134.91111111111113,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U15",
+        "expected_value": 128.33333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z15",
+        "expected_value": 126.14444444444445,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE15",
+        "expected_value": 136.7888888888889,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K16",
+        "expected_value": 119.05,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P16",
+        "expected_value": 122.78,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U16",
+        "expected_value": 116.53,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z16",
+        "expected_value": 114.24000000000001,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE16",
+        "expected_value": 124.3,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K17",
+        "expected_value": 109.27272727272727,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P17",
+        "expected_value": 112.77272727272727,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U17",
+        "expected_value": 106.82727272727271,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z17",
+        "expected_value": 104.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE17",
+        "expected_value": 113.9090909090909,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K18",
+        "expected_value": 101.04166666666667,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P18",
+        "expected_value": 104.38333333333333,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U18",
+        "expected_value": 98.85000000000001,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z18",
+        "expected_value": 96.94166666666666,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE18",
+        "expected_value": 105.15833333333335,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K21",
+        "expected_value": 1021,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P21",
+        "expected_value": 1025,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U21",
+        "expected_value": 1020,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z21",
+        "expected_value": 1020,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE21",
+        "expected_value": 1028,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K22",
+        "expected_value": 1051.6,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P22",
+        "expected_value": 1061,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U22",
+        "expected_value": 1057.1,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z22",
+        "expected_value": 1051.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE22",
+        "expected_value": 1065,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K23",
+        "expected_value": 552.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P23",
+        "expected_value": 544.7,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U23",
+        "expected_value": 539.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z23",
+        "expected_value": 536.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE23",
+        "expected_value": 548.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K24",
+        "expected_value": 373.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P24",
+        "expected_value": 372.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U24",
+        "expected_value": 364.59999999999997,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z24",
+        "expected_value": 359.40000000000003,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE24",
+        "expected_value": 376.2,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K25",
+        "expected_value": 284.3,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P25",
+        "expected_value": 286.7,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U25",
+        "expected_value": 277,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z25",
+        "expected_value": 272.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE25",
+        "expected_value": 290,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K26",
+        "expected_value": 230.6,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P26",
+        "expected_value": 234.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U26",
+        "expected_value": 224.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z26",
+        "expected_value": 221,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE26",
+        "expected_value": 238.1,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K27",
+        "expected_value": 194.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P27",
+        "expected_value": 200.20000000000002,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U27",
+        "expected_value": 189.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z27",
+        "expected_value": 186.1,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE27",
+        "expected_value": 203.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K28",
+        "expected_value": 169.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P28",
+        "expected_value": 175.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U28",
+        "expected_value": 164.79999999999998,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z28",
+        "expected_value": 161.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE28",
+        "expected_value": 178.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K29",
+        "expected_value": 150.3,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P29",
+        "expected_value": 156.7,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U29",
+        "expected_value": 146.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z29",
+        "expected_value": 142.7,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE29",
+        "expected_value": 159.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K30",
+        "expected_value": 135.39999999999998,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P30",
+        "expected_value": 141.39999999999998,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U30",
+        "expected_value": 131.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z30",
+        "expected_value": 128.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE30",
+        "expected_value": 144.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K31",
+        "expected_value": 123.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P31",
+        "expected_value": 129.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U31",
+        "expected_value": 119.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z31",
+        "expected_value": 116.6,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE31",
+        "expected_value": 132.1,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K32",
+        "expected_value": 113.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P32",
+        "expected_value": 119.7,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U32",
+        "expected_value": 110.2,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z32",
+        "expected_value": 107.3,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE32",
+        "expected_value": 121.7,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!K33",
+        "expected_value": 105.8,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!P33",
+        "expected_value": 111.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!U33",
+        "expected_value": 102.39999999999999,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!Z33",
+        "expected_value": 99.60000000000001,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!AE33",
+        "expected_value": 112.89999999999999,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!C6",
+        "expected_value": 0.0199,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0199, obtido None"
+      },
+      {
+        "node_id": "Cálculos!D6",
+        "expected_value": 1019.9,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!C7",
+        "expected_value": 0.0289,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0289, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C8",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0355, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C9",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0355, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C10",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0355, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C11",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0355, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C12",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0355, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C13",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0389, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C14",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0389, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C15",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0389, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C16",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0389, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C17",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0389, obtido None"
+      },
+      {
+        "node_id": "Cálculos!C18",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0389, obtido None"
+      },
+      {
+        "node_id": "Cálculos!E7",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0, obtido None"
+      },
+      {
+        "node_id": "Cálculos!E8",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E9",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E10",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E11",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E12",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E13",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E14",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E15",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E16",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E17",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!E18",
+        "expected_value": 0,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!I6",
+        "expected_value": 2450.25,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I7",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I8",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I9",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I10",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I11",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I12",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I13",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I14",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I15",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I16",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I17",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!I18",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!F24",
+        "expected_value": 0.0016583333333333335,
+        "actual_value": 0.0,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.0016583333333333335, obtido 0.0"
+      },
+      {
+        "node_id": "Simulador!K6",
+        "expected_value": -0.0081,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O6",
+        "expected_value": 0.028,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.028, obtido None"
+      },
+      {
+        "node_id": "Simulador!Q6",
+        "expected_value": 0.028,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.028, obtido None"
+      },
+      {
+        "node_id": "Simulador!S6",
+        "expected_value": 2430,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K7",
+        "expected_value": -0.065,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O7",
+        "expected_value": 0.065,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q7",
+        "expected_value": 0.065,
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.065, obtido None"
+      },
+      {
+        "node_id": "Simulador!S7",
+        "expected_value": 2337.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K8",
+        "expected_value": -0.097,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O8",
+        "expected_value": 0.097,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q8",
+        "expected_value": 0.0485,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S8",
+        "expected_value": 2257.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K9",
+        "expected_value": -0.1286,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O9",
+        "expected_value": 0.1286,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q9",
+        "expected_value": 0.042866666666666664,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S9",
+        "expected_value": 2178.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K10",
+        "expected_value": -0.16,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O10",
+        "expected_value": 0.16,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q10",
+        "expected_value": 0.04,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S10",
+        "expected_value": 2100,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K11",
+        "expected_value": -0.1905,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O11",
+        "expected_value": 0.1905,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q11",
+        "expected_value": 0.0381,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S11",
+        "expected_value": 2023.75,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K12",
+        "expected_value": -0.2204,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O12",
+        "expected_value": 0.2204,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q12",
+        "expected_value": 0.03673333333333333,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S12",
+        "expected_value": 1949,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K13",
+        "expected_value": -0.2495,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O13",
+        "expected_value": 0.2495,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q13",
+        "expected_value": 0.03564285714285714,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S13",
+        "expected_value": 1876.25,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K14",
+        "expected_value": -0.2784,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O14",
+        "expected_value": 0.2784,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q14",
+        "expected_value": 0.0348,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S14",
+        "expected_value": 1804,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K15",
+        "expected_value": -0.30054,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O15",
+        "expected_value": 0.30054,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q15",
+        "expected_value": 0.03339333333333333,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S15",
+        "expected_value": 1748.65,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K16",
+        "expected_value": -0.321,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O16",
+        "expected_value": 0.321,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q16",
+        "expected_value": 0.032100000000000004,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S16",
+        "expected_value": 1697.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K17",
+        "expected_value": -0.1528,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O17",
+        "expected_value": 0.1528,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q17",
+        "expected_value": 0.013890909090909091,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S17",
+        "expected_value": 2118,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!K18",
+        "expected_value": -0.1633,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!O18",
+        "expected_value": 0.1633,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!Q18",
+        "expected_value": 0.013608333333333333,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Simulador!S18",
+        "expected_value": 2091.75,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!F5",
+        "expected_value": 1054.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F6",
+        "expected_value": 1073.9105159219946,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F7",
+        "expected_value": 1086.9280198456347,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F8",
+        "expected_value": 1100.052477862145,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F9",
+        "expected_value": 1113.2838425207303,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F10",
+        "expected_value": 1126.6220528500448,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F11",
+        "expected_value": 1143.4670343857617,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F12",
+        "expected_value": 1157.0186992042175,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F13",
+        "expected_value": 1170.6769459621064,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F14",
+        "expected_value": 1184.4416599421859,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F15",
+        "expected_value": 1198.312713104951,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "BD!F16",
+        "expected_value": 1212.2899641462377,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'float'"
+      },
+      {
+        "node_id": "Cálculos!F7",
+        "expected_value": 0.0289,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F8",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F9",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F10",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F11",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F12",
+        "expected_value": 0.0355,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F13",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F14",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F15",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F16",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F17",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!F18",
+        "expected_value": 0.0389,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for +: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R6",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R7",
+        "expected_value": 2500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R8",
+        "expected_value": 1250,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R9",
+        "expected_value": 833.3333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R10",
+        "expected_value": 625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R11",
+        "expected_value": 500,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R12",
+        "expected_value": 416.6666666666667,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R13",
+        "expected_value": 357.14285714285717,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R14",
+        "expected_value": 312.5,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R15",
+        "expected_value": 277.77777777777777,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R16",
+        "expected_value": 250,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!R17",
+        "expected_value": 227.27272727272728,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "Simulador!F25",
+        "expected_value": 0.19625333333333336,
+        "actual_value": 0.0,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.19625333333333336, obtido 0.0"
+      },
+      {
+        "node_id": "Simulador!R18",
+        "expected_value": 208.33333333333334,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G5",
+        "expected_value": 1054.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H5",
+        "expected_value": 0.054400000000000094,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G6",
+        "expected_value": 536.9552579609973,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H6",
+        "expected_value": 0.0739105159219946,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G7",
+        "expected_value": 362.3093399485449,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H7",
+        "expected_value": 0.08692801984563471,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G8",
+        "expected_value": 275.01311946553625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H8",
+        "expected_value": 0.100052477862145,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G9",
+        "expected_value": 222.65676850414607,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H9",
+        "expected_value": 0.11328384252073033,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G10",
+        "expected_value": 187.77034214167415,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H10",
+        "expected_value": 0.12662205285004483,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G11",
+        "expected_value": 163.35243348368024,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H11",
+        "expected_value": 0.14346703438576175,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G12",
+        "expected_value": 144.62733740052718,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H12",
+        "expected_value": 0.15701869920421746,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G13",
+        "expected_value": 130.07521621801183,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H13",
+        "expected_value": 0.1706769459621064,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G14",
+        "expected_value": 118.4441659942186,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H14",
+        "expected_value": 0.1844416599421859,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G15",
+        "expected_value": 108.93751937317735,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H15",
+        "expected_value": 0.19831271310495094,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "BD!G16",
+        "expected_value": 101.02416367885314,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "BD!H16",
+        "expected_value": 0.21228996414623771,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'NoneType' and 'NoneType'"
+      },
+      {
+        "node_id": "Cálculos!D7",
+        "expected_value": 1054.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E3*F7+E3,IF(D$20=\"AO MÊS\",[1]BD!F5))/B7"
+      },
+      {
+        "node_id": "Cálculos!D8",
+        "expected_value": 536.9552579609973,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F8+E$3,IF(D$20=\"AO MÊS\",[1]BD!F6))/B8"
+      },
+      {
+        "node_id": "Cálculos!D9",
+        "expected_value": 362.3093399485449,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F9+E$3,IF(D$20=\"AO MÊS\",[1]BD!F7))/B9"
+      },
+      {
+        "node_id": "Cálculos!D10",
+        "expected_value": 275.01311946553625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F10+E$3,IF(D$20=\"AO MÊS\",[1]BD!F8))/B"
+      },
+      {
+        "node_id": "Cálculos!D11",
+        "expected_value": 222.65676850414607,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F11+E$3,IF(D$20=\"AO MÊS\",[1]BD!F9))/B"
+      },
+      {
+        "node_id": "Cálculos!D12",
+        "expected_value": 187.77034214167415,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F12+E$3,IF(D$20=\"AO MÊS\",[1]BD!F10))/"
+      },
+      {
+        "node_id": "Cálculos!D13",
+        "expected_value": 163.35243348368024,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F13+E$3,IF(D$20=\"AO MÊS\",[1]BD!F11))/"
+      },
+      {
+        "node_id": "Cálculos!D14",
+        "expected_value": 144.62733740052718,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F14+E$3,IF(D$20=\"AO MÊS\",[1]BD!F12))/"
+      },
+      {
+        "node_id": "Cálculos!D15",
+        "expected_value": 130.07521621801183,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F15+E$3,IF(D$20=\"AO MÊS\",[1]BD!F13))/"
+      },
+      {
+        "node_id": "Cálculos!D16",
+        "expected_value": 118.4441659942186,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F16+E$3,IF(D$20=\"AO MÊS\",[1]BD!F14))/"
+      },
+      {
+        "node_id": "Cálculos!D17",
+        "expected_value": 108.93751937317735,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F17+E$3,IF(D$20=\"AO MÊS\",[1]BD!F15))/"
+      },
+      {
+        "node_id": "Cálculos!D18",
+        "expected_value": 101.02416367885314,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "Referência externa não suportada: =IF(D$20=\"SIMPLES\",E$3*F18+E$3,IF(D$20=\"AO MÊS\",[1]BD!F16))/"
+      },
+      {
+        "node_id": "Cálculos!A8",
+        "expected_value": 1073.9105159219946,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A9",
+        "expected_value": 1086.9280198456347,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A10",
+        "expected_value": 1100.052477862145,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A11",
+        "expected_value": 1113.2838425207303,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A12",
+        "expected_value": 1126.6220528500448,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A13",
+        "expected_value": 1143.4670343857617,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A14",
+        "expected_value": 1157.0186992042175,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A15",
+        "expected_value": 1170.6769459621064,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A16",
+        "expected_value": 1184.4416599421859,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A17",
+        "expected_value": 1198.312713104951,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "Cálculos!A18",
+        "expected_value": 1212.2899641462377,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for *: 'NoneType' and 'int'"
+      }
+    ],
+    "repair_attempts": 0
+  },
+  "certification_status": "PARTIAL",
+  "certified_at": "2026-05-14T16:40:57.105611",
+  "certified_by": "EXRS Phase A4"
+}

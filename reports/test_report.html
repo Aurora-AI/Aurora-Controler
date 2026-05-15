@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EXRS — Relatório de Paridade (Pasta1.xlsx)</title>
+  <style>
+:root {
+  --green:  #16a34a; --green-bg:  #f0fdf4; --green-bd:  #bbf7d0;
+  --red:    #dc2626; --red-bg:    #fef2f2; --red-bd:    #fecaca;
+  --yellow: #d97706; --yellow-bg: #fffbeb; --yellow-bd: #fde68a;
+  --blue:   #2563eb; --blue-bg:   #eff6ff; --blue-bd:   #bfdbfe;
+  --gray:   #6b7280; --gray-bg:   #f9fafb; --gray-bd:   #e5e7eb;
+  --purple: #7c3aed; --purple-bg: #f5f3ff; --purple-bd: #ddd6fe;
+  --text:   #111827; --muted:     #6b7280;
+  --radius: 8px; --shadow: 0 1px 3px rgba(0,0,0,.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+       background: #f3f4f6; color: var(--text); font-size: 14px; line-height: 1.5; }
+.page { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+
+/* Header */
+.header { background: #1e293b; color: #f8fafc; padding: 28px 32px;
+          border-radius: var(--radius); margin-bottom: 24px; }
+.header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
+.header .sub { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+
+/* KPI cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px; margin-bottom: 24px; }
+.kpi { background: white; border-radius: var(--radius); padding: 16px 20px;
+       box-shadow: var(--shadow); border-left: 4px solid var(--gray-bd); }
+.kpi.green  { border-left-color: var(--green); }
+.kpi.red    { border-left-color: var(--red); }
+.kpi.yellow { border-left-color: var(--yellow); }
+.kpi.blue   { border-left-color: var(--blue); }
+.kpi.purple { border-left-color: var(--purple); }
+.kpi-value  { font-size: 28px; font-weight: 700; line-height: 1; }
+.kpi-label  { font-size: 12px; color: var(--muted); margin-top: 4px; text-transform: uppercase;
+              letter-spacing: .5px; }
+
+/* Section */
+.section { background: white; border-radius: var(--radius); box-shadow: var(--shadow);
+           margin-bottom: 20px; overflow: hidden; }
+.section-header { padding: 14px 20px; border-bottom: 1px solid var(--gray-bd);
+                  font-weight: 600; font-size: 14px; display: flex;
+                  justify-content: space-between; align-items: center; }
+.section-body { padding: 0; }
+
+/* Progress bar */
+.pbar-wrap { background: var(--gray-bd); border-radius: 99px; height: 8px;
+             margin: 12px 20px 16px; overflow: hidden; }
+.pbar-fill  { height: 100%; border-radius: 99px;
+              background: linear-gradient(90deg, var(--green), #22c55e); transition: width .4s; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: var(--gray-bg); padding: 10px 14px; text-align: left;
+           font-weight: 600; font-size: 12px; text-transform: uppercase;
+           letter-spacing: .4px; color: var(--muted); border-bottom: 1px solid var(--gray-bd); }
+tbody tr:hover { background: #fafafa; }
+tbody td { padding: 9px 14px; border-bottom: 1px solid #f3f4f6;
+           vertical-align: middle; word-break: break-word; }
+tbody tr:last-child td { border-bottom: none; }
+
+/* Pattern row accent */
+.pattern-row td:first-child { font-weight: 600; }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px;
+         font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.badge-green  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-bd); }
+.badge-red    { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-bd); }
+.badge-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-bd); }
+.badge-blue   { background: var(--blue-bg);   color: var(--blue);   border: 1px solid var(--blue-bd); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-bd); }
+.badge-gray   { background: var(--gray-bg);   color: var(--gray);   border: 1px solid var(--gray-bd); }
+
+/* Mono code */
+.mono { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px;
+        background: #f3f4f6; padding: 1px 5px; border-radius: 4px; }
+
+/* Pattern breakdown bars */
+.ptn-bar { height: 6px; border-radius: 99px; background: var(--green); margin-top: 4px; }
+
+/* Filter bar */
+.filter-bar { padding: 12px 20px; border-bottom: 1px solid var(--gray-bd);
+              display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn { font-size: 12px; padding: 4px 12px; border-radius: 99px; cursor: pointer;
+              border: 1px solid var(--gray-bd); background: white; color: var(--text);
+              transition: all .15s; }
+.filter-btn:hover, .filter-btn.active { background: #1e293b; color: white; border-color: #1e293b; }
+input[type=search] { font-size: 13px; padding: 6px 12px; border: 1px solid var(--gray-bd);
+                     border-radius: var(--radius); width: 240px; outline: none; }
+input[type=search]:focus { border-color: var(--blue); }
+
+/* Footer */
+.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 16px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <h1>📊 EXRS — Relatório de Paridade (Pasta1.xlsx)</h1>
+    <div class="sub">Gerado em 15/05/2026 00:38 · Paridade: 86.1% (155/180 nós)<br><span style='font-size:12px;color:#94a3b8'>Arquivo: Pasta1.xlsx</span></div>
+  </div>
+  
+<div class="kpi-grid">
+  <div class="kpi green">
+    <div class="kpi-value">86.1%</div>
+    <div class="kpi-label">Paridade Geral</div>
+  </div>
+  <div class="kpi green">
+    <div class="kpi-value">155</div>
+    <div class="kpi-label">Aprovados</div>
+  </div>
+  <div class="kpi red">
+    <div class="kpi-value">12</div>
+    <div class="kpi-label">Divergências</div>
+  </div>
+  <div class="kpi red">
+    <div class="kpi-value">3</div>
+    <div class="kpi-label">Erros</div>
+  </div>
+  <div class="kpi yellow">
+    <div class="kpi-value">10</div>
+    <div class="kpi-label">Pulados</div>
+  </div>
+  <div class="kpi blue">
+    <div class="kpi-value">180</div>
+    <div class="kpi-label">Total de Nós</div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-header">
+    <span>📊 Paridade Geral</span>
+    <span style="color:var(--green);font-weight:700">86.1% (155/180)</span>
+  </div>
+  <div class="pbar-wrap">
+    <div class="pbar-fill" style="width:86.1%"></div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-header">🗂 Breakdown por Padrão de Fórmula</div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Padrão</th><th>Total</th><th>Passou</th>
+          <th>Falhou</th><th>Erro</th><th>Pulado</th><th>Paridade</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-header">
+    <span>⤴ Referências Externas (5 células)</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Nó</th><th>Status</th><th>Motivo</th></tr></thead>
+      <tbody><tr><td><span class="mono">Planilha9!G25</span></td><td><span class="badge badge-purple">⤴ EXT REF</span></td><td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td></tr><tr><td><span class="mono">Planilha9!H26</span></td><td><span class="badge badge-purple">⤴ EXT REF</span></td><td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td></tr><tr><td><span class="mono">Planilha9!A27</span></td><td><span class="badge badge-purple">⤴ EXT REF</span></td><td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td></tr><tr><td><span class="mono">Planilha9!B28</span></td><td><span class="badge badge-purple">⤴ EXT REF</span></td><td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td></tr><tr><td><span class="mono">Planilha9!C29</span></td><td><span class="badge badge-purple">⤴ EXT REF</span></td><td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-header">
+    <span>🔍 Resultados Detalhados</span>
+    <input type="search" placeholder="Buscar célula, fórmula..."
+           oninput="searchTable(this, 'results-tbody')" />
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-tbody="results-tbody" data-filter="ALL" onclick="filterTable('results-tbody','ALL')">Todos (180)</button>
+<button class="filter-btn" data-tbody="results-tbody" data-filter="FAILED" onclick="filterTable('results-tbody','FAILED')">Falhou (12)</button>
+<button class="filter-btn" data-tbody="results-tbody" data-filter="ERROR" onclick="filterTable('results-tbody','ERROR')">Erro (3)</button>
+<button class="filter-btn" data-tbody="results-tbody" data-filter="PASSED" onclick="filterTable('results-tbody','PASSED')">Passou (155)</button>
+<button class="filter-btn" data-tbody="results-tbody" data-filter="SKIPPED_NO_CACHE" onclick="filterTable('results-tbody','SKIPPED_NO_CACHE')">S/Cache (4)</button>
+<button class="filter-btn" data-tbody="results-tbody" data-filter="SKIPPED_EXTERNAL_REF" onclick="filterTable('results-tbody','SKIPPED_EXTERNAL_REF')">Ext Ref (5)</button>
+<button class="filter-btn" data-tbody="results-tbody" data-filter="CYCLIC_SKIP" onclick="filterTable('results-tbody','CYCLIC_SKIP')">Cíclico (1)</button>
+  </div>
+  <div class="section-body" style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Nó</th><th>Padrão</th><th>Status</th>
+          <th>Fórmula</th><th>Esperado</th><th>Obtido</th><th>Mensagem</th>
+        </tr>
+      </thead>
+      <tbody id="results-tbody">
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!A1</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6429.69</span></td>
+  <td><span class="mono">347.58</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!B2</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2822.52</span></td>
+  <td><span class="mono">2309.56</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!C3</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7390.33</span></td>
+  <td><span class="mono">6798.65</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!D4</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8931.69</span></td>
+  <td><span class="mono">960.61</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!E5</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4276.6</span></td>
+  <td><span class="mono">394.96</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!F6</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2264.3</span></td>
+  <td><span class="mono">5102.51</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!G7</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">362.68</span></td>
+  <td><span class="mono">2068.29</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!H8</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6533.21</span></td>
+  <td><span class="mono">5494.38</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!A9</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2282.14</span></td>
+  <td><span class="mono">5933.14</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!B10</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8112.55</span></td>
+  <td><span class="mono">164.33</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!C11</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8076.8</span></td>
+  <td><span class="mono">7010.88</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!D12</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3468.14</span></td>
+  <td><span class="mono">1639.09</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!E13</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9575.45</span></td>
+  <td><span class="mono">3431.95</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!F14</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1018.09</span></td>
+  <td><span class="mono">1057.4</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!G15</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8489.35</span></td>
+  <td><span class="mono">6076.28</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!H16</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8089.76</span></td>
+  <td><span class="mono">7323.61</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!A17</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5408.12</span></td>
+  <td><span class="mono">9732.87</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!B18</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3847.11</span></td>
+  <td><span class="mono">5564.65</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!C19</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8310.28</span></td>
+  <td><span class="mono">6222.73</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha1!D20</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8630.04</span></td>
+  <td><span class="mono">5815.21</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!E21</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7074.56</span></td>
+  <td><span class="mono">553.62</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!F22</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2355.97</span></td>
+  <td><span class="mono">2964.65</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!G23</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">889.86</span></td>
+  <td><span class="mono">2404.4</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!H24</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1099.81</span></td>
+  <td><span class="mono">2851.66</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!A25</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6392.64</span></td>
+  <td><span class="mono">3711.47</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!B26</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3764.42</span></td>
+  <td><span class="mono">2173.91</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!C27</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2742.81</span></td>
+  <td><span class="mono">9371.94</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!D28</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6514.9</span></td>
+  <td><span class="mono">6129.79</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!E29</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1794.1</span></td>
+  <td><span class="mono">7317.63</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!F30</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1717.52</span></td>
+  <td><span class="mono">3856.23</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!G31</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9895.29</span></td>
+  <td><span class="mono">6435.36</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!H32</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5613.25</span></td>
+  <td><span class="mono">6877.0</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!A33</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8443.39</span></td>
+  <td><span class="mono">7781.62</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!B34</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2367.35</span></td>
+  <td><span class="mono">417.76</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!C35</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3222.67</span></td>
+  <td><span class="mono">2750.37</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!D36</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2188.52</span></td>
+  <td><span class="mono">9433.86</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!E37</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8775.16</span></td>
+  <td><span class="mono">3215.0</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!F38</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6588.19</span></td>
+  <td><span class="mono">4016.36</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!G39</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9153.11</span></td>
+  <td><span class="mono">4642.17</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha2!H40</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2722.05</span></td>
+  <td><span class="mono">2541.37</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!A41</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5656.98</span></td>
+  <td><span class="mono">2700.88</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!B42</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5886.82</span></td>
+  <td><span class="mono">8987.55</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!C43</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4053.67</span></td>
+  <td><span class="mono">2271.06</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!D44</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9974.62</span></td>
+  <td><span class="mono">5143.8</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!E45</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">999.91</span></td>
+  <td><span class="mono">566.41</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!F46</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1185.42</span></td>
+  <td><span class="mono">6311.09</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!G47</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7940.79</span></td>
+  <td><span class="mono">4278.96</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!H48</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">728.86</span></td>
+  <td><span class="mono">3877.65</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!A49</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9960.61</span></td>
+  <td><span class="mono">5337.7</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!B50</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9712.7</span></td>
+  <td><span class="mono">8620.86</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!C1</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">213.65</span></td>
+  <td><span class="mono">7234.43</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!D2</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6848.25</span></td>
+  <td><span class="mono">5415.47</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!E3</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2741.3</span></td>
+  <td><span class="mono">6444.88</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!F4</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1204.25</span></td>
+  <td><span class="mono">4403.74</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!G5</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4591.41</span></td>
+  <td><span class="mono">9541.82</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!H6</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8770.07</span></td>
+  <td><span class="mono">2707.29</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!A7</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5055.3</span></td>
+  <td><span class="mono">1868.47</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!B8</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9134.1</span></td>
+  <td><span class="mono">8717.26</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!C9</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3054.3</span></td>
+  <td><span class="mono">6424.96</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha3!D10</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6128.2</span></td>
+  <td><span class="mono">1612.96</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!E11</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7648.09</span></td>
+  <td><span class="mono">5439.31</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!F12</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7807.62</span></td>
+  <td><span class="mono">5349.97</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!G13</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">105.66</span></td>
+  <td><span class="mono">3308.82</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!H14</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">292.8</span></td>
+  <td><span class="mono">9297.15</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!A15</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8798.47</span></td>
+  <td><span class="mono">8332.66</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!B16</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3144.08</span></td>
+  <td><span class="mono">673.4</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!C17</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8791.42</span></td>
+  <td><span class="mono">9473.85</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!D18</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">947.88</span></td>
+  <td><span class="mono">4910.82</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!E19</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">785.13</span></td>
+  <td><span class="mono">7629.2</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!F20</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7681.0</span></td>
+  <td><span class="mono">1370.95</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!G21</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4804.82</span></td>
+  <td><span class="mono">5542.51</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!H22</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2723.8</span></td>
+  <td><span class="mono">8736.21</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!A23</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4288.64</span></td>
+  <td><span class="mono">2196.59</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!B24</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5438.49</span></td>
+  <td><span class="mono">7325.59</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!C25</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2091.19</span></td>
+  <td><span class="mono">3185.68</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!D26</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9950.98</span></td>
+  <td><span class="mono">6533.14</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!E27</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4436.75</span></td>
+  <td><span class="mono">5223.48</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!F28</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1297.82</span></td>
+  <td><span class="mono">2324.28</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!G29</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3446.71</span></td>
+  <td><span class="mono">5923.67</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha4!H30</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2377.91</span></td>
+  <td><span class="mono">2279.93</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!A31</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">802.76</span></td>
+  <td><span class="mono">6347.29</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!B32</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2366.29</span></td>
+  <td><span class="mono">9062.75</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!C33</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8609.53</span></td>
+  <td><span class="mono">801.42</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!D34</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2456.01</span></td>
+  <td><span class="mono">6722.21</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!E35</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2220.73</span></td>
+  <td><span class="mono">1409.75</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!F36</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9360.66</span></td>
+  <td><span class="mono">5752.76</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!G37</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4778.97</span></td>
+  <td><span class="mono">7866.95</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!H38</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8093.41</span></td>
+  <td><span class="mono">1984.87</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!A39</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1059.52</span></td>
+  <td><span class="mono">4366.98</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!B40</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4293.0</span></td>
+  <td><span class="mono">4723.08</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!C41</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7317.12</span></td>
+  <td><span class="mono">6765.64</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!D42</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9842.25</span></td>
+  <td><span class="mono">1074.24</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!E43</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4085.55</span></td>
+  <td><span class="mono">3458.76</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!F44</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8629.7</span></td>
+  <td><span class="mono">2561.45</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!G45</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1982.88</span></td>
+  <td><span class="mono">4540.83</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!H46</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4276.21</span></td>
+  <td><span class="mono">2857.32</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!A47</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2572.83</span></td>
+  <td><span class="mono">9239.41</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!B48</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4486.55</span></td>
+  <td><span class="mono">8626.49</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!C49</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5547.67</span></td>
+  <td><span class="mono">600.77</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha5!D50</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9991.9</span></td>
+  <td><span class="mono">8375.84</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!E1</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9692.09</span></td>
+  <td><span class="mono">9270.11</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!F2</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8501.24</span></td>
+  <td><span class="mono">1746.31</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!G3</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4907.36</span></td>
+  <td><span class="mono">2215.88</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!H4</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4069.9</span></td>
+  <td><span class="mono">680.43</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!A5</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3851.45</span></td>
+  <td><span class="mono">9853.57</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!B6</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2725.25</span></td>
+  <td><span class="mono">7861.51</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!C7</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4604.13</span></td>
+  <td><span class="mono">4287.35</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!D8</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9576.49</span></td>
+  <td><span class="mono">9953.69</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!E9</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5601.55</span></td>
+  <td><span class="mono">7211.52</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!F10</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1632.33</span></td>
+  <td><span class="mono">3037.11</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!G11</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9689.25</span></td>
+  <td><span class="mono">5833.31</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!H12</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5467.19</span></td>
+  <td><span class="mono">7504.21</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!A13</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">665.88</span></td>
+  <td><span class="mono">5882.77</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!B14</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5077.72</span></td>
+  <td><span class="mono">8541.07</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!C15</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1658.43</span></td>
+  <td><span class="mono">9610.75</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!D16</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">893.02</span></td>
+  <td><span class="mono">1939.48</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!E17</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5990.25</span></td>
+  <td><span class="mono">6783.93</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!F18</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2428.28</span></td>
+  <td><span class="mono">1286.76</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!G19</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8912.95</span></td>
+  <td><span class="mono">2537.29</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha6!H20</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5985.15</span></td>
+  <td><span class="mono">6231.26</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!A21</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4249.91</span></td>
+  <td><span class="mono">5877.77</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!B22</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">5275.03</span></td>
+  <td><span class="mono">9352.66</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!C23</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2121.96</span></td>
+  <td><span class="mono">7189.58</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!D24</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2462.75</span></td>
+  <td><span class="mono">4017.88</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!E25</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6749.06</span></td>
+  <td><span class="mono">3069.67</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!F26</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3229.84</span></td>
+  <td><span class="mono">7542.71</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!G27</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">818.1</span></td>
+  <td><span class="mono">4636.57</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!H28</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9983.7</span></td>
+  <td><span class="mono">9960.36</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!A29</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">825.21</span></td>
+  <td><span class="mono">2210.01</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!B30</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2725.22</span></td>
+  <td><span class="mono">9338.33</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!C31</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8819.67</span></td>
+  <td><span class="mono">8803.9</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!D32</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3757.95</span></td>
+  <td><span class="mono">1661.54</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!E33</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8353.24</span></td>
+  <td><span class="mono">7064.34</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!F34</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6155.0</span></td>
+  <td><span class="mono">9872.62</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!G35</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6573.71</span></td>
+  <td><span class="mono">177.44</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!H36</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8188.51</span></td>
+  <td><span class="mono">3063.55</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!A37</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6666.88</span></td>
+  <td><span class="mono">9394.47</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!B38</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1429.35</span></td>
+  <td><span class="mono">1242.63</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!C39</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1159.55</span></td>
+  <td><span class="mono">5576.36</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha7!D40</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">2795.97</span></td>
+  <td><span class="mono">6087.21</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!E41</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7203.64</span></td>
+  <td><span class="mono">2115.41</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!F42</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6378.32</span></td>
+  <td><span class="mono">2713.18</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!G43</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4935.98</span></td>
+  <td><span class="mono">9061.93</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!H44</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8475.58</span></td>
+  <td><span class="mono">1013.66</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!A45</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4292.98</span></td>
+  <td><span class="mono">2838.86</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!B46</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">135.1</span></td>
+  <td><span class="mono">7733.31</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!C47</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">6406.79</span></td>
+  <td><span class="mono">2693.1</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!D48</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7437.44</span></td>
+  <td><span class="mono">5561.08</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!E49</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">4333.67</span></td>
+  <td><span class="mono">195.72</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!F50</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">844.84</span></td>
+  <td><span class="mono">8841.87</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!G1</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">9047.99</span></td>
+  <td><span class="mono">5500.8</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!H2</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">8361.66</span></td>
+  <td><span class="mono">5866.26</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!A3</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">1565.98</span></td>
+  <td><span class="mono">1361.58</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!B4</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">3151.45</span></td>
+  <td><span class="mono">8999.02</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="PASSED" style="">
+  <td><span class="mono">Planilha8!C5</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-green">✓ PASSOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">7980.81</span></td>
+  <td><span class="mono">8620.09</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha8!D6</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">908.13</span></td>
+  <td><span class="mono">338.86</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha8!E7</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">324.33</span></td>
+  <td><span class="mono">242.41</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha8!F8</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">801.32</span></td>
+  <td><span class="mono">944.84</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha8!G9</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">465.33</span></td>
+  <td><span class="mono">707.97</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha8!H10</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">238.94</span></td>
+  <td><span class="mono">985.96</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!A11</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">877.28</span></td>
+  <td><span class="mono">1027.6100000000001</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!B12</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">828.88</span></td>
+  <td><span class="mono">942.39</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!C13</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">122.28</span></td>
+  <td><span class="mono">812.17</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!D14</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">398.63</span></td>
+  <td><span class="mono">986.8</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!E15</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">821.21</span></td>
+  <td><span class="mono">926.79</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!F16</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">828.86</span></td>
+  <td><span class="mono">389.86</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="FAILED" style="background:#fef2f2">
+  <td><span class="mono">Planilha9!G17</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">✗ FALHOU</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">807.85</span></td>
+  <td><span class="mono">247.18</span></td>
+  <td style="color:var(--muted);font-size:12px">Divergência: esperado 1234.5, obtido 1289.0</td>
+</tr>
+<tr data-status="ERROR" style="background:#fff7ed">
+  <td><span class="mono">Planilha9!H18</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">⚠ ERRO</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">884.08</span></td>
+  <td><span class="mono">871.88</span></td>
+  <td style="color:var(--muted);font-size:12px">RuntimeError: div/0</td>
+</tr>
+<tr data-status="ERROR" style="background:#fff7ed">
+  <td><span class="mono">Planilha9!A19</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">⚠ ERRO</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">299.97</span></td>
+  <td><span class="mono">834.11</span></td>
+  <td style="color:var(--muted);font-size:12px">RuntimeError: div/0</td>
+</tr>
+<tr data-status="ERROR" style="background:#fff7ed">
+  <td><span class="mono">Planilha9!B20</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-red">⚠ ERRO</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">513.81</span></td>
+  <td><span class="mono">374.37</span></td>
+  <td style="color:var(--muted);font-size:12px">RuntimeError: div/0</td>
+</tr>
+<tr data-status="SKIPPED_NO_CACHE" style="">
+  <td><span class="mono">Planilha9!C21</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-gray">— S/CACHE</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">815.02</span></td>
+  <td><span class="mono">304.61</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="SKIPPED_NO_CACHE" style="">
+  <td><span class="mono">Planilha9!D22</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-gray">— S/CACHE</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">121.27</span></td>
+  <td><span class="mono">273.62</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="SKIPPED_NO_CACHE" style="">
+  <td><span class="mono">Planilha9!E23</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-gray">— S/CACHE</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">395.11</span></td>
+  <td><span class="mono">877.05</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="SKIPPED_NO_CACHE" style="">
+  <td><span class="mono">Planilha9!F24</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-gray">— S/CACHE</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">969.23</span></td>
+  <td><span class="mono">350.93</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr>
+<tr data-status="SKIPPED_EXTERNAL_REF" style="">
+  <td><span class="mono">Planilha9!G25</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-purple">⤴ EXT REF</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">676.69</span></td>
+  <td><span class="mono">#EXT!</span></td>
+  <td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td>
+</tr>
+<tr data-status="SKIPPED_EXTERNAL_REF" style="">
+  <td><span class="mono">Planilha9!H26</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-purple">⤴ EXT REF</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">459.31</span></td>
+  <td><span class="mono">#EXT!</span></td>
+  <td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td>
+</tr>
+<tr data-status="SKIPPED_EXTERNAL_REF" style="">
+  <td><span class="mono">Planilha9!A27</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-purple">⤴ EXT REF</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">982.05</span></td>
+  <td><span class="mono">#EXT!</span></td>
+  <td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td>
+</tr>
+<tr data-status="SKIPPED_EXTERNAL_REF" style="">
+  <td><span class="mono">Planilha9!B28</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-purple">⤴ EXT REF</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">582.06</span></td>
+  <td><span class="mono">#EXT!</span></td>
+  <td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td>
+</tr>
+<tr data-status="SKIPPED_EXTERNAL_REF" style="">
+  <td><span class="mono">Planilha9!C29</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-purple">⤴ EXT REF</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">944.37</span></td>
+  <td><span class="mono">#EXT!</span></td>
+  <td style="color:var(--muted);font-size:12px">Referência externa ([Sales.xlsx]) não avaliável sem acesso ao arquivo fonte.</td>
+</tr>
+<tr data-status="CYCLIC_SKIP" style="">
+  <td><span class="mono">Planilha9!D30</span></td>
+  <td><span class="badge badge-gray" style="font-size:10px">—</span></td>
+  <td><span class="badge badge-yellow">↺ CÍCLICO</span></td>
+  <td><span class="mono" title=""></span></td>
+  <td><span class="mono">203.69</span></td>
+  <td><span class="mono">972.39</span></td>
+  <td style="color:var(--muted);font-size:12px"></td>
+</tr></tbody>
+    </table>
+  </div>
+</div>
+
+  <div class="footer">ExcelReverseEngine · Phase A4 Report Generator</div>
+</div>
+<script>
+function filterTable(tbodyId, status) {
+  const rows = document.querySelectorAll('#' + tbodyId + ' tr');
+  rows.forEach(r => {
+    if (status === 'ALL') { r.style.display = ''; return; }
+    r.style.display = r.dataset.status === status ? '' : 'none';
+  });
+  document.querySelectorAll('.filter-btn[data-tbody="' + tbodyId + '"]').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === status);
+  });
+}
+
+function searchTable(input, tbodyId) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll('#' + tbodyId + ' tr').forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// Init: activate 'ALL' filter by default
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.filter-btn[data-filter="ALL"]').forEach(b => b.click());
+});
+</script>
+</body>
+</html>

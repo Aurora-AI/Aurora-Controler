@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+.pytest_cache/
+*.xlsx
+.env
+*.egg-info/
+dist/
+build/
+output/
+scratch/

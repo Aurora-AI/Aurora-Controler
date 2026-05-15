@@ -1,0 +1,1265 @@
+{
+  "original_file": "Pasta1.xlsx",
+  "domain_module": {
+    "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Pasta1.xlsx",
+    "imports": [],
+    "functions": [],
+    "generated_at": "2026-05-14T17:52:47.009602",
+    "translation_metadata": {
+      "total_unresolved": 0,
+      "total_functions": 0
+    }
+  },
+  "validation_report": {
+    "total_nodes": 155,
+    "passed": 155,
+    "failed": 0,
+    "skipped_no_cache": 0,
+    "results": [
+      {
+        "node_id": "Planilha1!Q3",
+        "expected_value": "Vendedor 01",
+        "actual_value": "Vendedor 01",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!Q5",
+        "expected_value": "Vendedor 08",
+        "actual_value": "Vendedor 08",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!Q7",
+        "expected_value": "#VALUE!",
+        "actual_value": "#VALUE!",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O2",
+        "expected_value": 100000,
+        "actual_value": 100000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O3",
+        "expected_value": 360000,
+        "actual_value": 360000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O4",
+        "expected_value": 294000,
+        "actual_value": 294000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O5",
+        "expected_value": 544000,
+        "actual_value": 544000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O6",
+        "expected_value": 972000,
+        "actual_value": 972000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O7",
+        "expected_value": 100000,
+        "actual_value": 100000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O8",
+        "expected_value": 88000,
+        "actual_value": 88000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O9",
+        "expected_value": 768000,
+        "actual_value": 768000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O10",
+        "expected_value": 1430000,
+        "actual_value": 1430000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O11",
+        "expected_value": 924000,
+        "actual_value": 924000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O12",
+        "expected_value": 120000,
+        "actual_value": 120000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O13",
+        "expected_value": 96000,
+        "actual_value": 96000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O14",
+        "expected_value": 136000,
+        "actual_value": 136000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O15",
+        "expected_value": 1980000,
+        "actual_value": 1980000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O16",
+        "expected_value": 228000,
+        "actual_value": 228000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O17",
+        "expected_value": 20000,
+        "actual_value": 20000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O18",
+        "expected_value": 396000,
+        "actual_value": 396000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O19",
+        "expected_value": 42000,
+        "actual_value": 42000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O20",
+        "expected_value": 80000,
+        "actual_value": 80000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O21",
+        "expected_value": 54000,
+        "actual_value": 54000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O22",
+        "expected_value": 40000,
+        "actual_value": 40000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O23",
+        "expected_value": 66000,
+        "actual_value": 66000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O24",
+        "expected_value": 120000,
+        "actual_value": 120000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O25",
+        "expected_value": 156000,
+        "actual_value": 156000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O26",
+        "expected_value": 140000,
+        "actual_value": 140000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O27",
+        "expected_value": 690000,
+        "actual_value": 690000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O28",
+        "expected_value": 736000,
+        "actual_value": 736000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O29",
+        "expected_value": 170000,
+        "actual_value": 170000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O30",
+        "expected_value": 108000,
+        "actual_value": 108000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O31",
+        "expected_value": 228000,
+        "actual_value": 228000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O32",
+        "expected_value": 50000,
+        "actual_value": 50000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O33",
+        "expected_value": 60000,
+        "actual_value": 60000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O34",
+        "expected_value": 84000,
+        "actual_value": 84000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O35",
+        "expected_value": 48000,
+        "actual_value": 48000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O36",
+        "expected_value": 36000,
+        "actual_value": 36000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O37",
+        "expected_value": 40000,
+        "actual_value": 40000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O38",
+        "expected_value": 88000,
+        "actual_value": 88000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O39",
+        "expected_value": 120000,
+        "actual_value": 120000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O40",
+        "expected_value": 156000,
+        "actual_value": 156000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O41",
+        "expected_value": 196000,
+        "actual_value": 196000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O42",
+        "expected_value": 240000,
+        "actual_value": 240000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O43",
+        "expected_value": 160000,
+        "actual_value": 160000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O44",
+        "expected_value": 136000,
+        "actual_value": 136000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O45",
+        "expected_value": 108000,
+        "actual_value": 108000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O46",
+        "expected_value": 190000,
+        "actual_value": 190000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O47",
+        "expected_value": 60000,
+        "actual_value": 60000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O48",
+        "expected_value": 96000,
+        "actual_value": 96000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O49",
+        "expected_value": 126000,
+        "actual_value": 126000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O50",
+        "expected_value": 112000,
+        "actual_value": 112000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O51",
+        "expected_value": 108000,
+        "actual_value": 108000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O52",
+        "expected_value": 160000,
+        "actual_value": 160000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O53",
+        "expected_value": 110000,
+        "actual_value": 110000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O54",
+        "expected_value": 96000,
+        "actual_value": 96000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O55",
+        "expected_value": 1170000,
+        "actual_value": 1170000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O56",
+        "expected_value": 140000,
+        "actual_value": 140000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O57",
+        "expected_value": 210000,
+        "actual_value": 210000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O58",
+        "expected_value": 256000,
+        "actual_value": 256000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O59",
+        "expected_value": 272000,
+        "actual_value": 272000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O60",
+        "expected_value": 324000,
+        "actual_value": 324000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O61",
+        "expected_value": 114000,
+        "actual_value": 114000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O62",
+        "expected_value": 220000,
+        "actual_value": 220000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O63",
+        "expected_value": 12000,
+        "actual_value": 12000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O64",
+        "expected_value": 42000,
+        "actual_value": 42000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O65",
+        "expected_value": 48000,
+        "actual_value": 48000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O66",
+        "expected_value": 108000,
+        "actual_value": 108000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O67",
+        "expected_value": 140000,
+        "actual_value": 140000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O68",
+        "expected_value": 176000,
+        "actual_value": 176000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O69",
+        "expected_value": 192000,
+        "actual_value": 192000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O70",
+        "expected_value": 130000,
+        "actual_value": 130000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O71",
+        "expected_value": 112000,
+        "actual_value": 112000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O72",
+        "expected_value": 90000,
+        "actual_value": 90000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O73",
+        "expected_value": 64000,
+        "actual_value": 64000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O74",
+        "expected_value": 68000,
+        "actual_value": 68000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O75",
+        "expected_value": 108000,
+        "actual_value": 108000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!O76",
+        "expected_value": 152000,
+        "actual_value": 152000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D2",
+        "expected_value": 6,
+        "actual_value": 6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D3",
+        "expected_value": 6,
+        "actual_value": 6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D4",
+        "expected_value": 6,
+        "actual_value": 6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D5",
+        "expected_value": 6,
+        "actual_value": 6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D6",
+        "expected_value": 6,
+        "actual_value": 6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D7",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D8",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D9",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D10",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D11",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D12",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D13",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D14",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D15",
+        "expected_value": 5,
+        "actual_value": 5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!Q4",
+        "expected_value": "Vendedor 01",
+        "actual_value": "Vendedor 01",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E2",
+        "expected_value": 918000,
+        "actual_value": 918000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E3",
+        "expected_value": 1052000,
+        "actual_value": 1052000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E4",
+        "expected_value": 1322000,
+        "actual_value": 1322000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E5",
+        "expected_value": 928000,
+        "actual_value": 928000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E6",
+        "expected_value": 1604000,
+        "actual_value": 1604000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E7",
+        "expected_value": 340000,
+        "actual_value": 340000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E8",
+        "expected_value": 318000,
+        "actual_value": 318000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E9",
+        "expected_value": 1030000,
+        "actual_value": 1030000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E10",
+        "expected_value": 1906000,
+        "actual_value": 1906000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E11",
+        "expected_value": 1450000,
+        "actual_value": 1450000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E12",
+        "expected_value": 688000,
+        "actual_value": 688000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E13",
+        "expected_value": 2344000,
+        "actual_value": 2344000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E14",
+        "expected_value": 1382000,
+        "actual_value": 1382000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E15",
+        "expected_value": 2632000,
+        "actual_value": 2632000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D18",
+        "expected_value": 75,
+        "actual_value": 75,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!E18",
+        "expected_value": 17914000,
+        "actual_value": 17914000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D38",
+        "expected_value": 1980000,
+        "actual_value": 1980000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D39",
+        "expected_value": 12000,
+        "actual_value": 12000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D40",
+        "expected_value": 238853.33333333334,
+        "actual_value": 238853.33333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F2",
+        "expected_value": 153000,
+        "actual_value": 153000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F3",
+        "expected_value": 175333.33333333334,
+        "actual_value": 175333.33333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F4",
+        "expected_value": 220333.33333333334,
+        "actual_value": 220333.33333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F5",
+        "expected_value": 154666.66666666666,
+        "actual_value": 154666.66666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F6",
+        "expected_value": 267333.3333333333,
+        "actual_value": 267333.3333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F7",
+        "expected_value": 68000,
+        "actual_value": 68000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F8",
+        "expected_value": 63600,
+        "actual_value": 63600.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F9",
+        "expected_value": 206000,
+        "actual_value": 206000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F10",
+        "expected_value": 381200,
+        "actual_value": 381200.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F11",
+        "expected_value": 290000,
+        "actual_value": 290000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F12",
+        "expected_value": 137600,
+        "actual_value": 137600.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F13",
+        "expected_value": 468800,
+        "actual_value": 468800.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F14",
+        "expected_value": 276400,
+        "actual_value": 276400.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!F15",
+        "expected_value": 526400,
+        "actual_value": 526400.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!D41",
+        "expected_value": 238853.33333333334,
+        "actual_value": 238853.33333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G2",
+        "expected_value": 0.008540806073462097,
+        "actual_value": 0.008540806073462097,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H2",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G3",
+        "expected_value": 0.009787503256298612,
+        "actual_value": 0.009787503256298612,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H3",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G4",
+        "expected_value": 0.012299505042610993,
+        "actual_value": 0.012299505042610993,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H4",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G5",
+        "expected_value": 0.008633843176658851,
+        "actual_value": 0.008633843176658851,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H5",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G6",
+        "expected_value": 0.014923151352759479,
+        "actual_value": 0.014923151352759479,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H6",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G7",
+        "expected_value": 0.0037959138104275984,
+        "actual_value": 0.0037959138104275984,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H7",
+        "expected_value": "não atingiu a meta",
+        "actual_value": "não atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G8",
+        "expected_value": 0.0035502958579881655,
+        "actual_value": 0.0035502958579881655,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H8",
+        "expected_value": "não atingiu a meta",
+        "actual_value": "não atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G9",
+        "expected_value": 0.011499385955118901,
+        "actual_value": 0.011499385955118901,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H9",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G10",
+        "expected_value": 0.021279446243161772,
+        "actual_value": 0.021279446243161772,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H10",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G11",
+        "expected_value": 0.016188455956235345,
+        "actual_value": 0.016188455956235345,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H11",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G12",
+        "expected_value": 0.007681143239924082,
+        "actual_value": 0.007681143239924082,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H12",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G13",
+        "expected_value": 0.02616947638718321,
+        "actual_value": 0.02616947638718321,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H13",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G14",
+        "expected_value": 0.015429273194149827,
+        "actual_value": 0.015429273194149827,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H14",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!G15",
+        "expected_value": 0.029384838673663056,
+        "actual_value": 0.029384838673663056,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Planilha1!H15",
+        "expected_value": "atingiu a meta",
+        "actual_value": "atingiu a meta",
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      }
+    ],
+    "repair_attempts": 0
+  },
+  "certification_status": "PASSED",
+  "certified_at": "2026-05-14T17:52:47.069118",
+  "certified_by": "EXRS Phase A4"
+}

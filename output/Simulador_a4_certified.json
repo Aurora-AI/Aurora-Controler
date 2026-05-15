@@ -1,0 +1,3913 @@
+{
+  "original_file": "Simulador.xlsx",
+  "domain_module": {
+    "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Simulador.xlsx",
+    "imports": [],
+    "functions": [],
+    "generated_at": "2026-05-14T16:46:12.726127",
+    "translation_metadata": {
+      "total_unresolved": 24,
+      "total_functions": 0
+    }
+  },
+  "validation_report": {
+    "total_nodes": 486,
+    "passed": 350,
+    "failed": 136,
+    "skipped_no_cache": 0,
+    "results": [
+      {
+        "node_id": "Plan1!E5",
+        "expected_value": 980.5,
+        "actual_value": 980.5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J5",
+        "expected_value": 0.02,
+        "actual_value": 0.02,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N5",
+        "expected_value": 0.020000000000000018,
+        "actual_value": 0.020000000000000018,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P5",
+        "expected_value": 1020,
+        "actual_value": 1020.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E6",
+        "expected_value": 950.8,
+        "actual_value": 950.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J6",
+        "expected_value": 0.0492,
+        "actual_value": 0.0492,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N6",
+        "expected_value": 0.051799999999999846,
+        "actual_value": 0.051799999999999846,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P6",
+        "expected_value": 1051.8,
+        "actual_value": 1051.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E7",
+        "expected_value": 931.9,
+        "actual_value": 931.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J7",
+        "expected_value": 0.068,
+        "actual_value": 0.068,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N7",
+        "expected_value": 0.03639999999999999,
+        "actual_value": 0.03639999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P7",
+        "expected_value": 1072.8,
+        "actual_value": 1072.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E8",
+        "expected_value": 927.6,
+        "actual_value": 927.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J8",
+        "expected_value": 0.0726,
+        "actual_value": 0.0726,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N8",
+        "expected_value": 0.026066666666666682,
+        "actual_value": 0.026066666666666682,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P8",
+        "expected_value": 1078.2,
+        "actual_value": 1078.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E9",
+        "expected_value": 916.2,
+        "actual_value": 916.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J9",
+        "expected_value": 0.084,
+        "actual_value": 0.084,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N9",
+        "expected_value": 0.022899999999999976,
+        "actual_value": 0.022899999999999976,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P9",
+        "expected_value": 1091.6,
+        "actual_value": 1091.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E10",
+        "expected_value": 905.3,
+        "actual_value": 905.3,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J10",
+        "expected_value": 0.095,
+        "actual_value": 0.095,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N10",
+        "expected_value": 0.020999999999999998,
+        "actual_value": 0.020999999999999998,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P10",
+        "expected_value": 1105,
+        "actual_value": 1105.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E11",
+        "expected_value": 895.8,
+        "actual_value": 895.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J11",
+        "expected_value": 0.10439999999999999,
+        "actual_value": 0.10439999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N11",
+        "expected_value": 0.019433333333333302,
+        "actual_value": 0.019433333333333302,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P11",
+        "expected_value": 1116.6,
+        "actual_value": 1116.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E12",
+        "expected_value": 889.8,
+        "actual_value": 889.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J12",
+        "expected_value": 0.1106,
+        "actual_value": 0.1106,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N12",
+        "expected_value": 0.017742857142857154,
+        "actual_value": 0.017742857142857154,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P12",
+        "expected_value": 1124.2,
+        "actual_value": 1124.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E13",
+        "expected_value": 885,
+        "actual_value": 885.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J13",
+        "expected_value": 0.1152,
+        "actual_value": 0.1152,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N13",
+        "expected_value": 0.01630000000000001,
+        "actual_value": 0.01630000000000001,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P13",
+        "expected_value": 1130.4,
+        "actual_value": 1130.4,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E14",
+        "expected_value": 882.4,
+        "actual_value": 882.4,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J14",
+        "expected_value": 0.1179,
+        "actual_value": 0.1179,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N14",
+        "expected_value": 0.014888888888888877,
+        "actual_value": 0.014888888888888877,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P14",
+        "expected_value": 1134,
+        "actual_value": 1134.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E15",
+        "expected_value": 882.5,
+        "actual_value": 882.5,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J15",
+        "expected_value": 0.118,
+        "actual_value": 0.118,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N15",
+        "expected_value": 0.01339999999999999,
+        "actual_value": 0.01339999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P15",
+        "expected_value": 1134,
+        "actual_value": 1134.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E16",
+        "expected_value": 880.7,
+        "actual_value": 880.7,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J16",
+        "expected_value": 0.1199,
+        "actual_value": 0.1199,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N16",
+        "expected_value": 0.01239090909090908,
+        "actual_value": 0.01239090909090908,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P16",
+        "expected_value": 1136.3,
+        "actual_value": 1136.3,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!E17",
+        "expected_value": 880.7,
+        "actual_value": 880.7,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!J17",
+        "expected_value": 0.12,
+        "actual_value": 0.12,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!N17",
+        "expected_value": 0.011366666666666672,
+        "actual_value": 0.011366666666666672,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!P17",
+        "expected_value": 1136.4,
+        "actual_value": 1136.4,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P4",
+        "expected_value": 980.1,
+        "actual_value": 980.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S4",
+        "expected_value": 980.1,
+        "actual_value": 980.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U4",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T5",
+        "expected_value": 28.9,
+        "actual_value": 28.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U5",
+        "expected_value": 1000,
+        "actual_value": 1000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T6",
+        "expected_value": 17.75,
+        "actual_value": 17.75,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U6",
+        "expected_value": 500,
+        "actual_value": 500.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T7",
+        "expected_value": 11.833333333333334,
+        "actual_value": 11.833333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U7",
+        "expected_value": 333.3333333333333,
+        "actual_value": 333.3333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T8",
+        "expected_value": 8.875,
+        "actual_value": 8.875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U8",
+        "expected_value": 250,
+        "actual_value": 250.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T9",
+        "expected_value": 7.1,
+        "actual_value": 7.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U9",
+        "expected_value": 200,
+        "actual_value": 200.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P21",
+        "expected_value": 1019.9,
+        "actual_value": 1019.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S21",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T22",
+        "expected_value": 28.9,
+        "actual_value": 28.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T10",
+        "expected_value": 5.916666666666667,
+        "actual_value": 5.916666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U10",
+        "expected_value": 166.66666666666666,
+        "actual_value": 166.66666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T11",
+        "expected_value": 5.557142857142857,
+        "actual_value": 5.557142857142857,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U11",
+        "expected_value": 142.85714285714286,
+        "actual_value": 142.85714285714286,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T12",
+        "expected_value": 4.8625,
+        "actual_value": 4.8625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U12",
+        "expected_value": 125,
+        "actual_value": 125.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T13",
+        "expected_value": 4.322222222222222,
+        "actual_value": 4.322222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U13",
+        "expected_value": 111.11111111111111,
+        "actual_value": 111.11111111111111,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T14",
+        "expected_value": 3.8899999999999997,
+        "actual_value": 3.8899999999999997,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U14",
+        "expected_value": 100,
+        "actual_value": 100.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!C16",
+        "expected_value": 0.1811569230769231,
+        "actual_value": 0.1811569230769231,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!D16",
+        "expected_value": 0.15668461538461537,
+        "actual_value": 0.15668461538461537,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!E16",
+        "expected_value": 0.13709230769230768,
+        "actual_value": 0.13709230769230768,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!F16",
+        "expected_value": 0.11714615384615384,
+        "actual_value": 0.11714615384615384,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!G16",
+        "expected_value": 0.10197692307692309,
+        "actual_value": 0.10197692307692309,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!H16",
+        "expected_value": 0.09159999999999999,
+        "actual_value": 0.09159999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T15",
+        "expected_value": 3.536363636363636,
+        "actual_value": 3.536363636363636,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U15",
+        "expected_value": 90.9090909090909,
+        "actual_value": 90.9090909090909,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T16",
+        "expected_value": 3.2416666666666667,
+        "actual_value": 3.2416666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U16",
+        "expected_value": 83.33333333333333,
+        "actual_value": 83.33333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T23",
+        "expected_value": 17.75,
+        "actual_value": 17.75,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T24",
+        "expected_value": 11.833333333333334,
+        "actual_value": 11.833333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T25",
+        "expected_value": 8.875,
+        "actual_value": 8.875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T26",
+        "expected_value": 7.1,
+        "actual_value": 7.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T27",
+        "expected_value": 5.916666666666667,
+        "actual_value": 5.916666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T28",
+        "expected_value": 5.557142857142857,
+        "actual_value": 5.557142857142857,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T29",
+        "expected_value": 4.8625,
+        "actual_value": 4.8625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T30",
+        "expected_value": 4.322222222222222,
+        "actual_value": 4.322222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!C32",
+        "expected_value": 0.2101846153846154,
+        "actual_value": 0.2101846153846154,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!D32",
+        "expected_value": 0.19384615384615383,
+        "actual_value": 0.19384615384615383,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!E32",
+        "expected_value": 0.16334615384615384,
+        "actual_value": 0.16334615384615384,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!F32",
+        "expected_value": 0.13599230769230766,
+        "actual_value": 0.13599230769230766,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!G32",
+        "expected_value": 0.11585384615384615,
+        "actual_value": 0.11585384615384615,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!H32",
+        "expected_value": 0.10240769230769232,
+        "actual_value": 0.10240769230769232,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T31",
+        "expected_value": 3.8899999999999997,
+        "actual_value": 3.8899999999999997,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T32",
+        "expected_value": 3.536363636363636,
+        "actual_value": 3.536363636363636,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!T33",
+        "expected_value": 3.2416666666666667,
+        "actual_value": 3.2416666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!D16",
+        "expected_value": 0.102,
+        "actual_value": 0.102,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!E16",
+        "expected_value": 0.09604285714285714,
+        "actual_value": 0.09604285714285714,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!F16",
+        "expected_value": 0.07995714285714285,
+        "actual_value": 0.07995714285714285,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!G16",
+        "expected_value": 0.07035714285714285,
+        "actual_value": 0.07035714285714285,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!H16",
+        "expected_value": 0.07027142857142857,
+        "actual_value": 0.07027142857142857,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P4",
+        "expected_value": 980.1,
+        "actual_value": 980.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S4",
+        "expected_value": 980.1,
+        "actual_value": 980.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U4",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T5",
+        "expected_value": 28.9,
+        "actual_value": 28.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U5",
+        "expected_value": 1000,
+        "actual_value": 1000.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T6",
+        "expected_value": 17.75,
+        "actual_value": 17.75,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U6",
+        "expected_value": 500,
+        "actual_value": 500.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T7",
+        "expected_value": 11.833333333333334,
+        "actual_value": 11.833333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U7",
+        "expected_value": 333.3333333333333,
+        "actual_value": 333.3333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T8",
+        "expected_value": 8.875,
+        "actual_value": 8.875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U8",
+        "expected_value": 250,
+        "actual_value": 250.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T9",
+        "expected_value": 7.1,
+        "actual_value": 7.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U9",
+        "expected_value": 200,
+        "actual_value": 200.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P21",
+        "expected_value": 1019.9,
+        "actual_value": 1019.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S21",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S22",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T22",
+        "expected_value": 28.9,
+        "actual_value": 28.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S23",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S24",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S25",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S26",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S27",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S28",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S29",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S30",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S31",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S32",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S33",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T10",
+        "expected_value": 5.916666666666667,
+        "actual_value": 5.916666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U10",
+        "expected_value": 166.66666666666666,
+        "actual_value": 166.66666666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T11",
+        "expected_value": 5.557142857142857,
+        "actual_value": 5.557142857142857,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U11",
+        "expected_value": 142.85714285714286,
+        "actual_value": 142.85714285714286,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T12",
+        "expected_value": 4.8625,
+        "actual_value": 4.8625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U12",
+        "expected_value": 125,
+        "actual_value": 125.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T13",
+        "expected_value": 4.322222222222222,
+        "actual_value": 4.322222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U13",
+        "expected_value": 111.11111111111111,
+        "actual_value": 111.11111111111111,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T14",
+        "expected_value": 3.8899999999999997,
+        "actual_value": 3.8899999999999997,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U14",
+        "expected_value": 100,
+        "actual_value": 100.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!C16",
+        "expected_value": 0.1811569230769231,
+        "actual_value": 0.1811569230769231,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T15",
+        "expected_value": 3.536363636363636,
+        "actual_value": 3.536363636363636,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U15",
+        "expected_value": 90.9090909090909,
+        "actual_value": 90.9090909090909,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T16",
+        "expected_value": 3.2416666666666667,
+        "actual_value": 3.2416666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U16",
+        "expected_value": 83.33333333333333,
+        "actual_value": 83.33333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T23",
+        "expected_value": 17.75,
+        "actual_value": 17.75,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T24",
+        "expected_value": 11.833333333333334,
+        "actual_value": 11.833333333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!D32",
+        "expected_value": 0.11661428571428571,
+        "actual_value": 0.11661428571428571,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!E32",
+        "expected_value": 0.10845714285714285,
+        "actual_value": 0.10845714285714285,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!F32",
+        "expected_value": 0.08819999999999999,
+        "actual_value": 0.08819999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!G32",
+        "expected_value": 0.07657142857142858,
+        "actual_value": 0.07657142857142858,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!H32",
+        "expected_value": 0.07657142857142858,
+        "actual_value": 0.07657142857142858,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T25",
+        "expected_value": 8.875,
+        "actual_value": 8.875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T26",
+        "expected_value": 7.1,
+        "actual_value": 7.1,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T27",
+        "expected_value": 5.916666666666667,
+        "actual_value": 5.916666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T28",
+        "expected_value": 5.557142857142857,
+        "actual_value": 5.557142857142857,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T29",
+        "expected_value": 4.8625,
+        "actual_value": 4.8625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T30",
+        "expected_value": 4.322222222222222,
+        "actual_value": 4.322222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!C32",
+        "expected_value": 0.2101846153846154,
+        "actual_value": 0.2101846153846154,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T31",
+        "expected_value": 3.8899999999999997,
+        "actual_value": 3.8899999999999997,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T32",
+        "expected_value": 3.536363636363636,
+        "actual_value": 3.536363636363636,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!T33",
+        "expected_value": 3.2416666666666667,
+        "actual_value": 3.2416666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S22",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S23",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S24",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S25",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S26",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S27",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S28",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S29",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S30",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S31",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S32",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S33",
+        "expected_value": 1000,
+        "actual_value": 1000,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K5",
+        "expected_value": 1020,
+        "actual_value": 1020.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K6",
+        "expected_value": 1049.2,
+        "actual_value": 1049.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K7",
+        "expected_value": 1068,
+        "actual_value": 1068.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K8",
+        "expected_value": 1072.6,
+        "actual_value": 1072.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K9",
+        "expected_value": 1084,
+        "actual_value": 1084.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K10",
+        "expected_value": 1095,
+        "actual_value": 1095.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K11",
+        "expected_value": 1104.4,
+        "actual_value": 1104.4,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K12",
+        "expected_value": 1110.6,
+        "actual_value": 1110.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K13",
+        "expected_value": 1115.2,
+        "actual_value": 1115.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K14",
+        "expected_value": 1117.9,
+        "actual_value": 1117.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K15",
+        "expected_value": 1118,
+        "actual_value": 1118.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K16",
+        "expected_value": 1119.9,
+        "actual_value": 1119.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "Plan1!K17",
+        "expected_value": 1120,
+        "actual_value": 1120.0,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V4",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P5",
+        "expected_value": 1054.4,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1054.4, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P6",
+        "expected_value": 536.9552579609973,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 536.9552579609973, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P7",
+        "expected_value": 362.3093399485449,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 362.3093399485449, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P8",
+        "expected_value": 275.01311946553625,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 275.01311946553625, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P9",
+        "expected_value": 222.65676850414604,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 222.65676850414604, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U21",
+        "expected_value": 1019.9,
+        "actual_value": 1019.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V21",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P22",
+        "expected_value": 1054.4,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1054.4, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P10",
+        "expected_value": 187.77034214167412,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 187.77034214167412, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P11",
+        "expected_value": 163.35243348368022,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 163.35243348368022, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P12",
+        "expected_value": 144.62733740052718,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 144.62733740052718, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P13",
+        "expected_value": 130.0752162180118,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 130.0752162180118, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P14",
+        "expected_value": 118.44416599421858,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 118.44416599421858, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I8",
+        "expected_value": 0.1811569230769231,
+        "actual_value": 0.1811569230769231,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I7",
+        "expected_value": 0.15668461538461537,
+        "actual_value": 0.15668461538461537,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I6",
+        "expected_value": 0.13709230769230768,
+        "actual_value": 0.13709230769230768,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I5",
+        "expected_value": 0.11714615384615384,
+        "actual_value": 0.11714615384615384,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I4",
+        "expected_value": 0.10197692307692309,
+        "actual_value": 0.10197692307692309,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I3",
+        "expected_value": 0.09159999999999999,
+        "actual_value": 0.09159999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P15",
+        "expected_value": 108.93751937317734,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 108.93751937317734, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P16",
+        "expected_value": 101.02416367885313,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 101.02416367885313, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P23",
+        "expected_value": 536.9552579609973,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 536.9552579609973, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P24",
+        "expected_value": 362.3093399485449,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 362.3093399485449, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P25",
+        "expected_value": 275.01311946553625,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 275.01311946553625, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P26",
+        "expected_value": 222.65676850414604,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 222.65676850414604, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P27",
+        "expected_value": 187.77034214167412,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 187.77034214167412, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P28",
+        "expected_value": 163.35243348368022,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 163.35243348368022, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P29",
+        "expected_value": 144.62733740052718,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 144.62733740052718, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P30",
+        "expected_value": 130.0752162180118,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 130.0752162180118, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I24",
+        "expected_value": 0.2101846153846154,
+        "actual_value": 0.2101846153846154,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I23",
+        "expected_value": 0.19384615384615383,
+        "actual_value": 0.19384615384615383,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I22",
+        "expected_value": 0.16334615384615384,
+        "actual_value": 0.16334615384615384,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I21",
+        "expected_value": 0.13599230769230766,
+        "actual_value": 0.13599230769230766,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I20",
+        "expected_value": 0.11585384615384615,
+        "actual_value": 0.11585384615384615,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!I19",
+        "expected_value": 0.10240769230769232,
+        "actual_value": 0.10240769230769232,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P31",
+        "expected_value": 118.44416599421858,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 118.44416599421858, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P32",
+        "expected_value": 108.93751937317734,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 108.93751937317734, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!P33",
+        "expected_value": 101.02416367885313,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 101.02416367885313, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I6",
+        "expected_value": 0.102,
+        "actual_value": 0.102,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I5",
+        "expected_value": 0.09604285714285714,
+        "actual_value": 0.09604285714285714,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I4",
+        "expected_value": 0.07995714285714285,
+        "actual_value": 0.07995714285714285,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I3",
+        "expected_value": 0.07035714285714285,
+        "actual_value": 0.07035714285714285,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I2",
+        "expected_value": 0.07027142857142857,
+        "actual_value": 0.07027142857142857,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q4",
+        "expected_value": 19.899999999999977,
+        "actual_value": 19.899999999999977,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V4",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P5",
+        "expected_value": 46.8,
+        "actual_value": 46.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P6",
+        "expected_value": 69.55,
+        "actual_value": 69.55,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P7",
+        "expected_value": 89.53333333333332,
+        "actual_value": 89.53333333333332,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P8",
+        "expected_value": 112.475,
+        "actual_value": 112.475,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P9",
+        "expected_value": 136.6,
+        "actual_value": 136.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U21",
+        "expected_value": 1019.9,
+        "actual_value": 1019.9,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V21",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P22",
+        "expected_value": 1046.8,
+        "actual_value": 1046.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P10",
+        "expected_value": 161.31666666666663,
+        "actual_value": 161.31666666666663,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P11",
+        "expected_value": 186.85714285714283,
+        "actual_value": 186.85714285714283,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P12",
+        "expected_value": 212.0625,
+        "actual_value": 212.0625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P13",
+        "expected_value": 237.42222222222222,
+        "actual_value": 237.42222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P14",
+        "expected_value": 262.89,
+        "actual_value": 262.89,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P15",
+        "expected_value": 288.43636363636364,
+        "actual_value": 288.43636363636364,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P16",
+        "expected_value": 314.04166666666663,
+        "actual_value": 314.04166666666663,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P23",
+        "expected_value": 1088.75,
+        "actual_value": 1088.75,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P24",
+        "expected_value": 1118.3333333333333,
+        "actual_value": 1118.3333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I18",
+        "expected_value": 0.11661428571428571,
+        "actual_value": 0.11661428571428571,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I19",
+        "expected_value": 0.10845714285714285,
+        "actual_value": 0.10845714285714285,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I20",
+        "expected_value": 0.08819999999999999,
+        "actual_value": 0.08819999999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I21",
+        "expected_value": 0.07657142857142858,
+        "actual_value": 0.07657142857142858,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!I22",
+        "expected_value": 0.07657142857142858,
+        "actual_value": 0.07657142857142858,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P25",
+        "expected_value": 1150.875,
+        "actual_value": 1150.875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P26",
+        "expected_value": 1184.6,
+        "actual_value": 1184.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P27",
+        "expected_value": 1218.9166666666667,
+        "actual_value": 1218.9166666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P28",
+        "expected_value": 1277.857142857143,
+        "actual_value": 1277.857142857143,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P29",
+        "expected_value": 1316.0625,
+        "actual_value": 1316.0625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P30",
+        "expected_value": 1354.4222222222222,
+        "actual_value": 1354.4222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P31",
+        "expected_value": 1392.89,
+        "actual_value": 1392.89,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P32",
+        "expected_value": 1431.4363636363637,
+        "actual_value": 1431.4363636363637,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!P33",
+        "expected_value": 1470.0416666666665,
+        "actual_value": 1470.0416666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W4",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q5",
+        "expected_value": 1054.4,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1054.4, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q6",
+        "expected_value": 1073.9105159219946,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1073.9105159219946, obtido ERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q7",
+        "expected_value": 1086.9280198456347,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1086.9280198456347, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q8",
+        "expected_value": 1100.052477862145,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1100.052477862145, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q9",
+        "expected_value": 1113.28384252073,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1113.28384252073, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W21",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q22",
+        "expected_value": 1054.4,
+        "actual_value": "ERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1054.4, obtido ERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q10",
+        "expected_value": 1126.6220528500448,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1126.6220528500448, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q11",
+        "expected_value": 1143.4670343857615,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1143.4670343857615, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q12",
+        "expected_value": 1157.0186992042175,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1157.0186992042175, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q13",
+        "expected_value": 1170.6769459621062,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1170.6769459621062, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q14",
+        "expected_value": 1184.4416599421859,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1184.4416599421859, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q15",
+        "expected_value": 1198.3127131049507,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1198.3127131049507, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q16",
+        "expected_value": 1212.2899641462375,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1212.2899641462375, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q23",
+        "expected_value": 1073.9105159219946,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1073.9105159219946, obtido ERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q24",
+        "expected_value": 1086.9280198456347,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1086.9280198456347, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q25",
+        "expected_value": 1100.052477862145,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1100.052477862145, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q26",
+        "expected_value": 1113.28384252073,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1113.28384252073, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q27",
+        "expected_value": 1126.6220528500448,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1126.6220528500448, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q28",
+        "expected_value": 1143.4670343857615,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1143.4670343857615, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q29",
+        "expected_value": 1157.0186992042175,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1157.0186992042175, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q30",
+        "expected_value": 1170.6769459621062,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1170.6769459621062, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q31",
+        "expected_value": 1184.4416599421859,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1184.4416599421859, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q32",
+        "expected_value": 1198.3127131049507,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1198.3127131049507, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!Q33",
+        "expected_value": 1212.2899641462375,
+        "actual_value": "ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function",
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 1212.2899641462375, obtido ERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated functionERROR: Missing translated function"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W4",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q5",
+        "expected_value": 1046.8,
+        "actual_value": 1046.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R5",
+        "expected_value": 953.2,
+        "actual_value": 953.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q6",
+        "expected_value": 1069.55,
+        "actual_value": 1069.55,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R6",
+        "expected_value": 930.45,
+        "actual_value": 930.45,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q7",
+        "expected_value": 1089.5333333333333,
+        "actual_value": 1089.5333333333333,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R7",
+        "expected_value": 910.4666666666667,
+        "actual_value": 910.4666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q8",
+        "expected_value": 1112.475,
+        "actual_value": 1112.475,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R8",
+        "expected_value": 887.525,
+        "actual_value": 887.525,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q9",
+        "expected_value": 1136.6,
+        "actual_value": 1136.6,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R9",
+        "expected_value": 863.4,
+        "actual_value": 863.4,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W21",
+        "expected_value": 0.01990000000000003,
+        "actual_value": 0.01990000000000003,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U22",
+        "expected_value": 1046.8,
+        "actual_value": 1046.8,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V22",
+        "expected_value": 0.04470768055024832,
+        "actual_value": 0.04470768055024832,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q10",
+        "expected_value": 1161.3166666666666,
+        "actual_value": 1161.3166666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R10",
+        "expected_value": 838.6833333333334,
+        "actual_value": 838.6833333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q11",
+        "expected_value": 1186.857142857143,
+        "actual_value": 1186.857142857143,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R11",
+        "expected_value": 813.1428571428571,
+        "actual_value": 813.1428571428571,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q12",
+        "expected_value": 1212.0625,
+        "actual_value": 1212.0625,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R12",
+        "expected_value": 787.9375,
+        "actual_value": 787.9375,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q13",
+        "expected_value": 1237.4222222222222,
+        "actual_value": 1237.4222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R13",
+        "expected_value": 762.5777777777778,
+        "actual_value": 762.5777777777778,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q14",
+        "expected_value": 1262.8899999999999,
+        "actual_value": 1262.8899999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R14",
+        "expected_value": 737.11,
+        "actual_value": 737.11,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q15",
+        "expected_value": 1288.4363636363637,
+        "actual_value": 1288.4363636363637,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R15",
+        "expected_value": 711.5636363636363,
+        "actual_value": 711.5636363636363,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!Q16",
+        "expected_value": 1314.0416666666665,
+        "actual_value": 1314.0416666666665,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!R16",
+        "expected_value": 685.9583333333334,
+        "actual_value": 685.9583333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U23",
+        "expected_value": 544.375,
+        "actual_value": 544.375,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V23",
+        "expected_value": 0.08151549942594716,
+        "actual_value": 0.08151549942594716,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U24",
+        "expected_value": 372.77777777777777,
+        "actual_value": 372.77777777777777,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V24",
+        "expected_value": 0.10581222056631889,
+        "actual_value": 0.10581222056631889,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U25",
+        "expected_value": 287.71875,
+        "actual_value": 287.71875,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V25",
+        "expected_value": 0.1310959052894537,
+        "actual_value": 0.1310959052894537,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U26",
+        "expected_value": 236.92,
+        "actual_value": 236.92,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V26",
+        "expected_value": 0.15583319263886541,
+        "actual_value": 0.15583319263886541,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U27",
+        "expected_value": 203.1527777777778,
+        "actual_value": 203.1527777777778,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V27",
+        "expected_value": 0.1795993710261845,
+        "actual_value": 0.1795993710261845,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U28",
+        "expected_value": 182.55102040816328,
+        "actual_value": 182.55102040816328,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V28",
+        "expected_value": 0.21743991056456125,
+        "actual_value": 0.21743991056456125,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U29",
+        "expected_value": 164.5078125,
+        "actual_value": 164.5078125,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V29",
+        "expected_value": 0.24015766728403853,
+        "actual_value": 0.24015766728403853,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U30",
+        "expected_value": 150.49135802469135,
+        "actual_value": 150.49135802469135,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V30",
+        "expected_value": 0.26167779619025744,
+        "actual_value": 0.26167779619025744,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U31",
+        "expected_value": 139.28900000000002,
+        "actual_value": 139.28900000000002,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V31",
+        "expected_value": 0.28206821787793734,
+        "actual_value": 0.28206821787793734,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U32",
+        "expected_value": 130.1305785123967,
+        "actual_value": 130.1305785123967,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V32",
+        "expected_value": 0.30140100852290774,
+        "actual_value": 0.30140100852290774,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!U33",
+        "expected_value": 122.50347222222221,
+        "actual_value": 122.50347222222221,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V33",
+        "expected_value": 0.3197471726991865,
+        "actual_value": 0.3197471726991865,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R5",
+        "expected_value": 54.40000000000009,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V5",
+        "expected_value": 0.054400000000000004,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R6",
+        "expected_value": 73.9105159219946,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V6",
+        "expected_value": 0.0739105159219946,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R7",
+        "expected_value": 86.92801984563471,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V7",
+        "expected_value": 0.08692801984563481,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R8",
+        "expected_value": 100.052477862145,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V8",
+        "expected_value": 0.100052477862145,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R9",
+        "expected_value": 113.2838425207301,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V9",
+        "expected_value": 0.1132838425207301,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U22",
+        "expected_value": 1054.4,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V22",
+        "expected_value": 0.054400000000000004,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R10",
+        "expected_value": 126.62205285004484,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V10",
+        "expected_value": 0.1266220528500448,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R11",
+        "expected_value": 143.4670343857615,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V11",
+        "expected_value": 0.14346703438576158,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R12",
+        "expected_value": 157.01869920421746,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V12",
+        "expected_value": 0.15701869920421752,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R13",
+        "expected_value": 170.67694596210617,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V13",
+        "expected_value": 0.17067694596210625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R14",
+        "expected_value": 184.44165994218588,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V14",
+        "expected_value": 0.18444165994218586,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R15",
+        "expected_value": 198.31271310495072,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V15",
+        "expected_value": 0.1983127131049507,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!R16",
+        "expected_value": 212.28996414623748,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V16",
+        "expected_value": 0.21228996414623746,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U23",
+        "expected_value": 536.9552579609973,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V23",
+        "expected_value": 0.0739105159219946,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U24",
+        "expected_value": 362.3093399485449,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V24",
+        "expected_value": 0.08692801984563481,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U25",
+        "expected_value": 275.01311946553625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V25",
+        "expected_value": 0.100052477862145,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U26",
+        "expected_value": 222.65676850414602,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V26",
+        "expected_value": 0.1132838425207301,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U27",
+        "expected_value": 187.77034214167415,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V27",
+        "expected_value": 0.1266220528500448,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U28",
+        "expected_value": 163.35243348368022,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V28",
+        "expected_value": 0.14346703438576158,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U29",
+        "expected_value": 144.62733740052718,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V29",
+        "expected_value": 0.15701869920421752,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U30",
+        "expected_value": 130.0752162180118,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V30",
+        "expected_value": 0.17067694596210625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U31",
+        "expected_value": 118.4441659942186,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V31",
+        "expected_value": 0.18444165994218586,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U32",
+        "expected_value": 108.93751937317734,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V32",
+        "expected_value": 0.1983127131049507,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!U33",
+        "expected_value": 101.02416367885313,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V33",
+        "expected_value": 0.21228996414623746,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'str' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S5",
+        "expected_value": 953.2,
+        "actual_value": 953.2,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V5",
+        "expected_value": 0.04679999999999995,
+        "actual_value": 0.04679999999999995,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S6",
+        "expected_value": 930.45,
+        "actual_value": 930.45,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V6",
+        "expected_value": 0.06955,
+        "actual_value": 0.06955,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S7",
+        "expected_value": 910.4666666666667,
+        "actual_value": 910.4666666666667,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V7",
+        "expected_value": 0.08953333333333335,
+        "actual_value": 0.08953333333333335,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S8",
+        "expected_value": 887.525,
+        "actual_value": 887.525,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V8",
+        "expected_value": 0.11247499999999999,
+        "actual_value": 0.11247499999999999,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S9",
+        "expected_value": 863.4,
+        "actual_value": 863.4,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V9",
+        "expected_value": 0.13660000000000005,
+        "actual_value": 0.13660000000000005,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W22",
+        "expected_value": 0.04470768055024832,
+        "actual_value": 0.04470768055024832,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S10",
+        "expected_value": 838.6833333333334,
+        "actual_value": 838.6833333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V10",
+        "expected_value": 0.16131666666666655,
+        "actual_value": 0.16131666666666655,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S11",
+        "expected_value": 813.1428571428571,
+        "actual_value": 813.1428571428571,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V11",
+        "expected_value": 0.18685714285714294,
+        "actual_value": 0.18685714285714294,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S12",
+        "expected_value": 787.9375,
+        "actual_value": 787.9375,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V12",
+        "expected_value": 0.21206250000000004,
+        "actual_value": 0.21206250000000004,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S13",
+        "expected_value": 762.5777777777778,
+        "actual_value": 762.5777777777778,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V13",
+        "expected_value": 0.2374222222222222,
+        "actual_value": 0.2374222222222222,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S14",
+        "expected_value": 737.11,
+        "actual_value": 737.11,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V14",
+        "expected_value": 0.26288999999999996,
+        "actual_value": 0.26288999999999996,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S15",
+        "expected_value": 711.5636363636363,
+        "actual_value": 711.5636363636363,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V15",
+        "expected_value": 0.2884363636363637,
+        "actual_value": 0.2884363636363637,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!S16",
+        "expected_value": 685.9583333333334,
+        "actual_value": 685.9583333333334,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V16",
+        "expected_value": 0.31404166666666666,
+        "actual_value": 0.31404166666666666,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W23",
+        "expected_value": 0.04075774971297358,
+        "actual_value": 0.04075774971297358,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W24",
+        "expected_value": 0.035270740188772964,
+        "actual_value": 0.035270740188772964,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W25",
+        "expected_value": 0.032773976322363424,
+        "actual_value": 0.032773976322363424,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W26",
+        "expected_value": 0.031166638527773082,
+        "actual_value": 0.031166638527773082,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W27",
+        "expected_value": 0.029933228504364084,
+        "actual_value": 0.029933228504364084,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V34",
+        "expected_value": 0.10263769564243115,
+        "actual_value": 0.10263769564243115,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W28",
+        "expected_value": 0.03106284436636589,
+        "actual_value": 0.03106284436636589,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W29",
+        "expected_value": 0.030019708410504817,
+        "actual_value": 0.030019708410504817,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W30",
+        "expected_value": 0.02907531068780638,
+        "actual_value": 0.02907531068780638,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W31",
+        "expected_value": 0.028206821787793733,
+        "actual_value": 0.028206821787793733,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W32",
+        "expected_value": 0.027400091683900705,
+        "actual_value": 0.027400091683900705,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W33",
+        "expected_value": 0.026645597724932208,
+        "actual_value": 0.026645597724932208,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S5",
+        "expected_value": 945.5999999999999,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W5",
+        "expected_value": 0.054400000000000004,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S6",
+        "expected_value": 926.0894840780054,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W6",
+        "expected_value": 0.0369552579609973,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S7",
+        "expected_value": 913.0719801543653,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W7",
+        "expected_value": 0.028976006615211602,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S8",
+        "expected_value": 899.947522137855,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W8",
+        "expected_value": 0.02501311946553625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S9",
+        "expected_value": 886.7161574792699,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W9",
+        "expected_value": 0.022656768504146017,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W22",
+        "expected_value": 0.054400000000000004,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S10",
+        "expected_value": 873.3779471499552,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W10",
+        "expected_value": 0.021103675475007466,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S11",
+        "expected_value": 856.5329656142385,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W11",
+        "expected_value": 0.02049529062653737,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S12",
+        "expected_value": 842.9813007957825,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W12",
+        "expected_value": 0.01962733740052719,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S13",
+        "expected_value": 829.3230540378938,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W13",
+        "expected_value": 0.018964105106900695,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S14",
+        "expected_value": 815.5583400578141,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W14",
+        "expected_value": 0.018444165994218588,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S15",
+        "expected_value": 801.6872868950493,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W15",
+        "expected_value": 0.018028428464086425,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!S16",
+        "expected_value": 787.7100358537625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for -: 'int' and 'NoneType'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W16",
+        "expected_value": 0.017690830345519788,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V17",
+        "expected_value": 0.12625414813430835,
+        "actual_value": 0.001530769230769233,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.12625414813430835, obtido 0.001530769230769233"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W23",
+        "expected_value": 0.0369552579609973,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W24",
+        "expected_value": 0.028976006615211602,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W25",
+        "expected_value": 0.02501311946553625,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W26",
+        "expected_value": 0.022656768504146017,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W27",
+        "expected_value": 0.021103675475007466,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W28",
+        "expected_value": 0.02049529062653737,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W29",
+        "expected_value": 0.01962733740052719,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W30",
+        "expected_value": 0.018964105106900695,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W31",
+        "expected_value": 0.018444165994218588,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W32",
+        "expected_value": 0.018028428464086425,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!W33",
+        "expected_value": 0.017690830345519788,
+        "actual_value": null,
+        "passed": false,
+        "status": "ERROR",
+        "error_message": "unsupported operand type(s) for /: 'NoneType' and 'int'"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!V34",
+        "expected_value": 0.12625414813430835,
+        "actual_value": 0.001530769230769233,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado 0.12625414813430835, obtido 0.001530769230769233"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W5",
+        "expected_value": 0.04679999999999995,
+        "actual_value": 0.04679999999999995,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W6",
+        "expected_value": 0.034775,
+        "actual_value": 0.034775,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W7",
+        "expected_value": 0.02984444444444445,
+        "actual_value": 0.02984444444444445,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W8",
+        "expected_value": 0.028118749999999998,
+        "actual_value": 0.028118749999999998,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W9",
+        "expected_value": 0.02732000000000001,
+        "actual_value": 0.02732000000000001,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W10",
+        "expected_value": 0.026886111111111093,
+        "actual_value": 0.026886111111111093,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!V17",
+        "expected_value": 0.09088214285714284,
+        "actual_value": 0.09088214285714284,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W11",
+        "expected_value": 0.02669387755102042,
+        "actual_value": 0.02669387755102042,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W12",
+        "expected_value": 0.026507812500000005,
+        "actual_value": 0.026507812500000005,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W13",
+        "expected_value": 0.026380246913580246,
+        "actual_value": 0.026380246913580246,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W14",
+        "expected_value": 0.026288999999999996,
+        "actual_value": 0.026288999999999996,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W15",
+        "expected_value": 0.026221487603305792,
+        "actual_value": 0.026221487603305792,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!W16",
+        "expected_value": 0.02617013888888889,
+        "actual_value": 0.02617013888888889,
+        "passed": true,
+        "status": "PASSED",
+        "error_message": null
+      },
+      {
+        "node_id": "SIMULADOR TAXAS A.M%!L17",
+        "expected_value": "GERENTE GERAL",
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado GERENTE GERAL, obtido None"
+      },
+      {
+        "node_id": "SIMULADOR TAXAS SIMPLAS(REDE)!L17",
+        "expected_value": "GERENTE GERAL",
+        "actual_value": null,
+        "passed": false,
+        "status": "FAILED",
+        "error_message": "Divergência: esperado GERENTE GERAL, obtido None"
+      }
+    ],
+    "repair_attempts": 0
+  },
+  "certification_status": "PARTIAL",
+  "certified_at": "2026-05-14T16:46:12.847686",
+  "certified_by": "EXRS Phase A4"
+}

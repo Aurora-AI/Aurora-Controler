@@ -1,0 +1,822 @@
+{
+  "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Planilha-Ponto-de-equilibrio.xlsx",
+  "patterns": [
+    {
+      "node_id": "PE!O5",
+      "formula_raw": "=C17",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W5",
+      "formula_raw": "=O5/O6",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "PE!O6",
+      "formula_raw": "=C9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W7",
+      "formula_raw": "=W5*Q6",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "PE!O9",
+      "formula_raw": "=C17",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W9",
+      "formula_raw": "=O9/(O10-Q10)",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.4286
+    },
+    {
+      "node_id": "PE!O10",
+      "formula_raw": "=C9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!Q10",
+      "formula_raw": "=C13",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W10",
+      "formula_raw": "=K9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W11",
+      "formula_raw": "=W9*Q10",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "PE!O13",
+      "formula_raw": "=C17",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!Q13",
+      "formula_raw": "=C14",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W13",
+      "formula_raw": "=(O13+Q13)/O14",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.4286
+    },
+    {
+      "node_id": "PE!O14",
+      "formula_raw": "=C9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!O17",
+      "formula_raw": "=C17",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!Q17",
+      "formula_raw": "=C21",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W17",
+      "formula_raw": "=(O17+Q17)/(O18-Q18)",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.2727
+    },
+    {
+      "node_id": "PE!O18",
+      "formula_raw": "=C9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!Q18",
+      "formula_raw": "=C13",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W19",
+      "formula_raw": "=W17*Q18",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "PE!O21",
+      "formula_raw": "=C17",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!Q21",
+      "formula_raw": "=C21",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!S21",
+      "formula_raw": "=C14",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "PE!W21",
+      "formula_raw": "=(O21+Q21+S21)/O22",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.3333
+    },
+    {
+      "node_id": "PE!O22",
+      "formula_raw": "=C9",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O7",
+      "formula_raw": "=C19",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W7",
+      "formula_raw": "=O7/O8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O8",
+      "formula_raw": "=C11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Z8",
+      "formula_raw": "=W7/Y8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W9",
+      "formula_raw": "=W7*Q8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O11",
+      "formula_raw": "=C19",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W11",
+      "formula_raw": "=O11/(O12-Q12)",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.4286
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O12",
+      "formula_raw": "=C11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Q12",
+      "formula_raw": "=C15",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W12",
+      "formula_raw": "=K11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Y12",
+      "formula_raw": "=$Y$8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Z12",
+      "formula_raw": "=W11/Y12",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W13",
+      "formula_raw": "=W11*Q12",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O15",
+      "formula_raw": "=C19",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Q15",
+      "formula_raw": "=C16",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W15",
+      "formula_raw": "=(O15+Q15)/O16",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.4286
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O16",
+      "formula_raw": "=C11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Y16",
+      "formula_raw": "=$Y$8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Z16",
+      "formula_raw": "=W15/Y16",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W17",
+      "formula_raw": "=C16",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O19",
+      "formula_raw": "=C19",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Q19",
+      "formula_raw": "=C23",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W19",
+      "formula_raw": "=(O19+Q19)/(O20-Q20)",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.2727
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O20",
+      "formula_raw": "=C11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Q20",
+      "formula_raw": "=C15",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Y20",
+      "formula_raw": "=$Y$8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Z20",
+      "formula_raw": "=W19/Y20",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W21",
+      "formula_raw": "=W19*Q20",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O23",
+      "formula_raw": "=C19",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Q23",
+      "formula_raw": "=C23",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!S23",
+      "formula_raw": "=C16",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W23",
+      "formula_raw": "=(O23+Q23+S23)/O24",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.3333
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!O24",
+      "formula_raw": "=C11",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Y24",
+      "formula_raw": "=$Y$8",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!Z24",
+      "formula_raw": "=W23/Y24",
+      "pattern_class": "arithmetic",
+      "matched_rule": "inline_arithmetic",
+      "confidence": 1.0,
+      "logic_density_index": 0.6667
+    },
+    {
+      "node_id": "Ponto de Equilíbrio!W25",
+      "formula_raw": "=C16",
+      "pattern_class": "arithmetic",
+      "matched_rule": "cell_reference",
+      "confidence": 1.0,
+      "logic_density_index": 1.0
+    }
+  ],
+  "registry_used": [
+    {
+      "rule_name": "sum",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "SUM",
+        "SOMA",
+        "SUBTOTAL"
+      ],
+      "description": "Soma de valores em um range"
+    },
+    {
+      "rule_name": "average",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "AVERAGE",
+        "MÉDIA",
+        "MEDIA",
+        "AVERAGEA"
+      ],
+      "description": "Média aritmética de valores"
+    },
+    {
+      "rule_name": "count",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "COUNT",
+        "CONT.NÚM",
+        "COUNTA",
+        "CONT.VALORES"
+      ],
+      "description": "Contagem de células não vazias"
+    },
+    {
+      "rule_name": "countif",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "COUNTIF",
+        "CONT.SE",
+        "COUNTIFS",
+        "CONT.SES"
+      ],
+      "description": "Contagem condicional"
+    },
+    {
+      "rule_name": "sumif",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "SUMIF",
+        "SOMASE",
+        "SUMIFS",
+        "SOMASES",
+        "AVERAGEIF",
+        "MÉDIASE",
+        "AVERAGEIFS",
+        "MÉDIASES"
+      ],
+      "description": "Soma ou média condicional"
+    },
+    {
+      "rule_name": "min_max",
+      "pattern_class": "aggregation",
+      "function_names": [
+        "MIN",
+        "MÍNIMO",
+        "MAX",
+        "MÁXIMO"
+      ],
+      "description": "Valor mínimo ou máximo em um range"
+    },
+    {
+      "rule_name": "if_simple",
+      "pattern_class": "conditional",
+      "function_names": [
+        "IF",
+        "SE"
+      ],
+      "description": "Condicional simples IF/SE"
+    },
+    {
+      "rule_name": "if_nested",
+      "pattern_class": "conditional",
+      "function_names": [
+        "IFS",
+        "SES",
+        "IFERROR",
+        "SEERRO",
+        "IFNA",
+        "SENA"
+      ],
+      "description": "Condicional aninhado ou de tratamento de erro"
+    },
+    {
+      "rule_name": "boolean_operators",
+      "pattern_class": "conditional",
+      "function_names": [
+        "AND",
+        "E",
+        "OR",
+        "OU",
+        "NOT",
+        "NÃO"
+      ],
+      "description": "Operadores booleanos"
+    },
+    {
+      "rule_name": "vlookup",
+      "pattern_class": "lookup",
+      "function_names": [
+        "VLOOKUP",
+        "PROCV"
+      ],
+      "description": "Busca vertical"
+    },
+    {
+      "rule_name": "hlookup",
+      "pattern_class": "lookup",
+      "function_names": [
+        "HLOOKUP",
+        "PROCH"
+      ],
+      "description": "Busca horizontal"
+    },
+    {
+      "rule_name": "index_match",
+      "pattern_class": "lookup",
+      "function_names": [
+        "INDEX",
+        "ÍNDICE",
+        "MATCH",
+        "CORRESP",
+        "XLOOKUP",
+        "PROCX",
+        "_XLFN.XLOOKUP",
+        "_XLFN.PROCX"
+      ],
+      "description": "Busca avançada com INDEX/MATCH ou XLOOKUP"
+    },
+    {
+      "rule_name": "date_extraction",
+      "pattern_class": "date_logic",
+      "function_names": [
+        "YEAR",
+        "ANO",
+        "MONTH",
+        "MÊS",
+        "DAY",
+        "DIA",
+        "WEEKDAY",
+        "DIA.DA.SEMANA"
+      ],
+      "description": "Extração de componentes de data"
+    },
+    {
+      "rule_name": "date_arithmetic",
+      "pattern_class": "date_logic",
+      "function_names": [
+        "DATE",
+        "DATA",
+        "EDATE",
+        "DATAM",
+        "EOMONTH",
+        "FIMMÊS",
+        "DATEDIF",
+        "DATADIF"
+      ],
+      "description": "Aritmética e construção de datas"
+    },
+    {
+      "rule_name": "now_today",
+      "pattern_class": "date_logic",
+      "function_names": [
+        "NOW",
+        "AGORA",
+        "TODAY",
+        "HOJE"
+      ],
+      "description": "Data/hora atual (volátil)"
+    },
+    {
+      "rule_name": "text_case",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "UPPER",
+        "MAIÚSCULA",
+        "LOWER",
+        "MINÚSCULA",
+        "PROPER",
+        "PRI.MAIÚSCULA"
+      ],
+      "description": "Transformação de caixa de texto"
+    },
+    {
+      "rule_name": "text_extraction",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "LEFT",
+        "ESQUERDA",
+        "RIGHT",
+        "DIREITA",
+        "MID",
+        "EXT.TEXTO",
+        "LEN",
+        "NÚM.CARACT"
+      ],
+      "description": "Extração e medição de substrings"
+    },
+    {
+      "rule_name": "text_join",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "CONCATENATE",
+        "CONCATENAR",
+        "CONCAT",
+        "TEXTJOIN",
+        "UNIRTEXTO",
+        "&"
+      ],
+      "description": "Concatenação de texto"
+    },
+    {
+      "rule_name": "text_search",
+      "pattern_class": "text_transformation",
+      "function_names": [
+        "FIND",
+        "PROCURAR",
+        "SEARCH",
+        "PESQUISAR",
+        "SUBSTITUTE",
+        "SUBSTITUIR"
+      ],
+      "description": "Busca e substituição em texto"
+    },
+    {
+      "rule_name": "rank",
+      "pattern_class": "ranking",
+      "function_names": [
+        "RANK",
+        "ORDEM",
+        "RANK.EQ",
+        "ORDEM.EQ",
+        "RANK.AVG",
+        "ORDEM.MÉD"
+      ],
+      "description": "Ordenação e ranking de valores"
+    },
+    {
+      "rule_name": "large_small",
+      "pattern_class": "ranking",
+      "function_names": [
+        "LARGE",
+        "MAIOR",
+        "SMALL",
+        "MENOR"
+      ],
+      "description": "k-ésimo maior ou menor valor"
+    },
+    {
+      "rule_name": "comparison_operators",
+      "pattern_class": "threshold_logic",
+      "function_names": [
+        "=",
+        ">",
+        "<",
+        ">=",
+        "<=",
+        "<>"
+      ],
+      "description": "Operadores de comparação em fórmulas"
+    },
+    {
+      "rule_name": "rounding",
+      "pattern_class": "threshold_logic",
+      "function_names": [
+        "ROUND",
+        "ARRED",
+        "ROUNDUP",
+        "ARREDONDAR.PARA.CIMA",
+        "ROUNDDOWN",
+        "ARREDONDAR.PARA.BAIXO",
+        "CEILING",
+        "TETO",
+        "FLOOR",
+        "PISO"
+      ],
+      "description": "Arredondamento e truncamento numérico"
+    },
+    {
+      "rule_name": "abs_sign",
+      "pattern_class": "threshold_logic",
+      "function_names": [
+        "ABS",
+        "SIGN",
+        "SINAL"
+      ],
+      "description": "Valor absoluto e sinal"
+    },
+    {
+      "rule_name": "basic_arithmetic",
+      "pattern_class": "arithmetic",
+      "function_names": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "^",
+        "%"
+      ],
+      "description": "Operações aritméticas básicas (operadores inline)"
+    },
+    {
+      "rule_name": "product_power",
+      "pattern_class": "arithmetic",
+      "function_names": [
+        "PRODUCT",
+        "MULT",
+        "POWER",
+        "POTÊNCIA",
+        "SQRT",
+        "RAIZ"
+      ],
+      "description": "Produto, potência e raiz"
+    }
+  ],
+  "unresolved_count": 0,
+  "metadata": {
+    "total_formulas": 61,
+    "registry_size": 26
+  }
+}

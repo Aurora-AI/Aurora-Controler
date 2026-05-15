@@ -1,0 +1,3837 @@
+{
+  "file_path": "C:\\Users\\rodri\\OneDrive\\Pessoal\\Desktop\\Pasta1.xlsx",
+  "sheets": [
+    {
+      "info": {
+        "name": "Planilha1",
+        "index": 0,
+        "state": "visible",
+        "dimensions": null,
+        "max_row": 76,
+        "max_column": 17
+      },
+      "cells": [
+        {
+          "coordinate": "D1",
+          "value": "Qtde de vendas",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "E1",
+          "value": "Total de vendas",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F1",
+          "value": "Ticket Médio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G1",
+          "value": "Participação ",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K1",
+          "value": "Mês",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L1",
+          "value": "Produto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M1",
+          "value": "Qtde",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "N1",
+          "value": "Vendedor",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O1",
+          "value": "Valor",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "C2",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D2",
+          "value": "=COUNTIF($N$2:$N$76,C2)",
+          "formula": "=COUNTIF($N$2:$N$76,C2)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E2",
+          "value": "=SUMIF(N:N,C2,O:O)",
+          "formula": "=SUMIF(N:N,C2,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F2",
+          "value": "=E2/D2",
+          "formula": "=E2/D2",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G2",
+          "value": "=F2/$E$18",
+          "formula": "=F2/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H2",
+          "value": "=IF(F2>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F2>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K2",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L2",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M2",
+          "value": 10,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N2",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O2",
+          "value": "=_xlfn.XLOOKUP(L2,$C$21:$C$35,$D$21:$D$35,)*M2",
+          "formula": "=_xlfn.XLOOKUP(L2,$C$21:$C$35,$D$21:$D$35,)*M2",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "Q2",
+          "value": "Testes",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "C3",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D3",
+          "value": "=COUNTIF($N$2:$N$76,C3)",
+          "formula": "=COUNTIF($N$2:$N$76,C3)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E3",
+          "value": "=SUMIF(N:N,C3,O:O)",
+          "formula": "=SUMIF(N:N,C3,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F3",
+          "value": "=E3/D3",
+          "formula": "=E3/D3",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G3",
+          "value": "=F3/$E$18",
+          "formula": "=F3/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H3",
+          "value": "=IF(F3>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F3>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K3",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L3",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M3",
+          "value": 30,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N3",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O3",
+          "value": "=_xlfn.XLOOKUP(L3,$C$21:$C$35,$D$21:$D$35,)*M3",
+          "formula": "=_xlfn.XLOOKUP(L3,$C$21:$C$35,$D$21:$D$35,)*M3",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "Q3",
+          "value": "=C2",
+          "formula": "=C2",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C4",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D4",
+          "value": "=COUNTIF($N$2:$N$76,C4)",
+          "formula": "=COUNTIF($N$2:$N$76,C4)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E4",
+          "value": "=SUMIF(N:N,C4,O:O)",
+          "formula": "=SUMIF(N:N,C4,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F4",
+          "value": "=E4/D4",
+          "formula": "=E4/D4",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G4",
+          "value": "=F4/$E$18",
+          "formula": "=F4/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H4",
+          "value": "=IF(F4>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F4>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K4",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L4",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M4",
+          "value": 21,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N4",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O4",
+          "value": "=_xlfn.XLOOKUP(L4,$C$21:$C$35,$D$21:$D$35,)*M4",
+          "formula": "=_xlfn.XLOOKUP(L4,$C$21:$C$35,$D$21:$D$35,)*M4",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "Q4",
+          "value": "=Planilha2!B2",
+          "formula": "=Planilha2!B2",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C5",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D5",
+          "value": "=COUNTIF($N$2:$N$76,C5)",
+          "formula": "=COUNTIF($N$2:$N$76,C5)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E5",
+          "value": "=SUMIF(N:N,C5,O:O)",
+          "formula": "=SUMIF(N:N,C5,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F5",
+          "value": "=E5/D5",
+          "formula": "=E5/D5",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G5",
+          "value": "=F5/$E$18",
+          "formula": "=F5/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H5",
+          "value": "=IF(F5>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F5>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K5",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L5",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M5",
+          "value": 34,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N5",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O5",
+          "value": "=_xlfn.XLOOKUP(L5,$C$21:$C$35,$D$21:$D$35,)*M5",
+          "formula": "=_xlfn.XLOOKUP(L5,$C$21:$C$35,$D$21:$D$35,)*M5",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "Q5",
+          "value": "=C9",
+          "formula": "=C9",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C6",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D6",
+          "value": "=COUNTIF($N$2:$N$76,C6)",
+          "formula": "=COUNTIF($N$2:$N$76,C6)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E6",
+          "value": "=SUMIF(N:N,C6,O:O)",
+          "formula": "=SUMIF(N:N,C6,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F6",
+          "value": "=E6/D6",
+          "formula": "=E6/D6",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G6",
+          "value": "=F6/$E$18",
+          "formula": "=F6/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H6",
+          "value": "=IF(F6>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F6>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K6",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L6",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M6",
+          "value": 54,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N6",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O6",
+          "value": "=_xlfn.XLOOKUP(L6,$C$21:$C$35,$D$21:$D$35,)*M6",
+          "formula": "=_xlfn.XLOOKUP(L6,$C$21:$C$35,$D$21:$D$35,)*M6",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C7",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D7",
+          "value": "=COUNTIF($N$2:$N$76,C7)",
+          "formula": "=COUNTIF($N$2:$N$76,C7)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E7",
+          "value": "=SUMIF(N:N,C7,O:O)",
+          "formula": "=SUMIF(N:N,C7,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F7",
+          "value": "=E7/D7",
+          "formula": "=E7/D7",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G7",
+          "value": "=F7/$E$18",
+          "formula": "=F7/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H7",
+          "value": "=IF(F7>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F7>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K7",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L7",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M7",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N7",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O7",
+          "value": "=_xlfn.XLOOKUP(L7,$C$21:$C$35,$D$21:$D$35,)*M7",
+          "formula": "=_xlfn.XLOOKUP(L7,$C$21:$C$35,$D$21:$D$35,)*M7",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "Q7",
+          "value": "=D21+N2",
+          "formula": "=D21+N2",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C8",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D8",
+          "value": "=COUNTIF($N$2:$N$76,C8)",
+          "formula": "=COUNTIF($N$2:$N$76,C8)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E8",
+          "value": "=SUMIF(N:N,C8,O:O)",
+          "formula": "=SUMIF(N:N,C8,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F8",
+          "value": "=E8/D8",
+          "formula": "=E8/D8",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G8",
+          "value": "=F8/$E$18",
+          "formula": "=F8/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H8",
+          "value": "=IF(F8>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F8>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K8",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L8",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M8",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N8",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O8",
+          "value": "=_xlfn.XLOOKUP(L8,$C$21:$C$35,$D$21:$D$35,)*M8",
+          "formula": "=_xlfn.XLOOKUP(L8,$C$21:$C$35,$D$21:$D$35,)*M8",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C9",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D9",
+          "value": "=COUNTIF($N$2:$N$76,C9)",
+          "formula": "=COUNTIF($N$2:$N$76,C9)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E9",
+          "value": "=SUMIF(N:N,C9,O:O)",
+          "formula": "=SUMIF(N:N,C9,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F9",
+          "value": "=E9/D9",
+          "formula": "=E9/D9",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G9",
+          "value": "=F9/$E$18",
+          "formula": "=F9/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H9",
+          "value": "=IF(F9>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F9>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K9",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L9",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M9",
+          "value": 32,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N9",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O9",
+          "value": "=_xlfn.XLOOKUP(L9,$C$21:$C$35,$D$21:$D$35,)*M9",
+          "formula": "=_xlfn.XLOOKUP(L9,$C$21:$C$35,$D$21:$D$35,)*M9",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C10",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D10",
+          "value": "=COUNTIF($N$2:$N$76,C10)",
+          "formula": "=COUNTIF($N$2:$N$76,C10)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E10",
+          "value": "=SUMIF(N:N,C10,O:O)",
+          "formula": "=SUMIF(N:N,C10,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F10",
+          "value": "=E10/D10",
+          "formula": "=E10/D10",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G10",
+          "value": "=F10/$E$18",
+          "formula": "=F10/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H10",
+          "value": "=IF(F10>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F10>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K10",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L10",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M10",
+          "value": 55,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N10",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O10",
+          "value": "=_xlfn.XLOOKUP(L10,$C$21:$C$35,$D$21:$D$35,)*M10",
+          "formula": "=_xlfn.XLOOKUP(L10,$C$21:$C$35,$D$21:$D$35,)*M10",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C11",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D11",
+          "value": "=COUNTIF($N$2:$N$76,C11)",
+          "formula": "=COUNTIF($N$2:$N$76,C11)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E11",
+          "value": "=SUMIF(N:N,C11,O:O)",
+          "formula": "=SUMIF(N:N,C11,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F11",
+          "value": "=E11/D11",
+          "formula": "=E11/D11",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G11",
+          "value": "=F11/$E$18",
+          "formula": "=F11/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H11",
+          "value": "=IF(F11>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F11>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K11",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L11",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M11",
+          "value": 33,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N11",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O11",
+          "value": "=_xlfn.XLOOKUP(L11,$C$21:$C$35,$D$21:$D$35,)*M11",
+          "formula": "=_xlfn.XLOOKUP(L11,$C$21:$C$35,$D$21:$D$35,)*M11",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C12",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D12",
+          "value": "=COUNTIF($N$2:$N$76,C12)",
+          "formula": "=COUNTIF($N$2:$N$76,C12)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E12",
+          "value": "=SUMIF(N:N,C12,O:O)",
+          "formula": "=SUMIF(N:N,C12,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F12",
+          "value": "=E12/D12",
+          "formula": "=E12/D12",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G12",
+          "value": "=F12/$E$18",
+          "formula": "=F12/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H12",
+          "value": "=IF(F12>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F12>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K12",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L12",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M12",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N12",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O12",
+          "value": "=_xlfn.XLOOKUP(L12,$C$21:$C$35,$D$21:$D$35,)*M12",
+          "formula": "=_xlfn.XLOOKUP(L12,$C$21:$C$35,$D$21:$D$35,)*M12",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C13",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D13",
+          "value": "=COUNTIF($N$2:$N$76,C13)",
+          "formula": "=COUNTIF($N$2:$N$76,C13)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E13",
+          "value": "=SUMIF(N:N,C13,O:O)",
+          "formula": "=SUMIF(N:N,C13,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F13",
+          "value": "=E13/D13",
+          "formula": "=E13/D13",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G13",
+          "value": "=F13/$E$18",
+          "formula": "=F13/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H13",
+          "value": "=IF(F13>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F13>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K13",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L13",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M13",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N13",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O13",
+          "value": "=_xlfn.XLOOKUP(L13,$C$21:$C$35,$D$21:$D$35,)*M13",
+          "formula": "=_xlfn.XLOOKUP(L13,$C$21:$C$35,$D$21:$D$35,)*M13",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C14",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D14",
+          "value": "=COUNTIF($N$2:$N$76,C14)",
+          "formula": "=COUNTIF($N$2:$N$76,C14)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E14",
+          "value": "=SUMIF(N:N,C14,O:O)",
+          "formula": "=SUMIF(N:N,C14,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F14",
+          "value": "=E14/D14",
+          "formula": "=E14/D14",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G14",
+          "value": "=F14/$E$18",
+          "formula": "=F14/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H14",
+          "value": "=IF(F14>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F14>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K14",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L14",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M14",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N14",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O14",
+          "value": "=_xlfn.XLOOKUP(L14,$C$21:$C$35,$D$21:$D$35,)*M14",
+          "formula": "=_xlfn.XLOOKUP(L14,$C$21:$C$35,$D$21:$D$35,)*M14",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C15",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D15",
+          "value": "=COUNTIF($N$2:$N$76,C15)",
+          "formula": "=COUNTIF($N$2:$N$76,C15)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E15",
+          "value": "=SUMIF(N:N,C15,O:O)",
+          "formula": "=SUMIF(N:N,C15,O:O)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "F15",
+          "value": "=E15/D15",
+          "formula": "=E15/D15",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "G15",
+          "value": "=F15/$E$18",
+          "formula": "=F15/$E$18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "H15",
+          "value": "=IF(F15>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "formula": "=IF(F15>=$D$37,\"atingiu a meta\",\"não atingiu a meta\")",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K15",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L15",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M15",
+          "value": 55,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N15",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O15",
+          "value": "=_xlfn.XLOOKUP(L15,$C$21:$C$35,$D$21:$D$35,)*M15",
+          "formula": "=_xlfn.XLOOKUP(L15,$C$21:$C$35,$D$21:$D$35,)*M15",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K16",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L16",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M16",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N16",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O16",
+          "value": "=_xlfn.XLOOKUP(L16,$C$21:$C$35,$D$21:$D$35,)*M16",
+          "formula": "=_xlfn.XLOOKUP(L16,$C$21:$C$35,$D$21:$D$35,)*M16",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K17",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L17",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M17",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N17",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O17",
+          "value": "=_xlfn.XLOOKUP(L17,$C$21:$C$35,$D$21:$D$35,)*M17",
+          "formula": "=_xlfn.XLOOKUP(L17,$C$21:$C$35,$D$21:$D$35,)*M17",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C18",
+          "value": "Qtde de vendas",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D18",
+          "value": "=COUNT(O2:O76)",
+          "formula": "=COUNT(O2:O76)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "E18",
+          "value": "=SUM(O2:O76)",
+          "formula": "=SUM(O2:O76)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K18",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L18",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M18",
+          "value": 33,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N18",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O18",
+          "value": "=_xlfn.XLOOKUP(L18,$C$21:$C$35,$D$21:$D$35,)*M18",
+          "formula": "=_xlfn.XLOOKUP(L18,$C$21:$C$35,$D$21:$D$35,)*M18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K19",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L19",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M19",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N19",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O19",
+          "value": "=_xlfn.XLOOKUP(L19,$C$21:$C$35,$D$21:$D$35,)*M19",
+          "formula": "=_xlfn.XLOOKUP(L19,$C$21:$C$35,$D$21:$D$35,)*M19",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K20",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L20",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M20",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N20",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O20",
+          "value": "=_xlfn.XLOOKUP(L20,$C$21:$C$35,$D$21:$D$35,)*M20",
+          "formula": "=_xlfn.XLOOKUP(L20,$C$21:$C$35,$D$21:$D$35,)*M20",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C21",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D21",
+          "value": 10000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K21",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L21",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M21",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N21",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O21",
+          "value": "=_xlfn.XLOOKUP(L21,$C$21:$C$35,$D$21:$D$35,)*M21",
+          "formula": "=_xlfn.XLOOKUP(L21,$C$21:$C$35,$D$21:$D$35,)*M21",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "B22",
+          "value": "",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "C22",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D22",
+          "value": 12000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K22",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L22",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M22",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N22",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O22",
+          "value": "=_xlfn.XLOOKUP(L22,$C$21:$C$35,$D$21:$D$35,)*M22",
+          "formula": "=_xlfn.XLOOKUP(L22,$C$21:$C$35,$D$21:$D$35,)*M22",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C23",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D23",
+          "value": 14000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K23",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L23",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M23",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N23",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O23",
+          "value": "=_xlfn.XLOOKUP(L23,$C$21:$C$35,$D$21:$D$35,)*M23",
+          "formula": "=_xlfn.XLOOKUP(L23,$C$21:$C$35,$D$21:$D$35,)*M23",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C24",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D24",
+          "value": 16000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K24",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L24",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M24",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N24",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O24",
+          "value": "=_xlfn.XLOOKUP(L24,$C$21:$C$35,$D$21:$D$35,)*M24",
+          "formula": "=_xlfn.XLOOKUP(L24,$C$21:$C$35,$D$21:$D$35,)*M24",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C25",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D25",
+          "value": 18000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K25",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L25",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M25",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N25",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O25",
+          "value": "=_xlfn.XLOOKUP(L25,$C$21:$C$35,$D$21:$D$35,)*M25",
+          "formula": "=_xlfn.XLOOKUP(L25,$C$21:$C$35,$D$21:$D$35,)*M25",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C26",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D26",
+          "value": 20000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K26",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L26",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M26",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N26",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O26",
+          "value": "=_xlfn.XLOOKUP(L26,$C$21:$C$35,$D$21:$D$35,)*M26",
+          "formula": "=_xlfn.XLOOKUP(L26,$C$21:$C$35,$D$21:$D$35,)*M26",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C27",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D27",
+          "value": 22000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K27",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L27",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M27",
+          "value": 23,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N27",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O27",
+          "value": "=_xlfn.XLOOKUP(L27,$C$21:$C$35,$D$21:$D$35,)*M27",
+          "formula": "=_xlfn.XLOOKUP(L27,$C$21:$C$35,$D$21:$D$35,)*M27",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C28",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D28",
+          "value": 24000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K28",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L28",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M28",
+          "value": 23,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N28",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O28",
+          "value": "=_xlfn.XLOOKUP(L28,$C$21:$C$35,$D$21:$D$35,)*M28",
+          "formula": "=_xlfn.XLOOKUP(L28,$C$21:$C$35,$D$21:$D$35,)*M28",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C29",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D29",
+          "value": 26000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K29",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L29",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M29",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N29",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O29",
+          "value": "=_xlfn.XLOOKUP(L29,$C$21:$C$35,$D$21:$D$35,)*M29",
+          "formula": "=_xlfn.XLOOKUP(L29,$C$21:$C$35,$D$21:$D$35,)*M29",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C30",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D30",
+          "value": 28000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K30",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L30",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M30",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N30",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O30",
+          "value": "=_xlfn.XLOOKUP(L30,$C$21:$C$35,$D$21:$D$35,)*M30",
+          "formula": "=_xlfn.XLOOKUP(L30,$C$21:$C$35,$D$21:$D$35,)*M30",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C31",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D31",
+          "value": 30000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K31",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L31",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M31",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N31",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O31",
+          "value": "=_xlfn.XLOOKUP(L31,$C$21:$C$35,$D$21:$D$35,)*M31",
+          "formula": "=_xlfn.XLOOKUP(L31,$C$21:$C$35,$D$21:$D$35,)*M31",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C32",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D32",
+          "value": 32000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K32",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L32",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M32",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N32",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O32",
+          "value": "=_xlfn.XLOOKUP(L32,$C$21:$C$35,$D$21:$D$35,)*M32",
+          "formula": "=_xlfn.XLOOKUP(L32,$C$21:$C$35,$D$21:$D$35,)*M32",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C33",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D33",
+          "value": 34000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K33",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L33",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M33",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N33",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O33",
+          "value": "=_xlfn.XLOOKUP(L33,$C$21:$C$35,$D$21:$D$35,)*M33",
+          "formula": "=_xlfn.XLOOKUP(L33,$C$21:$C$35,$D$21:$D$35,)*M33",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C34",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D34",
+          "value": 36000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K34",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L34",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M34",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N34",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O34",
+          "value": "=_xlfn.XLOOKUP(L34,$C$21:$C$35,$D$21:$D$35,)*M34",
+          "formula": "=_xlfn.XLOOKUP(L34,$C$21:$C$35,$D$21:$D$35,)*M34",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C35",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D35",
+          "value": 38000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K35",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L35",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M35",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N35",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O35",
+          "value": "=_xlfn.XLOOKUP(L35,$C$21:$C$35,$D$21:$D$35,)*M35",
+          "formula": "=_xlfn.XLOOKUP(L35,$C$21:$C$35,$D$21:$D$35,)*M35",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K36",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L36",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M36",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N36",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O36",
+          "value": "=_xlfn.XLOOKUP(L36,$C$21:$C$35,$D$21:$D$35,)*M36",
+          "formula": "=_xlfn.XLOOKUP(L36,$C$21:$C$35,$D$21:$D$35,)*M36",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C37",
+          "value": "Meta ",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D37",
+          "value": 100000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "K37",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L37",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M37",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N37",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O37",
+          "value": "=_xlfn.XLOOKUP(L37,$C$21:$C$35,$D$21:$D$35,)*M37",
+          "formula": "=_xlfn.XLOOKUP(L37,$C$21:$C$35,$D$21:$D$35,)*M37",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C38",
+          "value": "Maior venda",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D38",
+          "value": "=LARGE(O2:O76,1)",
+          "formula": "=LARGE(O2:O76,1)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K38",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L38",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M38",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N38",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O38",
+          "value": "=_xlfn.XLOOKUP(L38,$C$21:$C$35,$D$21:$D$35,)*M38",
+          "formula": "=_xlfn.XLOOKUP(L38,$C$21:$C$35,$D$21:$D$35,)*M38",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C39",
+          "value": "Menor venda",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D39",
+          "value": "=SMALL(O2:O76,1)",
+          "formula": "=SMALL(O2:O76,1)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K39",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L39",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M39",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N39",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O39",
+          "value": "=_xlfn.XLOOKUP(L39,$C$21:$C$35,$D$21:$D$35,)*M39",
+          "formula": "=_xlfn.XLOOKUP(L39,$C$21:$C$35,$D$21:$D$35,)*M39",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C40",
+          "value": "Média de vendas",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D40",
+          "value": "=AVERAGE(O2:O76)",
+          "formula": "=AVERAGE(O2:O76)",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K40",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L40",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M40",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N40",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O40",
+          "value": "=_xlfn.XLOOKUP(L40,$C$21:$C$35,$D$21:$D$35,)*M40",
+          "formula": "=_xlfn.XLOOKUP(L40,$C$21:$C$35,$D$21:$D$35,)*M40",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "C41",
+          "value": "Média de vendas1",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "D41",
+          "value": "=SUM(O2:O76)/D18",
+          "formula": "=SUM(O2:O76)/D18",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K41",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L41",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M41",
+          "value": 7,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N41",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O41",
+          "value": "=_xlfn.XLOOKUP(L41,$C$21:$C$35,$D$21:$D$35,)*M41",
+          "formula": "=_xlfn.XLOOKUP(L41,$C$21:$C$35,$D$21:$D$35,)*M41",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K42",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L42",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M42",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N42",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O42",
+          "value": "=_xlfn.XLOOKUP(L42,$C$21:$C$35,$D$21:$D$35,)*M42",
+          "formula": "=_xlfn.XLOOKUP(L42,$C$21:$C$35,$D$21:$D$35,)*M42",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K43",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L43",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M43",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N43",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O43",
+          "value": "=_xlfn.XLOOKUP(L43,$C$21:$C$35,$D$21:$D$35,)*M43",
+          "formula": "=_xlfn.XLOOKUP(L43,$C$21:$C$35,$D$21:$D$35,)*M43",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K44",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L44",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M44",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N44",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O44",
+          "value": "=_xlfn.XLOOKUP(L44,$C$21:$C$35,$D$21:$D$35,)*M44",
+          "formula": "=_xlfn.XLOOKUP(L44,$C$21:$C$35,$D$21:$D$35,)*M44",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K45",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L45",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M45",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N45",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O45",
+          "value": "=_xlfn.XLOOKUP(L45,$C$21:$C$35,$D$21:$D$35,)*M45",
+          "formula": "=_xlfn.XLOOKUP(L45,$C$21:$C$35,$D$21:$D$35,)*M45",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K46",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L46",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M46",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N46",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O46",
+          "value": "=_xlfn.XLOOKUP(L46,$C$21:$C$35,$D$21:$D$35,)*M46",
+          "formula": "=_xlfn.XLOOKUP(L46,$C$21:$C$35,$D$21:$D$35,)*M46",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K47",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L47",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M47",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N47",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O47",
+          "value": "=_xlfn.XLOOKUP(L47,$C$21:$C$35,$D$21:$D$35,)*M47",
+          "formula": "=_xlfn.XLOOKUP(L47,$C$21:$C$35,$D$21:$D$35,)*M47",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K48",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L48",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M48",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N48",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O48",
+          "value": "=_xlfn.XLOOKUP(L48,$C$21:$C$35,$D$21:$D$35,)*M48",
+          "formula": "=_xlfn.XLOOKUP(L48,$C$21:$C$35,$D$21:$D$35,)*M48",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K49",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L49",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M49",
+          "value": 9,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N49",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O49",
+          "value": "=_xlfn.XLOOKUP(L49,$C$21:$C$35,$D$21:$D$35,)*M49",
+          "formula": "=_xlfn.XLOOKUP(L49,$C$21:$C$35,$D$21:$D$35,)*M49",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K50",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L50",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M50",
+          "value": 7,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N50",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O50",
+          "value": "=_xlfn.XLOOKUP(L50,$C$21:$C$35,$D$21:$D$35,)*M50",
+          "formula": "=_xlfn.XLOOKUP(L50,$C$21:$C$35,$D$21:$D$35,)*M50",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K51",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L51",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M51",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N51",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O51",
+          "value": "=_xlfn.XLOOKUP(L51,$C$21:$C$35,$D$21:$D$35,)*M51",
+          "formula": "=_xlfn.XLOOKUP(L51,$C$21:$C$35,$D$21:$D$35,)*M51",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K52",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L52",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M52",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N52",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O52",
+          "value": "=_xlfn.XLOOKUP(L52,$C$21:$C$35,$D$21:$D$35,)*M52",
+          "formula": "=_xlfn.XLOOKUP(L52,$C$21:$C$35,$D$21:$D$35,)*M52",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K53",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L53",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M53",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N53",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O53",
+          "value": "=_xlfn.XLOOKUP(L53,$C$21:$C$35,$D$21:$D$35,)*M53",
+          "formula": "=_xlfn.XLOOKUP(L53,$C$21:$C$35,$D$21:$D$35,)*M53",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K54",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L54",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M54",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N54",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O54",
+          "value": "=_xlfn.XLOOKUP(L54,$C$21:$C$35,$D$21:$D$35,)*M54",
+          "formula": "=_xlfn.XLOOKUP(L54,$C$21:$C$35,$D$21:$D$35,)*M54",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K55",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L55",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M55",
+          "value": 45,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N55",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O55",
+          "value": "=_xlfn.XLOOKUP(L55,$C$21:$C$35,$D$21:$D$35,)*M55",
+          "formula": "=_xlfn.XLOOKUP(L55,$C$21:$C$35,$D$21:$D$35,)*M55",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K56",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L56",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M56",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N56",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O56",
+          "value": "=_xlfn.XLOOKUP(L56,$C$21:$C$35,$D$21:$D$35,)*M56",
+          "formula": "=_xlfn.XLOOKUP(L56,$C$21:$C$35,$D$21:$D$35,)*M56",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K57",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L57",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M57",
+          "value": 7,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N57",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O57",
+          "value": "=_xlfn.XLOOKUP(L57,$C$21:$C$35,$D$21:$D$35,)*M57",
+          "formula": "=_xlfn.XLOOKUP(L57,$C$21:$C$35,$D$21:$D$35,)*M57",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K58",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L58",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M58",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N58",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O58",
+          "value": "=_xlfn.XLOOKUP(L58,$C$21:$C$35,$D$21:$D$35,)*M58",
+          "formula": "=_xlfn.XLOOKUP(L58,$C$21:$C$35,$D$21:$D$35,)*M58",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K59",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L59",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M59",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N59",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O59",
+          "value": "=_xlfn.XLOOKUP(L59,$C$21:$C$35,$D$21:$D$35,)*M59",
+          "formula": "=_xlfn.XLOOKUP(L59,$C$21:$C$35,$D$21:$D$35,)*M59",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K60",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L60",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M60",
+          "value": 9,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N60",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O60",
+          "value": "=_xlfn.XLOOKUP(L60,$C$21:$C$35,$D$21:$D$35,)*M60",
+          "formula": "=_xlfn.XLOOKUP(L60,$C$21:$C$35,$D$21:$D$35,)*M60",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K61",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L61",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M61",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N61",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O61",
+          "value": "=_xlfn.XLOOKUP(L61,$C$21:$C$35,$D$21:$D$35,)*M61",
+          "formula": "=_xlfn.XLOOKUP(L61,$C$21:$C$35,$D$21:$D$35,)*M61",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K62",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L62",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M62",
+          "value": 22,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N62",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O62",
+          "value": "=_xlfn.XLOOKUP(L62,$C$21:$C$35,$D$21:$D$35,)*M62",
+          "formula": "=_xlfn.XLOOKUP(L62,$C$21:$C$35,$D$21:$D$35,)*M62",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K63",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L63",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M63",
+          "value": 1,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N63",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O63",
+          "value": "=_xlfn.XLOOKUP(L63,$C$21:$C$35,$D$21:$D$35,)*M63",
+          "formula": "=_xlfn.XLOOKUP(L63,$C$21:$C$35,$D$21:$D$35,)*M63",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K64",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L64",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M64",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N64",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O64",
+          "value": "=_xlfn.XLOOKUP(L64,$C$21:$C$35,$D$21:$D$35,)*M64",
+          "formula": "=_xlfn.XLOOKUP(L64,$C$21:$C$35,$D$21:$D$35,)*M64",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K65",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L65",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M65",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N65",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O65",
+          "value": "=_xlfn.XLOOKUP(L65,$C$21:$C$35,$D$21:$D$35,)*M65",
+          "formula": "=_xlfn.XLOOKUP(L65,$C$21:$C$35,$D$21:$D$35,)*M65",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K66",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L66",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M66",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N66",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O66",
+          "value": "=_xlfn.XLOOKUP(L66,$C$21:$C$35,$D$21:$D$35,)*M66",
+          "formula": "=_xlfn.XLOOKUP(L66,$C$21:$C$35,$D$21:$D$35,)*M66",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K67",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L67",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M67",
+          "value": 7,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N67",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O67",
+          "value": "=_xlfn.XLOOKUP(L67,$C$21:$C$35,$D$21:$D$35,)*M67",
+          "formula": "=_xlfn.XLOOKUP(L67,$C$21:$C$35,$D$21:$D$35,)*M67",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K68",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L68",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M68",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N68",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O68",
+          "value": "=_xlfn.XLOOKUP(L68,$C$21:$C$35,$D$21:$D$35,)*M68",
+          "formula": "=_xlfn.XLOOKUP(L68,$C$21:$C$35,$D$21:$D$35,)*M68",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K69",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L69",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M69",
+          "value": 8,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N69",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O69",
+          "value": "=_xlfn.XLOOKUP(L69,$C$21:$C$35,$D$21:$D$35,)*M69",
+          "formula": "=_xlfn.XLOOKUP(L69,$C$21:$C$35,$D$21:$D$35,)*M69",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K70",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L70",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M70",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N70",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O70",
+          "value": "=_xlfn.XLOOKUP(L70,$C$21:$C$35,$D$21:$D$35,)*M70",
+          "formula": "=_xlfn.XLOOKUP(L70,$C$21:$C$35,$D$21:$D$35,)*M70",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K71",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L71",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M71",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N71",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O71",
+          "value": "=_xlfn.XLOOKUP(L71,$C$21:$C$35,$D$21:$D$35,)*M71",
+          "formula": "=_xlfn.XLOOKUP(L71,$C$21:$C$35,$D$21:$D$35,)*M71",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K72",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L72",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M72",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N72",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O72",
+          "value": "=_xlfn.XLOOKUP(L72,$C$21:$C$35,$D$21:$D$35,)*M72",
+          "formula": "=_xlfn.XLOOKUP(L72,$C$21:$C$35,$D$21:$D$35,)*M72",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K73",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L73",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M73",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N73",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O73",
+          "value": "=_xlfn.XLOOKUP(L73,$C$21:$C$35,$D$21:$D$35,)*M73",
+          "formula": "=_xlfn.XLOOKUP(L73,$C$21:$C$35,$D$21:$D$35,)*M73",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K74",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L74",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M74",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N74",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O74",
+          "value": "=_xlfn.XLOOKUP(L74,$C$21:$C$35,$D$21:$D$35,)*M74",
+          "formula": "=_xlfn.XLOOKUP(L74,$C$21:$C$35,$D$21:$D$35,)*M74",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K75",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L75",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M75",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N75",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O75",
+          "value": "=_xlfn.XLOOKUP(L75,$C$21:$C$35,$D$21:$D$35,)*M75",
+          "formula": "=_xlfn.XLOOKUP(L75,$C$21:$C$35,$D$21:$D$35,)*M75",
+          "data_type": "e"
+        },
+        {
+          "coordinate": "K76",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L76",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "M76",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "N76",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "O76",
+          "value": "=_xlfn.XLOOKUP(L76,$C$21:$C$35,$D$21:$D$35,)*M76",
+          "formula": "=_xlfn.XLOOKUP(L76,$C$21:$C$35,$D$21:$D$35,)*M76",
+          "data_type": "e"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Planilha2",
+        "index": 1,
+        "state": "visible",
+        "dimensions": null,
+        "max_row": 19,
+        "max_column": 13
+      },
+      "cells": [
+        {
+          "coordinate": "B2",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F2",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G2",
+          "value": 10000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J2",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K2",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L2",
+          "value": 10,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M2",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B3",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F3",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G3",
+          "value": 12000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J3",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K3",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L3",
+          "value": 30,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M3",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B4",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F4",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G4",
+          "value": 14000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J4",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K4",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L4",
+          "value": 21,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M4",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B5",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F5",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G5",
+          "value": 16000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J5",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K5",
+          "value": "Produto 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L5",
+          "value": 34,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M5",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B6",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F6",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G6",
+          "value": 18000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J6",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K6",
+          "value": "Produto 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L6",
+          "value": 54,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M6",
+          "value": "Vendedor 05",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B7",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F7",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G7",
+          "value": 20000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J7",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K7",
+          "value": "Produto 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L7",
+          "value": 5,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M7",
+          "value": "Vendedor 06",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B8",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F8",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G8",
+          "value": 22000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J8",
+          "value": "Julho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K8",
+          "value": "Produto 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L8",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M8",
+          "value": "Vendedor 07",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B9",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F9",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G9",
+          "value": 24000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J9",
+          "value": "Agosto",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K9",
+          "value": "Produto 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L9",
+          "value": 32,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M9",
+          "value": "Vendedor 08",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B10",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F10",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G10",
+          "value": 26000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J10",
+          "value": "Setembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K10",
+          "value": "Produto 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L10",
+          "value": 55,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M10",
+          "value": "Vendedor 09",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B11",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F11",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G11",
+          "value": 28000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J11",
+          "value": "Outubro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K11",
+          "value": "Produto 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L11",
+          "value": 33,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M11",
+          "value": "Vendedor 10",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B12",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F12",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G12",
+          "value": 30000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J12",
+          "value": "Novembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K12",
+          "value": "Produto 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L12",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M12",
+          "value": "Vendedor 11",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B13",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F13",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G13",
+          "value": 32000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J13",
+          "value": "Dezembro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K13",
+          "value": "Produto 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L13",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M13",
+          "value": "Vendedor 12",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B14",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F14",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G14",
+          "value": 34000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J14",
+          "value": "Janeiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K14",
+          "value": "Produto 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L14",
+          "value": 4,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M14",
+          "value": "Vendedor 13",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "B15",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F15",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G15",
+          "value": 36000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J15",
+          "value": "Fevereiro",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K15",
+          "value": "Produto 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L15",
+          "value": 55,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M15",
+          "value": "Vendedor 14",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "F16",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "G16",
+          "value": 38000,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "J16",
+          "value": "Março",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K16",
+          "value": "Produto 15",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L16",
+          "value": 6,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M16",
+          "value": "Vendedor 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "J17",
+          "value": "Abril",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K17",
+          "value": "Produto 01",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L17",
+          "value": 2,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M17",
+          "value": "Vendedor 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "J18",
+          "value": "Maio",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K18",
+          "value": "Produto 02",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L18",
+          "value": 33,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M18",
+          "value": "Vendedor 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "J19",
+          "value": "Junho",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "K19",
+          "value": "Produto 03",
+          "formula": null,
+          "data_type": "s"
+        },
+        {
+          "coordinate": "L19",
+          "value": 3,
+          "formula": null,
+          "data_type": "n"
+        },
+        {
+          "coordinate": "M19",
+          "value": "Vendedor 04",
+          "formula": null,
+          "data_type": "s"
+        }
+      ]
+    }
+  ],
+  "named_ranges": [],
+  "metadata": {
+    "creator": "Rodrigo Cesar Winhaski",
+    "created": "2026-05-14 19:53:57",
+    "modified": "2026-05-14 20:41:27",
+    "last_modified_by": "Rodrigo Cesar Winhaski",
+    "title": "",
+    "subject": "",
+    "category": ""
+  }
+}
