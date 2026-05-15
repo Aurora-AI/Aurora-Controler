@@ -271,3 +271,46 @@ def test_generate_html_save_to_file(tmp_path):
     assert out.exists()
     content = out.read_text(encoding="utf-8")
     assert "TestWB" in content
+
+
+# ── __main__ / integração ─────────────────────────────────────────────────
+
+def test_phase_b2_package_imports_cleanly():
+    import sys as _sys
+    _src = str(REPO_ROOT / "src")
+    if _src not in _sys.path:
+        _sys.path.insert(0, _src)
+    import phase_b2
+    import graph_assembler
+    import html_visualizer
+    assert True
+
+
+def test_full_pipeline_mock(tmp_path):
+    """Pipeline completo: DAG + norm_ir + intent → HTML + JSON."""
+    import json
+    from graph_assembler import build_graph
+    from html_visualizer import save_html
+
+    dag_file = tmp_path / "test_a2_dag.json"
+    norm_file = tmp_path / "test_a15_norm.json"
+    intent_file = tmp_path / "test_b1_intent.json"
+
+    dag_file.write_text(json.dumps(_SAMPLE_DAG), encoding="utf-8")
+    norm_file.write_text(json.dumps(_SAMPLE_NORM_IR), encoding="utf-8")
+    intent_file.write_text(_SAMPLE_INTENT.model_dump_json(), encoding="utf-8")
+
+    graph = build_graph(_SAMPLE_DAG, _SAMPLE_NORM_IR, _SAMPLE_INTENT)
+    assert len(graph.nodes) >= 1
+
+    html_out = tmp_path / "test_b2_graph.html"
+    save_html(graph, html_out)
+    assert html_out.exists()
+    html_content = html_out.read_text(encoding="utf-8")
+    assert "TestWB" in html_content
+    assert "vis-network" in html_content
+
+    json_out = tmp_path / "test_b2_graph.json"
+    json_out.write_text(graph.model_dump_json(indent=2), encoding="utf-8")
+    reloaded = StagedRuleGraph.model_validate_json(json_out.read_text())
+    assert reloaded.workbook_name == "TestWB"
