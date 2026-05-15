@@ -23,3 +23,29 @@ def test_tokenize_empty_formula_returns_token():
     """Fórmula vazia não deve lançar exceção."""
     tokens = tokenize_formula("")
     assert isinstance(tokens, list)
+
+def test_normalizer_uses_pipeline_contracts_classes():
+    """
+    Garante que normalizer.py usa as classes de pipeline_contracts,
+    não redefinições locais. Falha se alguém introduzir duplicação.
+    """
+    import sys
+    from pathlib import Path
+    REPO = Path(__file__).resolve().parents[1]
+    sys.path.insert(0, str(REPO / "src" / "phase_a1_5"))
+    sys.path.insert(0, str(REPO / "libs" / "trustware"))
+
+    import importlib
+    import normalizer as norm
+    import pipeline_contracts as pc
+
+    assert norm.FormulaToken is pc.FormulaToken, \
+        "FormulaToken em normalizer não é o mesmo de pipeline_contracts"
+    assert norm.NormalizedCell is pc.NormalizedCell, \
+        "NormalizedCell em normalizer não é o mesmo de pipeline_contracts"
+    assert norm.NormalizedSheet is pc.NormalizedSheet, \
+        "NormalizedSheet em normalizer não é o mesmo de pipeline_contracts"
+    assert norm.NormalizedWorkbookIR is pc.NormalizedWorkbookIR, \
+        "NormalizedWorkbookIR em normalizer não é o mesmo de pipeline_contracts"
+    assert norm.FormulaTokenType is pc.FormulaTokenType, \
+        "FormulaTokenType em normalizer não é o mesmo de pipeline_contracts"
