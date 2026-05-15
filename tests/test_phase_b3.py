@@ -298,3 +298,37 @@ def test_run_hitl_final_outcome_contains_result():
         audit = run_hitl(_SIM_GRAPH)
     # S!C1 is the output node with label "Result"
     assert "Result" in audit.final_outcome
+
+
+# ---------------------------------------------------------------------------
+# Task 4 — smoke tests (sem rede, sem LLM, sem input interativo)
+# ---------------------------------------------------------------------------
+import importlib
+import json
+from unittest.mock import patch
+
+
+def test_phase_b3_package_imports_cleanly():
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+    import phase_b3  # noqa: F401
+
+
+def test_run_hitl_roundtrip_json():
+    """SimulationAudit deve ser serializavel em JSON sem erros."""
+    with patch("builtins.input", side_effect=[""]):
+        audit = run_hitl(_SIM_GRAPH)
+    payload = audit.model_dump(mode="json")
+    serialized = json.dumps(payload)
+    assert len(serialized) > 0
+    recovered = SimulationAudit.model_validate(json.loads(serialized))
+    assert recovered.simulation_id == audit.simulation_id
+
+
+def test_run_hitl_with_intervention_roundtrip():
+    """Audit com intervencao deve serializar/deserializar corretamente."""
+    with patch("builtins.input", side_effect=["S!A1=42.0", ""]):
+        audit = run_hitl(_SIM_GRAPH)
+    payload = audit.model_dump(mode="json")
+    recovered = SimulationAudit.model_validate(payload)
+    assert len(recovered.hitl_interventions) == 1
+    assert recovered.hitl_interventions[0]["new_value"] == 42.0
