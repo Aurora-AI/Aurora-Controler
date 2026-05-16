@@ -115,3 +115,25 @@ def test_unpivot_wide_emits_long_rows():
     long_rows = unpivot_wide(header, data, [0], [1, 2])
     assert {"cnpj": "X1", "status": "Aprovado", "quantidade": 10.0} in long_rows
     assert {"cnpj": "X1", "status": "Reprovado", "quantidade": 20.0} in long_rows
+
+
+def test_to_number_en_us_decimal():
+    from unpivot import _to_number
+    assert _to_number("12.5") == 12.5          # ponto decimal en-US
+    assert _to_number("1,234.56") == 1234.56   # milhar en-US
+
+
+def test_to_number_pt_br_decimal():
+    from unpivot import _to_number
+    assert _to_number("12,5") == 12.5          # vírgula decimal pt-BR
+    assert _to_number("1.234,56") == 1234.56   # milhar pt-BR
+
+
+def test_unpivot_wide_skips_empty_and_ragged():
+    from unpivot import unpivot_wide
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", ""], ["X2"]]  # célula vazia + linha ragged
+    long_rows = unpivot_wide(header, data, [0], [1, 2])
+    # X1: só Aprovado (Reprovado vazio); X2: nada (ragged, sem measures)
+    assert len(long_rows) == 1
+    assert long_rows[0] == {"cnpj": "X1", "status": "Aprovado", "quantidade": 10.0}

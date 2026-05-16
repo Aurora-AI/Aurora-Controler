@@ -9,19 +9,37 @@ from dashboard_contracts import DetectedStructure
 _GRAND_TOTAL_TOKENS = ("total geral", "grand total")
 
 
+def _parse_number(text: str) -> float:
+    """Converte string numérica em float. Heurística: o último separador
+    (`.` ou `,`) é o decimal; o anterior é separador de milhar.
+
+    Aceita pt-BR (1.234,56) e en-US (1,234.56).
+    """
+    s = text.strip()
+    if not s:
+        raise ValueError("string vazia")
+    last_dot = s.rfind(".")
+    last_comma = s.rfind(",")
+    if last_dot == -1 and last_comma == -1:
+        return float(s)
+    if last_comma > last_dot:
+        # vírgula é o decimal (pt-BR): remove pontos, vírgula vira ponto
+        s = s.replace(".", "").replace(",", ".")
+    else:
+        # ponto é o decimal (en-US): remove vírgulas
+        s = s.replace(",", "")
+    return float(s)
+
+
 def _is_number(value: Any) -> bool:
-    """True se o valor é numérico (aceita locale pt-BR: 1.234,56)."""
+    """True se o valor é numérico (aceita locale pt-BR e en-US)."""
     if isinstance(value, bool) or value is None:
         return False
     if isinstance(value, (int, float)):
         return True
     if isinstance(value, str):
-        s = value.strip()
-        if not s:
-            return False
-        s = s.replace(".", "").replace(",", ".")
         try:
-            float(s)
+            _parse_number(value)
             return True
         except ValueError:
             return False
@@ -29,11 +47,10 @@ def _is_number(value: Any) -> bool:
 
 
 def _to_number(value: Any) -> float:
-    """Converte célula numérica em float (aceita locale pt-BR)."""
+    """Converte célula numérica em float (aceita locale pt-BR e en-US)."""
     if isinstance(value, (int, float)):
         return float(value)
-    s = str(value).strip().replace(".", "").replace(",", ".")
-    return float(s)
+    return _parse_number(str(value))
 
 
 def classify_columns(
