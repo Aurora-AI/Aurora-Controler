@@ -70,3 +70,27 @@ class C0Dataset(BaseModel):
     source_map: list[SourceMapEntry]
     discarded_rows: list[DiscardedRow] = Field(default_factory=list)
     validation_summary: ValidationSummary
+
+
+# ==========================================
+# Fase C1 — Modelo Semântico
+# ==========================================
+
+
+class SemanticField(BaseModel):
+    """Papel semântico e de negócio de um campo da tabela longa."""
+    name: str
+    type: str = Field(..., description="string | integer | float | date | category")
+    semantic_role: str = Field(...,
+        description="entity_id | breakdown_dimension | measure | temporal | label")
+    business_role: Optional[str] = Field(None,
+        description="Papel de negócio inferido por heurística determinística")
+    cardinality: Optional[int] = Field(None, description="Nº de valores distintos")
+
+
+class SemanticModel(BaseModel):
+    """Artefato da C1: papéis semânticos de todos os campos."""
+    schema_version: Literal["c1_semantic.v1"] = "c1_semantic.v1"
+    primary_dimension: Optional[str] = None
+    secondary_dimension: Optional[str] = None
+    fields: list[SemanticField]
