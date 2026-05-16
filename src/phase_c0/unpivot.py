@@ -136,7 +136,7 @@ def _is_empty(row: list[Any]) -> bool:
     return all(c in (None, "") for c in row)
 
 
-def build_c0_dataset(path: str):
+def build_c0_dataset(path: str) -> "C0Dataset":
     """Lê o arquivo, detecta estrutura, un-pivota se preciso e monta o C0Dataset."""
     from ingest import read_table
     from dashboard_contracts import (
@@ -172,15 +172,18 @@ def build_c0_dataset(path: str):
     dataset: list[dict[str, Any]] = []
     source_map: list[SourceMapEntry] = []
     row_id = 0
+    source_rows_emitted = 0
 
     if structure.table_kind == "wide":
         used, reason = "grid_scraping", "pivot-like wide table detected"
         for origin_row, row in kept:
             base = {header[i]: row[i] for i in dim_idx if i < len(row)}
+            emitted_here = 0
             for mi in measure_idx:
-                if mi >= len(row) or row[mi] in (None, ""):
+                if mi >= len(row) or row[mi] in (None, "") or not _is_number(row[mi]):
                     continue
                 row_id += 1
+                emitted_here += 1
                 entry = {"row_id": row_id, **base,
                          "status": header[mi], "quantidade": _to_number(row[mi])}
                 dataset.append(entry)
@@ -190,6 +193,11 @@ def build_c0_dataset(path: str):
                 cells["quantidade"] = f"{_col_letter(mi)}{origin_row}"
                 source_map.append(SourceMapEntry(row_id=row_id, origin_sheet=sheet,
                                                  origin_cells=cells))
+            if emitted_here == 0:
+                discarded.append(DiscardedRow(origin_row=origin_row,
+                                              reason="no_measures", raw=list(row)))
+            else:
+                source_rows_emitted += 1
     else:
         used, reason = "structured_model", "clean flat table"
         for origin_row, row in kept:
@@ -205,10 +213,11 @@ def build_c0_dataset(path: str):
             dataset.append(entry)
             source_map.append(SourceMapEntry(row_id=row_id, origin_sheet=sheet,
                                              origin_cells=cells))
+            source_rows_emitted += 1
 
     validation = ValidationSummary(
         total_rows_read=total_rows_read,
-        source_rows_emitted=len(kept),
+        source_rows_emitted=source_rows_emitted,
         source_rows_context=0,
         source_rows_discarded=len(discarded),
         dataset_rows_emitted=len(dataset),

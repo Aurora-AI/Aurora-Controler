@@ -193,3 +193,18 @@ def test_build_c0_dataset_source_map_covers_dataset(tmp_path):
     mapped_ids = {e.row_id for e in ds.source_map}
     dataset_ids = {r["row_id"] for r in ds.dataset}
     assert dataset_ids.issubset(mapped_ids)
+
+
+def test_build_c0_dataset_wide_skips_no_measure_row(tmp_path):
+    p = tmp_path / "wnm.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "Aprovado", "Reprovado"])
+        w.writerow(["X1", "10", "20"])
+        w.writerow(["X2", "", ""])  # linha sem measures
+    ds = build_c0_dataset(str(p))
+    assert len(ds.dataset) == 2  # só X1 (Aprovado + Reprovado)
+    assert any(d.reason == "no_measures" for d in ds.discarded_rows)
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted == 1
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
