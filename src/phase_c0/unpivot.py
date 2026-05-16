@@ -110,3 +110,118 @@ def unpivot_wide(
             entry["quantidade"] = _to_number(row[mi])
             long_rows.append(entry)
     return long_rows
+
+
+def _col_letter(idx: int) -> str:
+    """Converte índice 0-based em letra de coluna estilo Excel (0->A, 1->B)."""
+    letters = ""
+    n = idx
+    while True:
+        letters = chr(ord("A") + n % 26) + letters
+        n = n // 26 - 1
+        if n < 0:
+            break
+    return letters
+
+
+def _is_grand_total(row: list[Any]) -> bool:
+    """True se a linha é um total geral (primeira célula com token conhecido)."""
+    if not row or row[0] in (None, ""):
+        return False
+    return any(tok in str(row[0]).strip().lower() for tok in _GRAND_TOTAL_TOKENS)
+
+
+def _is_empty(row: list[Any]) -> bool:
+    """True se todas as células da linha estão vazias."""
+    return all(c in (None, "") for c in row)
+
+
+def build_c0_dataset(path: str):
+    """Lê o arquivo, detecta estrutura, un-pivota se preciso e monta o C0Dataset."""
+    from ingest import read_table
+    from dashboard_contracts import (
+        C0Dataset, IngestionStrategy, SourceMapEntry,
+        DiscardedRow, ValidationSummary,
+    )
+
+    sheet, raw_rows = read_table(path)
+    if not raw_rows:
+        raise ValueError(f"Arquivo vazio: {path}")
+
+    header = [str(c) if c is not None else "" for c in raw_rows[0]]
+    body = raw_rows[1:]
+    total_rows_read = len(body)
+
+    # Classificar linhas do corpo
+    discarded: list[DiscardedRow] = []
+    kept: list[tuple[int, list[Any]]] = []  # (origin_row_1based, row)
+    for offset, row in enumerate(body):
+        origin_row = offset + 2  # +1 header, +1 base-1
+        if _is_empty(row):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="empty", raw=list(row)))
+        elif _is_grand_total(row):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="grand_total", raw=list(row)))
+        else:
+            kept.append((origin_row, row))
+
+    kept_rows = [r for _, r in kept]
+    structure = detect_structure(header, kept_rows)
+    dim_idx, measure_idx = classify_columns(header, kept_rows)
+
+    # Emitir dataset longo
+    dataset: list[dict[str, Any]] = []
+    source_map: list[SourceMapEntry] = []
+    row_id = 0
+
+    if structure.table_kind == "wide":
+        used, reason = "grid_scraping", "pivot-like wide table detected"
+        for origin_row, row in kept:
+            base = {header[i]: row[i] for i in dim_idx if i < len(row)}
+            for mi in measure_idx:
+                if mi >= len(row) or row[mi] in (None, ""):
+                    continue
+                row_id += 1
+                entry = {"row_id": row_id, **base,
+                         "status": header[mi], "quantidade": _to_number(row[mi])}
+                dataset.append(entry)
+                cells = {header[i]: f"{_col_letter(i)}{origin_row}"
+                         for i in dim_idx if i < len(row)}
+                cells["status"] = f"{_col_letter(mi)}1"
+                cells["quantidade"] = f"{_col_letter(mi)}{origin_row}"
+                source_map.append(SourceMapEntry(row_id=row_id, origin_sheet=sheet,
+                                                 origin_cells=cells))
+    else:
+        used, reason = "structured_model", "clean flat table"
+        for origin_row, row in kept:
+            row_id += 1
+            entry: dict[str, Any] = {"row_id": row_id}
+            cells: dict[str, str] = {}
+            for i, name in enumerate(header):
+                if i >= len(row):
+                    continue
+                val = row[i]
+                entry[name] = _to_number(val) if (i in measure_idx and _is_number(val)) else val
+                cells[name] = f"{_col_letter(i)}{origin_row}"
+            dataset.append(entry)
+            source_map.append(SourceMapEntry(row_id=row_id, origin_sheet=sheet,
+                                             origin_cells=cells))
+
+    validation = ValidationSummary(
+        total_rows_read=total_rows_read,
+        source_rows_emitted=len(kept),
+        source_rows_context=0,
+        source_rows_discarded=len(discarded),
+        dataset_rows_emitted=len(dataset),
+    )
+
+    return C0Dataset(
+        source_file=path,
+        ingestion_strategy=IngestionStrategy(
+            primary="structured_model", fallback="grid_scraping",
+            used=used, reason=reason),
+        detected_structure=structure,
+        dataset=dataset,
+        source_map=source_map,
+        discarded_rows=discarded,
+        validation_summary=validation,
+    )

@@ -137,3 +137,59 @@ def test_unpivot_wide_skips_empty_and_ragged():
     # X1: só Aprovado (Reprovado vazio); X2: nada (ragged, sem measures)
     assert len(long_rows) == 1
     assert long_rows[0] == {"cnpj": "X1", "status": "Aprovado", "quantidade": 10.0}
+
+
+# --- Task 7: build_c0_dataset ---
+from unpivot import build_c0_dataset
+
+
+def test_build_c0_dataset_flat_csv(tmp_path):
+    p = tmp_path / "flat.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+        w.writerow(["X2", "Reprovado", "20"])
+    ds = build_c0_dataset(str(p))
+    assert ds.ingestion_strategy.used == "structured_model"
+    assert ds.detected_structure.table_kind == "flat"
+    assert len(ds.dataset) == 2
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+
+
+def test_build_c0_dataset_wide_unpivot(tmp_path):
+    p = tmp_path / "wide.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "Aprovado", "Reprovado"])
+        w.writerow(["X1", "10", "20"])
+    ds = build_c0_dataset(str(p))
+    assert ds.ingestion_strategy.used == "grid_scraping"
+    assert ds.detected_structure.table_kind == "wide"
+    assert len(ds.dataset) == 2  # 1 linha larga -> 2 longas
+    assert ds.validation_summary.dataset_rows_emitted == 2
+
+
+def test_build_c0_dataset_discards_grand_total(tmp_path):
+    p = tmp_path / "gt.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+        w.writerow(["Total Geral", "", "10"])
+    ds = build_c0_dataset(str(p))
+    assert len(ds.dataset) == 1
+    assert any(d.reason == "grand_total" for d in ds.discarded_rows)
+
+
+def test_build_c0_dataset_source_map_covers_dataset(tmp_path):
+    p = tmp_path / "sm.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+    ds = build_c0_dataset(str(p))
+    mapped_ids = {e.row_id for e in ds.source_map}
+    dataset_ids = {r["row_id"] for r in ds.dataset}
+    assert dataset_ids.issubset(mapped_ids)
