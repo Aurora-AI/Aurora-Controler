@@ -1,6 +1,7 @@
 """Fase C1 — Inferência determinística de papéis semânticos."""
 from __future__ import annotations
 
+import re
 from typing import Any, Optional
 
 from dashboard_contracts import C0Dataset, SemanticField, SemanticModel
@@ -50,14 +51,25 @@ def infer_type(values: list[Any]) -> str:
     return "string"
 
 
+def _name_tokens(name: str) -> set[str]:
+    """Quebra o nome do campo em tokens minúsculos (separadores: espaço _ . / -)."""
+    return {t for t in re.split(r"[\s_./\-]+", name.lower().strip()) if t}
+
+
 def infer_semantic_role(name: str, col_type: str, cardinality: Optional[int]) -> str:
-    """Atribui semantic_role de forma determinística."""
-    lname = name.lower()
+    """Atribui semantic_role de forma determinística.
+
+    Ordem: entity_id (por token de nome) vence measure — um ID numérico não
+    deve ser somado como métrica. O matching é por token (não substring), para
+    que nomes como 'quantidade' não casem com o hint 'id'.
+    `cardinality` é reservado para uso futuro.
+    """
+    tokens = _name_tokens(name)
+    if tokens & set(_ENTITY_HINTS):
+        return "entity_id"
     if col_type in ("integer", "float"):
         return "measure"
-    if any(h in lname for h in _ENTITY_HINTS):
-        return "entity_id"
-    if any(h in lname for h in _TEMPORAL_HINTS):
+    if tokens & set(_TEMPORAL_HINTS):
         return "temporal"
     if col_type == "category":
         return "breakdown_dimension"

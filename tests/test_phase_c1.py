@@ -63,6 +63,10 @@ def test_infer_type_integer_and_category():
 def test_infer_semantic_role_measure_and_entity():
     assert infer_semantic_role("quantidade", "integer", None) == "measure"
     assert infer_semantic_role("cnpj", "string", 47) == "entity_id"
+    # ID puramente numérico deve ser entity_id, não measure
+    assert infer_semantic_role("id", "integer", 47) == "entity_id"
+    # 'quantidade' contém a substring 'id' mas NÃO deve casar (matching por token)
+    assert infer_semantic_role("quantidade", "integer", None) == "measure"
 
 
 def test_build_semantic_model_assigns_roles():
@@ -77,4 +81,6 @@ def test_build_semantic_model_assigns_roles():
 
 def test_build_semantic_model_picks_primary_dimension():
     model = build_semantic_model(_c0_fixture())
-    assert model.primary_dimension is not None
+    # cnpj e status têm cardinalidade 2; empate resolvido por ordem estável -> cnpj
+    assert model.primary_dimension == "cnpj"
+    assert model.secondary_dimension == "status"
