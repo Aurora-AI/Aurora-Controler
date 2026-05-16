@@ -84,3 +84,23 @@ def test_build_semantic_model_picks_primary_dimension():
     # cnpj e status têm cardinalidade 2; empate resolvido por ordem estável -> cnpj
     assert model.primary_dimension == "cnpj"
     assert model.secondary_dimension == "status"
+
+
+# --- Task 10: __main__ ---
+import json as _json
+import subprocess as _sub
+import os as _os
+
+
+def test_phase_c1_cli_writes_artifact(tmp_path):
+    c0 = tmp_path / "T_c0_dataset.json"
+    c0.write_text(_c0_fixture().model_dump_json(indent=2), encoding="utf-8")
+    result = _sub.run(
+        [sys.executable, "-m", "phase_c1", str(tmp_path / "T")],
+        cwd=str(REPO_ROOT), capture_output=True, text=True,
+        env={**_os.environ, "PYTHONPATH": str(REPO_ROOT / "src")},
+    )
+    assert result.returncode == 0, result.stderr
+    out = tmp_path / "T_c1_semantic.json"
+    assert out.exists()
+    assert _json.loads(out.read_text(encoding="utf-8"))["schema_version"] == "c1_semantic.v1"
