@@ -3113,6 +3113,241 @@ git commit -m "feat(c): wire run_dashboard C0->C4 into run_pipeline --dashboard"
 
 ---
 
+## Task 21: C0 — Un-pivot hierárquico (`pivot_hierarchical`)
+
+Trata o layout de tabela dinâmica aninhada: linhas-pai de contexto (ex.: CNPJ
+sozinho), linhas-filhas (ex.: perfil + valores), linhas de subtotal e total geral.
+
+**Files:**
+- Modify: `src/phase_c0/unpivot.py` (append helpers + ajustar `build_c0_dataset`)
+- Test: `tests/test_phase_c0.py` (append)
+
+- [ ] **Step 1: Escrever o teste que falha**
+
+Anexar a `tests/test_phase_c0.py`:
+
+```python
+# --- Task 21: un-pivot hierárquico ---
+from unpivot import detect_hierarchical, _is_parent_row
+
+
+def test_is_parent_row_detects_context_row():
+    # col 0 preenchida, colunas-measure (1,2) vazias
+    assert _is_parent_row(["00.1/0001-01", "", ""], [1, 2]) is True
+    assert _is_parent_row(["Atendente", "10", "20"], [1, 2]) is False
+
+
+def test_detect_hierarchical_true_when_parent_rows_exist():
+    body = [
+        ["00.1/0001-01", "", ""],
+        ["Atendente", "10", "20"],
+    ]
+    assert detect_hierarchical(body, [1, 2]) is True
+
+
+def test_detect_hierarchical_false_for_flat_table():
+    body = [["X1", "Aprovado", "10"]]
+    assert detect_hierarchical(body, [2]) is False
+
+
+def test_build_c0_dataset_hierarchical(tmp_path):
+    p = tmp_path / "pivot.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["CNPJ", "Aprovado", "Reprovado"])
+        w.writerow(["00.1/0001-01", "", ""])       # linha-pai
+        w.writerow(["Atendente", "10", "20"])       # filha
+        w.writerow(["Promotor", "5", "7"])          # filha
+        w.writerow(["00.1/0001-01 Total", "15", "27"])  # subtotal
+        w.writerow(["Total Geral", "15", "27"])     # total geral
+    ds = build_c0_dataset(str(p))
+    assert ds.detected_structure.table_kind == "pivot_hierarchical"
+    assert ds.ingestion_strategy.used == "grid_scraping"
+    assert ds.detected_structure.hierarchy == {"parent": "CNPJ", "child": "subgrupo"}
+    assert ds.detected_structure.subtotal_rows_detected == 1
+    # 2 filhas x 2 colunas-measure = 4 linhas longas
+    assert len(ds.dataset) == 4
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted == 2
+    assert vs.source_rows_context == 1
+    assert vs.source_rows_discarded == 2
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+    first = ds.dataset[0]
+    assert first["CNPJ"] == "00.1/0001-01"
+    assert "subgrupo" in first and "status" in first and "quantidade" in first
+```
+
+- [ ] **Step 2: Rodar e confirmar que FALHA**
+
+Run: `python -m pytest tests/test_phase_c0.py -k "hierarchical or parent_row" -v`
+Expected: `ImportError: cannot import name 'detect_hierarchical'`
+
+- [ ] **Step 3: Adicionar helpers hierárquicos em `src/phase_c0/unpivot.py`**
+
+Anexar ao final de `src/phase_c0/unpivot.py`:
+
+```python
+
+
+def _is_parent_row(row: list[Any], measure_idx: list[int]) -> bool:
+    """Linha-pai de contexto: col 0 preenchida e todas as measures vazias."""
+    if not row or row[0] in (None, ""):
+        return False
+    return all(mi >= len(row) or row[mi] in (None, "") for mi in measure_idx)
+
+
+def _is_subtotal_row(row: list[Any], current_parent: Any) -> bool:
+    """Subtotal: col 0 contém 'total' (sem ser total geral) ou repete o pai."""
+    if not row or row[0] in (None, ""):
+        return False
+    first = str(row[0]).strip().lower()
+    if "total" in first and not any(t in first for t in _GRAND_TOTAL_TOKENS):
+        return True
+    if current_parent is not None and str(row[0]).strip() == str(current_parent).strip():
+        return True
+    return False
+
+
+def detect_hierarchical(body: list[list[Any]], measure_idx: list[int]) -> bool:
+    """True se há ao menos uma linha-pai — indica layout de pivô aninhado."""
+    if not measure_idx:
+        return False
+    for row in body:
+        if _is_empty(row) or _is_grand_total(row):
+            continue
+        if _is_parent_row(row, measure_idx):
+            return True
+    return False
+
+
+def _assemble_hierarchical(
+    path: str, sheet: str, header: list[str], body: list[list[Any]],
+    total_rows_read: int, measure_idx: list[int],
+):
+    """Monta o C0Dataset para um layout de pivô aninhado."""
+    from dashboard_contracts import (
+        C0Dataset, DetectedStructure, DiscardedRow, IngestionStrategy,
+        SourceMapEntry, ValidationSummary,
+    )
+
+    parent_name = header[0] or "grupo"
+    child_name = "subgrupo"
+    dataset: list[dict[str, Any]] = []
+    source_map: list[SourceMapEntry] = []
+    discarded: list[DiscardedRow] = []
+    emitted_src = context_src = discarded_src = subtotals = 0
+    current_parent: Any = None
+    current_parent_row = 1
+    row_id = 0
+
+    for offset, row in enumerate(body):
+        origin_row = offset + 2
+        if _is_empty(row):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="empty", raw=list(row)))
+            discarded_src += 1
+        elif _is_grand_total(row):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="grand_total", raw=list(row)))
+            discarded_src += 1
+        elif _is_subtotal_row(row, current_parent):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="subtotal", raw=list(row)))
+            discarded_src += 1
+            subtotals += 1
+        elif _is_parent_row(row, measure_idx):
+            current_parent = row[0]
+            current_parent_row = origin_row
+            context_src += 1
+        else:
+            emitted_src += 1
+            child_value = row[0]
+            for mi in measure_idx:
+                if mi >= len(row) or row[mi] in (None, ""):
+                    continue
+                row_id += 1
+                dataset.append({
+                    "row_id": row_id,
+                    parent_name: current_parent,
+                    child_name: child_value,
+                    "status": header[mi],
+                    "quantidade": _to_number(row[mi]),
+                })
+                source_map.append(SourceMapEntry(
+                    row_id=row_id, origin_sheet=sheet,
+                    origin_cells={
+                        parent_name: f"{_col_letter(0)}{current_parent_row}",
+                        child_name: f"{_col_letter(0)}{origin_row}",
+                        "status": f"{_col_letter(mi)}1",
+                        "quantidade": f"{_col_letter(mi)}{origin_row}",
+                    },
+                ))
+
+    structure = DetectedStructure(
+        table_kind="pivot_hierarchical",
+        hierarchy={"parent": parent_name, "child": child_name},
+        unpivot_source_columns=[header[i] for i in measure_idx],
+        canonical_dimension_from_columns="status",
+        canonical_measure="quantidade",
+        subtotal_rows_detected=subtotals,
+    )
+    validation = ValidationSummary(
+        total_rows_read=total_rows_read,
+        source_rows_emitted=emitted_src,
+        source_rows_context=context_src,
+        source_rows_discarded=discarded_src,
+        dataset_rows_emitted=len(dataset),
+    )
+    return C0Dataset(
+        source_file=path,
+        ingestion_strategy=IngestionStrategy(
+            primary="structured_model", fallback="grid_scraping",
+            used="grid_scraping", reason="nested pivot hierarchy detected"),
+        detected_structure=structure, dataset=dataset, source_map=source_map,
+        discarded_rows=discarded, validation_summary=validation,
+    )
+```
+
+- [ ] **Step 4: Ajustar `build_c0_dataset` para despachar para o caso hierárquico**
+
+Em `src/phase_c0/unpivot.py`, na função `build_c0_dataset`, localizar a linha:
+
+```python
+    total_rows_read = len(body)
+```
+
+Inserir, **imediatamente após** essa linha, o bloco de despacho hierárquico:
+
+```python
+
+    # Despacho hierárquico: layout de pivô aninhado tem prioridade
+    _pre_kept = [r for r in body if not _is_empty(r) and not _is_grand_total(r)]
+    _, _measure_idx = classify_columns(header, _pre_kept)
+    if detect_hierarchical(body, _measure_idx):
+        return _assemble_hierarchical(
+            path, sheet, header, body, total_rows_read, _measure_idx)
+```
+
+O restante de `build_c0_dataset` (ramos `flat` e `wide`) permanece inalterado e
+só roda quando o layout **não** é hierárquico.
+
+- [ ] **Step 5: Rodar e confirmar que PASSA**
+
+Run: `python -m pytest tests/test_phase_c0.py -k "hierarchical or parent_row" -v`
+Expected: 4 tests PASSED.
+
+- [ ] **Step 6: Rodar a suíte completa**
+
+Run: `python -m pytest tests/ -q -m "not integration"`
+Expected: todos passando — incluindo os testes `flat`/`wide` da Task 7 (o despacho
+hierárquico só dispara quando há linha-pai).
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add src/phase_c0/unpivot.py tests/test_phase_c0.py
+git commit -m "feat(c0): add hierarchical pivot un-pivot (pivot_hierarchical)"
+```
+
+---
+
 ## Critérios de Aceite Finais
 
 Ao completar todas as 20 tarefas, verificar:
