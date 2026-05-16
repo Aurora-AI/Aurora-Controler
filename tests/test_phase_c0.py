@@ -208,3 +208,26 @@ def test_build_c0_dataset_wide_skips_no_measure_row(tmp_path):
     vs = ds.validation_summary
     assert vs.source_rows_emitted == 1
     assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+
+
+# --- Task 8: __main__ ---
+import json as _json
+import subprocess as _sub
+
+
+def test_phase_c0_cli_writes_artifact(tmp_path):
+    src = tmp_path / "Propostas.csv"
+    with src.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+    result = _sub.run(
+        [sys.executable, "-m", "phase_c0", str(src)],
+        cwd=str(REPO_ROOT), capture_output=True, text=True,
+        env={**__import__("os").environ, "PYTHONPATH": str(REPO_ROOT / "src")},
+    )
+    assert result.returncode == 0, result.stderr
+    out = src.with_name("Propostas_c0_dataset.json")
+    assert out.exists()
+    data = _json.loads(out.read_text(encoding="utf-8"))
+    assert data["schema_version"] == "c0_dataset.v1"
