@@ -46,3 +46,28 @@ def test_c0_dataset_roundtrip():
     assert ds.schema_version == "c0_dataset.v1"
     data = ds.model_dump()
     assert C0Dataset.model_validate(data).schema_version == "c0_dataset.v1"
+
+
+# --- Task 5: ingest ---
+import csv as _csv
+from ingest import read_table
+
+
+def test_read_table_csv(tmp_path):
+    p = tmp_path / "dados.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+    sheet, rows = read_table(str(p))
+    assert sheet == "dados"
+    assert rows[0] == ["cnpj", "status", "quantidade"]
+    assert rows[1] == ["X1", "Aprovado", "10"]
+
+
+def test_read_table_rejects_unknown_format(tmp_path):
+    p = tmp_path / "x.txt"
+    p.write_text("nada", encoding="utf-8")
+    import pytest
+    with pytest.raises(ValueError):
+        read_table(str(p))
