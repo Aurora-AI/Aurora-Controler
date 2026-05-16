@@ -46,7 +46,7 @@ class SourceMapEntry(BaseModel):
 class DiscardedRow(BaseModel):
     """Linha de origem descartada, com motivo auditável."""
     origin_row: int
-    reason: str = Field(..., description="grand_total | subtotal | empty | malformed")
+    reason: str = Field(..., description="grand_total | subtotal | empty | malformed | no_measures")
     raw: list[Any] = Field(..., description="Conteúdo bruto da linha descartada")
 
 
