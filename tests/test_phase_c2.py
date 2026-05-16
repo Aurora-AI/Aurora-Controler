@@ -37,3 +37,28 @@ def test_metrics_report_roundtrip():
     )
     assert r.schema_version == "c2_metrics.v1"
     assert MetricsReport.model_validate(r.model_dump()).kpis[0].metric == "m"
+
+
+# --- Task 11: aggregate ---
+from aggregate import aggregate_by
+
+_DATASET = [
+    {"row_id": 1, "cnpj": "X1", "status": "Aprovado", "quantidade": 10.0},
+    {"row_id": 2, "cnpj": "X1", "status": "Reprovado", "quantidade": 20.0},
+    {"row_id": 3, "cnpj": "X2", "status": "Aprovado", "quantidade": 5.0},
+]
+
+
+def test_aggregate_by_status():
+    agg = aggregate_by(_DATASET, by="status", measure="quantidade", agg_id="status_distribution")
+    rows = {r.key: r.value for r in agg.rows}
+    assert rows["Aprovado"] == 15.0
+    assert rows["Reprovado"] == 20.0
+    assert agg.id == "status_distribution"
+
+
+def test_aggregate_by_entity():
+    agg = aggregate_by(_DATASET, by="cnpj", measure="quantidade", agg_id="cnpj_ranking")
+    rows = {r.key: r.value for r in agg.rows}
+    assert rows["X1"] == 30.0
+    assert rows["X2"] == 5.0
