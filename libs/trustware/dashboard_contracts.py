@@ -94,3 +94,49 @@ class SemanticModel(BaseModel):
     primary_dimension: Optional[str] = None
     secondary_dimension: Optional[str] = None
     fields: list[SemanticField]
+
+
+# ==========================================
+# Fase C2 — Motor de Métricas
+# ==========================================
+
+
+class KPI(BaseModel):
+    """Indicador com evidência de cálculo completa."""
+    metric: str
+    label: str
+    value: float
+    formula: str = Field(..., description="Fórmula sobre o modelo longo")
+    numerator: float
+    denominator: float
+    validation_status: str = Field(..., description="ok | mismatch | undefined")
+
+
+class AggregationRow(BaseModel):
+    """Uma linha de agregação: chave categórica + valor."""
+    key: str
+    value: float
+
+
+class Aggregation(BaseModel):
+    """Agregação group-by de uma measure por uma dimensão."""
+    id: str
+    by: str = Field(..., description="Dimensão agrupadora")
+    measure: str = Field(..., description="Measure agregada")
+    rows: list[AggregationRow]
+
+
+class Anomaly(BaseModel):
+    """Anomalia detectada, com evidência numérica obrigatória."""
+    type: str = Field(..., description="concentration | outlier")
+    severity: str = Field(..., description="low | medium | high")
+    metric: str
+    evidence: str = Field(..., description="Evidência numérica textual")
+
+
+class MetricsReport(BaseModel):
+    """Artefato da C2: KPIs + agregações + anomalias."""
+    schema_version: Literal["c2_metrics.v1"] = "c2_metrics.v1"
+    kpis: list[KPI]
+    aggregations: list[Aggregation]
+    anomalies: list[Anomaly] = Field(default_factory=list)
