@@ -88,6 +88,10 @@ libs/trustware/dashboard_contracts.py   contratos Pydantic da Fase C
 
 ## 4. Contratos JSON
 
+> Campos de texto exibível (`title`, `label`, `display_value`, `narrative`,
+> `evidence`) são UTF-8 e preservam acentuação. Identificadores técnicos
+> (`metric`, `id`, chaves de `data_views`) permanecem ASCII.
+
 ### 4.1 C0 — `{stem}_c0_dataset.json`
 
 ```json
@@ -103,7 +107,9 @@ libs/trustware/dashboard_contracts.py   contratos Pydantic da Fase C
   "detected_structure": {
     "table_kind": "pivot_hierarchical",
     "hierarchy": {"parent": "cnpj", "child": "perfil_operacional"},
-    "measure_columns": ["aprovado", "reprovado", "analise", "pendente"],
+    "unpivot_source_columns": ["aprovado", "reprovado", "analise", "pendente"],
+    "canonical_dimension_from_columns": "status",
+    "canonical_measure": "quantidade",
     "subtotal_rows_detected": 12,
     "grand_total_row": 145
   },
@@ -114,14 +120,16 @@ libs/trustware/dashboard_contracts.py   contratos Pydantic da Fase C
   ],
   "source_map": [
     {"row_id": 1, "origin_sheet": "Plan1",
-     "origin_cells": {"cnpj": "A5", "quantidade": "F7"}}
+     "origin_cells": {"cnpj": "A5", "perfil_operacional": "A7",
+                      "status": "F4", "quantidade": "F7"}}
   ],
   "discarded_rows": [
     {"origin_row": 145, "reason": "grand_total", "raw": ["Total Geral", 3704]}
   ],
   "validation_summary": {
     "total_rows_read": 200,
-    "source_rows_consumed": 145,
+    "source_rows_emitted": 120,
+    "source_rows_context": 25,
     "source_rows_discarded": 55,
     "dataset_rows_emitted": 580,
     "warnings": []
@@ -129,9 +137,14 @@ libs/trustware/dashboard_contracts.py   contratos Pydantic da Fase C
 }
 ```
 
-**Regra de fechamento (corrigida):** `source_rows_consumed + source_rows_discarded == total_rows_read`.
-O número de linhas emitidas (`dataset_rows_emitted`) é independente — o un-pivot
-transforma 1 linha de origem em N linhas de dataset.
+A origem de `status` no `source_map` é tipicamente a célula de cabeçalho da coluna
+antes do un-pivot.
+
+**Regra de fechamento:** `source_rows_emitted + source_rows_context + source_rows_discarded == total_rows_read`.
+Linhas de contexto (linha do CNPJ pai, cabeçalho, linha de agrupamento) são
+consumidas mas não viram dataset diretamente. O número de linhas emitidas no
+dataset longo (`dataset_rows_emitted`) é independente — o un-pivot transforma
+1 linha de origem em N linhas de dataset.
 
 ### 4.2 C1 — `{stem}_c1_semantic.json`
 
@@ -161,17 +174,19 @@ transforma 1 linha de origem em N linhas de dataset.
 {
   "schema_version": "c2_metrics.v1",
   "kpis": [
-    {"metric": "approval_rate", "label": "Taxa de Aprovacao", "value": 0.2076,
+    {"metric": "approval_rate", "label": "Taxa de Aprovação", "value": 0.2076,
      "formula": "sum(quantidade where status == 'Aprovado') / sum(quantidade)",
      "numerator": 769, "denominator": 3704, "validation_status": "ok"}
   ],
   "aggregations": [
     {"id": "status_distribution", "by": "status", "measure": "quantidade",
-     "rows": [{"key": "Aprovado", "value": 769}, {"key": "Reprovado", "value": 2497}]}
+     "rows": [{"key": "Aprovado", "value": 769}, {"key": "Reprovado", "value": 2497}]},
+    {"id": "cnpj_ranking", "by": "cnpj", "measure": "quantidade",
+     "rows": [{"key": "00.656.565/0001-21", "value": 448}, {"key": "12.999.038/0001-07", "value": 356}]}
   ],
   "anomalies": [
     {"type": "concentration", "severity": "high", "metric": "rejection_rate",
-     "evidence": "67.4% das propostas estao reprovadas"}
+     "evidence": "67,4% das propostas estão reprovadas"}
   ]
 }
 ```
@@ -188,21 +203,42 @@ de status (`aprovado`, `reprovado`) existem como colunas físicas.
 {
   "schema_version": "dashboard_spec.v1",
   "dashboard_id": "cnpj_status_analysis",
-  "title": "Analise de Propostas por CNPJ",
+  "title": "Análise de Propostas por CNPJ",
   "resolution": {"width": 3840, "height": 2160},
   "theme": "executive_dark",
   "llm_used": false,
-  "layout": {"kind": "c_level_grid",
-             "rows": [["kpi_summary"], ["status_distribution", "cnpj_ranking"]]},
+  "layout": {
+    "kind": "c_level_grid",
+    "rows": [["kpi_summary"], ["status_distribution", "cnpj_ranking"]]
+  },
   "data_views": {
-    "kpis": [
-      {"metric": "approval_rate", "label": "Taxa de Aprovacao",
-       "value": 0.2076, "display_value": "20,8%"}
-    ],
-    "status_distribution": [
-      {"key": "Aprovado", "value": 769},
-      {"key": "Reprovado", "value": 2497}
-    ]
+    "kpis": {
+      "kind": "kpi_list",
+      "columns": ["metric", "label", "value", "display_value"],
+      "rows": [
+        {"metric": "approval_rate", "label": "Taxa de Aprovação",
+         "value": 0.2076, "display_value": "20,8%"}
+      ],
+      "source": {"kpi_ids": ["approval_rate"]}
+    },
+    "status_distribution": {
+      "kind": "series",
+      "columns": ["key", "value"],
+      "rows": [
+        {"key": "Aprovado", "value": 769},
+        {"key": "Reprovado", "value": 2497}
+      ],
+      "source": {"aggregation_id": "status_distribution"}
+    },
+    "cnpj_ranking": {
+      "kind": "series",
+      "columns": ["key", "value"],
+      "rows": [
+        {"key": "00.656.565/0001-21", "value": 448},
+        {"key": "12.999.038/0001-07", "value": 356}
+      ],
+      "source": {"aggregation_id": "cnpj_ranking"}
+    }
   },
   "components": [
     {"id": "kpi_summary", "type": "kpi_cards",
@@ -212,14 +248,20 @@ de status (`aprovado`, `reprovado`) existem como colunas físicas.
     {"id": "status_distribution", "type": "horizontal_bar",
      "data_binding": "data_views.status_distribution",
      "analytical_intent": "status_distribution",
-     "generated_by_rule": "rule.status_distribution.horizontal_bar.v1"}
+     "generated_by_rule": "rule.status_distribution.horizontal_bar.v1"},
+    {"id": "cnpj_ranking", "type": "bar_ranking",
+     "data_binding": "data_views.cnpj_ranking",
+     "analytical_intent": "entity_ranking",
+     "generated_by_rule": "rule.entity_ranking.bar_ranking.v1"}
   ],
   "narrative": []
 }
 ```
 
-A C4 resolve `data_binding` por **lookup local** dentro de `data_views` — nunca
-abre outro arquivo.
+Cada entrada de `data_views` é um objeto tipado (`kind`, `columns`, `rows`,
+`source`). A C4 resolve `data_binding` por **lookup local** dentro de `data_views`
+— nunca abre outro arquivo. **Todo `id` referenciado em `layout` tem componente e
+`data_view` correspondentes** (validação obrigatória da C3).
 
 ---
 
@@ -234,9 +276,12 @@ C0  C0Dataset, IngestionStrategy, DetectedStructure,
     SourceMapEntry, DiscardedRow, ValidationSummary
 C1  SemanticModel, SemanticField
 C2  MetricsReport, KPI, Aggregation, AggregationRow, Anomaly
-C3  DashboardSpec, DataViews, DashboardComponent, Layout,
+C3  DashboardSpec, DataViews, DataView, DashboardComponent, Layout,
     Resolution, NarrativeBlock, ChartRule, DashboardComponentSpec
 ```
+
+`DataView` é o objeto tipado de cada entrada de `data_views` (`kind`, `columns`,
+`rows`, `source`).
 
 `DashboardComponentSpec` = par `(component, required_data_view)` emitido por uma
 `ChartRule`; é o tipo intermediário entre o catálogo e o `DashboardSpec` final.
@@ -252,10 +297,23 @@ ChartRule(
     id="rule.status_distribution.horizontal_bar.v1",
     priority=20,
     analytical_intent="status_distribution",
-    predicate=has_status_breakdown_and_measure,
+    predicate_id="predicate.has_status_breakdown_and_measure.v1",
     component_type="horizontal_bar",
-    data_view_builder="build_status_distribution",
+    data_view_builder_id="builder.status_distribution.v1",
 )
+```
+
+O `ChartRule` carrega apenas **IDs estáveis** — `predicate_id` e
+`data_view_builder_id` — nunca funções Python diretas. Isso mantém o catálogo como
+dado versionado e auditável. As funções são resolvidas por registries:
+
+```python
+PREDICATE_REGISTRY = {
+    "predicate.has_status_breakdown_and_measure.v1": has_status_breakdown_and_measure,
+}
+DATA_VIEW_BUILDER_REGISTRY = {
+    "builder.status_distribution.v1": build_status_distribution,
+}
 ```
 
 A função de recomendação é pura:
@@ -280,8 +338,9 @@ A C3 materializa esses `data_views` dentro do `DashboardSpec` autocontido.
 
 **Controle de duplicidade:** cada `analytical_intent` gera **no máximo um componente
 primário**. Se duas regras disputam o mesmo intent, vence a de maior `priority`.
-Intents válidos: `summary_kpis`, `status_distribution`, `entity_ranking`,
-`cross_breakdown`, `temporal_trend`, `category_composition`.
+**Prioridade é numérica descendente: quanto maior o número, maior a precedência**
+(ex.: 100 vence 20). Intents válidos: `summary_kpis`, `status_distribution`,
+`entity_ranking`, `cross_breakdown`, `temporal_trend`, `category_composition`.
 
 **Auditabilidade:** todo componente registra `generated_by_rule` com o `id` da
 regra que o criou.
@@ -335,8 +394,9 @@ inteiro. C0→C3 rodam com openpyxl + pydantic (já presentes). Setup local:
 
 **C0:** CSV simples → strategy `structured_model`; tabela dinâmica hierárquica →
 un-pivot correto + hierarquia detectada; subtotal → `discarded_rows`; total geral →
-descartado; `source_map` cobre 100% do dataset; arquivo inexistente → erro limpo;
-`source_rows_consumed + source_rows_discarded == total_rows_read`.
+descartado; linha de CNPJ pai / cabeçalho → contabilizada como `context`;
+`source_map` cobre 100% dos campos de cada linha do dataset; arquivo inexistente →
+erro limpo; `source_rows_emitted + source_rows_context + source_rows_discarded == total_rows_read`.
 
 **C1:** coluna numérica → measure; coluna CNPJ → entity_id; categórica baixa
 cardinalidade → breakdown_dimension; coluna de data → temporal; todo campo recebe
@@ -347,10 +407,12 @@ cardinalidade → breakdown_dimension; coluna de data → temporal; todo campo r
 limiar; divisão por zero → `undefined`, sem crash.
 
 **C3:** status + entidade → catálogo escolhe horizontal_bar + ranking + heatmap;
-todo componente tem `data_binding` resolvível dentro de `data_views`; spec valida
-contra schema Pydantic; `schema_version == "dashboard_spec.v1"`; sem `--llm` →
-`narrative` vazio mas spec válido; cada `analytical_intent` gera ≤1 componente;
-todo componente tem `generated_by_rule`.
+todo componente tem `data_binding` resolvível dentro de `data_views`; todo `id` do
+`layout` tem componente + `data_view` correspondentes; spec valida contra schema
+Pydantic; `schema_version == "dashboard_spec.v1"`; sem `--llm` → `narrative` vazio
+mas spec válido; cada `analytical_intent` gera ≤1 componente; todo componente tem
+`generated_by_rule`; `ChartRule` resolve `predicate_id`/`data_view_builder_id` via
+registry.
 
 **C4:** spec mínimo → HTML existe; HTML contém um container por `component.id`;
 PNG criado com dimensões exatas 3840×2160; spec inválido → erro antes de renderizar.
@@ -364,7 +426,7 @@ fica separado e marcado.
 1. `python run_pipeline.py arquivo.xlsx --dashboard` produz os 5 artefatos C0→C4.
 2. O `DashboardSpec` é autocontido — a C4 roda sem acesso a nenhum outro arquivo.
 3. Todo número exibido tem rastro: fórmula, numerador, denominador, validação.
-4. Toda linha de origem é contabilizada (consumida ou descartada com motivo).
+4. Toda linha de origem é contabilizada (emitida, contexto, ou descartada com motivo).
 5. Sem `--llm`, o pipeline entrega dashboard completo (sem narrativa).
 6. O PNG final tem exatamente 3840×2160.
 7. Toda a suíte de testes passa, incluindo os testes novos C0→C4.
@@ -399,7 +461,7 @@ fica separado e marcado.
 ## Trava final
 
 ```
-DashboardSpec autocontido e o artefato canonico.
+DashboardSpec autocontido é o artefato canônico.
 C4 toca apenas o DashboardSpec.
-C4 nao abre C2, nao resolve regra, nao calcula e nao interpreta.
+C4 não abre C2, não resolve regra, não calcula e não interpreta.
 ```
