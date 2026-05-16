@@ -32,3 +32,49 @@ def test_semantic_model_roundtrip():
     )
     assert m.schema_version == "c1_semantic.v1"
     assert SemanticModel.model_validate(m.model_dump()).primary_dimension == "cnpj"
+
+
+# --- Task 9: semantic ---
+from dashboard_contracts import C0Dataset, IngestionStrategy, DetectedStructure, ValidationSummary
+from semantic import infer_type, infer_semantic_role, build_semantic_model
+
+
+def _c0_fixture() -> C0Dataset:
+    return C0Dataset(
+        source_file="t.csv",
+        ingestion_strategy=IngestionStrategy(primary="structured_model",
+            fallback="grid_scraping", used="structured_model", reason="flat"),
+        detected_structure=DetectedStructure(table_kind="flat"),
+        dataset=[
+            {"row_id": 1, "cnpj": "00.1/0001-01", "status": "Aprovado", "quantidade": 10.0},
+            {"row_id": 2, "cnpj": "00.2/0001-02", "status": "Reprovado", "quantidade": 20.0},
+        ],
+        source_map=[], discarded_rows=[],
+        validation_summary=ValidationSummary(total_rows_read=2, source_rows_emitted=2,
+            source_rows_context=0, source_rows_discarded=0, dataset_rows_emitted=2),
+    )
+
+
+def test_infer_type_integer_and_category():
+    assert infer_type([10.0, 20.0, 30.0]) == "integer"
+    assert infer_type(["Aprovado", "Reprovado", "Aprovado"]) == "category"
+
+
+def test_infer_semantic_role_measure_and_entity():
+    assert infer_semantic_role("quantidade", "integer", None) == "measure"
+    assert infer_semantic_role("cnpj", "string", 47) == "entity_id"
+
+
+def test_build_semantic_model_assigns_roles():
+    model = build_semantic_model(_c0_fixture())
+    assert model.schema_version == "c1_semantic.v1"
+    roles = {f.name: f.semantic_role for f in model.fields}
+    assert roles["cnpj"] == "entity_id"
+    assert roles["status"] == "breakdown_dimension"
+    assert roles["quantidade"] == "measure"
+    assert any(f.semantic_role == "measure" for f in model.fields)
+
+
+def test_build_semantic_model_picks_primary_dimension():
+    model = build_semantic_model(_c0_fixture())
+    assert model.primary_dimension is not None
