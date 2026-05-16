@@ -140,3 +140,75 @@ class MetricsReport(BaseModel):
     kpis: list[KPI]
     aggregations: list[Aggregation]
     anomalies: list[Anomaly] = Field(default_factory=list)
+
+
+# ==========================================
+# Fase C3 — Recomendador + DashboardSpec
+# ==========================================
+
+
+class Resolution(BaseModel):
+    """Resolução de renderização do dashboard."""
+    width: int = 3840
+    height: int = 2160
+
+
+class DataView(BaseModel):
+    """Bloco de dados tipado, materializado dentro do DashboardSpec."""
+    kind: str = Field(..., description="series | kpi_list")
+    columns: list[str]
+    rows: list[dict[str, Any]]
+    source: dict[str, Any] = Field(default_factory=dict,
+        description="Rastro: de qual aggregation/kpi do C2 veio")
+
+
+class DashboardComponent(BaseModel):
+    """Um componente visual do dashboard."""
+    id: str
+    type: str = Field(..., description="kpi_cards | horizontal_bar | bar_ranking | heatmap | line | stacked_bar")
+    data_binding: str = Field(..., description="Chave local: data_views.<nome>")
+    analytical_intent: str
+    generated_by_rule: str = Field(..., description="id da ChartRule que gerou")
+
+
+class Layout(BaseModel):
+    """Disposição em grade dos componentes."""
+    kind: str = Field(..., description="c_level_grid | c_level_grid_dense")
+    rows: list[list[str]] = Field(..., description="Grade de component ids")
+
+
+class NarrativeBlock(BaseModel):
+    """Bloco de narrativa executiva (gerado por LLM, opcional)."""
+    level: str = Field(..., description="c_level | management | operational")
+    text: str
+
+
+class DashboardSpec(BaseModel):
+    """Artefato canônico da Fase C — autocontido. C4 só toca este arquivo."""
+    schema_version: Literal["dashboard_spec.v1"] = "dashboard_spec.v1"
+    dashboard_id: str
+    title: str
+    resolution: Resolution
+    theme: str
+    llm_used: bool = False
+    layout: Layout
+    data_views: dict[str, DataView] = Field(...,
+        description="Dados materializados; C4 resolve binding por lookup local")
+    components: list[DashboardComponent]
+    narrative: list[NarrativeBlock] = Field(default_factory=list)
+
+
+class ChartRule(BaseModel):
+    """Regra do catálogo de gráficos — carrega IDs estáveis, nunca funções."""
+    id: str
+    priority: int = Field(..., description="Numérica descendente: maior vence")
+    analytical_intent: str
+    predicate_id: str = Field(..., description="Chave em PREDICATE_REGISTRY")
+    component_type: str
+    data_view_builder_id: str = Field(..., description="Chave em DATA_VIEW_BUILDER_REGISTRY")
+
+
+class DashboardComponentSpec(BaseModel):
+    """Par emitido por uma ChartRule: componente + data_view exigido."""
+    component: DashboardComponent
+    required_data_view: DataView
