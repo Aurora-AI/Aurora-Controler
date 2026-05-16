@@ -71,3 +71,47 @@ def test_read_table_rejects_unknown_format(tmp_path):
     import pytest
     with pytest.raises(ValueError):
         read_table(str(p))
+
+
+# --- Task 6: detecção + un-pivot wide ---
+from unpivot import _is_number, classify_columns, detect_structure, unpivot_wide
+
+
+def test_is_number_handles_locale():
+    assert _is_number("1.234") is True
+    assert _is_number("12,5") is True
+    assert _is_number("Aprovado") is False
+    assert _is_number(None) is False
+
+
+def test_classify_columns_separates_dim_and_measure():
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", "20"], ["X2", "5", "7"]]
+    dim_idx, measure_idx = classify_columns(header, data)
+    assert dim_idx == [0]
+    assert measure_idx == [1, 2]
+
+
+def test_detect_structure_wide():
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", "20"]]
+    s = detect_structure(header, data)
+    assert s.table_kind == "wide"
+    assert s.unpivot_source_columns == ["Aprovado", "Reprovado"]
+    assert s.canonical_dimension_from_columns == "status"
+    assert s.canonical_measure == "quantidade"
+
+
+def test_detect_structure_flat():
+    header = ["cnpj", "status", "quantidade"]
+    data = [["X1", "Aprovado", "10"]]
+    s = detect_structure(header, data)
+    assert s.table_kind == "flat"
+
+
+def test_unpivot_wide_emits_long_rows():
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", "20"]]
+    long_rows = unpivot_wide(header, data, [0], [1, 2])
+    assert {"cnpj": "X1", "status": "Aprovado", "quantidade": 10.0} in long_rows
+    assert {"cnpj": "X1", "status": "Reprovado", "quantidade": 20.0} in long_rows
