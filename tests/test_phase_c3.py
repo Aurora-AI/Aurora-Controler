@@ -115,3 +115,33 @@ def test_fmt_kpi_preserves_decimals():
     assert _fmt_kpi(20.0, "total_quantidade") == "20"
     assert _fmt_kpi(19.99, "total_valor") == "19,99"   # decimal preservado
     assert _fmt_kpi(0.2076, "aprovado_rate") == "20,8%"
+
+
+# --- Task 15: recommend ---
+from recommend import recommend
+
+
+def test_recommend_returns_component_specs():
+    specs = recommend(_semantic(), _metrics())
+    intents = {s.component.analytical_intent for s in specs}
+    assert intents == {"summary_kpis", "status_distribution", "entity_ranking"}
+
+
+def test_recommend_one_component_per_intent():
+    specs = recommend(_semantic(), _metrics())
+    intents = [s.component.analytical_intent for s in specs]
+    assert len(intents) == len(set(intents))
+
+
+def test_recommend_each_spec_has_data_view_and_rule():
+    specs = recommend(_semantic(), _metrics())
+    for s in specs:
+        assert s.required_data_view.rows is not None
+        assert s.component.generated_by_rule.startswith("rule.")
+        assert s.component.data_binding == f"data_views.{s.component.id}"
+
+
+def test_recommend_ordered_by_priority():
+    specs = recommend(_semantic(), _metrics())
+    # summary_kpis (100) vem antes de status_distribution (80) antes de entity_ranking (60)
+    assert specs[0].component.analytical_intent == "summary_kpis"
