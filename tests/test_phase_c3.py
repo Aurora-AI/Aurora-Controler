@@ -186,3 +186,35 @@ def test_build_dashboard_spec_no_llm_empty_narrative():
                                 title="T", llm_used=False)
     assert spec.narrative == []
     assert spec.llm_used is False
+
+
+# --- Task 17: narrative + __main__ ---
+import json as _json
+import subprocess as _sub
+import os as _os
+from narrative import build_narrative_prompt
+
+
+def test_build_narrative_prompt_includes_kpis():
+    prompt = build_narrative_prompt(_metrics())
+    assert "total_quantidade" in prompt
+    assert "Total" in prompt
+
+
+def test_phase_c3_cli_writes_spec_without_llm(tmp_path):
+    sem = _semantic()
+    met = _metrics()
+    (tmp_path / "T_c1_semantic.json").write_text(sem.model_dump_json(indent=2), encoding="utf-8")
+    (tmp_path / "T_c2_metrics.json").write_text(met.model_dump_json(indent=2), encoding="utf-8")
+    result = _sub.run(
+        [sys.executable, "-m", "phase_c3", str(tmp_path / "T")],
+        cwd=str(REPO_ROOT), capture_output=True, text=True,
+        env={**_os.environ, "PYTHONPATH": str(REPO_ROOT / "src")},
+    )
+    assert result.returncode == 0, result.stderr
+    out = tmp_path / "T_c3_dashboard_spec.json"
+    assert out.exists()
+    data = _json.loads(out.read_text(encoding="utf-8"))
+    assert data["schema_version"] == "dashboard_spec.v1"
+    assert data["llm_used"] is False
+    assert data["narrative"] == []
