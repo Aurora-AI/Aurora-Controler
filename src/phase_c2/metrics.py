@@ -2,6 +2,10 @@
 
 Toda fórmula opera sobre o modelo canônico longo: nunca assume colunas
 físicas de status. KPIs carregam fórmula, numerador, denominador e validação.
+
+validation_status: "ok" (calculado sobre o modelo longo já validado pela C0)
+ou "undefined" (divisão por zero). O valor "mismatch" do contrato fica
+reservado para uma futura validação cruzada contra o total geral da origem.
 """
 from __future__ import annotations
 
@@ -62,14 +66,14 @@ def compute_kpis(dataset: list[dict[str, Any]], semantic: SemanticModel) -> list
     for r in dataset:
         val = r.get(measure, 0.0)
         if isinstance(val, (int, float)):
-            per_cat[str(r.get(status, ""))] = per_cat.get(str(r.get(status, "")), 0.0) + float(val)
+            key = str(r.get(status, ""))
+            per_cat[key] = per_cat.get(key, 0.0) + float(val)
 
-    parts_sum = sum(per_cat.values())
     for cat, num in per_cat.items():
         if total == 0:
             value, vstatus = 0.0, "undefined"
         else:
-            value, vstatus = num / total, ("ok" if abs(parts_sum - total) < 1e-9 else "mismatch")
+            value, vstatus = num / total, "ok"
         kpis.append(KPI(
             metric=f"{_slug(cat)}_rate", label=f"Taxa de {cat}", value=value,
             formula=f"sum({measure} where {status} == '{cat}') / sum({measure})",
@@ -81,7 +85,11 @@ def compute_kpis(dataset: list[dict[str, Any]], semantic: SemanticModel) -> list
 def detect_anomalies(
     dataset: list[dict[str, Any]], semantic: SemanticModel, kpis: list[KPI]
 ) -> list[Anomaly]:
-    """Detecta concentração: alguma categoria de status acima de 50% do total."""
+    """Detecta concentração: alguma categoria de status acima de 50% do total.
+
+    `dataset` e `semantic` são reservados para tipos futuros de anomalia
+    (ex.: detecção de outliers por dimensão); o MVP usa apenas `kpis`.
+    """
     anomalies: list[Anomaly] = []
     for k in kpis:
         if k.metric.endswith("_rate") and k.value > _CONCENTRATION_THRESHOLD:
