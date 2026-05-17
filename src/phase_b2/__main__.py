@@ -20,7 +20,7 @@ from pathlib import Path
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
 
 _HERE = Path(__file__).resolve().parent
-_REPO = _HERE.parents[2]
+_REPO = _HERE.parents[1]
 for _p in [str(_HERE), str(_REPO / "libs" / "trustware")]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
