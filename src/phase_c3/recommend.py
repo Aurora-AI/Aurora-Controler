@@ -6,7 +6,7 @@ e materializa o data_view de cada componente escolhido.
 from __future__ import annotations
 
 from dashboard_contracts import (
-    DashboardComponent, DashboardComponentSpec, MetricsReport, SemanticModel,
+    ChartRule, DashboardComponent, DashboardComponentSpec, MetricsReport, SemanticModel,
 )
 from catalog import CHART_RULES, DATA_VIEW_BUILDER_REGISTRY, PREDICATE_REGISTRY
 
@@ -16,7 +16,7 @@ def recommend(
 ) -> list[DashboardComponentSpec]:
     """Retorna a lista de DashboardComponentSpec — componente + data_view."""
     # Dedup por intent: cada intent fica com a regra de maior priority
-    chosen: dict[str, object] = {}
+    chosen: dict[str, ChartRule] = {}
     for rule in CHART_RULES:
         predicate = PREDICATE_REGISTRY[rule.predicate_id]
         if not predicate(semantic, metrics):
