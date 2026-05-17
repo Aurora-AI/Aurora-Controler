@@ -127,3 +127,23 @@ def test_kpi_division_by_zero_is_undefined():
     kpis = compute_kpis(empty, _c1())
     total = {k.metric: k for k in kpis}.get("total_quantidade")
     assert total is not None and total.value == 0.0
+
+
+# --- Task 13: __main__ ---
+import json as _json
+import subprocess as _sub
+import os as _os
+
+
+def test_phase_c2_cli_writes_artifact(tmp_path):
+    (tmp_path / "T_c0_dataset.json").write_text(_c0().model_dump_json(indent=2), encoding="utf-8")
+    (tmp_path / "T_c1_semantic.json").write_text(_c1().model_dump_json(indent=2), encoding="utf-8")
+    result = _sub.run(
+        [sys.executable, "-m", "phase_c2", str(tmp_path / "T")],
+        cwd=str(REPO_ROOT), capture_output=True, text=True,
+        env={**_os.environ, "PYTHONPATH": str(REPO_ROOT / "src")},
+    )
+    assert result.returncode == 0, result.stderr
+    out = tmp_path / "T_c2_metrics.json"
+    assert out.exists()
+    assert _json.loads(out.read_text(encoding="utf-8"))["schema_version"] == "c2_metrics.v1"
