@@ -62,3 +62,68 @@ def test_aggregate_by_entity():
     rows = {r.key: r.value for r in agg.rows}
     assert rows["X1"] == 30.0
     assert rows["X2"] == 5.0
+
+
+# --- Task 12: metrics ---
+from dashboard_contracts import (
+    C0Dataset, IngestionStrategy, DetectedStructure, ValidationSummary,
+    SemanticModel, SemanticField,
+)
+from metrics import compute_kpis, detect_anomalies, build_metrics_report
+
+
+def _c0() -> C0Dataset:
+    return C0Dataset(
+        source_file="t.csv",
+        ingestion_strategy=IngestionStrategy(primary="structured_model",
+            fallback="grid_scraping", used="structured_model", reason="flat"),
+        detected_structure=DetectedStructure(table_kind="flat"),
+        dataset=list(_DATASET), source_map=[], discarded_rows=[],
+        validation_summary=ValidationSummary(total_rows_read=3, source_rows_emitted=3,
+            source_rows_context=0, source_rows_discarded=0, dataset_rows_emitted=3),
+    )
+
+
+def _c1() -> SemanticModel:
+    return SemanticModel(primary_dimension="cnpj", secondary_dimension="status",
+        fields=[
+            SemanticField(name="cnpj", type="string", semantic_role="entity_id", cardinality=2),
+            SemanticField(name="status", type="category", semantic_role="breakdown_dimension",
+                          business_role="proposal_status", cardinality=2),
+            SemanticField(name="quantidade", type="integer", semantic_role="measure"),
+        ])
+
+
+def test_compute_kpis_rate_over_long_model():
+    kpis = compute_kpis(list(_DATASET), _c1())
+    by_metric = {k.metric: k for k in kpis}
+    assert "total_quantidade" in by_metric
+    assert by_metric["total_quantidade"].value == 35.0
+    aprov = by_metric["aprovado_rate"]
+    assert abs(aprov.value - 15.0 / 35.0) < 1e-9
+    assert aprov.numerator == 15.0 and aprov.denominator == 35.0
+    assert aprov.validation_status == "ok"
+
+
+def test_detect_anomalies_concentration():
+    skewed = [
+        {"row_id": 1, "status": "Reprovado", "quantidade": 90.0},
+        {"row_id": 2, "status": "Aprovado", "quantidade": 10.0},
+    ]
+    kpis = compute_kpis(skewed, _c1())
+    anomalies = detect_anomalies(skewed, _c1(), kpis)
+    assert any(a.type == "concentration" for a in anomalies)
+
+
+def test_build_metrics_report_complete():
+    report = build_metrics_report(_c0(), _c1())
+    assert report.schema_version == "c2_metrics.v1"
+    assert len(report.kpis) >= 1
+    assert any(a.id == "status_distribution" for a in report.aggregations)
+
+
+def test_kpi_division_by_zero_is_undefined():
+    empty = []
+    kpis = compute_kpis(empty, _c1())
+    total = {k.metric: k for k in kpis}.get("total_quantidade")
+    assert total is not None and total.value == 0.0
