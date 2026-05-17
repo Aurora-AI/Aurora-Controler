@@ -145,3 +145,44 @@ def test_recommend_ordered_by_priority():
     specs = recommend(_semantic(), _metrics())
     # summary_kpis (100) vem antes de status_distribution (80) antes de entity_ranking (60)
     assert specs[0].component.analytical_intent == "summary_kpis"
+
+
+# --- Task 16: spec_builder ---
+from spec_builder import build_dashboard_spec, validate_spec_self_contained
+
+
+def test_build_dashboard_spec_is_self_contained():
+    spec = build_dashboard_spec(_semantic(), _metrics(),
+                                dashboard_id="d1", title="Análise")
+    assert spec.schema_version == "dashboard_spec.v1"
+    for comp in spec.components:
+        assert comp.id in spec.data_views
+    comp_ids = {c.id for c in spec.components}
+    for row in spec.layout.rows:
+        for cid in row:
+            assert cid in comp_ids
+
+
+def test_build_dashboard_spec_layout_puts_kpis_first():
+    spec = build_dashboard_spec(_semantic(), _metrics(), dashboard_id="d1", title="T")
+    assert spec.layout.rows[0] == ["summary_kpis"]
+
+
+def test_validate_spec_self_contained_passes():
+    spec = build_dashboard_spec(_semantic(), _metrics(), dashboard_id="d1", title="T")
+    validate_spec_self_contained(spec)  # não levanta exceção
+
+
+def test_validate_spec_self_contained_catches_missing_binding():
+    spec = build_dashboard_spec(_semantic(), _metrics(), dashboard_id="d1", title="T")
+    del spec.data_views[spec.components[0].id]
+    import pytest
+    with pytest.raises(ValueError):
+        validate_spec_self_contained(spec)
+
+
+def test_build_dashboard_spec_no_llm_empty_narrative():
+    spec = build_dashboard_spec(_semantic(), _metrics(), dashboard_id="d1",
+                                title="T", llm_used=False)
+    assert spec.narrative == []
+    assert spec.llm_used is False
