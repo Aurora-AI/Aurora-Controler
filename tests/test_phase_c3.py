@@ -108,3 +108,10 @@ def test_builder_status_distribution_produces_series():
     assert dv.columns == ["key", "value"]
     assert {"key": "Aprovado", "value": 15.0} in dv.rows
     assert dv.source["aggregation_id"] == "status_distribution"
+
+
+def test_fmt_kpi_preserves_decimals():
+    from catalog import _fmt_kpi
+    assert _fmt_kpi(20.0, "total_quantidade") == "20"
+    assert _fmt_kpi(19.99, "total_valor") == "19,99"   # decimal preservado
+    assert _fmt_kpi(0.2076, "aprovado_rate") == "20,8%"

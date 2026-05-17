@@ -7,7 +7,9 @@ from __future__ import annotations
 
 from typing import Callable
 
-from dashboard_contracts import ChartRule, DataView, MetricsReport, SemanticModel
+from dashboard_contracts import (
+    Aggregation, ChartRule, DataView, MetricsReport, SemanticModel,
+)
 
 _RANKING_LIMIT = 15
 
@@ -15,6 +17,9 @@ Predicate = Callable[[SemanticModel, MetricsReport], bool]
 Builder = Callable[[SemanticModel, MetricsReport], DataView]
 
 
+# Nota sobre nomes de predicado: uma agregação `_distribution`/`_ranking` só é
+# criada pelo C2 quando havia uma measure para agregar. Logo, checar a existência
+# da agregação já satisfaz a parte "_and_measure" do id do predicado.
 # --------------------------------------------------------------------------
 # Predicados — determinísticos, puros
 # --------------------------------------------------------------------------
@@ -41,9 +46,17 @@ PREDICATE_REGISTRY: dict[str, Predicate] = {
 # Builders de data_view — materializam dados do C2 num DataView tipado
 # --------------------------------------------------------------------------
 def _fmt_kpi(value: float, metric: str) -> str:
+    """Formata o valor de um KPI para exibição (pt-BR).
+
+    Taxas (`_rate`) viram percentual; valores inteiros usam separador de
+    milhar sem decimais; valores fracionários mantêm 2 casas decimais.
+    """
     if metric.endswith("_rate"):
         return f"{value * 100:.1f}%".replace(".", ",")
-    return f"{value:,.0f}".replace(",", ".")
+    if float(value).is_integer():
+        return f"{value:,.0f}".replace(",", ".")
+    # pt-BR: milhar com ponto, decimal com vírgula
+    return f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def _build_kpi_list(semantic: SemanticModel, metrics: MetricsReport) -> DataView:
@@ -58,7 +71,7 @@ def _build_kpi_list(semantic: SemanticModel, metrics: MetricsReport) -> DataView
     )
 
 
-def _first_agg(metrics: MetricsReport, suffix: str):
+def _first_agg(metrics: MetricsReport, suffix: str) -> Aggregation:
     for a in metrics.aggregations:
         if a.id.endswith(suffix):
             return a
