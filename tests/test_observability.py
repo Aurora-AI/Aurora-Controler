@@ -72,6 +72,30 @@ def test_worker_exception_is_not_silent(tmp_path, monkeypatch):
     assert any(t["phase"] == "terminal" and t["status"] == "ERROR" for t in trace)
 
 
+def test_observability_failure_never_orphans_job(tmp_path, monkeypatch):
+    """Se a própria escrita de evento falhar, o job ainda é persistido ERROR (nunca RUNNING)."""
+    monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+    import celery_app
+
+    def _boom(*a, **k):
+        raise RuntimeError("pipeline quebrou")
+    monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
+    # observabilidade indisponível (ex.: disco cheio) — run_compile importa emit_event de
+    # factory_events em tempo de chamada, então o patch é no módulo de origem.
+    import factory_events
+    monkeypatch.setattr(factory_events, "emit_event",
+                        lambda *a, **k: (_ for _ in ()).throw(OSError("disk full")))
+
+    job_id = uuid.uuid4().hex
+    from jobs import JobStore
+    store = JobStore()
+    store.create(job_id, "x.xlsx")
+    status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
+    assert status == "ERROR"
+    # O ponto: status terminal persistido apesar da observabilidade ter explodido.
+    assert store.get(job_id)["status"] == "ERROR"
+
+
 def test_sandbox_event_correlates_job_id_via_context(tmp_path, monkeypatch):
     """O evento de sandbox herda o job_id corrente (contextvar), não None."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))

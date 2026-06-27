@@ -67,14 +67,19 @@ def run_compile(job_id: str, file_path: str) -> str:
                             detail=result.get("reason"))
         return status
     except Exception as e:  # noqa: BLE001 — falha do job NUNCA é silenciosa
-        # Proibida falha silenciosa de ferramenta de fábrica: emite evento + trace terminal
-        # antes de persistir ERROR. Cobre o caso de um passo (Docker/Redis/IO) LEVANTAR
-        # exceção em vez de retornar sentinela.
         detail = f"{type(e).__name__}: {e}"
-        emit_event("JOB_EXECUTION_FAILED", job_id=job_id, error=detail)
-        trace(job_id, "terminal", status="ERROR", error=detail)
+        # Persiste o status terminal PRIMEIRO: uma falha de escrita de observabilidade
+        # (disco cheio, EXRS_DATA_DIR não-gravável) jamais pode deixar o job órfão em RUNNING.
         store.update_status(job_id, "ERROR", detail=detail)
+        # Observabilidade best-effort (proibida falha silenciosa de ferramenta de fábrica).
+        try:
+            emit_event("JOB_EXECUTION_FAILED", job_id=job_id, error=detail)
+            trace(job_id, "terminal", status="ERROR", error=detail)
+        except Exception:  # noqa: BLE001 — registrar é melhor-esforço, não bloqueia o job
+            pass
         return "ERROR"
+    finally:
+        set_job(None)  # higiene do contextvar (seguro caso o pool deixe de ser solo)
 
 
 @celery_app.task(name="exrs.compile_job")
