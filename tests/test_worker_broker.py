@@ -42,6 +42,10 @@ def test_compile_via_real_broker():
     fixture = str(REPO_ROOT / "tests" / "fixtures" / "coverage_test.xlsx")
     compile_job.delay(job_id, fixture)
 
+    # Prova de broker real: o processo de teste NUNCA executa run_compile e eager está OFF
+    # (assert acima). Logo, qualquer status terminal só pode ter vindo do worker via Redis.
+    # RUNNING é transiente (o fixture processa em <1s) e o polling pode perdê-lo — por isso
+    # o critério é "atingiu terminal", não "observou RUNNING".
     seen: list[str] = []
     deadline = time.time() + 60
     while time.time() < deadline:
@@ -49,7 +53,6 @@ def test_compile_via_real_broker():
         if status not in seen:
             seen.append(status)
         if status in TERMINAL_STATUSES:
-            assert "RUNNING" in seen, f"job não passou por RUNNING (broker suspeito): {seen}"
-            return
-        time.sleep(0.5)
+            return  # terminal só pode vir do worker via broker → gate satisfeito
+        time.sleep(0.2)
     pytest.fail(f"job não atingiu status terminal via broker em 60s; transições={seen}")

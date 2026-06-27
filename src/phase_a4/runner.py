@@ -2,7 +2,7 @@
 EXRS Phase A4 — DAG Runner & Sandbox
 Executa o código traduzido e as regras determinísticas respeitando a ordem topológica.
 """
-import sys, math, statistics, ast, operator, inspect, subprocess, tempfile, json, shutil, uuid
+import sys, os, math, statistics, ast, operator, inspect, subprocess, tempfile, json, shutil, uuid
 from pathlib import Path
 from typing import Any, Callable
 
@@ -173,6 +173,9 @@ def execute_in_sandbox(func_code: str, func_name: str, inputs: dict, timeout_sec
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8") as f:
         f.write(_SANDBOX_RUNNER)
         temp_path = f.name
+    # NamedTemporaryFile nasce 0600 (só dono). O container roda como nobody (uid 65534) e
+    # precisa LER o script montado — no Linux as permissões são aplicadas (no Windows não).
+    os.chmod(temp_path, 0o644)
 
     container_name = f"exrs_sbx_{uuid.uuid4().hex[:12]}"
     cmd = [
