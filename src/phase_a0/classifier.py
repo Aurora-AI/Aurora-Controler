@@ -70,11 +70,26 @@ def classify_workbook(filepath: Path) -> CompatibilityReport:
     - restricted_items: lista de itens restritos encontrados (se houver)
     """
     print(f"[INFO] Carregando workbook: {filepath.name}")
-    wb = load_workbook(filepath, read_only=True, data_only=False, keep_vba=True)
+    
+    if filepath.suffix.lower() == ".csv":
+        return CompatibilityReport(
+            workbook_class=WorkbookClass.SUPPORTED,
+            compile_decision=CompileDecision.PROCEED,
+            construct_details=[{"type": "csv_tabular", "severity": "supported", "detail": "CSV file detected"}]
+        )
+
+    try:
+        wb = load_workbook(filepath, read_only=True, data_only=False, keep_vba=True)
+    except Exception as e:
+        return CompatibilityReport(
+            workbook_class=WorkbookClass.UNSUPPORTED,
+            compile_decision=CompileDecision.ESCALATE,
+            escalate_reasons=[f"Failed to load workbook: {str(e)}"]
+        )
     
     # Detecção real de VBA (vba_archive contém todo o zip se keep_vba=True)
     has_vba = False
-    if wb.vba_archive:
+    if getattr(wb, 'vba_archive', None):
         has_vba = 'xl/vbaProject.bin' in wb.vba_archive.namelist()
     
     has_external_links = False

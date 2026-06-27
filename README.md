@@ -4,7 +4,7 @@ Engenharia reversa de planilhas Excel: extrai fórmulas, mapeia dependências, c
 
 ## Pré-requisitos
 
-- Python 3.11+
+- Python 3.14+
 - pip
 
 ## Setup Rápido
@@ -12,7 +12,7 @@ Engenharia reversa de planilhas Excel: extrai fórmulas, mapeia dependências, c
 ```bash
 git clone https://github.com/Aurora-AI/Aurora-Controler.git
 cd Aurora-Controler
-pip install -r requirements.txt
+uv sync
 ```
 
 ## ⚠️ Gerar Fixture de Testes (Obrigatório)

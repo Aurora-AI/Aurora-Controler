@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "consumer_id": "AuroraControler",
+  "consumer_domain": "exrs",
+  "factory_registry_path": "C:\\Projetos\\Aurora\\Ozzmosis\\.aurora\\factory-toolbelt-registry.json",
+  "consumption_model": "on-demand-governed",
+  "required_preflight": true,
+  "capabilities": [
+    {
+      "capability_id": "observability-agentiva",
+      "provider": "Ozzmosis",
+      "kind": "MCP_READ_ONLY",
+      "status": "ON_DEMAND",
+      "registry_path": "C:\\Projetos\\Aurora\\Ozzmosis\\.aurora\\factory-toolbelt-registry.json"
+    },
+    {
+      "capability_id": "factory-oil",
+      "provider": "Ozzmosis",
+      "kind": "CONTRACT_PACKAGE",
+      "status": "ON_DEMAND",
+      "registry_path": "C:\\Projetos\\Aurora\\Ozzmosis\\.aurora\\factory-toolbelt-registry.json"
+    },
+    {
+      "capability_id": "topology-impact-analyzer",
+      "provider": "Ozzmosis",
+      "kind": "STATIC_ANALYZER",
+      "status": "ON_DEMAND",
+      "registry_path": "C:\\Projetos\\Aurora\\Ozzmosis\\.aurora\\factory-toolbelt-registry.json"
+    }
+  ],
+  "unavailable_event": {
+    "event_type": "FACTORY_TOOL_UNAVAILABLE",
+    "notify_factory": true,
+    "fallback_required": true
+  }
+}

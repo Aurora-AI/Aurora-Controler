@@ -231,3 +231,54 @@ def test_phase_c0_cli_writes_artifact(tmp_path):
     assert out.exists()
     data = _json.loads(out.read_text(encoding="utf-8"))
     assert data["schema_version"] == "c0_dataset.v1"
+
+
+# --- Task 21: un-pivot hierárquico ---
+from unpivot import detect_hierarchical, _is_parent_row
+
+
+def test_is_parent_row_detects_context_row():
+    # col 0 preenchida, colunas-measure (1,2) vazias
+    assert _is_parent_row(["00.1/0001-01", "", ""], [1, 2]) is True
+    assert _is_parent_row(["Atendente", "10", "20"], [1, 2]) is False
+
+
+def test_detect_hierarchical_true_when_parent_rows_exist():
+    body = [
+        ["00.1/0001-01", "", ""],
+        ["Atendente", "10", "20"],
+    ]
+    assert detect_hierarchical(body, [1, 2]) is True
+
+
+def test_detect_hierarchical_false_for_flat_table():
+    body = [["X1", "Aprovado", "10"]]
+    assert detect_hierarchical(body, [2]) is False
+
+
+def test_build_c0_dataset_hierarchical(tmp_path):
+    p = tmp_path / "pivot.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["CNPJ", "Aprovado", "Reprovado"])
+        w.writerow(["00.1/0001-01", "", ""])       # linha-pai
+        w.writerow(["Atendente", "10", "20"])       # filha
+        w.writerow(["Promotor", "5", "7"])          # filha
+        w.writerow(["00.1/0001-01 Total", "15", "27"])  # subtotal
+        w.writerow(["Total Geral", "15", "27"])     # total geral
+    ds = build_c0_dataset(str(p))
+    assert ds.detected_structure.table_kind == "pivot_hierarchical"
+    assert ds.ingestion_strategy.used == "grid_scraping"
+    assert ds.detected_structure.hierarchy == {"parent": "CNPJ", "child": "subgrupo"}
+    assert ds.detected_structure.subtotal_rows_detected == 1
+    # 2 filhas x 2 colunas-measure = 4 linhas longas
+    assert len(ds.dataset) == 4
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted == 2
+    assert vs.source_rows_context == 1
+    assert vs.source_rows_discarded == 2
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+    first = ds.dataset[0]
+    assert first["CNPJ"] == "00.1/0001-01"
+    assert "subgrupo" in first and "status" in first and "quantidade" in first
+

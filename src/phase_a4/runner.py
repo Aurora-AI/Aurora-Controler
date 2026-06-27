@@ -2,7 +2,7 @@
 EXRS Phase A4 — DAG Runner & Sandbox
 Executa o código traduzido e as regras determinísticas respeitando a ordem topológica.
 """
-import sys, math, statistics, ast, operator, inspect
+import sys, os, math, statistics, ast, operator, inspect, subprocess, tempfile, json, shutil, uuid
 from pathlib import Path
 from typing import Any, Callable
 
@@ -69,33 +69,159 @@ class SafeArithmeticEvaluator(ast.NodeVisitor):
         else:
             raise TypeError(f"Unsupported AST node: {type(node).__name__}")
 
-def execute_in_sandbox(func_code: str, func_name: str, inputs: dict) -> Any:
-    """Executa função traduzida (A3) com Signature Handshake."""
-    sandbox_globals = {
-        "__builtins__": __builtins__,
-        "math": math, "statistics": statistics, "Any": Any,
-    }
+SANDBOX_IMAGE = "python:3.14-slim"
+
+# Script ESTÁTICO executado dentro do container. NÃO contém código do usuário:
+# o código traduzido (A3), a assinatura e os inputs chegam por stdin (JSON), evitando
+# injeção via repr e mantendo o user-code como dado, não como fonte do runner.
+_SANDBOX_RUNNER = r'''
+import json, sys, math, statistics
+
+_WHITELIST = {
+    "abs": abs, "min": min, "max": max, "sum": sum, "round": round,
+    "len": len, "bool": bool, "int": int, "float": float, "str": str,
+    "list": list, "dict": dict, "tuple": tuple, "set": set,
+    "any": any, "all": all, "range": range, "enumerate": enumerate,
+}
+
+def _main():
+    payload = json.loads(sys.stdin.read())
+    func_code = payload["code"]
+    func_name = payload["func_name"]
+    inputs = payload["inputs"]
+    params = payload["params"]
+
+    g = {"__builtins__": _WHITELIST, "math": math, "statistics": statistics}
+    exec(func_code, g)
+    func = g.get(func_name)
+    if not callable(func):
+        raise ValueError(func_name + " is not callable")
+
+    final_args = {}
+    values = list(inputs.values())
+    for i, name in enumerate(params):
+        if name in inputs:
+            final_args[name] = inputs[name]
+        elif i < len(values):
+            final_args[name] = values[i]
+    return func(**final_args)
+
+try:
+    print(json.dumps({"status": "ok", "result": _main()}))
+except Exception as e:
+    print(json.dumps({"status": "error", "error": type(e).__name__ + ": " + str(e)}))
+'''
+
+
+def _docker_available() -> bool:
+    """Verifica fisicamente se o engine Docker responde (sem assumir)."""
+    if shutil.which("docker") is None:
+        return False
     try:
-        exec(func_code, sandbox_globals)
-        func = sandbox_globals.get(func_name)
-        if not callable(func):
-            raise ValueError(f"'{func_name}' is not a callable function.")
-        
-        # --- Signature Handshake ---
-        sig = inspect.signature(func)
-        expected_params = list(sig.parameters.keys())
-        final_args = {}
-        input_values_list = list(inputs.values())
-        
-        for i, param_name in enumerate(expected_params):
-            if param_name in inputs:
-                final_args[param_name] = inputs[param_name]
-            elif i < len(input_values_list):
-                final_args[param_name] = input_values_list[i]
-        
-        return func(**final_args)
-    except Exception as e:
-        return f"RUNTIME_ERROR: {str(e)}"
+        proc = subprocess.run(
+            ["docker", "info", "--format", "{{.ServerVersion}}"],
+            capture_output=True, text=True, timeout=10,
+        )
+        return proc.returncode == 0 and bool(proc.stdout.strip())
+    except (subprocess.TimeoutExpired, OSError):
+        return False
+
+
+def _extract_params(func_code: str, func_name: str) -> list[str]:
+    """Extrai a ordem dos parâmetros estaticamente via ast no host (sem inspect no sandbox)."""
+    tree = ast.parse(func_code)
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == func_name:
+            return [a.arg for a in node.args.args]
+    return []
+
+
+def _sanitize(value: Any) -> Any:
+    """Torna os inputs serializáveis: ExcelError → string; nan/inf → None; recursivo."""
+    if isinstance(value, ExcelError):
+        return str(value)
+    if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+        return None
+    if isinstance(value, dict):
+        return {k: _sanitize(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_sanitize(v) for v in value]
+    return value
+
+
+def execute_in_sandbox(func_code: str, func_name: str, inputs: dict, timeout_sec: int = 30) -> Any:
+    """
+    Executa a função traduzida (A3) em um CONTAINER Docker efêmero e sem privilégios.
+
+    O isolamento real vem das flags do container (--network none, --read-only, --user
+    nobody, limites de recurso), não da whitelist de builtins — esta é apenas
+    defesa-em-profundidade. Mesmo que o código gerado escape do exec restrito (ex.: via
+    travessia de subclasses), não há FS de host montado gravável, rede, nem privilégios.
+    """
+    if not _docker_available():
+        # Falha explícita — NUNCA cair para exec local (reintroduziria o vetor de RCE).
+        # Observabilidade: emite evento de fábrica (proibida falha silenciosa de ferramenta).
+        from factory_events import factory_tool_unavailable
+        factory_tool_unavailable(
+            tool="docker-sandbox",
+            detail="docker engine não acessível ao executar código traduzido (A4)",
+            fallback="execução negada; job recebe RUNTIME_ERROR: SANDBOX_UNAVAILABLE",
+        )
+        return "RUNTIME_ERROR: SANDBOX_UNAVAILABLE: docker engine não acessível (FACTORY_TOOL_UNAVAILABLE)"
+
+    params = _extract_params(func_code, func_name)
+    payload = json.dumps({
+        "code": func_code,
+        "func_name": func_name,
+        "inputs": _sanitize(inputs),
+        "params": params,
+    })
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False, encoding="utf-8") as f:
+        f.write(_SANDBOX_RUNNER)
+        temp_path = f.name
+    # NamedTemporaryFile nasce 0600 (só dono). O container roda como nobody (uid 65534) e
+    # precisa LER o script montado — no Linux as permissões são aplicadas (no Windows não).
+    os.chmod(temp_path, 0o644)
+
+    container_name = f"exrs_sbx_{uuid.uuid4().hex[:12]}"
+    cmd = [
+        "docker", "run", "--rm", "-i",
+        "--name", container_name,
+        "--network", "none",
+        "--read-only",
+        "--tmpfs", "/tmp:size=16m",
+        "--memory", "256m", "--cpus", "1",
+        "--pids-limit", "64",
+        "--security-opt", "no-new-privileges",
+        "--user", "65534:65534",
+        "-v", f"{temp_path}:/sandbox/run.py:ro",
+        SANDBOX_IMAGE, "python", "/sandbox/run.py",
+    ]
+
+    try:
+        proc = subprocess.run(
+            cmd, input=payload, capture_output=True, text=True, timeout=timeout_sec
+        )
+        if proc.returncode != 0:
+            return f"RUNTIME_ERROR: Sandbox container failed - {proc.stderr.strip() or proc.stdout.strip()}"
+        try:
+            out_data = json.loads(proc.stdout.strip().splitlines()[-1])
+        except (json.JSONDecodeError, IndexError):
+            return f"RUNTIME_ERROR: Invalid output from sandbox - {proc.stdout}"
+        if out_data.get("status") == "ok":
+            return out_data.get("result")
+        return f"RUNTIME_ERROR: {out_data.get('error')}"
+    except subprocess.TimeoutExpired:
+        # O cliente docker foi morto, mas o container pode persistir — remover à força.
+        subprocess.run(["docker", "rm", "-f", container_name],
+                       capture_output=True, text=True)
+        return f"RUNTIME_ERROR: TimeoutError: Execution exceeded {timeout_sec} seconds"
+    finally:
+        try:
+            Path(temp_path).unlink(missing_ok=True)
+        except OSError:
+            pass
 
 def validate_workbook(
     dag: ExecutionDAG,

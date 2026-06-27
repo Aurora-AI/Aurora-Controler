@@ -4,19 +4,60 @@ on:
   push:
     branches: ["**"]
   pull_request:
-    branches: [master]
+    branches: [master, main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.11"
-          cache: pip
-      - run: pip install -r requirements.txt
+          prune-cache: false
+      - name: Sync deps (projeto + dev)
+        run: uv sync --dev
       - name: Gerar fixture de testes
-        run: python tests/fixtures/create_test_workbook.py
-      - name: Rodar testes
-        run: python -m pytest tests/ -q --tb=short
+        run: uv run python tests/fixtures/create_test_workbook.py
+      - name: Rodar suíte (modo eager — sem broker)
+        run: uv run pytest tests/ -q --tb=short
+
+  broker-e2e:
+    # Gate de broker REAL (ME-6): Redis + worker Celery em processo Linux (estável,
+    # sem o reset 10054 do host Windows). Valida PENDING -> RUNNING -> terminal via fila.
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7.2-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+    env:
+      EXRS_REDIS_URL: redis://localhost:6379/0
+      EXRS_DATA_DIR: ${{ github.workspace }}/output
+      EXRS_BROKER_E2E: "1"
+      EXRS_CELERY_EAGER: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          prune-cache: false
+      - run: uv sync --dev
+      - run: uv run python tests/fixtures/create_test_workbook.py
+      - name: Subir worker Celery em background
+        run: |
+          cd src/worker
+          nohup uv run celery -A celery_app worker --pool=solo -Q exrs_compile \
+            --loglevel=info > "$GITHUB_WORKSPACE/worker.log" 2>&1 &
+          for i in $(seq 1 20); do
+            grep -q "ready." "$GITHUB_WORKSPACE/worker.log" && break
+            sleep 1
+          done
+          cat "$GITHUB_WORKSPACE/worker.log"
+      - name: Rodar gate de broker real
+        run: uv run pytest tests/test_worker_broker.py -q -m broker --tb=short
+      - name: Worker log (diagnóstico)
+        if: always()
+        run: cat "$GITHUB_WORKSPACE/worker.log" || true
