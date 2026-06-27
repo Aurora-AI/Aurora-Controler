@@ -29,7 +29,7 @@ from runner import validate_workbook
 from repair_orchestrator import identify_repair_candidates
 from pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
 from certification_gate import verify_certification, CertificationGateError
-from factory_events import trace
+from factory_events import trace, set_job
 
 class UnsupportedInAsyncMode(Exception):
     pass
@@ -44,6 +44,7 @@ def route(workbook_class: WorkbookClass, compile_decision: CompileDecision, file
 def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: bool = True):
     stem = xlsx_path.stem
     jid = storage.job_id
+    set_job(jid)  # correlaciona eventos do fundo da cadeia (ex.: sandbox A4) a este job
 
     # A0
     report = classify_workbook(xlsx_path)

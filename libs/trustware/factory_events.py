@@ -9,10 +9,21 @@ Princípio (CLAUDE.md): nenhuma indisponibilidade de ferramenta de fábrica é s
 toda falha de Docker/broker gera evento + fallback explícito. Append-only, sem dependências
 externas. O destino respeita EXRS_DATA_DIR (compartilhado entre host e worker).
 """
+import contextvars
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Job corrente da execução — permite correlacionar eventos emitidos no fundo da cadeia
+# (ex.: sandbox sem Docker em runner.py) sem threadar job_id por toda a assinatura.
+_current_job: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "exrs_current_job", default=None
+)
+
+
+def set_job(job_id: str | None) -> None:
+    _current_job.set(job_id)
 
 
 def _data_dir() -> Path:
@@ -41,7 +52,8 @@ def factory_tool_unavailable(tool: str, detail: str, fallback: str,
     """Evento canônico de indisponibilidade de ferramenta de fábrica (com fallback explícito)."""
     return emit_event(
         "FACTORY_TOOL_UNAVAILABLE",
-        tool=tool, detail=detail, fallback=fallback, job_id=job_id,
+        tool=tool, detail=detail, fallback=fallback,
+        job_id=job_id if job_id is not None else _current_job.get(),
     )
 
 

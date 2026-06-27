@@ -51,6 +51,43 @@ def test_orchestrate_emits_per_phase_trace(tmp_path, monkeypatch):
     assert any(t["phase"] == "terminal" for t in trace)  # toda execução fecha com terminal
 
 
+def test_worker_exception_is_not_silent(tmp_path, monkeypatch):
+    """Se um passo do pipeline LEVANTAR, o worker emite evento + trace terminal (não mudo)."""
+    monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+    import celery_app
+
+    def _boom(*a, **k):
+        raise RuntimeError("docker socket explodiu")
+    monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
+
+    job_id = uuid.uuid4().hex
+    from jobs import JobStore
+    JobStore().create(job_id, "x.xlsx")
+    status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
+    assert status == "ERROR"
+
+    events = _read_jsonl(tmp_path / "factory_events.jsonl")
+    assert any(e["event"] == "JOB_EXECUTION_FAILED" and e["job_id"] == job_id for e in events)
+    trace = _read_jsonl(tmp_path / job_id / "trace.jsonl")
+    assert any(t["phase"] == "terminal" and t["status"] == "ERROR" for t in trace)
+
+
+def test_sandbox_event_correlates_job_id_via_context(tmp_path, monkeypatch):
+    """O evento de sandbox herda o job_id corrente (contextvar), não None."""
+    monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+    import runner
+    from factory_events import set_job
+    monkeypatch.setattr(runner, "_docker_available", lambda: False)
+
+    set_job("job-corr-123")
+    runner.execute_in_sandbox("def f():\n    return 1\n", "f", {})
+    set_job(None)
+
+    events = _read_jsonl(tmp_path / "factory_events.jsonl")
+    evt = next(e for e in events if e["tool"] == "docker-sandbox")
+    assert evt["job_id"] == "job-corr-123"
+
+
 def test_compile_broker_failure_emits_event_and_503(tmp_path, monkeypatch):
     """Enqueue falho (broker down) → evento + HTTP 503, nunca silencioso."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))

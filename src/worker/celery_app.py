@@ -55,6 +55,8 @@ def run_compile(job_id: str, file_path: str) -> str:
     Corpo do processamento de um job. Independente de Celery — reaproveitável.
     Transiciona o job no store: RUNNING → status terminal do orquestrador.
     """
+    from factory_events import emit_event, trace, set_job
+    set_job(job_id)  # correlaciona eventos emitidos lá no fundo (ex.: sandbox sem Docker)
     store = JobStore()
     store.update_status(job_id, "RUNNING")
     try:
@@ -64,8 +66,14 @@ def run_compile(job_id: str, file_path: str) -> str:
         store.update_status(job_id, status, track=result.get("track"),
                             detail=result.get("reason"))
         return status
-    except Exception as e:  # noqa: BLE001 — qualquer falha vira status ERROR persistido
-        store.update_status(job_id, "ERROR", detail=str(e))
+    except Exception as e:  # noqa: BLE001 — falha do job NUNCA é silenciosa
+        # Proibida falha silenciosa de ferramenta de fábrica: emite evento + trace terminal
+        # antes de persistir ERROR. Cobre o caso de um passo (Docker/Redis/IO) LEVANTAR
+        # exceção em vez de retornar sentinela.
+        detail = f"{type(e).__name__}: {e}"
+        emit_event("JOB_EXECUTION_FAILED", job_id=job_id, error=detail)
+        trace(job_id, "terminal", status="ERROR", error=detail)
+        store.update_status(job_id, "ERROR", detail=detail)
         return "ERROR"
 
 
