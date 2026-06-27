@@ -1,0 +1,10 @@
+# EXRS — imagem do worker Celery (Plano de Execução, ME-6)
+# Deps mínimas do caminho determinístico A0→A4 + dashboard (sem litellm: o worker só
+# importa o tradutor LLM sob demanda, fora do caminho skip_llm).
+FROM python:3.14-slim
+
+RUN pip install --no-cache-dir \
+    "celery>=5.3" "redis>=5.0" "openpyxl>=3.1.0" "pydantic>=2.0" "python-dotenv"
+
+# Código entra por bind-mount no compose (working_dir=/app/src/worker).
+WORKDIR /app/src/worker

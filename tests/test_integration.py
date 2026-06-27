@@ -33,7 +33,7 @@ def test_run_pipeline_deterministic(tmp_path):
 
     run(fixture, skip_llm=True, run_hitl_flag=False)
 
-    out = REPO_ROOT / "output"
+    out = REPO_ROOT / "output" / fixture.stem
     stem = fixture.stem
     assert (out / f"{stem}_a0_report.json").exists(), "A0 report ausente"
     assert (out / f"{stem}_a4_certified.json").exists(), "A4 certified ausente"

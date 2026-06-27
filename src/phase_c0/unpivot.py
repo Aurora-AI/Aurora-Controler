@@ -152,6 +152,13 @@ def build_c0_dataset(path: str) -> "C0Dataset":
     body = raw_rows[1:]
     total_rows_read = len(body)
 
+    # Despacho hierárquico: layout de pivô aninhado tem prioridade
+    _pre_kept = [r for r in body if not _is_empty(r) and not _is_grand_total(r)]
+    _, _measure_idx = classify_columns(header, _pre_kept)
+    if detect_hierarchical(body, _measure_idx):
+        return _assemble_hierarchical(
+            path, sheet, header, body, total_rows_read, _measure_idx)
+
     # Classificar linhas do corpo
     discarded: list[DiscardedRow] = []
     kept: list[tuple[int, list[Any]]] = []  # (origin_row_1based, row)
@@ -233,4 +240,127 @@ def build_c0_dataset(path: str) -> "C0Dataset":
         source_map=source_map,
         discarded_rows=discarded,
         validation_summary=validation,
+    )
+
+
+def _is_parent_row(row: list[Any], measure_idx: list[int]) -> bool:
+    """Linha-pai de contexto: col 0 preenchida e todas as measures vazias."""
+    if not row or row[0] in (None, ""):
+        return False
+    return all(mi >= len(row) or row[mi] in (None, "") for mi in measure_idx)
+
+
+def _is_subtotal_row(row: list[Any], current_parent: Any) -> bool:
+    """Subtotal: col 0 contém 'total' (sem ser total geral) ou repete o pai."""
+    if not row or row[0] in (None, ""):
+        return False
+    first = str(row[0]).strip().lower()
+    if "total" in first and not any(t in first for t in _GRAND_TOTAL_TOKENS):
+        return True
+    if current_parent is not None and str(row[0]).strip() == str(current_parent).strip():
+        return True
+    return False
+
+
+def detect_hierarchical(body: list[list[Any]], measure_idx: list[int]) -> bool:
+    """True se há ao menos uma linha-pai seguida por uma linha-filho."""
+    if not measure_idx:
+        return False
+    has_parent = False
+    current_parent = None
+    for row in body:
+        if _is_empty(row) or _is_grand_total(row):
+            continue
+        if _is_parent_row(row, measure_idx):
+            has_parent = True
+            current_parent = row[0]
+        elif has_parent:
+            if not _is_subtotal_row(row, current_parent):
+                return True
+    return False
+
+
+
+def _assemble_hierarchical(
+    path: str, sheet: str, header: list[str], body: list[list[Any]],
+    total_rows_read: int, measure_idx: list[int],
+):
+    """Monta o C0Dataset para um layout de pivô aninhado."""
+    from dashboard_contracts import (
+        C0Dataset, DetectedStructure, DiscardedRow, IngestionStrategy,
+        SourceMapEntry, ValidationSummary,
+    )
+
+    parent_name = header[0] or "grupo"
+    child_name = "subgrupo"
+    dataset: list[dict[str, Any]] = []
+    source_map: list[SourceMapEntry] = []
+    discarded: list[DiscardedRow] = []
+    emitted_src = context_src = discarded_src = subtotals = 0
+    current_parent: Any = None
+    current_parent_row = 1
+    row_id = 0
+
+    for offset, row in enumerate(body):
+        origin_row = offset + 2
+        if _is_empty(row):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="empty", raw=list(row)))
+            discarded_src += 1
+        elif _is_grand_total(row):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="grand_total", raw=list(row)))
+            discarded_src += 1
+        elif _is_subtotal_row(row, current_parent):
+            discarded.append(DiscardedRow(origin_row=origin_row, reason="subtotal", raw=list(row)))
+            discarded_src += 1
+            subtotals += 1
+        elif _is_parent_row(row, measure_idx):
+            current_parent = row[0]
+            current_parent_row = origin_row
+            context_src += 1
+        else:
+            emitted_src += 1
+            child_value = row[0]
+            for mi in measure_idx:
+                if mi >= len(row) or row[mi] in (None, ""):
+                    continue
+                row_id += 1
+                dataset.append({
+                    "row_id": row_id,
+                    parent_name: current_parent,
+                    child_name: child_value,
+                    "status": header[mi],
+                    "quantidade": _to_number(row[mi]),
+                })
+                source_map.append(SourceMapEntry(
+                    row_id=row_id, origin_sheet=sheet,
+                    origin_cells={
+                        parent_name: f"{_col_letter(0)}{current_parent_row}",
+                        child_name: f"{_col_letter(0)}{origin_row}",
+                        "status": f"{_col_letter(mi)}1",
+                        "quantidade": f"{_col_letter(mi)}{origin_row}",
+                    },
+                ))
+
+    structure = DetectedStructure(
+        table_kind="pivot_hierarchical",
+        hierarchy={"parent": parent_name, "child": child_name},
+        unpivot_source_columns=[header[i] for i in measure_idx],
+        canonical_dimension_from_columns="status",
+        canonical_measure="quantidade",
+        subtotal_rows_detected=subtotals,
+    )
+    validation = ValidationSummary(
+        total_rows_read=total_rows_read,
+        source_rows_emitted=emitted_src,
+        source_rows_context=context_src,
+        source_rows_discarded=discarded_src,
+        dataset_rows_emitted=len(dataset),
+    )
+    return C0Dataset(
+        source_file=path,
+        ingestion_strategy=IngestionStrategy(
+            primary="structured_model", fallback="grid_scraping",
+            used="grid_scraping", reason="nested pivot hierarchy detected"),
+        detected_structure=structure, dataset=dataset, source_map=source_map,
+        discarded_rows=discarded, validation_summary=validation,
     )

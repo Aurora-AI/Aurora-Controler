@@ -1,0 +1,35 @@
+[project]
+name = "aurora-controler"
+version = "1.0.0"
+description = "Aurora EXRS (Excel Reverse System) & Dashboard Engine"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "openpyxl>=3.1.0",
+    "pydantic>=2.0",
+    "litellm",
+    "python-dotenv",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "python-multipart",
+    "httpx>=0.28.1",
+    "trio>=0.33.0",
+    "celery>=5.3",
+    "redis>=5.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "broker: gate de broker real (Celery+Redis) — roda só em CI/Linux com EXRS_BROKER_E2E=1",
+]
+
+[dependency-groups]
+dev = [
+    "anyio>=4.13.0",
+    "pytest>=9.1.1",
+]

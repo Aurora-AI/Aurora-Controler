@@ -1,0 +1,27 @@
+# EXRS — Plano de Execução (ME-6): Redis dedicado + worker Celery na mesma rede.
+# O worker conecta no Redis por hostname interno (redis:6379) — conexão container→container,
+# estável (evita o reset 10054 do caminho host→Docker-Desktop no Windows).
+# O host (API/enqueuer) usa redis://localhost:6399/0. Ambos compartilham output/ via bind-mount.
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: exrs-redis
+    ports:
+      - "6399:6379"
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: exrs-worker
+    depends_on:
+      - redis
+    environment:
+      EXRS_REDIS_URL: "redis://redis:6379/0"
+      EXRS_DATA_DIR: "/app/output"
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - .:/app
+    command: >
+      celery -A celery_app worker --pool=solo -Q exrs_compile --loglevel=info
+      --without-gossip --without-mingle --without-heartbeat

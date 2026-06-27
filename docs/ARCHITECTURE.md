@@ -1,36 +1,42 @@
-# ARCHITECTURE — Excel Reverse Engineering System
+# Arquitetura do Aurora Controler (EXRS)
 
-Este documento é o contrato arquitetural do produto. Qualquer mudança deve ser aprovada via OS de alteração.
+O Aurora Controler opera o ecossistema EXRS (Excel Reverse System), destinado a realizar a engenharia reversa de lógicas encapsuladas em planilhas financeiras e de negócios.
 
-## Versão Canônica da Spec
-*Data de Adoção: 2026-05-04*
+## Modelo de Roteamento (Job Unificado)
 
-A Spec define o pipeline de engenharia reversa para converter planilhas Excel em sistemas governados pela Aurora.
+Para simplificar a interface do usuário e o ponto de entrada da API, adotamos o modelo de **Job Unificado**.
+Um único endpoint e identificador (`job_id`) aceita o arquivo de entrada (`.xlsx`, `.xlsm`, ou `.csv`).
+A **Fase A0 (Classificador)** analisa o arquivo e determina dinamicamente para qual sub-pipeline ("track") o arquivo será roteado.
 
-### Pipeline Overview
-O sistema é dividido em duas camadas principais:
+## Os Três Tracks (A / B / C)
 
-#### Fase A — Compiler Layer
-- **A0: Unsupported Construct Classifier**: Identificação de elementos fora do escopo.
-- **A1: Structural Extraction**: Extração estrutural.
-- **A1.5: Canonical IR Normalization**: Normalização de IR.
-- **A2: Dependency Mapping**: Grafo de dependências.
-- **A2.5: Formula Pattern Registry**: Deduplicação de lógica de fórmulas.
-- **A3: Semantic Translation**: Tradução para código semântico.
-- **A4: Deterministic Validation**: Teste de paridade.
+O sistema é dividido em três "Tracks" distintos baseados na finalidade da execução:
 
-#### Fase B — User Adaptation Runtime
-- **B1: Chat (Intent Capture)**: Interface conversacional.
-- **B2: Modules (Visual Assembly)**: Interface visual de composição.
-- **B3: Simulation + HITL**: Loop de feedback humano.
+### Track A: Engenharia Reversa (A1 → A4)
+Focado na conversão de uma planilha de lógica pesada (com fórmulas complexas) em código Python validado.
+- **A0:** Classifica como "track_a".
+- **A1/A1.5:** Extrai e normaliza a estrutura.
+- **A2/A2.5:** Constrói o DAG e mapeia padrões.
+- **A3:** Tradução lógica via LLM.
+- **A4:** Sandbox endurecida via `subprocess` para validação determinística de paridade entre o código gerado e os valores originais.
+*(Executado assincronamente no worker).*
 
-### Governança e Trustware
-Todos os estágios do pipeline são governados por contratos Pydantic v2 que garantem a integridade dos dados e a rastreabilidade das decisões.
+### Track B: Simulação Interativa (B1 → B3)
+Focado em extrair a "intenção" humana através de conversas e *Human-In-The-Loop* (HITL).
+- **Aviso de Arquitetura:** As Fases B1 e B3 exigem **interação síncrona com o usuário em loop**.
+- Portanto, o Track B está **explicitamente excluído do worker assíncrono (Celery)**.
+- Permanecerá funcional apenas em modo CLI / execução interativa local, sem integração via API no fluxo principal SaaS, até que interfaces WebSocket / Async HITL sejam desenvolvidas no futuro.
 
-### Phase A4 — Deterministic Validation
+### Track C: Dashboard Engine (C0 → C4)
+Focado na análise de dados tabulares (ex: relatórios, planilhas planas) para a geração de visualizações e especificação de dashboards executivos.
+- **A0:** Classifica como "track_c" (dados em forma tabular/lista sem fórmulas complexas).
+- **C0:** Unpivot e carga do dataset.
+- **C1:** Modelagem semântica.
+- **C2:** Relatório de métricas.
+- **C3:** Síntese da especificação do Dashboard (`DashboardSpec`).
+*(Pode ser executado via worker para evitar timeouts no HTTP).*
 
-> **Nota Arquitetural: Estratégia de Leitura Dupla para Paridade**
-> Para provar a paridade absoluta sem depender de motores de recálculo externos no momento do teste, a validação exige uma conciliação de duas leituras do arquivo fonte:
-> * **Leitura 1 (`data_only=False`):** Provida pela Phase A1. Extrai a regra de negócio (ex: `=SOMA(B2:B10)`).
-> * **Leitura 2 (`data_only=True`):** Executada no início da Phase A4. Extrai o cache do Excel (ex: `150`).
-> A paridade é atingida se, ao injetar os inputs da Leitura 1 no código gerado, o output for rigorosamente idêntico ao valor da Leitura 2.
+## Resumo da Decisão Arquitetural
+1. **Unificação de Ponto de Entrada:** Um job, roteamento inteligente via A0.
+2. **Separação de Contextos de Execução:** Tracks A e C operam em background (workers), Track B isolado para interações CLI.
+3. **Segurança (A4):** A execução do código Python do usuário em A4 acontece sob Sandbox rígida (whitelist de built-ins + subprocess timeout).
