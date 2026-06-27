@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          prune-cache: false
       - name: Sync deps (projeto + dev)
         run: uv sync --dev
       - name: Gerar fixture de testes
@@ -40,6 +42,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          prune-cache: false
       - run: uv sync --dev
       - run: uv run python tests/fixtures/create_test_workbook.py
       - name: Subir worker Celery em background
