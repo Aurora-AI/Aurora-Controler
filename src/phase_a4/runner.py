@@ -160,6 +160,13 @@ def execute_in_sandbox(func_code: str, func_name: str, inputs: dict, timeout_sec
     """
     if not _docker_available():
         # Falha explícita — NUNCA cair para exec local (reintroduziria o vetor de RCE).
+        # Observabilidade: emite evento de fábrica (proibida falha silenciosa de ferramenta).
+        from factory_events import factory_tool_unavailable
+        factory_tool_unavailable(
+            tool="docker-sandbox",
+            detail="docker engine não acessível ao executar código traduzido (A4)",
+            fallback="execução negada; job recebe RUNTIME_ERROR: SANDBOX_UNAVAILABLE",
+        )
         return "RUNTIME_ERROR: SANDBOX_UNAVAILABLE: docker engine não acessível (FACTORY_TOOL_UNAVAILABLE)"
 
     params = _extract_params(func_code, func_name)

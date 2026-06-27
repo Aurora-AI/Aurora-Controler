@@ -38,6 +38,7 @@ from storage_manager import StorageManager
 from jobs import JobStore
 from upload_guard import validate_upload, UploadValidationError
 from celery_app import compile_job
+from factory_events import factory_tool_unavailable
 
 job_store = JobStore()
 
@@ -167,7 +168,17 @@ async def compile_workbook(file: UploadFile = File(...)):
 
     job_store.create(job_id, file.filename)
     # Plano de Execução: enfileira no broker. Em EXRS_CELERY_EAGER=1 roda inline (testes).
-    compile_job.delay(job_id, str(saved))
+    try:
+        compile_job.delay(job_id, str(saved))
+    except Exception as e:  # broker indisponível — falha explícita, nunca silenciosa
+        factory_tool_unavailable(
+            tool="redis-broker",
+            detail=f"falha ao enfileirar job: {type(e).__name__}: {e}",
+            fallback="job marcado BROKER_UNAVAILABLE; HTTP 503 ao cliente",
+            job_id=job_id,
+        )
+        job_store.update_status(job_id, "ERROR", detail="BROKER_UNAVAILABLE")
+        raise HTTPException(status_code=503, detail="Broker indisponível — tente novamente.")
     return {"job_id": job_id, "status": "PENDING"}
 
 

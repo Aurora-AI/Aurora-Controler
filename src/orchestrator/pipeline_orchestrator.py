@@ -29,6 +29,7 @@ from runner import validate_workbook
 from repair_orchestrator import identify_repair_candidates
 from pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
 from certification_gate import verify_certification, CertificationGateError
+from factory_events import trace
 
 class UnsupportedInAsyncMode(Exception):
     pass
@@ -42,38 +43,47 @@ def route(workbook_class: WorkbookClass, compile_decision: CompileDecision, file
 
 def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: bool = True):
     stem = xlsx_path.stem
+    jid = storage.job_id
 
     # A0
     report = classify_workbook(xlsx_path)
     storage.write_artifact(stem, "a0_report", report)
-    
+    trace(jid, "a0_classify", workbook_class=report.workbook_class.value)
+
     track = route(report.workbook_class, report.compile_decision, xlsx_path)
-    
+    trace(jid, "route", track=track)
+
     if track == "escalate":
+        trace(jid, "terminal", status="ESCALATED")
         return {"status": "ESCALATED", "reason": report.escalate_reasons}
-        
+
     if track == "track_c":
         # C0-C3 (engine de dashboard) ainda não integrado ao orquestrador unificado.
         # Production First / Zero Dívida Técnica: NUNCA reportar PASSED para trabalho não
         # executado — declarar explicitamente o estado não-implementado.
+        trace(jid, "terminal", status="NOT_IMPLEMENTED", track="track_c")
         return {"status": "NOT_IMPLEMENTED", "track": "track_c",
                 "reason": "Integração C0→C3 pendente (ver OS-EXRS-SAAS ME futura)."}
 
     # track_a = A1 -> A4
     raw_ir = extract_structure(xlsx_path)
     storage.write_artifact(stem, "a1_ir", raw_ir)
+    trace(jid, "a1_extract")
 
     # A1.5
     norm_ir = normalize_workbook(raw_ir)
     storage.write_artifact(stem, "a15_norm", norm_ir)
+    trace(jid, "a15_normalize")
 
     # A2
     dag = build_dag(norm_ir)
     storage.write_artifact(stem, "a2_dag", dag)
+    trace(jid, "a2_dag", nodes=len(dag.nodes))
 
     # A2.5
     fmap = classify_patterns(norm_ir, build_registry())
     storage.write_artifact(stem, "a25_fmap", fmap)
+    trace(jid, "a25_patterns")
 
     # A3
     counts = {}
@@ -94,10 +104,12 @@ def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: boo
         domain = translate_workbook(norm_ir, fmap)
 
     storage.write_artifact(stem, "a3_domain", domain)
+    trace(jid, "a3_translate", functions=len(domain.functions))
 
     # A4
     gabarito, missing_cache = extract_gabarito(xlsx_path)
     if not gabarito:
+        trace(jid, "terminal", status="SKIPPED_NO_CACHE")
         return {"status": "SKIPPED_NO_CACHE", "certified": None, "domain": domain}
 
     results = validate_workbook(dag, domain, fmap, norm_ir, gabarito, missing_cache)
@@ -120,8 +132,10 @@ def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: boo
     try:
         verify_certification(certified)
     except CertificationGateError as e:
+        trace(jid, "trustware_gate", status="GATE_REJECTED", reason=str(e))
         return {"status": "GATE_REJECTED", "reason": str(e), "certified": None}
 
     storage.write_artifact(stem, "a4_certified", certified)
+    trace(jid, "terminal", status=status, parity=parity)
 
     return {"status": status, "certified": certified}
