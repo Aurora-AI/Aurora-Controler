@@ -44,6 +44,10 @@ def run_compile_cli(xlsx_path: Path, dest_dir: Path | None, debug: bool, chat: b
             print(f"       Motivo: {reason}", file=sys.stderr)
         return 1
 
+    if status not in {"PASSED", "PARTIAL", "FAILED"}:
+        print(f"[EXRS] Erro interno: status desconhecido do pipeline: {status}", file=sys.stderr)
+        return 1
+
     certified = result.get("certified")
     if certified is None:
         print("[EXRS] Erro interno: pipeline concluiu sem CertifiedModule.", file=sys.stderr)

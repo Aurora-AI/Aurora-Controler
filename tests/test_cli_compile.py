@@ -51,3 +51,23 @@ def test_compile_no_args_returns_usage_error():
 
     exit_code = main(["compile"])
     assert exit_code == 2
+
+
+def test_compile_unknown_status_returns_error(tmp_path, monkeypatch, capsys):
+    """Se orchestrate_pipeline retornar um status não reconhecido (nem falha conhecida,
+    nem PASSED/PARTIAL/FAILED), o CLI deve falhar com erro claro em vez de crashar ou
+    seguir silenciosamente como sucesso."""
+    import cli.main as main_module
+
+    monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path / "internal"))
+    monkeypatch.setattr(
+        main_module, "orchestrate_pipeline",
+        lambda *a, **k: {"status": "SOME_UNKNOWN_STATUS"},
+    )
+
+    exit_code = main_module.run_compile_cli(FIXTURE, tmp_path / "out", debug=False, chat=False)
+
+    assert exit_code == 1
+    captured = capsys.readouterr()
+    assert "status desconhecido do pipeline" in captured.err
+    assert "SOME_UNKNOWN_STATUS" in captured.err
