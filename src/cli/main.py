@@ -6,7 +6,6 @@ Celery/Redis, e monta uma pasta de saída limpa com o .py replay + relatório .h
 `exrs ui` sobe uma interface web local (ver src/cli/web_app.py, Task 4).
 """
 import argparse
-import json
 import sys
 from pathlib import Path
 
