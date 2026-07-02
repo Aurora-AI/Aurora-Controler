@@ -53,7 +53,7 @@ def create_app() -> FastAPI:
     async def upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
         token = uuid.uuid4().hex
         work_dir = Path(tempfile.mkdtemp(prefix=f"exrs_ui_{token}_"))
-        xlsx_path = work_dir / file.filename
+        xlsx_path = work_dir / Path(file.filename).name
         xlsx_path.write_bytes(await file.read())
         dest_dir = work_dir / "output"
 
