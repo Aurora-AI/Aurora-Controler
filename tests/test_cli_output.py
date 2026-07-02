@@ -81,6 +81,53 @@ def test_generated_py_is_syntactically_valid(tmp_path):
     compile(source, "<generated>", "exec")
 
 
+def test_generated_output_runs_standalone_off_repo(tmp_path):
+    """Verificação real de que o .py gerado NÃO depende do repositório EXRS: copia
+    dest_dir para fora do repo e executa em subprocesso separado, com PYTHONPATH
+    limpo e cwd fora do repo, para garantir que não há import-time side effects
+    (sys.path manipulation, import de pipeline_contracts) vazando de normalizer.py."""
+    import os
+    import shutil as _shutil
+    import subprocess
+    import sys
+    import tempfile
+
+    job_dir = tmp_path / "job"
+    job_dir.mkdir()
+    dest = tmp_path / "p_output"
+    certified, dag, fmap, norm_ir = _fixture(job_dir)
+
+    write_clean_output(job_dir, "p", certified, dag, fmap, norm_ir, dest, debug=False)
+
+    # Copia para local fora do repo, fora de tmp_path (que pytest cria sob o repo em
+    # alguns setups) — usamos tempfile diretamente no diretório temp do sistema.
+    off_repo_dir = Path(tempfile.mkdtemp(prefix="exrs_offrepo_"))
+    try:
+        target = off_repo_dir / "p_output"
+        _shutil.copytree(dest, target)
+
+        clean_env = {
+            k: v for k, v in os.environ.items() if k.upper() != "PYTHONPATH"
+        }
+
+        result = subprocess.run(
+            [sys.executable, str(target / "p.py")],
+            cwd=str(off_repo_dir),
+            env=clean_env,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+
+        assert result.returncode == 0, (
+            f"stdout={result.stdout!r} stderr={result.stderr!r}"
+        )
+        assert "ModuleNotFoundError" not in result.stderr
+        assert "Sheet1!A1 = 1" in result.stdout
+    finally:
+        _shutil.rmtree(off_repo_dir, ignore_errors=True)
+
+
 def test_missing_vendored_engine_source_raises_clear_error(tmp_path, monkeypatch):
     import pytest
     import cli.output as output_module
