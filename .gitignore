@@ -8,4 +8,8 @@ dist/
 build/
 output/
 scratch/
+# Chaves de assinatura Ed25519 (OS-EXRS-CRYPTO-SEAL) — NUNCA versionar
+*.pem
+*.key
+.worktrees/
 .claude/

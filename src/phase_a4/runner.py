@@ -167,7 +167,7 @@ def execute_in_sandbox(func_code: str, func_name: str, inputs: dict, timeout_sec
             detail="docker engine não acessível ao executar código traduzido (A4)",
             fallback="execução negada; job recebe RUNTIME_ERROR: SANDBOX_UNAVAILABLE",
         )
-        return "RUNTIME_ERROR: SANDBOX_UNAVAILABLE: docker engine não acessível (FACTORY_TOOL_UNAVAILABLE)"
+        return "RUNTIME_ERROR: SANDBOX_UNAVAILABLE: docker engine não acessível (FACTORY_TOOL_UNAVAILABLE) — Instale Docker Desktop: https://www.docker.com/products/docker-desktop/"
 
     params = _extract_params(func_code, func_name)
     payload = json.dumps({
