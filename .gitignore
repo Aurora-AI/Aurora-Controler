@@ -12,3 +12,4 @@ scratch/
 *.pem
 *.key
 .worktrees/
+.claude/
