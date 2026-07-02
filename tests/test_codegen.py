@@ -76,6 +76,22 @@ def test_render_excludes_external_ref_and_unresolved():
     assert "Sheet1!A4" not in source.split("FORMULAS = ")[1].split("}")[0]
 
 
+def test_render_excludes_formula_cell_with_no_pattern_entry():
+    """pattern_registry.py:481 pula a classificação inteiramente quando a célula não
+    tem formula_tokens — produzindo NENHUMA FormulaPattern para o node. Sem entrada em
+    fmap.patterns, a célula deve ser excluída de FORMULAS (mesma cautela que EXTERNAL_REF/
+    UNRESOLVED), não vazar sem filtro."""
+    dag, fmap, norm_ir = _fixture()
+    # Sheet1!A5 tem formula_raw mas NÃO tem FormulaPattern correspondente em fmap.patterns.
+    dag.nodes.append(DAGNode(id="Sheet1!A5", sheet="Sheet1", coordinate="A5", formula_raw="=A1*2", dependencies=[]))
+    dag.topological_order.append("Sheet1!A5")
+    norm_ir.sheets[0].cells.append(
+        NormalizedCell(coordinate="A5", formula_raw="=A1*2", value_static=None, data_type="n")
+    )
+    source = render_replay_module(dag, fmap, norm_ir, source_file="planilha.xlsx")
+    assert "Sheet1!A5" not in source.split("FORMULAS = ")[1].split("}")[0]
+
+
 def test_render_executes_and_computes_correct_result():
     """O módulo gerado, quando executado, calcula A3 = A1 + A2 = 42 — usando o mesmo
     motor (formula_evaluator/normalizer) que já valida a Fase A4."""

@@ -21,24 +21,34 @@ def render_replay_module(
     source_file: str,
 ) -> str:
     """Retorna o texto-fonte Python completo do módulo replay."""
-    excluded_nodes = {p.node_id for p in fmap.patterns if p.pattern_class in _EXCLUDED}
+    # Um formula cell só entra em FORMULAS se tiver um FormulaPattern correspondente
+    # em fmap.patterns E essa entrada não estiver em _EXCLUDED. pattern_registry.py
+    # pode pular a classificação inteiramente (cell sem formula_tokens) — nesse caso
+    # não há entrada em fmap.patterns, e a célula deve ser tratada como não avaliável
+    # deterministicamente (mesma cautela aplicada a EXTERNAL_REF/UNRESOLVED).
+    included_formula_nodes = {
+        p.node_id for p in fmap.patterns if p.pattern_class not in _EXCLUDED
+    }
 
     static_values: dict[str, object] = {}
     formulas: dict[str, str] = {}
     sheet_of: dict[str, str] = {}
 
+    excluded_formula_nodes: set[str] = set()
+
     for sheet in norm_ir.sheets:
         for cell in sheet.cells:
             node_id = f"{sheet.name}!{cell.coordinate}"
             sheet_of[node_id] = sheet.name
-            if node_id in excluded_nodes:
-                continue
             if cell.formula_raw:
-                formulas[node_id] = cell.formula_raw
+                if node_id in included_formula_nodes:
+                    formulas[node_id] = cell.formula_raw
+                else:
+                    excluded_formula_nodes.add(node_id)
             else:
                 static_values[node_id] = cell.value_static
 
-    topo_order = [nid for nid in dag.topological_order if nid not in excluded_nodes]
+    topo_order = [nid for nid in dag.topological_order if nid not in excluded_formula_nodes]
 
     lines = [
         '"""',
