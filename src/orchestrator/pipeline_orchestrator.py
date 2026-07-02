@@ -29,7 +29,8 @@ from runner import validate_workbook
 from repair_orchestrator import identify_repair_candidates
 from pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
 from certification_gate import verify_certification, CertificationGateError
-from factory_events import trace, set_job
+from factory_events import trace, set_job, factory_tool_unavailable
+from sealing import seal_module, load_private_key, SigningKeyUnavailable
 
 class UnsupportedInAsyncMode(Exception):
     pass
@@ -135,6 +136,27 @@ def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: boo
     except CertificationGateError as e:
         trace(jid, "trustware_gate", status="GATE_REJECTED", reason=str(e))
         return {"status": "GATE_REJECTED", "reason": str(e), "certified": None}
+
+    # Selo criptográfico (OS-EXRS-CRYPTO-SEAL, ME-5): assina o módulo já aprovado pelo gate.
+    # Chave indisponível não é falha silenciosa (CLAUDE.md) nem trava o job — persiste-se o
+    # CertifiedModule sem selo (seal=None), nunca um selo forjado/vazio disfarçado de válido.
+    try:
+        certified = seal_module(certified, load_private_key())
+        trace(jid, "trustware_seal", status="SEALED")
+    except SigningKeyUnavailable as e:
+        factory_tool_unavailable(
+            tool="signing-key", detail=str(e),
+            fallback="CertifiedModule persistido sem selo (seal=None)", job_id=jid,
+        )
+        trace(jid, "trustware_seal", status="UNSEALED", reason=str(e))
+    except Exception as e:
+        # Falha inesperada na assinatura (não é ausência de chave) — mesma regra: o job não
+        # trava e o selo nunca é forjado. `certified` permanece o objeto pré-selagem (seal=None).
+        factory_tool_unavailable(
+            tool="signing-key", detail=f"falha inesperada ao selar: {e}",
+            fallback="CertifiedModule persistido sem selo (seal=None)", job_id=jid,
+        )
+        trace(jid, "trustware_seal", status="UNSEALED", reason=f"unexpected: {e}")
 
     storage.write_artifact(stem, "a4_certified", certified)
     trace(jid, "terminal", status=status, parity=parity)

@@ -346,6 +346,24 @@ class MismatchReport(BaseModel):
     results: list[ValidationResult]
     repair_attempts: int = 0
 
+class CertificationSeal(BaseModel):
+    """
+    Selo criptográfico de paridade (OS-EXRS-CRYPTO-SEAL).
+
+    Prova verificável por terceiros (auditor forense, regulador) de que um CertifiedModule
+    não foi adulterado após a certificação. O selo cobre o SHA-256 de uma serialização
+    canônica do módulo (sem este campo `seal`), assinado com Ed25519. O verificador
+    recomputa o digest e confere a assinatura usando apenas a `public_key` — sem rodar o
+    EXRS e sem acesso à chave privada.
+    """
+    digest_sha256: str = Field(..., description="SHA-256 hex do CertifiedModule canônico (sem o selo)")
+    signature: str = Field(..., description="Assinatura Ed25519 do digest, em base64")
+    public_key: str = Field(..., description="Chave pública Ed25519 (base64 raw) para verificação independente")
+    algorithm: str = Field(default="Ed25519", description="Algoritmo de assinatura")
+    canonicalization: str = Field(default="json-sort-keys-v1", description="Esquema de canonicalização do digest")
+    sealed_at: str = Field(default="", description="Timestamp UTC ISO-8601 da selagem")
+
+
 class CertifiedModule(BaseModel):
     """Módulo Python certificado após validação — Phase A4."""
     original_file: str
@@ -354,6 +372,7 @@ class CertifiedModule(BaseModel):
     certification_status: str  # "PASSED" | "PARTIAL" | "FAILED"
     certified_at: str = ""
     certified_by: str = "EXRS Phase A4"
+    seal: Optional["CertificationSeal"] = None  # preenchido na selagem (ME-3+); None até lá
 
 
 # ==========================================
