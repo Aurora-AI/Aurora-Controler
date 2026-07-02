@@ -15,6 +15,32 @@ cd Aurora-Controler
 uv sync
 ```
 
+## Uso Rápido (CLI)
+
+Instale o pacote em modo editável e use o comando `exrs`:
+
+```bash
+uv sync
+exrs compile planilha.xlsx
+```
+
+Isso gera a pasta `planilha_output/` com:
+- `planilha.py` — módulo Python que reproduz o cálculo da planilha (sem precisar de Excel nem de LLM)
+- `planilha_report.html` — relatório de paridade e cobertura
+
+Flags:
+- `--out <pasta>` — customiza o destino da saída (padrão: `./<nome>_output`)
+- `--debug` — mantém os JSONs técnicos por fase (rastro de auditoria completo)
+- `--chat` — ativa captura de intenção via LLM (requer chave configurada, ver `.env.example`)
+
+Para a interface web local:
+
+```bash
+exrs ui
+```
+
+**Requisito:** a Fase A4 (validação) exige Docker Desktop instalado e rodando.
+
 ## ⚠️ Gerar Fixture de Testes (Obrigatório)
 
 O arquivo `tests/fixtures/coverage_test.xlsx` é binário e está em `.gitignore`. Você **deve** gerá-lo antes de rodar os testes, caso contrário 166 testes falharão.
