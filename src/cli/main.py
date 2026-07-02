@@ -1,0 +1,101 @@
+"""
+EXRS CLI — entry point `exrs`.
+
+`exrs compile <arquivo.xlsx>` roda a Trilha A (A0→A4) local, sem servidor, sem
+Celery/Redis, e monta uma pasta de saída limpa com o .py replay + relatório .html.
+`exrs ui` sobe uma interface web local (ver src/cli/web_app.py, Task 4).
+"""
+import argparse
+import json
+import sys
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+for _p in (
+    _REPO_ROOT / "libs" / "trustware", _REPO_ROOT / "src" / "orchestrator",
+    _REPO_ROOT / "src" / "phase_a0", _REPO_ROOT / "src" / "phase_a1",
+    _REPO_ROOT / "src" / "phase_a1_5", _REPO_ROOT / "src" / "phase_a2",
+    _REPO_ROOT / "src" / "phase_a2_5", _REPO_ROOT / "src" / "phase_a3",
+    _REPO_ROOT / "src" / "phase_a4",
+):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
+from pipeline_contracts import ExecutionDAG, FormulaRegistryMap, NormalizedWorkbookIR
+from storage_manager import StorageManager
+from pipeline_orchestrator import orchestrate_pipeline
+
+from cli.output import write_clean_output
+
+
+def run_compile_cli(xlsx_path: Path, dest_dir: Path | None, debug: bool, chat: bool) -> int:
+    if not xlsx_path.exists():
+        print(f"Erro: arquivo não encontrado: {xlsx_path}", file=sys.stderr)
+        return 1
+
+    stem = xlsx_path.stem
+    storage = StorageManager(job_id=stem)
+    result = orchestrate_pipeline(xlsx_path, storage, skip_llm=not chat)
+
+    status = result.get("status")
+    if status in {"ESCALATED", "NOT_IMPLEMENTED", "SKIPPED_NO_CACHE", "GATE_REJECTED"}:
+        print(f"[EXRS] Não foi possível gerar código: {status}", file=sys.stderr)
+        reason = result.get("reason")
+        if reason:
+            print(f"       Motivo: {reason}", file=sys.stderr)
+        return 1
+
+    certified = result.get("certified")
+    if certified is None:
+        print("[EXRS] Erro interno: pipeline concluiu sem CertifiedModule.", file=sys.stderr)
+        return 1
+
+    dag = ExecutionDAG.model_validate_json(
+        (storage.output_dir / f"{stem}_a2_dag.json").read_text(encoding="utf-8")
+    )
+    fmap = FormulaRegistryMap.model_validate_json(
+        (storage.output_dir / f"{stem}_a25_fmap.json").read_text(encoding="utf-8")
+    )
+    norm_ir = NormalizedWorkbookIR.model_validate_json(
+        (storage.output_dir / f"{stem}_a15_norm.json").read_text(encoding="utf-8")
+    )
+
+    dest = dest_dir or Path.cwd() / f"{stem}_output"
+    write_clean_output(storage.output_dir, stem, certified, dag, fmap, norm_ir, dest, debug=debug)
+
+    print(f"[EXRS] Status: {status}")
+    print(f"[EXRS] Saída: {dest}")
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="exrs", description="EXRS — Reversão de planilhas Excel para Python")
+    sub = parser.add_subparsers(dest="command")
+
+    compile_parser = sub.add_parser("compile", help="Reverte uma planilha .xlsx em código Python")
+    compile_parser.add_argument("xlsx", nargs="?", type=Path, help="Caminho para o arquivo .xlsx")
+    compile_parser.add_argument("--out", type=Path, default=None, help="Pasta de saída (padrão: ./<nome>_output)")
+    compile_parser.add_argument("--debug", action="store_true", help="Mantém os JSONs técnicos por fase na saída")
+    compile_parser.add_argument("--chat", action="store_true", help="Ativa captura de intenção via LLM (Trilha B)")
+
+    sub.add_parser("ui", help="Abre a interface web local")
+
+    args = parser.parse_args(argv)
+
+    if args.command == "compile":
+        if args.xlsx is None:
+            compile_parser.print_usage(sys.stderr)
+            return 2
+        return run_compile_cli(args.xlsx, args.out, args.debug, args.chat)
+
+    if args.command == "ui":
+        from cli.web_app import serve
+        serve()
+        return 0
+
+    parser.print_usage(sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))
