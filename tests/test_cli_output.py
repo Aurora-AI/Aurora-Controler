@@ -79,3 +79,18 @@ def test_generated_py_is_syntactically_valid(tmp_path):
 
     source = (dest / "p.py").read_text(encoding="utf-8")
     compile(source, "<generated>", "exec")
+
+
+def test_missing_vendored_engine_source_raises_clear_error(tmp_path, monkeypatch):
+    import pytest
+    import cli.output as output_module
+
+    monkeypatch.setattr(output_module, "_FORMULA_ENGINE_SRC", tmp_path / "does_not_exist.py")
+
+    job_dir = tmp_path / "job"
+    job_dir.mkdir()
+    dest = tmp_path / "p_output"
+    certified, dag, fmap, norm_ir = _fixture(job_dir)
+
+    with pytest.raises(RuntimeError, match="EXRS vendored engine source"):
+        write_clean_output(job_dir, "p", certified, dag, fmap, norm_ir, dest, debug=False)

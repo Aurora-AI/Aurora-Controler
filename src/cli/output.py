@@ -34,8 +34,16 @@ def write_clean_output(
     source = render_replay_module(dag, fmap, norm_ir, source_file=f"{stem}.xlsx")
     (dest_dir / f"{stem}.py").write_text(source, encoding="utf-8")
 
-    shutil.copy2(_FORMULA_ENGINE_SRC, dest_dir / "_exrs_formula_engine.py")
-    shutil.copy2(_RANGE_UTILS_SRC, dest_dir / "_exrs_range_utils.py")
+    for src, dest_name in (
+        (_FORMULA_ENGINE_SRC, "_exrs_formula_engine.py"),
+        (_RANGE_UTILS_SRC, "_exrs_range_utils.py"),
+    ):
+        if not src.exists():
+            raise RuntimeError(
+                f"EXRS vendored engine source não encontrado: {src}. "
+                "Repositório pode estar com layout alterado ou instalação corrompida."
+            )
+        shutil.copy2(src, dest_dir / dest_name)
 
     generate_html_report(
         certified.validation_report.results,
