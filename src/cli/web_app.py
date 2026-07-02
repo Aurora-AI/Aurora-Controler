@@ -5,7 +5,6 @@ Servidor FastAPI 100% local, sem Celery/Redis: execução em BackgroundTasks, st
 memória (dict). Adequado a uso single-user local — não é a infraestrutura multi-tenant
 do SaaS (OS-EXRS-SAAS), que continua existindo separadamente em src/api/main.py.
 """
-import shutil
 import tempfile
 import uuid
 import webbrowser
@@ -30,6 +29,10 @@ def _process(token: str, xlsx_path: Path, dest_dir: Path) -> None:
         with _LOCK:
             _JOBS[token]["status"] = "ERROR"
             _JOBS[token]["detail"] = str(e)
+    finally:
+        # O input já foi totalmente consumido pelo pipeline — não precisa
+        # persistir. dest_dir é mantido: GET /result/{token} lista seus arquivos.
+        xlsx_path.unlink(missing_ok=True)
 
 
 def create_app() -> FastAPI:
@@ -55,7 +58,7 @@ def create_app() -> FastAPI:
         dest_dir = work_dir / "output"
 
         with _LOCK:
-            _JOBS[token] = {"status": "RUNNING", "dest_dir": dest_dir}
+            _JOBS[token] = {"status": "RUNNING", "dest_dir": dest_dir, "xlsx_path": xlsx_path}
 
         background_tasks.add_task(_process, token, xlsx_path, dest_dir)
         return {"token": token}

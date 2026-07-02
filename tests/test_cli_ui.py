@@ -67,3 +67,23 @@ def test_result_page_serves_report_and_download_links(client):
 def test_unknown_token_returns_404(client):
     resp = client.get("/status/token-que-nao-existe")
     assert resp.status_code == 404
+
+
+def test_upload_input_file_deleted_after_processing_output_kept(client):
+    # TestClient executa BackgroundTasks de forma síncrona antes de devolver a
+    # resposta de /upload, então ao retornar aqui o job já terminou (DONE/ERROR).
+    from cli.web_app import _JOBS
+
+    with open(FIXTURE, "rb") as fh:
+        resp = client.post("/upload", files={"file": ("coverage_test.xlsx", fh, "application/octet-stream")})
+    token = resp.json()["token"]
+    xlsx_path = Path(_JOBS[token]["xlsx_path"])
+    dest_dir = Path(_JOBS[token]["dest_dir"])
+
+    status_resp = client.get(f"/status/{token}")
+    status = status_resp.json()["status"]
+    assert status in {"DONE", "ERROR"}
+
+    assert not xlsx_path.exists()  # input foi removido após o processamento
+    if status == "DONE":
+        assert dest_dir.exists()  # output permanece para GET /result/{token}
