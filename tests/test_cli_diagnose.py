@@ -58,3 +58,13 @@ def test_diagnose_no_args_returns_usage_error():
 
     exit_code = main(["diagnose"])
     assert exit_code == 2
+
+
+def test_diagnose_non_track_a_returns_error(tmp_path, monkeypatch):
+    """When route() returns 'escalate' or 'track_c', diagnose should exit with code 1."""
+    import cli.main as main_module
+
+    monkeypatch.setattr(main_module, "route", lambda *a, **k: "escalate")
+
+    exit_code = main_module.main(["diagnose", str(FIXTURE), "--out", str(tmp_path / "out")])
+    assert exit_code == 1
