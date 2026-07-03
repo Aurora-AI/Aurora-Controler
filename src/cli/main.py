@@ -15,7 +15,7 @@ for _p in (
     _REPO_ROOT / "src" / "phase_a0", _REPO_ROOT / "src" / "phase_a1",
     _REPO_ROOT / "src" / "phase_a1_5", _REPO_ROOT / "src" / "phase_a2",
     _REPO_ROOT / "src" / "phase_a2_5", _REPO_ROOT / "src" / "phase_a3",
-    _REPO_ROOT / "src" / "phase_a4",
+    _REPO_ROOT / "src" / "phase_a4", _REPO_ROOT / "src" / "phase_b2",
 ):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
@@ -25,6 +25,19 @@ from storage_manager import StorageManager
 from pipeline_orchestrator import orchestrate_pipeline
 
 from cli.output import write_clean_output
+
+from classifier import classify_workbook as classify_a0
+from extractor import extract_structure
+from normalizer import normalize_workbook
+from graph_builder import build_dag
+from pattern_registry import classify_workbook as classify_patterns, build_registry
+from pipeline_orchestrator import route
+from pipeline_contracts import IntentCapture
+from graph_assembler import build_graph
+from html_visualizer import generate_html
+
+from cli.risk_analysis import analyze_risks
+from cli.diagnose_report import render_diagnose_report
 
 
 def run_compile_cli(xlsx_path: Path, dest_dir: Path | None, debug: bool, chat: bool) -> int:
@@ -71,6 +84,44 @@ def run_compile_cli(xlsx_path: Path, dest_dir: Path | None, debug: bool, chat: b
     return 0
 
 
+def run_diagnose_cli(xlsx_path: Path, dest_dir: Path | None) -> int:
+    if not xlsx_path.exists():
+        print(f"Erro: arquivo não encontrado: {xlsx_path}", file=sys.stderr)
+        return 1
+
+    stem = xlsx_path.stem
+
+    report = classify_a0(xlsx_path)
+    track = route(report.workbook_class, report.compile_decision, xlsx_path)
+    if track != "track_a":
+        print(f"[EXRS] Diagnóstico não aplicável a este arquivo (classificação: {track}).",
+              file=sys.stderr)
+        if report.escalate_reasons:
+            print(f"       Motivos: {', '.join(report.escalate_reasons)}", file=sys.stderr)
+        return 1
+
+    raw_ir = extract_structure(xlsx_path)
+    norm_ir = normalize_workbook(raw_ir)
+    dag = build_dag(norm_ir)
+    fmap = classify_patterns(norm_ir, build_registry())
+
+    findings = analyze_risks(dag, fmap, norm_ir)
+
+    intent = IntentCapture(workbook_name=stem, user_goal="", input_parameters=[], output_metrics=[])
+    graph = build_graph(dag.model_dump(), norm_ir.model_dump(), intent)
+    graph_html = generate_html(graph)
+
+    report_html = render_diagnose_report(graph_html, findings, source_file=xlsx_path.name)
+
+    dest = dest_dir or Path.cwd() / f"{stem}_diagnostico"
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / "relatorio.html").write_text(report_html, encoding="utf-8")
+
+    print(f"[EXRS] Diagnóstico concluído: {len(findings)} risco(s) detectado(s).")
+    print(f"[EXRS] Relatório: {dest / 'relatorio.html'}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="exrs", description="EXRS — Reversão de planilhas Excel para Python")
     sub = parser.add_subparsers(dest="command")
@@ -81,6 +132,10 @@ def main(argv: list[str] | None = None) -> int:
     compile_parser.add_argument("--debug", action="store_true", help="Mantém os JSONs técnicos por fase na saída")
     compile_parser.add_argument("--chat", action="store_true", help="Ativa captura de intenção via LLM (Trilha B)")
 
+    diagnose_parser = sub.add_parser("diagnose", help="Gera um relatório de diagnóstico (grafo + riscos)")
+    diagnose_parser.add_argument("xlsx", nargs="?", type=Path, help="Caminho para o arquivo .xlsx")
+    diagnose_parser.add_argument("--out", type=Path, default=None, help="Pasta de saída (padrão: ./<nome>_diagnostico)")
+
     sub.add_parser("ui", help="Abre a interface web local")
 
     args = parser.parse_args(argv)
@@ -90,6 +145,12 @@ def main(argv: list[str] | None = None) -> int:
             compile_parser.print_usage(sys.stderr)
             return 2
         return run_compile_cli(args.xlsx, args.out, args.debug, args.chat)
+
+    if args.command == "diagnose":
+        if args.xlsx is None:
+            diagnose_parser.print_usage(sys.stderr)
+            return 2
+        return run_diagnose_cli(args.xlsx, args.out)
 
     if args.command == "ui":
         from cli.web_app import serve
