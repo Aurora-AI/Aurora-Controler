@@ -6,6 +6,7 @@ Celery/Redis, e monta uma pasta de saída limpa com o .py replay + relatório .h
 `exrs ui` sobe uma interface web local (ver src/cli/web_app.py, Task 4).
 """
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -38,6 +39,10 @@ from html_visualizer import generate_html
 
 from cli.risk_analysis import analyze_risks
 from cli.diagnose_report import render_diagnose_report
+
+from oracle.column_mapper import ColumnMappingError, DateAmbiguityError
+from oracle.commercial_auditor import run_audit
+from cli.audit_report import render_audit_report
 
 
 def run_compile_cli(xlsx_path: Path, dest_dir: Path | None, debug: bool, chat: bool) -> int:
@@ -122,6 +127,46 @@ def run_diagnose_cli(xlsx_path: Path, dest_dir: Path | None) -> int:
     return 0
 
 
+def run_audit_cli(path: Path, dest_dir: Path | None, mapping_path: Path | None) -> int:
+    if not path.exists():
+        print(f"Erro: caminho não encontrado: {path}", file=sys.stderr)
+        return 1
+
+    mapping_override = None
+    if mapping_path is not None:
+        mapping_override = json.loads(mapping_path.read_text(encoding="utf-8"))
+
+    try:
+        report, identity_map = run_audit(
+            path, mapping_override=mapping_override, return_identity_map=True,
+        )
+    except (ColumnMappingError, DateAmbiguityError) as e:
+        print(f"[EXRS] Não foi possível auditar: {e}", file=sys.stderr)
+        return 1
+
+    if report.cleaning.rows_accepted == 0:
+        print("[EXRS] Nenhuma linha de venda válida após a limpeza.", file=sys.stderr)
+        print(f"       Resumo da limpeza: {report.cleaning.model_dump()}", file=sys.stderr)
+        return 1
+
+    dest = dest_dir or Path.cwd() / f"{path.stem}_auditoria"
+    dest.mkdir(parents=True, exist_ok=True)
+
+    (dest / "audit_report.json").write_text(report.model_dump_json(indent=2), encoding="utf-8")
+    (dest / "identity_map.json").write_text(json.dumps({
+        "_aviso": "Este arquivo contém identidades REAIS de clientes — NÃO enviar a "
+                  "serviços externos/nuvem. Use apenas para tradução local no ecrã.",
+        "identity_map": identity_map,
+    }, indent=2, ensure_ascii=False), encoding="utf-8")
+    report_html = render_audit_report(report, identity_map, source_label=path.name)
+    (dest / "relatorio.html").write_text(report_html, encoding="utf-8")
+
+    print(f"[EXRS] Auditoria concluída: {len(report.revenue_leaks)} vazamento(s) de receita, "
+          f"{len(report.churn_findings)} cliente(s) em churn.")
+    print(f"[EXRS] Saída: {dest}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="exrs", description="EXRS — Reversão de planilhas Excel para Python")
     sub = parser.add_subparsers(dest="command")
@@ -135,6 +180,11 @@ def main(argv: list[str] | None = None) -> int:
     diagnose_parser = sub.add_parser("diagnose", help="Gera um relatório de diagnóstico (grafo + riscos)")
     diagnose_parser.add_argument("xlsx", nargs="?", type=Path, help="Caminho para o arquivo .xlsx")
     diagnose_parser.add_argument("--out", type=Path, default=None, help="Pasta de saída (padrão: ./<nome>_diagnostico)")
+
+    audit_parser = sub.add_parser("audit", help="Auditoria forense comercial (Data Oracle) — pasta ou arquivo de vendas")
+    audit_parser.add_argument("path", nargs="?", type=Path, help="Pasta ou arquivo .xlsx/.csv de histórico de vendas")
+    audit_parser.add_argument("--out", type=Path, default=None, help="Pasta de saída (padrão: ./<nome>_auditoria)")
+    audit_parser.add_argument("--mapping", type=Path, default=None, help="JSON de mapeamento manual de colunas")
 
     sub.add_parser("ui", help="Abre a interface web local")
 
@@ -151,6 +201,12 @@ def main(argv: list[str] | None = None) -> int:
             diagnose_parser.print_usage(sys.stderr)
             return 2
         return run_diagnose_cli(args.xlsx, args.out)
+
+    if args.command == "audit":
+        if args.path is None:
+            audit_parser.print_usage(sys.stderr)
+            return 2
+        return run_audit_cli(args.path, args.out, args.mapping)
 
     if args.command == "ui":
         from cli.web_app import serve

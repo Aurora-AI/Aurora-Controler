@@ -13,7 +13,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from oracle.column_mapper import coerce_currency_series, coerce_date_series, infer_column_roles
+from oracle.column_mapper import (
+    ColumnMappingError, DateAmbiguityError, coerce_currency_series, coerce_date_series,
+    infer_column_roles,
+)
 from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ExecutiveAuditReport,
     ProductTrendEntry, RevenueLeakAnomaly, SalesRecord, SeasonalityCurve,
@@ -50,18 +53,19 @@ def load_sales_records(
         rows_read += len(raw)
         try:
             roles = infer_column_roles(raw, override=mapping_override)
-        except Exception as e:
+            dates = coerce_date_series(raw[roles["date"]])
+            values = coerce_currency_series(raw[roles["value"]])
+            products = raw[roles["product"]].astype(str)
+            customers = raw[roles["customer"]].astype(str)
+            quantities = (
+                coerce_currency_series(raw[roles["quantity"]])
+                if "quantity" in roles else pd.Series([None] * len(raw))
+            )
+        except (ColumnMappingError, DateAmbiguityError) as e:
+            # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
+            # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
             files_skipped.append({"file": file_path.name, "reason": str(e)})
             continue
-
-        dates = coerce_date_series(raw[roles["date"]])
-        values = coerce_currency_series(raw[roles["value"]])
-        products = raw[roles["product"]].astype(str)
-        customers = raw[roles["customer"]].astype(str)
-        quantities = (
-            coerce_currency_series(raw[roles["quantity"]])
-            if "quantity" in roles else pd.Series([None] * len(raw))
-        )
 
         for i in range(len(raw)):
             if pd.isna(dates.iloc[i]):
