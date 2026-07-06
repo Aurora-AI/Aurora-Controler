@@ -159,4 +159,4 @@ def test_run_audit_returns_identity_map_separately_from_the_report():
     report, identity_map = result
     assert isinstance(identity_map, dict)
     assert "Cliente Alpha Ltda" in identity_map
-    assert identity_map["Cliente Alpha Ltda"] not in report.model_dump_json()
+    assert "Cliente Alpha Ltda" not in report.model_dump_json()
