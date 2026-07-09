@@ -28,4 +28,17 @@ def test_materiality_floor_preserves_real_signal():
         leak for leak in report.revenue_leaks
         if leak.scope == "product" and leak.entity_id == "AG-12"
     ]
-    assert any(leak.period == "2024-05" and leak.severity == "high" for leak in ag12_leaks)
+    assert any(
+        leak.period == "2024-05" and leak.severity == "high" and not leak.low_confidence
+        for leak in ag12_leaks
+    )
+
+
+def test_yoy_residual_suppresses_regular_seasonality():
+    report = run_audit(FIXTURE)
+    solar_march_leaks = [
+        leak for leak in report.revenue_leaks
+        if leak.scope == "product" and leak.entity_id == "SOLAR-SEASONAL"
+        and leak.period in ("2024-03", "2025-03", "2026-03")
+    ]
+    assert not solar_march_leaks

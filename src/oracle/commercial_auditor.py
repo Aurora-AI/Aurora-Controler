@@ -127,6 +127,43 @@ def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
                     drop_sigma=float(sigma), severity=severity,
                 ))
 
+    def _scan_yoy(series: pd.Series, scope: str, entity_id: str) -> None:
+        """Desvio sobre o resíduo YoY (leave-one-out sobre todos os anos), não sobre a
+        série crua — mata sazonalidade regular sem suprimir quedas reais. Mês-do-ano com
+        menos de 2 outros-ano vira, no máximo, low_confidence/"medium" (nunca hard-flag
+        sem base)."""
+        series = series.sort_index()
+        if len(series) < 3:
+            return
+        months = series.index.map(lambda p: p.month)
+        residuals: dict = {}
+        others_count: dict = {}
+        for period, value in series.items():
+            others = series[(months == period.month) & (series.index != period)]
+            if len(others) == 0:
+                continue
+            residuals[period] = value - others.mean()
+            others_count[period] = len(others)
+        if len(residuals) < 2:
+            return
+        std_res = pd.Series(list(residuals.values())).std()
+        if not std_res or std_res == 0 or pd.isna(std_res):
+            return
+        for period, residual in residuals.items():
+            sigma = -residual / std_res
+            if sigma >= thresholds.revenue_drop_sigma:
+                n_others = others_count[period]
+                low_confidence = n_others < 2
+                severity = (
+                    "medium" if low_confidence
+                    else "high" if sigma >= thresholds.revenue_drop_sigma * 1.5 else "medium"
+                )
+                anomalies.append(RevenueLeakAnomaly(
+                    scope=scope, entity_id=entity_id, period=str(period),
+                    expected_value=float(series[period] - residual), actual_value=float(series[period]),
+                    drop_sigma=float(sigma), severity=severity, low_confidence=low_confidence,
+                ))
+
     total_series = df.groupby("period")["value"].sum()
     _scan(total_series, "total", "total")
 
@@ -136,7 +173,7 @@ def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
         if group["value"].sum() < floor:
             continue
         product_series = group.groupby("period")["value"].sum()
-        _scan(product_series, "product", product)
+        _scan_yoy(product_series, "product", product)
 
     return anomalies
 

@@ -48,6 +48,7 @@ class RevenueLeakAnomaly(BaseModel):
     actual_value: float
     drop_sigma: float
     severity: str  # "low" | "medium" | "high"
+    low_confidence: bool = False
 
 
 class ChurnFinding(BaseModel):
