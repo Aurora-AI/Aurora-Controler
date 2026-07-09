@@ -130,7 +130,11 @@ def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
     total_series = df.groupby("period")["value"].sum()
     _scan(total_series, "total", "total")
 
+    total_revenue = df["value"].sum()
+    floor = total_revenue * thresholds.materiality_revenue_pct / 100.0
     for product, group in df.groupby("product"):
+        if group["value"].sum() < floor:
+            continue
         product_series = group.groupby("period")["value"].sum()
         _scan(product_series, "product", product)
 

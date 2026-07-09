@@ -17,6 +17,7 @@ class AuditThresholdsConfig(BaseModel):
     churn_min_purchases: int = 3
     trend_decoupling_pct: float = 0.0
     seasonality_min_months: int = 12
+    materiality_revenue_pct: float = 1.0
 
 
 class SalesRecord(BaseModel):
