@@ -75,15 +75,37 @@ def infer_column_roles(
 
 
 def _clean_currency_value(value: object) -> float:
+    """Coage um valor monetário para float, DETECTANDO o formato em vez de assumir pt-BR.
+
+    Bug histórico (exposto pela fixture de ótica): a versão antiga fazia
+    `text.replace(".", "")` sempre, tratando '480.0' (número cru do Excel, formato US/ISO)
+    como milhar → 4800, inflando ~10× todo valor decimal. Planilha real mistura número cru
+    (ponto decimal) e texto pt-BR ('1.500,00'). A desambiguação abaixo trata os dois."""
     if isinstance(value, bool):
         return float("nan")
     if isinstance(value, (int, float)):
         return float(value)
     if value is None:
         return float("nan")
-    text = str(value).strip()
-    text = re.sub(r"[R\$€\s]", "", text)
-    text = text.replace(".", "").replace(",", ".")
+    text = re.sub(r"[R\$€\s]", "", str(value).strip())
+
+    has_comma = "," in text
+    has_dot = "." in text
+    if has_comma and has_dot:
+        # O ÚLTIMO separador é o decimal: pt-BR '1.500,00' (vírgula por último) vs
+        # US '1,500.00' (ponto por último).
+        if text.rfind(",") > text.rfind("."):
+            text = text.replace(".", "").replace(",", ".")   # pt-BR
+        else:
+            text = text.replace(",", "")                     # US
+    elif has_comma:
+        text = text.replace(",", ".")                        # só vírgula → decimal pt-BR
+    elif has_dot:
+        # Só ponto → ambíguo. Múltiplos pontos, OU 1 ponto com exatamente 3 dígitos após,
+        # = milhar pt-BR ('1.500' → 1500; '1.500.000' → 1500000). Caso contrário (1-2
+        # dígitos após, ex: '480.0', '1500.00') = ponto decimal US/ISO, mantém.
+        if text.count(".") > 1 or len(text.rsplit(".", 1)[-1]) == 3:
+            text = text.replace(".", "")
     try:
         return float(text)
     except ValueError:
