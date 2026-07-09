@@ -1,7 +1,7 @@
 # EXRS `audit` — Motor Honesto (Design, OS-EXRS-AUDIT-HONESTO)
 
 **Data:** 2026-07-06
-**Status:** Aprovado no conteúdo (spec do CSO); aguardando decisão sobre 2 pré-requisitos de fixture (§Fix 3)
+**Status:** Aprovado — pré-requisito de fixture resolvido (opção a: estender a fixture como 1ª etapa do Fix 3)
 **Autoridade:** spec do CSO (Rodrigo) + achados da fixture de ótica
   (`docs/superpowers/specs/2026-07-06-otica-fixture-e-achados.md`)
 
@@ -146,5 +146,5 @@ já limpa por esta OS.
 | Materialidade | 1% receita OU 12 vendas/período (o que primeiro) |
 | Multi-aba | ler por nome; Vendas mantém os detectores atuais |
 | Contingência | completude < 30% → liderar por série B |
-| Pré-req Fix 3 | estender fixture (Parametros p/ B5 + agregados #7/#8/#9) — a decidir |
+| Pré-req Fix 3 | **RESOLVIDO (opção a):** estender fixture (aba Parametros p/ B5 + plantar #7/#8/#9 exatos) como 1ª etapa do Fix 3 |
 | Thresholds | tudo em `AuditThresholdsConfig`, zero número mágico |
