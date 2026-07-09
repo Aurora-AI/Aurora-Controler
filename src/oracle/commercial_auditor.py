@@ -7,7 +7,6 @@ pseudo-anonimização de identidades de cliente antes de montar o artefato final
 LLM aqui — toda decisão é determinística e reproduzível (thresholds registrados no
 report).
 """
-import string
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -241,15 +240,28 @@ def detect_seasonality(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> l
     )]
 
 
+def _pseudonym_code(index: int) -> str:
+    """Índice 0-based → código estilo coluna de Excel: A, B, ..., Z, AA, AB, ...
+    Escala para qualquer número de clientes (o antigo string.ascii_uppercase[i] estourava
+    IndexError acima de 26 — bug exposto pela fixture de ótica com 200 clientes)."""
+    letters = ""
+    n = index + 1
+    while n > 0:
+        n, rem = divmod(n - 1, 26)
+        letters = chr(65 + rem) + letters
+    return letters
+
+
 def anonymize_customers(records: list[SalesRecord]) -> tuple[list[SalesRecord], dict[str, str]]:
-    """Pseudo-anonimização determinística: Client_A, Client_B... ordenados por valor
-    histórico decrescente (reprodutível — mesma entrada sempre gera o mesmo mapa)."""
+    """Pseudo-anonimização determinística: Client_A, Client_B... Client_Z, Client_AA...
+    ordenados por valor histórico decrescente (reprodutível — mesma entrada sempre gera o
+    mesmo mapa)."""
     totals: dict[str, float] = {}
     for r in records:
         totals[r.customer] = totals.get(r.customer, 0.0) + r.value
 
     ordered = sorted(totals.keys(), key=lambda name: (-totals[name], name))
-    identity_map = {name: f"Client_{string.ascii_uppercase[i]}" for i, name in enumerate(ordered)}
+    identity_map = {name: f"Client_{_pseudonym_code(i)}" for i, name in enumerate(ordered)}
 
     anonymized = [r.model_copy(update={"customer": identity_map[r.customer]}) for r in records]
     return anonymized, identity_map

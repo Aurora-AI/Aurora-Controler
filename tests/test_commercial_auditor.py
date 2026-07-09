@@ -27,7 +27,9 @@ for _p in (REPO_ROOT / "src",):
         sys.path.insert(0, str(_p))
 sys.path.insert(0, str(REPO_ROOT / "tests" / "fixtures"))
 
-from oracle.forensic_contracts import AuditThresholdsConfig
+from datetime import datetime
+
+from oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
 from oracle.commercial_auditor import (
     anonymize_customers, load_sales_records, run_audit,
 )
@@ -160,3 +162,21 @@ def test_run_audit_returns_identity_map_separately_from_the_report():
     assert isinstance(identity_map, dict)
     assert "Cliente Alpha Ltda" in identity_map
     assert "Cliente Alpha Ltda" not in report.model_dump_json()
+
+
+def test_anonymize_scales_beyond_26_customers():
+    """Regressão: a fixture de ótica (200 clientes) expôs um IndexError em
+    string.ascii_uppercase[i] para i >= 26. Os pseudônimos devem escalar (A..Z, AA, AB...)."""
+    records = [
+        SalesRecord(
+            date=datetime(2024, 1, 1), product="X", customer=f"Cliente {i:03d}",
+            value=float(i + 1), quantity=1, source_file="f.xlsx", source_row=i + 2,
+        )
+        for i in range(30)  # > 26 força o caso que estourava antes
+    ]
+    _, identity_map = anonymize_customers(records)
+    assert len(identity_map) == 30
+    assert all(v.startswith("Client_") for v in identity_map.values())
+    assert len(set(identity_map.values())) == 30  # pseudônimos únicos
+    # O 27º pseudônimo (índice 26) deve ser "Client_AA".
+    assert "Client_AA" in identity_map.values()
