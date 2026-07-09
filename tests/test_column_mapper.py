@@ -74,6 +74,29 @@ def test_coerce_currency_unparseable_value_becomes_nan_not_silent_zero():
     assert pd.isna(coerced.iloc[1])
 
 
+def test_coerce_currency_handles_plain_decimal_point_us_iso():
+    """Regressão (bug exposto pela fixture de ótica): planilha real guarda números como
+    número; o pandas os lê como '480.0'/'320.5'/'1500.00'. A coerção NÃO pode tratar o
+    ponto como separador de milhar aqui — isso inflava os valores ~10× (480.0 → 4800)."""
+    series = pd.Series(["480.0", "320.5", "1500.00", "12.50"])
+    coerced = coerce_currency_series(series)
+    assert coerced.tolist() == pytest.approx([480.0, 320.5, 1500.00, 12.50])
+
+
+def test_coerce_currency_distinguishes_ptbr_thousands_from_us_decimal():
+    """Desambiguação por sinal estrutural: ',' presente → decimal pt-BR; só '.' com 3
+    dígitos após → milhar pt-BR; só '.' com 1-2 dígitos após → decimal US/ISO."""
+    series = pd.Series([
+        "1.500,00",   # pt-BR: milhar '.', decimal ',' → 1500.00
+        "1,500.00",   # US:    milhar ',', decimal '.' → 1500.00
+        "1.500",      # pt-BR milhar (3 díg após ponto) → 1500
+        "1.5",        # decimal (1 díg após ponto) → 1.5
+        "1.500.000",  # pt-BR milhar múltiplo → 1500000
+    ])
+    coerced = coerce_currency_series(series)
+    assert coerced.tolist() == pytest.approx([1500.00, 1500.00, 1500.0, 1.5, 1500000.0])
+
+
 # ── Coerção de data + detecção de mistura genuína de formato (regra endurecida) ─────
 
 def test_coerce_date_series_defaults_to_dayfirst_ptbr():
