@@ -17,11 +17,13 @@ from oracle.column_mapper import (
     infer_column_roles,
 )
 from oracle.forensic_contracts import (
-    AuditThresholdsConfig, ChurnFinding, CleaningSummary, ExecutiveAuditReport,
-    ProductTrendEntry, RevenueLeakAnomaly, SalesRecord, SeasonalityCurve,
+    AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
+    ExecutiveAuditReport, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
+    SeasonalityCurve,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
+_ANONYMOUS_CUSTOMER = "SEM_CADASTRO"
 
 
 def _read_raw(path: Path) -> pd.DataFrame:
@@ -60,6 +62,10 @@ def load_sales_records(
                 coerce_currency_series(raw[roles["quantity"]])
                 if "quantity" in roles else pd.Series([None] * len(raw))
             )
+            entry_costs = (
+                coerce_currency_series(raw[roles["cost"]])
+                if "cost" in roles else pd.Series([None] * len(raw))
+            )
         except (ColumnMappingError, DateAmbiguityError) as e:
             # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
             # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
@@ -79,14 +85,16 @@ def load_sales_records(
             # Venda sem cliente identificado (walk-in) é dado real, não sujeira — a
             # venda existe e conta na receita. Vira um pseudo-cliente estável em vez de
             # descartada, para não perder receita real do produto/período.
-            customer = "SEM_CADASTRO" if pd.isna(customers.iloc[i]) else customers.iloc[i]
+            customer = _ANONYMOUS_CUSTOMER if pd.isna(customers.iloc[i]) else customers.iloc[i]
             qty = quantities.iloc[i]
+            cost = entry_costs.iloc[i]
             records.append(SalesRecord(
                 date=dates.iloc[i].to_pydatetime(),
                 product=products.iloc[i],
                 customer=customer,
                 value=float(values.iloc[i]),
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
+                entry_cost=None if cost is None or pd.isna(cost) else float(cost),
                 source_file=file_path.name,
                 source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
             ))
@@ -101,7 +109,7 @@ def load_sales_records(
 def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
     return pd.DataFrame([{
         "date": pd.Timestamp(r.date), "product": r.product,
-        "customer": r.customer, "value": r.value,
+        "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
     } for r in records])
 
 
@@ -187,9 +195,13 @@ def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
 
 def detect_churn(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[ChurnFinding]:
     """Cliente com >= churn_min_purchases compras e cadência média M; sem comprar há
-    mais que churn_cadence_multiplier x M -> churn invisível (nunca cancelou formalmente)."""
+    mais que churn_cadence_multiplier x M -> churn invisível (nunca cancelou formalmente).
+    Vendas sem cliente identificado (pseudo-cliente `_ANONYMOUS_CUSTOMER`) não são uma
+    pessoa — excluídas, senão o volume agregado de vários clientes anônimos distorce a
+    cadência de um cliente que não existe."""
     findings: list[ChurnFinding] = []
     global_max_date = df["date"].max()
+    df = df[df["customer"] != _ANONYMOUS_CUSTOMER]
 
     for customer, group in df.groupby("customer"):
         purchase_dates = sorted(group["date"].dt.normalize().unique())
@@ -288,6 +300,99 @@ def detect_seasonality(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> l
     )]
 
 
+def detect_rfm_champions(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[RFMChampion]:
+    """RFM adaptado a negócio de compra recorrente regular (ótica): Frequência e Valor
+    ranqueiam normalmente em `rfm_bins` quantis — campeão exige topo nos dois. Recência
+    crua NÃO discrimina aqui (dias-desde-a-última-compra reflete a fase do ciclo do
+    cliente no corte dos dados, não engajamento — um cliente de ciclo longo cai "frio"
+    só por ter ciclo longo). Em vez de quantil, recência vira um GATE de "ainda ativo":
+    reaproveita o mesmo limiar do detector de churn (A3) sobre a cadência PRÓPRIA do
+    cliente — régua vem do cliente, não da rede. Cliente com 1 única compra não tem
+    cadência própria (sem base) e fica fora do gate. Pseudo-cliente `_ANONYMOUS_CUSTOMER`
+    (vendas sem identificação) é excluído — não é uma pessoa, é a soma de vários
+    walk-ins; contá-lo distorceria frequência/valor com volume que não é de ninguém."""
+    df = df[df["customer"] != _ANONYMOUS_CUSTOMER]
+    if df.empty:
+        return []
+    bins = thresholds.rfm_bins
+    global_max_date = df["date"].max()
+
+    grouped = df.groupby("customer").agg(
+        first_purchase=("date", "min"), last_purchase=("date", "max"),
+        frequency=("date", "nunique"), monetary=("value", "sum"),
+    )
+    if len(grouped) < bins:
+        # Base de clientes menor que o nº de quantis — segmentar não tem sinal.
+        return []
+    grouped["recency_days"] = (global_max_date - grouped["last_purchase"]).dt.days
+
+    has_cadence = grouped["frequency"] > 1
+    span_days = (grouped["last_purchase"] - grouped["first_purchase"]).dt.days
+    avg_cadence_days = pd.Series(float("nan"), index=grouped.index)
+    avg_cadence_days[has_cadence] = span_days[has_cadence] / (grouped["frequency"][has_cadence] - 1)
+    still_active = has_cadence & (
+        grouped["recency_days"] <= avg_cadence_days * thresholds.churn_cadence_multiplier
+    )
+
+    def _quantile_score(values: pd.Series) -> pd.Series:
+        # rank(method="first") desempata valores iguais -> qcut nunca quebra por bordas
+        # de quantil duplicadas. Maior valor = maior score.
+        ranks = values.rank(method="first")
+        return pd.qcut(ranks, bins, labels=False) + 1
+
+    grouped["recency_score"] = _quantile_score(-grouped["recency_days"])
+    grouped["frequency_score"] = _quantile_score(grouped["frequency"])
+    grouped["monetary_score"] = _quantile_score(grouped["monetary"])
+
+    champions = grouped[
+        still_active & (grouped["frequency_score"] == bins) & (grouped["monetary_score"] == bins)
+    ]
+    return [
+        RFMChampion(
+            customer_id=str(customer_id), recency_days=float(row["recency_days"]),
+            frequency=int(row["frequency"]), monetary=float(row["monetary"]),
+            recency_score=int(row["recency_score"]), frequency_score=int(row["frequency_score"]),
+            monetary_score=int(row["monetary_score"]),
+        )
+        for customer_id, row in champions.iterrows()
+    ]
+
+
+def detect_contribution_margin(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[ContributionMarginAlert]:
+    """Margem de contribuição por produto = preço médio − custo de entrada médio −
+    variáveis (imposto+comissão+taxa, % configurável do preço). Produto com margem
+    negativa dá prejuízo em cada venda, antes até de despesa fixa. Sem coluna de custo
+    de entrada no arquivo de origem, não há como calcular — retorna vazio (nunca
+    inventa custo)."""
+    if "entry_cost" not in df.columns:
+        return []
+    valid = df.dropna(subset=["entry_cost"])
+    if valid.empty:
+        return []
+
+    grouped = valid.groupby("product").agg(
+        avg_price=("value", "mean"), avg_entry_cost=("entry_cost", "mean"),
+        sample_size=("value", "count"),
+    )
+    grouped["variable_cost"] = grouped["avg_price"] * thresholds.variable_cost_pct / 100.0
+    grouped["contribution_margin"] = (
+        grouped["avg_price"] - grouped["avg_entry_cost"] - grouped["variable_cost"]
+    )
+    negative = grouped[grouped["contribution_margin"] < 0]
+    return [
+        ContributionMarginAlert(
+            product=str(product), avg_price=float(row["avg_price"]),
+            avg_entry_cost=float(row["avg_entry_cost"]),
+            variable_cost_pct=float(thresholds.variable_cost_pct),
+            contribution_margin=float(row["contribution_margin"]),
+            sample_size=int(row["sample_size"]),
+        )
+        for product, row in negative.iterrows()
+    ]
+
+
 def _pseudonym_code(index: int) -> str:
     """Índice 0-based → código estilo coluna de Excel: A, B, ..., Z, AA, AB, ...
     Escala para qualquer número de clientes (o antigo string.ascii_uppercase[i] estourava
@@ -331,6 +436,8 @@ def run_audit(
     churn_findings = detect_churn(df, thresholds)
     product_trends = detect_product_trends(df, thresholds)
     seasonality = detect_seasonality(df, thresholds)
+    rfm_champions = detect_rfm_champions(df, thresholds)
+    contribution_margin_alerts = detect_contribution_margin(df, thresholds)
 
     _, identity_map = anonymize_customers(records)
 
@@ -339,6 +446,8 @@ def run_audit(
     for leak in revenue_leaks:
         if leak.scope == "customer":
             leak.entity_id = identity_map.get(leak.entity_id, leak.entity_id)
+    for champion in rfm_champions:
+        champion.customer_id = identity_map.get(champion.customer_id, champion.customer_id)
 
     period_start = str(df["date"].min().to_period("M")) if len(df) else ""
     period_end = str(df["date"].max().to_period("M")) if len(df) else ""
@@ -347,6 +456,7 @@ def run_audit(
         period_start=period_start, period_end=period_end, cleaning=cleaning,
         thresholds=thresholds, revenue_leaks=revenue_leaks, churn_findings=churn_findings,
         product_trends=product_trends, seasonality=seasonality,
+        rfm_champions=rfm_champions, contribution_margin_alerts=contribution_margin_alerts,
         generated_at=datetime.now(timezone.utc).isoformat(),
     )
 

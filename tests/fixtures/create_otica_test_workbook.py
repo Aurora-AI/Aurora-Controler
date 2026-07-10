@@ -145,10 +145,13 @@ def build_vendas(rng: random.Random) -> list[dict]:
                                   cid in base_grau_ids, cid in solar_buyers)
             cursor += dt.timedelta(days=gap + rng.randint(-10, 10))
 
-    # Pool SEGURO para as linhas sintéticas de produto (AG-12/SOLAR): clientes normais
-    # que NÃO são churners nem campeões — senão uma linha sintética com data recente
-    # "reativa" um churner e quebra a asserção de churn (bug pego pela própria fixture).
-    safe_pool = [f"C-{i:03d}" for i in range(150, 200)]  # C-150..C-199, todos normais
+    # Pseudo-cliente DEDICADO para as linhas sintéticas de produto (AG-12/SOLAR) — não é
+    # nenhum cliente real. Historicamente essas linhas sorteavam um "safe pool" de
+    # clientes normais (C-150..C-199) para não reativar um churner por acaso; mas isso
+    # contaminava qualquer detector por-cliente (RFM: acúmulo de receita sintética em
+    # ~15 clientes reais empurrava-os para "campeão" por engano — bug pego pelo próprio
+    # RFM). Um ID sintético único isola o ruído sem sujar cliente nenhum.
+    SYNTHETIC_CUSTOMER = "C-SYN"
 
     # ── Anomalia #10: sku "AG-12" — série mensal estável com queda sharp (>2σ) ──────
     ag_base = 1000.0
@@ -160,7 +163,7 @@ def build_vendas(rng: random.Random) -> list[dict]:
         # distribui a receita do mês em 1 linha (qtd=1, preco_unit = receita do mês)
         vendas.append({
             "venda_id": next_id(), "data": dt.date(m.year, m.month, 15),
-            "cliente_id": rng.choice(safe_pool), "vendedor_id": "V-1",
+            "cliente_id": SYNTHETIC_CUSTOMER, "vendedor_id": "V-1",
             "sku": "AG-12", "categoria": "armacao", "tipo_venda": "grau_simples",
             "qtd": 1, "preco_unit": round(receita, 2),
             "custo_entrada": round(receita * 0.5, 2), "forma_pagto": "cartao",
@@ -174,7 +177,7 @@ def build_vendas(rng: random.Random) -> list[dict]:
         receita = 2000.0 * boost
         vendas.append({
             "venda_id": next_id(), "data": dt.date(m.year, m.month, 10),
-            "cliente_id": rng.choice(safe_pool), "vendedor_id": "V-2",
+            "cliente_id": SYNTHETIC_CUSTOMER, "vendedor_id": "V-2",
             "sku": "SOLAR-SEASONAL", "categoria": "solar", "tipo_venda": "solar_grau",
             "qtd": 1, "preco_unit": round(receita, 2),
             "custo_entrada": round(receita * 0.45, 2), "forma_pagto": "cartao",

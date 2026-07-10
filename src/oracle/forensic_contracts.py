@@ -18,6 +18,8 @@ class AuditThresholdsConfig(BaseModel):
     trend_decoupling_pct: float = 0.0
     seasonality_min_months: int = 12
     materiality_revenue_pct: float = 1.0
+    rfm_bins: int = 5
+    variable_cost_pct: float = 15.0
 
 
 class SalesRecord(BaseModel):
@@ -27,6 +29,7 @@ class SalesRecord(BaseModel):
     customer: str
     value: float
     quantity: float | None = None
+    entry_cost: float | None = None
     source_file: str
     source_row: int
 
@@ -70,6 +73,30 @@ class ProductTrendEntry(BaseModel):
     last_sale_month: str | None  # "YYYY-MM"
 
 
+class RFMChampion(BaseModel):
+    """Cliente no quintil máximo (recência + frequência + valor) — a base a proteger a
+    qualquer custo. Metodologia RFM clássica: cada dimensão é ranqueada em `rfm_bins`
+    quantis; campeão = topo nas 3 ao mesmo tempo."""
+    customer_id: str
+    recency_days: float
+    frequency: int
+    monetary: float
+    recency_score: int
+    frequency_score: int
+    monetary_score: int
+
+
+class ContributionMarginAlert(BaseModel):
+    """Produto cuja margem de contribuição média (preço − custo de entrada − variáveis)
+    é negativa — cada venda dá prejuízo antes mesmo de despesa fixa."""
+    product: str
+    avg_price: float
+    avg_entry_cost: float
+    variable_cost_pct: float
+    contribution_margin: float
+    sample_size: int
+
+
 class SeasonalityCurve(BaseModel):
     """Índice de sazonalidade mensal — nunca inventa curva sem histórico suficiente."""
     scope: str
@@ -90,4 +117,6 @@ class ExecutiveAuditReport(BaseModel):
     churn_findings: list[ChurnFinding] = Field(default_factory=list)
     product_trends: list[ProductTrendEntry] = Field(default_factory=list)
     seasonality: list[SeasonalityCurve] = Field(default_factory=list)
+    rfm_champions: list[RFMChampion] = Field(default_factory=list)
+    contribution_margin_alerts: list[ContributionMarginAlert] = Field(default_factory=list)
     generated_at: str
