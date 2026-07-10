@@ -120,6 +120,7 @@ def coerce_currency_series(series: pd.Series) -> pd.Series:
 
 
 _DATE_TOKEN_RE = re.compile(r"^(\d{1,2})/(\d{1,2})/(\d{4})$")
+_ISO_DATE_RE = re.compile(r"^\d{4}-\d{1,2}-\d{1,2}")
 
 
 def _detect_mixed_date_format(series: pd.Series) -> bool:
@@ -147,7 +148,18 @@ def coerce_date_series(series: pd.Series, date_format: str | None = None) -> pd.
     `date_format` não for informado e a coluna contiver mistura genuína de formato,
     levanta DateAmbiguityError — nunca mistura DD/MM e MM/DD em silêncio. Com
     `date_format` explícito ("DMY"|"MDY"), o usuário assume a interpretação e a
-    detecção é ignorada."""
+    detecção é ignorada.
+
+    Bug real (exposto por planilha de cliente): células de data do Excel chegam como
+    string ISO ("2023-10-06 00:00:00") após a leitura com dtype=str. ISO é inequívoco —
+    ano sempre na 1a posição — mas `pd.to_datetime(dayfirst=True)` sem `format="mixed"`
+    infere um único formato a partir da 1a linha; se essa linha for ambígua (dia e mês
+    ambos <=12), ele troca dia/mês em silêncio e aplica a troca à coluna inteira,
+    gerando datas erradas nas linhas que "batem" e NaT em massa nas que não batem. ISO
+    é tratado à parte, sem depender de dayfirst."""
+    non_null = series.dropna().astype(str).str.strip()
+    if len(non_null) and non_null.str.match(_ISO_DATE_RE).all():
+        return pd.to_datetime(series, format="mixed", dayfirst=False, errors="coerce")
     if date_format is None:
         if _detect_mixed_date_format(series):
             raise DateAmbiguityError(

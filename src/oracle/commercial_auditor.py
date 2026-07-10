@@ -73,11 +73,18 @@ def load_sales_records(
             if pd.isna(values.iloc[i]):
                 discarded_by_reason["valor_nao_numerico"] = discarded_by_reason.get("valor_nao_numerico", 0) + 1
                 continue
+            if pd.isna(products.iloc[i]):
+                discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
+                continue
+            # Venda sem cliente identificado (walk-in) é dado real, não sujeira — a
+            # venda existe e conta na receita. Vira um pseudo-cliente estável em vez de
+            # descartada, para não perder receita real do produto/período.
+            customer = "SEM_CADASTRO" if pd.isna(customers.iloc[i]) else customers.iloc[i]
             qty = quantities.iloc[i]
             records.append(SalesRecord(
                 date=dates.iloc[i].to_pydatetime(),
                 product=products.iloc[i],
-                customer=customers.iloc[i],
+                customer=customer,
                 value=float(values.iloc[i]),
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
                 source_file=file_path.name,
