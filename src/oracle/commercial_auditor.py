@@ -13,13 +13,15 @@ from pathlib import Path
 import pandas as pd
 
 from oracle.column_mapper import (
-    ColumnMappingError, DateAmbiguityError, coerce_currency_series, coerce_date_series,
-    infer_column_roles,
+    _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES,
+    _ESTOQUE_ROLE_KEYWORDS, ColumnMappingError, DateAmbiguityError, coerce_currency_series,
+    coerce_date_series, infer_column_roles,
 )
 from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
-    ExecutiveAuditReport, LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly,
-    RFMChampion, SalesRecord, SeasonalityCurve,
+    DataCompletenessFinding, DeadStockFinding, ExecutiveAuditReport, GmroiEntry,
+    LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
+    SeasonalityCurve,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -30,6 +32,24 @@ def _read_raw(path: Path) -> pd.DataFrame:
     if path.suffix.lower() == ".csv":
         return pd.read_csv(path, dtype=str)
     return pd.read_excel(path, dtype=str, engine="openpyxl")
+
+
+_SERIES_B_SHEETS = ("Estoque", "Clientes")
+
+
+def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
+    """Lê as abas nomeadas da série B (Estoque, Clientes) quando existem — Vendas
+    continua vindo de `load_sales_records`. Arquivo sem essas abas (CSV, pasta, ou
+    .xlsx de aba única) simplesmente não alimenta os detectores de estoque/completude
+    — nunca inventa dado ausente, nunca derruba a auditoria."""
+    path = Path(path)
+    if path.is_dir() or path.suffix.lower() != ".xlsx":
+        return {}
+    workbook = pd.ExcelFile(path, engine="openpyxl")
+    return {
+        name: pd.read_excel(path, sheet_name=name, dtype=str, engine="openpyxl")
+        for name in _SERIES_B_SHEETS if name in workbook.sheet_names
+    }
 
 
 def load_sales_records(
@@ -441,6 +461,135 @@ def detect_latent_revenue(
     )]
 
 
+def detect_dead_stock(
+    estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[DeadStockFinding]:
+    """B4 — capital preso em SKUs sem movimento há >= `dead_stock_months` (contagem em
+    meses-calendário, mesmo estilo do churn) contra a data de movimentação mais recente
+    conhecida no PRÓPRIO estoque — nunca a data do sistema. Sem aba Estoque ou colunas
+    reconhecíveis, retorna vazio — nunca inventa capital preso."""
+    if estoque_df is None or estoque_df.empty:
+        return []
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+
+    frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "cost": coerce_currency_series(estoque_df[roles["cost"]]),
+        "qty": coerce_currency_series(estoque_df[roles["qty_on_hand"]]),
+        "last_movement": coerce_date_series(estoque_df[roles["last_movement"]]),
+    }).dropna()
+    if frame.empty:
+        return []
+
+    reference_date = frame["last_movement"].max()
+    ref_ordinal = reference_date.year * 12 + reference_date.month
+    frame["months_since"] = ref_ordinal - (
+        frame["last_movement"].dt.year * 12 + frame["last_movement"].dt.month
+    )
+    frame["inventory_value"] = frame["qty"] * frame["cost"]
+
+    total_inventory_value = float(frame["inventory_value"].sum())
+    dead = frame[frame["months_since"] >= thresholds.dead_stock_months]
+    if dead.empty:
+        return []
+    capital_frozen = float(dead["inventory_value"].sum())
+    dead_stock_pct = capital_frozen / total_inventory_value * 100.0 if total_inventory_value else 0.0
+
+    return [DeadStockFinding(
+        dead_stock_months=thresholds.dead_stock_months, sku_count=len(dead),
+        capital_frozen=capital_frozen, total_inventory_value=total_inventory_value,
+        dead_stock_pct=float(dead_stock_pct), skus=sorted(dead["sku"].tolist()),
+    )]
+
+
+def detect_gmroi(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[GmroiEntry]:
+    """B2 — margem bruta realizada (Vendas) ÷ valor de estoque a custo (Estoque), por
+    categoria. MEDE E REPORTA o que o dado diz — não há alvo esperado, os números da
+    categoria são o que são. `avg_inventory_value` usa o snapshot atual do estoque como
+    proxy de médio (sem série temporal de níveis de estoque, não há como calcular uma
+    média histórica de verdade) — aproximação, não fingida como exata."""
+    if estoque_df is None or estoque_df.empty:
+        return []
+    if "category" not in vendas_df.columns or vendas_df["category"].isna().all():
+        return []
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+    if "category" not in roles:
+        return []
+
+    est_frame = pd.DataFrame({
+        "category": estoque_df[roles["category"]].astype(str),
+        "cost": coerce_currency_series(estoque_df[roles["cost"]]),
+        "qty": coerce_currency_series(estoque_df[roles["qty_on_hand"]]),
+    }).dropna()
+    if est_frame.empty:
+        return []
+    inventory_by_category = (est_frame["qty"] * est_frame["cost"]).groupby(est_frame["category"]).sum()
+
+    sales = vendas_df.dropna(subset=["category", "entry_cost"])
+    margin_by_category = (sales["value"] - sales["entry_cost"]).groupby(sales["category"]).sum()
+    count_by_category = sales.groupby("category").size()
+
+    entries: list[GmroiEntry] = []
+    for category, avg_inventory_value in sorted(inventory_by_category.items()):
+        gross_margin = float(margin_by_category.get(category, 0.0))
+        avg_inventory_value = float(avg_inventory_value)
+        gmroi = gross_margin / avg_inventory_value if avg_inventory_value else None
+        entries.append(GmroiEntry(
+            category=category, gross_margin=gross_margin, avg_inventory_value=avg_inventory_value,
+            gmroi=gmroi, sample_size=int(count_by_category.get(category, 0)),
+        ))
+    return entries
+
+
+def detect_data_completeness(
+    clientes_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[DataCompletenessFinding]:
+    """A1 — Completude de cadastro (telefone + CPF), aba Clientes. Métrica POR CAMPO
+    (não por cliente E): telefone e CPF podem faltar independentemente por cliente
+    (dado real messy, cada campo com sua própria taxa de preenchimento) — média dos 2
+    campos é mais honesta que exigir os 2 juntos, que penalizaria um cliente com só 1
+    dado faltando tanto quanto um sem nenhum. Sem as 2 colunas de contato, não há como
+    medir — retorna vazio."""
+    if clientes_df is None or clientes_df.empty:
+        return []
+    try:
+        roles = infer_column_roles(
+            clientes_df, role_keywords=_CLIENTES_ROLE_KEYWORDS, required_roles=_CLIENTES_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+    if "phone" not in roles or "document" not in roles:
+        return []
+
+    total = len(clientes_df)
+
+    def _filled_pct(series: pd.Series) -> float:
+        filled = series.notna() & (series.astype(str).str.strip() != "")
+        return 100.0 * filled.sum() / total
+
+    phone_pct = _filled_pct(clientes_df[roles["phone"]])
+    document_pct = _filled_pct(clientes_df[roles["document"]])
+    completeness_pct = (phone_pct + document_pct) / 2.0
+
+    return [DataCompletenessFinding(
+        total_customers=total, phone_filled_pct=float(phone_pct),
+        document_filled_pct=float(document_pct), completeness_pct=float(completeness_pct),
+        contingency_triggered=completeness_pct < thresholds.contingency_completeness_pct,
+    )]
+
+
 def _pseudonym_code(index: int) -> str:
     """Índice 0-based → código estilo coluna de Excel: A, B, ..., Z, AA, AB, ...
     Escala para qualquer número de clientes (o antigo string.ascii_uppercase[i] estourava
@@ -488,6 +637,11 @@ def run_audit(
     contribution_margin_alerts = detect_contribution_margin(df, thresholds)
     latent_revenue = detect_latent_revenue(df, thresholds)
 
+    named_sheets = load_named_sheets(path)
+    dead_stock = detect_dead_stock(named_sheets.get("Estoque"), thresholds)
+    gmroi = detect_gmroi(df, named_sheets.get("Estoque"), thresholds)
+    data_completeness = detect_data_completeness(named_sheets.get("Clientes"), thresholds)
+
     _, identity_map = anonymize_customers(records)
 
     for finding in churn_findings:
@@ -510,7 +664,8 @@ def run_audit(
         thresholds=thresholds, revenue_leaks=revenue_leaks, churn_findings=churn_findings,
         product_trends=product_trends, seasonality=seasonality,
         rfm_champions=rfm_champions, contribution_margin_alerts=contribution_margin_alerts,
-        latent_revenue=latent_revenue,
+        latent_revenue=latent_revenue, dead_stock=dead_stock, gmroi=gmroi,
+        data_completeness=data_completeness,
         generated_at=datetime.now(timezone.utc).isoformat(),
     )
 

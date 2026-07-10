@@ -32,6 +32,26 @@ _ROLE_KEYWORDS: dict[str, list[str]] = {
 
 _REQUIRED_ROLES = ("date", "product", "customer", "value")
 
+# Vocabulário de mapeamento para as abas da série B (Fix 3) — dict separado do de
+# Vendas: mesmas palavras (ex. "sku") significam coisas diferentes em cada aba, e um
+# vocabulário compartilhado colidiria (ex. "descricao" é produto em Vendas, mas
+# identificação de item em Estoque).
+_ESTOQUE_ROLE_KEYWORDS: dict[str, list[str]] = {
+    "sku": ["sku", "produto", "item", "codigo"],
+    "cost": ["custo"],
+    "qty_on_hand": ["qtd_atual", "estoque", "saldo", "quantidade"],
+    "last_movement": ["ultimo_mov", "movimentacao"],
+    "category": ["categoria", "familia", "linha"],
+}
+_ESTOQUE_REQUIRED_ROLES = ("sku", "cost", "qty_on_hand", "last_movement")
+
+_CLIENTES_ROLE_KEYWORDS: dict[str, list[str]] = {
+    "customer_id": ["cliente_id", "codigo", "id"],
+    "phone": ["telefone", "fone", "celular"],
+    "document": ["cpf", "cnpj", "documento"],
+}
+_CLIENTES_REQUIRED_ROLES = ("customer_id",)
+
 
 def _normalize(text: str) -> str:
     """Remove acentos e caixa — 'Líquido' -> 'liquido'."""
@@ -41,11 +61,17 @@ def _normalize(text: str) -> str:
 
 def infer_column_roles(
     df: pd.DataFrame, override: dict[str, str] | None = None,
+    role_keywords: dict[str, list[str]] | None = None,
+    required_roles: tuple[str, ...] | None = None,
 ) -> dict[str, str]:
-    """Infere qual coluna corresponde a cada papel (date/product/customer/value/
-    quantity) via vocabulário pt-BR de vendas. `override` tem prioridade absoluta sobre
-    a heurística. Levanta ColumnMappingError se um dos 4 papéis obrigatórios não for
-    identificado."""
+    """Infere qual coluna corresponde a cada papel via vocabulário pt-BR. `override`
+    tem prioridade absoluta sobre a heurística. Levanta ColumnMappingError se um dos
+    papéis obrigatórios não for identificado. `role_keywords`/`required_roles`
+    permitem reaproveitar o mesmo mecanismo para esquemas diferentes de Vendas (ex.
+    Estoque, Clientes) — default mantém o comportamento original de Vendas."""
+    role_keywords = role_keywords if role_keywords is not None else _ROLE_KEYWORDS
+    required_roles = required_roles if required_roles is not None else _REQUIRED_ROLES
+
     roles: dict[str, str] = {}
     assigned_columns: set[str] = set()
 
@@ -54,7 +80,7 @@ def infer_column_roles(
             roles[role] = column
             assigned_columns.add(column)
 
-    for role, keywords in _ROLE_KEYWORDS.items():
+    for role, keywords in role_keywords.items():
         if role in roles:
             continue
         for column in df.columns:
@@ -66,7 +92,7 @@ def infer_column_roles(
                 assigned_columns.add(column)
                 break
 
-    missing = [r for r in _REQUIRED_ROLES if r not in roles]
+    missing = [r for r in required_roles if r not in roles]
     if missing:
         raise ColumnMappingError(
             f"Não foi possível identificar as colunas para os papéis obrigatórios "

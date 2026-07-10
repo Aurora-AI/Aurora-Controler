@@ -2,6 +2,9 @@
 __pycache__/
 .pytest_cache/
 *.xlsx
+# Fixture real (dado sintético de consultoria, não PII) — NÃO regenerável por script,
+# precisa estar versionada para os testes de regressão da série B baterem em qualquer clone.
+!tests/fixtures/consultoria_real_test.xlsx
 .env
 *.egg-info/
 dist/

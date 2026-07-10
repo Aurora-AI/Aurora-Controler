@@ -23,6 +23,8 @@ class AuditThresholdsConfig(BaseModel):
     latent_revenue_anchor_category: str = "lente"
     latent_revenue_target_category: str = "solar"
     latent_revenue_conversion_pct: float = 20.0
+    dead_stock_months: int = 8
+    contingency_completeness_pct: float = 30.0
 
 
 class SalesRecord(BaseModel):
@@ -127,6 +129,47 @@ class SeasonalityCurve(BaseModel):
     months_available: int | None = None
 
 
+class DeadStockFinding(BaseModel):
+    """B4 — SKUs sem movimento há mais que `dead_stock_months` (contagem de meses-
+    calendário desde o último movimento até o mais recente movimento conhecido no
+    estoque — nunca usa a data do sistema, só o que o arquivo atesta)."""
+    dead_stock_months: int
+    sku_count: int
+    capital_frozen: float  # Σ(qtd_atual × custo) dos SKUs parados
+    total_inventory_value: float  # Σ(qtd_atual × custo) de todo o estoque válido
+    dead_stock_pct: float  # capital_frozen / total_inventory_value × 100
+    skus: list[str] = Field(default_factory=list)
+
+
+class GmroiEntry(BaseModel):
+    """B2 — GMROI por categoria: margem bruta realizada (Vendas: receita − custo de
+    entrada) ÷ valor de estoque médio a custo. MEDE E REPORTA o que o dado diz — não
+    há alvo esperado, os números da categoria são o que são. `avg_inventory_value` usa
+    o snapshot ATUAL do estoque como proxy de médio (o arquivo não tem série temporal
+    de níveis de estoque para uma média histórica de verdade) — aproximação rotulada,
+    não fingida como exata."""
+    category: str
+    gross_margin: float
+    avg_inventory_value: float
+    gmroi: float | None  # None se não há estoque nessa categoria (divisão por zero)
+    sample_size: int  # nº de vendas que compuseram a margem bruta
+
+
+class DataCompletenessFinding(BaseModel):
+    """A1 — Completude de cadastro (telefone + CPF), aba Clientes. Métrica de
+    completude POR CAMPO (não por cliente): telefone e CPF podem faltar
+    independentemente por cliente (dado real messy) — média de preenchimento dos 2
+    campos é mais honesta que exigir os 2 juntos (que penaliza um cliente com só 1
+    dado faltando tanto quanto um sem nenhum). Abaixo de `contingency_completeness_pct`,
+    o relatório deve liderar pela série B em vez de churn/RFM/latente (dado de
+    contato pouco confiável)."""
+    total_customers: int
+    phone_filled_pct: float
+    document_filled_pct: float
+    completeness_pct: float  # média dos dois campos acima
+    contingency_triggered: bool
+
+
 class ExecutiveAuditReport(BaseModel):
     """Artefato final: encapsula toda a auditoria. Campos de cliente já vêm
     pseudo-anonimizados (Client_A, Client_B...) — nomes reais nunca aparecem aqui."""
@@ -141,4 +184,7 @@ class ExecutiveAuditReport(BaseModel):
     rfm_champions: list[RFMChampion] = Field(default_factory=list)
     contribution_margin_alerts: list[ContributionMarginAlert] = Field(default_factory=list)
     latent_revenue: list[LatentRevenueFinding] = Field(default_factory=list)
+    dead_stock: list[DeadStockFinding] = Field(default_factory=list)
+    gmroi: list[GmroiEntry] = Field(default_factory=list)
+    data_completeness: list[DataCompletenessFinding] = Field(default_factory=list)
     generated_at: str
