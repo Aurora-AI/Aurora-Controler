@@ -18,8 +18,8 @@ from oracle.column_mapper import (
 )
 from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
-    ExecutiveAuditReport, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SeasonalityCurve,
+    ExecutiveAuditReport, LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly,
+    RFMChampion, SalesRecord, SeasonalityCurve,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -66,6 +66,10 @@ def load_sales_records(
                 coerce_currency_series(raw[roles["cost"]])
                 if "cost" in roles else pd.Series([None] * len(raw))
             )
+            # Sem .astype(str): NaN de célula vazia precisa sobreviver como NaN (não
+            # "nan" string) até o pd.isna() por linha abaixo — mesma armadilha do bug
+            # real de cliente ausente.
+            categories = raw[roles["category"]] if "category" in roles else pd.Series([None] * len(raw))
         except (ColumnMappingError, DateAmbiguityError) as e:
             # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
             # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
@@ -88,6 +92,7 @@ def load_sales_records(
             customer = _ANONYMOUS_CUSTOMER if pd.isna(customers.iloc[i]) else customers.iloc[i]
             qty = quantities.iloc[i]
             cost = entry_costs.iloc[i]
+            cat = categories.iloc[i]
             records.append(SalesRecord(
                 date=dates.iloc[i].to_pydatetime(),
                 product=products.iloc[i],
@@ -95,6 +100,7 @@ def load_sales_records(
                 value=float(values.iloc[i]),
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
                 entry_cost=None if cost is None or pd.isna(cost) else float(cost),
+                category=None if cat is None or pd.isna(cat) else str(cat),
                 source_file=file_path.name,
                 source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
             ))
@@ -110,6 +116,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
     return pd.DataFrame([{
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
+        "category": r.category,
     } for r in records])
 
 
@@ -393,6 +400,47 @@ def detect_contribution_margin(
     ]
 
 
+def detect_latent_revenue(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[LatentRevenueFinding]:
+    """Receita Latente / Attach: separa o FATO medido do CENÁRIO assumido.
+
+    Base elegível = clientes que já compraram a âncora (`latent_revenue_anchor_category`,
+    ex. lente de grau). Attach rate e ticket médio do complemento (`..._target_category`,
+    ex. solar) são derivados do próprio histórico — régua do cliente. A taxa de conversão
+    dos não-compradores NÃO é derivável (a loja nunca trabalhou esses clientes, não há
+    histórico do que aconteceria) — é uma premissa de negócio explícita e ajustável
+    (`latent_revenue_conversion_pct`), nunca apresentada como fato. Sem coluna de
+    categoria no arquivo de origem, não há como segmentar — retorna vazio."""
+    if "category" not in df.columns or df["category"].isna().all():
+        return []
+    df = df[df["customer"] != _ANONYMOUS_CUSTOMER]
+    anchor = thresholds.latent_revenue_anchor_category
+    target = thresholds.latent_revenue_target_category
+
+    eligible = set(df.loc[df["category"] == anchor, "customer"].unique())
+    if not eligible:
+        return []
+    target_buyers = set(df.loc[df["category"] == target, "customer"].unique())
+    non_buyers = sorted(eligible - target_buyers)
+    if not non_buyers:
+        return []
+
+    attach_rate_pct = 100.0 * len(eligible & target_buyers) / len(eligible)
+    target_sales = df[df["category"] == target]
+    avg_ticket = float(target_sales["value"].mean()) if len(target_sales) else 0.0
+    conversion_pct = thresholds.latent_revenue_conversion_pct
+    estimated = len(non_buyers) * conversion_pct / 100.0 * avg_ticket
+
+    return [LatentRevenueFinding(
+        anchor_category=anchor, target_category=target,
+        eligible_customers=len(eligible), non_buyers_count=len(non_buyers),
+        attach_rate_pct=float(attach_rate_pct), avg_ticket_target_category=avg_ticket,
+        assumed_conversion_pct=float(conversion_pct),
+        estimated_latent_revenue=float(estimated), non_buyer_customers=non_buyers,
+    )]
+
+
 def _pseudonym_code(index: int) -> str:
     """Índice 0-based → código estilo coluna de Excel: A, B, ..., Z, AA, AB, ...
     Escala para qualquer número de clientes (o antigo string.ascii_uppercase[i] estourava
@@ -438,6 +486,7 @@ def run_audit(
     seasonality = detect_seasonality(df, thresholds)
     rfm_champions = detect_rfm_champions(df, thresholds)
     contribution_margin_alerts = detect_contribution_margin(df, thresholds)
+    latent_revenue = detect_latent_revenue(df, thresholds)
 
     _, identity_map = anonymize_customers(records)
 
@@ -448,6 +497,10 @@ def run_audit(
             leak.entity_id = identity_map.get(leak.entity_id, leak.entity_id)
     for champion in rfm_champions:
         champion.customer_id = identity_map.get(champion.customer_id, champion.customer_id)
+    for finding in latent_revenue:
+        finding.non_buyer_customers = [
+            identity_map.get(c, c) for c in finding.non_buyer_customers
+        ]
 
     period_start = str(df["date"].min().to_period("M")) if len(df) else ""
     period_end = str(df["date"].max().to_period("M")) if len(df) else ""
@@ -457,6 +510,7 @@ def run_audit(
         thresholds=thresholds, revenue_leaks=revenue_leaks, churn_findings=churn_findings,
         product_trends=product_trends, seasonality=seasonality,
         rfm_champions=rfm_champions, contribution_margin_alerts=contribution_margin_alerts,
+        latent_revenue=latent_revenue,
         generated_at=datetime.now(timezone.utc).isoformat(),
     )
 

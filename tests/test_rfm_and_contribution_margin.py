@@ -52,3 +52,37 @@ def test_rfm_excludes_anonymous_pseudo_customer():
 def test_contribution_margin_no_false_positive_on_healthy_skus():
     report = run_audit(FIXTURE)
     assert report.contribution_margin_alerts == []
+
+
+# ── Receita Latente / Attach (Gabarito #3) ──────────────────────────────────────────
+# A fixture não sustenta o "100 clientes de grau" do Gabarito (todo cliente compra
+# "lente" no gerador — não há sinal transacional que isole esse subgrupo; é um recorte
+# de ID artificial). A trava aqui é sobre o que É real e estável: separação
+# fato-vs-cenário, e os 70 solar_buyers plantados (C-050..C-119) nunca aparecem como
+# não-compradores.
+_SOLAR_BUYERS = {f"C-{i:03d}" for i in range(50, 120)}
+
+
+def test_latent_revenue_separates_fact_from_scenario():
+    report = run_audit(FIXTURE)
+    assert len(report.latent_revenue) == 1
+    finding = report.latent_revenue[0]
+    # Fato: attach rate = compradores do complemento / base elegível.
+    expected_attach_pct = 100.0 * (finding.eligible_customers - finding.non_buyers_count) / finding.eligible_customers
+    assert finding.attach_rate_pct == expected_attach_pct
+    # Cenário: a fórmula de R$ latente usa a conversão assumida, nunca o attach rate.
+    expected_latent = (
+        finding.non_buyers_count * finding.assumed_conversion_pct / 100.0
+        * finding.avg_ticket_target_category
+    )
+    assert abs(finding.estimated_latent_revenue - expected_latent) < 0.01
+
+
+def test_latent_revenue_excludes_known_solar_buyers():
+    report, identity_map = run_audit(FIXTURE, return_identity_map=True)
+    reverse_map = {pseudo: real for real, pseudo in identity_map.items()}
+    finding = report.latent_revenue[0]
+    non_buyer_real_ids = {
+        reverse_map.get(c, c) for c in finding.non_buyer_customers
+    }
+    assert not (_SOLAR_BUYERS & non_buyer_real_ids)

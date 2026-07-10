@@ -20,6 +20,9 @@ class AuditThresholdsConfig(BaseModel):
     materiality_revenue_pct: float = 1.0
     rfm_bins: int = 5
     variable_cost_pct: float = 15.0
+    latent_revenue_anchor_category: str = "lente"
+    latent_revenue_target_category: str = "solar"
+    latent_revenue_conversion_pct: float = 20.0
 
 
 class SalesRecord(BaseModel):
@@ -30,6 +33,7 @@ class SalesRecord(BaseModel):
     value: float
     quantity: float | None = None
     entry_cost: float | None = None
+    category: str | None = None
     source_file: str
     source_row: int
 
@@ -97,6 +101,23 @@ class ContributionMarginAlert(BaseModel):
     sample_size: int
 
 
+class LatentRevenueFinding(BaseModel):
+    """Receita Latente / Attach: separa o FATO medido do CENÁRIO assumido. `attach_rate_pct`
+    e `avg_ticket_target_category` são derivados do próprio histórico (régua do cliente).
+    `assumed_conversion_pct` é uma premissa de negócio explícita — a loja nunca trabalhou
+    esses não-compradores, então não há histórico do que aconteceria; não deriva, assume e
+    rotula. `estimated_latent_revenue` é cenário, não fato."""
+    anchor_category: str
+    target_category: str
+    eligible_customers: int  # base elegível: compraram a âncora
+    non_buyers_count: int  # compraram âncora, nunca compraram o complemento
+    attach_rate_pct: float  # FATO: % da base elegível que já compra o complemento
+    avg_ticket_target_category: float  # FATO: ticket médio real do complemento
+    assumed_conversion_pct: float  # CENÁRIO: taxa de conversão assumida, ajustável
+    estimated_latent_revenue: float  # CENÁRIO: non_buyers × conversão × ticket real
+    non_buyer_customers: list[str] = Field(default_factory=list)
+
+
 class SeasonalityCurve(BaseModel):
     """Índice de sazonalidade mensal — nunca inventa curva sem histórico suficiente."""
     scope: str
@@ -119,4 +140,5 @@ class ExecutiveAuditReport(BaseModel):
     seasonality: list[SeasonalityCurve] = Field(default_factory=list)
     rfm_champions: list[RFMChampion] = Field(default_factory=list)
     contribution_margin_alerts: list[ContributionMarginAlert] = Field(default_factory=list)
+    latent_revenue: list[LatentRevenueFinding] = Field(default_factory=list)
     generated_at: str
