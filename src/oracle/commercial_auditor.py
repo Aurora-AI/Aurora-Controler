@@ -21,11 +21,15 @@ from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
     DataCompletenessFinding, DeadStockFinding, ExecutiveAuditReport, GmroiEntry,
     LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SeasonalityCurve, WinsorizedValue,
+    SeasonalityCurve, StoreMacroSummary, StorePerformance, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
 _ANONYMOUS_CUSTOMER = "SEM_CADASTRO"
+# Venda com coluna de loja mapeada mas valor ausente NA linha (dado real messy) — não
+# é descartada nem some da agregação, vira um pseudo-grupo estável (mesmo padrão de
+# _ANONYMOUS_CUSTOMER para cliente ausente). Nunca cravado como nome de loja real.
+_UNKNOWN_STORE = "LOJA_NAO_IDENTIFICADA"
 
 
 def _read_raw(path: Path) -> pd.DataFrame:
@@ -90,6 +94,7 @@ def load_sales_records(
             # "nan" string) até o pd.isna() por linha abaixo — mesma armadilha do bug
             # real de cliente ausente.
             categories = raw[roles["category"]] if "category" in roles else pd.Series([None] * len(raw))
+            stores = raw[roles["store"]] if "store" in roles else pd.Series([None] * len(raw))
         except (ColumnMappingError, DateAmbiguityError) as e:
             # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
             # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
@@ -113,6 +118,7 @@ def load_sales_records(
             qty = quantities.iloc[i]
             cost = entry_costs.iloc[i]
             cat = categories.iloc[i]
+            store = stores.iloc[i]
             # Unidade econômica correta da linha é preço × quantidade — não só o
             # preço unitário (bug real: uma devolução com qtd=-1 entrava como venda
             # POSITIVA de mesmo valor, porque quantity nunca era usada). Quantidade
@@ -130,6 +136,7 @@ def load_sales_records(
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
                 entry_cost=None if cost is None or pd.isna(cost) else float(cost),
                 category=None if cat is None or pd.isna(cat) else str(cat),
+                store=None if store is None or pd.isna(store) else str(store),
                 source_file=file_path.name,
                 source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
             ))
@@ -198,7 +205,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
     return pd.DataFrame([{
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
-        "category": r.category,
+        "category": r.category, "store": r.store,
     } for r in records])
 
 
@@ -485,6 +492,88 @@ def detect_contribution_margin(
     ]
 
 
+def detect_store_performance(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[StorePerformance]:
+    """D1 — P&L por loja: agrega a MESMA lógica de margem de contribuição de
+    `detect_contribution_margin` (preço médio − custo de entrada médio −
+    `variable_cost_pct`% do preço), agrupando por LOJA em vez de por produto — o
+    groupby é sobre o que existir dinamicamente no dado, nunca uma lista fixa de
+    lojas. `gross_revenue` soma TODO o valor de venda da loja (inclui estornos
+    negativos — mesmo critério de `detect_revenue_leaks`); a margem de contribuição
+    real só considera vendas com custo de entrada conhecido e valor > 0 (estorno não
+    tem "preço", ver A1) — as duas métricas medem coisas diferentes de propósito, uma
+    loja pode ter faturamento alto e margem real negativa ao mesmo tempo. Sem coluna
+    de loja identificada no arquivo de origem, não há como segmentar — retorna vazio
+    (nunca inventa loja)."""
+    if "store" not in df.columns or df["store"].isna().all():
+        return []
+    df = df.copy()
+    df["store"] = df["store"].fillna(_UNKNOWN_STORE)
+
+    revenue_by_store = df.groupby("store")["value"].sum()
+    count_by_store = df.groupby("store").size()
+
+    valid = df.dropna(subset=["entry_cost"]) if "entry_cost" in df.columns else df.iloc[0:0]
+    valid = valid[valid["value"] > 0]
+
+    entries: list[StorePerformance] = []
+    for store in sorted(revenue_by_store.index):
+        store_valid = valid[valid["store"] == store]
+        margin_sample_size = len(store_valid)
+        if margin_sample_size == 0:
+            avg_price = 0.0
+            avg_entry_cost = 0.0
+            contribution_margin_avg = 0.0
+        else:
+            avg_price = float(store_valid["value"].mean())
+            avg_entry_cost = float(store_valid["entry_cost"].mean())
+            variable_cost = avg_price * thresholds.variable_cost_pct / 100.0
+            contribution_margin_avg = avg_price - avg_entry_cost - variable_cost
+        contribution_margin_total = contribution_margin_avg * margin_sample_size
+        entries.append(StorePerformance(
+            store=str(store), gross_revenue=float(revenue_by_store[store]),
+            revenue_sample_size=int(count_by_store[store]),
+            avg_price=float(avg_price), avg_entry_cost=float(avg_entry_cost),
+            variable_cost_pct=float(thresholds.variable_cost_pct),
+            contribution_margin_avg=float(contribution_margin_avg),
+            contribution_margin_total=float(contribution_margin_total),
+            margin_sample_size=margin_sample_size,
+        ))
+    return entries
+
+
+def build_store_macro_summary(
+    store_performance: list[StorePerformance],
+) -> StoreMacroSummary | None:
+    """D1 — Resumo macro a partir do P&L por loja (dinâmico: nenhuma loja específica
+    cravada, opera sobre o que `detect_store_performance` retornou). Ranking por
+    faturamento bruto vs. ranking por margem de contribuição real — mesma lista de
+    lojas, potencialmente ordens diferentes. `masked_amount` é o que o agregado
+    saudável da rede MASCARA: soma, em módulo, da `contribution_margin_total` de cada
+    loja com margem negativa — a rede fecha `network_contribution_margin_total`
+    positivo somando o resultado de todas as lojas, mas isso já é o líquido depois de
+    absorver o prejuízo das lojas negativas; `masked_amount` é quanto maior o
+    resultado seria sem elas. Sem loja identificada, retorna None — nunca inventa
+    ranking."""
+    if not store_performance:
+        return None
+    revenue_rank = [s.store for s in sorted(store_performance, key=lambda s: -s.gross_revenue)]
+    margin_rank = [
+        s.store for s in sorted(store_performance, key=lambda s: -s.contribution_margin_total)
+    ]
+    negative = [s for s in store_performance if s.contribution_margin_total < 0]
+    masked_amount = float(sum(-s.contribution_margin_total for s in negative))
+    network_contribution_margin_total = float(sum(s.contribution_margin_total for s in store_performance))
+    return StoreMacroSummary(
+        stores_with_negative_margin=sorted(s.store for s in negative),
+        masked_amount=masked_amount,
+        network_contribution_margin_total=network_contribution_margin_total,
+        revenue_rank=revenue_rank, margin_rank=margin_rank,
+        rank_differs=revenue_rank != margin_rank,
+    )
+
+
 def detect_latent_revenue(
     df: pd.DataFrame, thresholds: AuditThresholdsConfig,
 ) -> list[LatentRevenueFinding]:
@@ -704,6 +793,8 @@ def run_audit(
     rfm_champions = detect_rfm_champions(df, thresholds)
     contribution_margin_alerts = detect_contribution_margin(df, thresholds)
     latent_revenue = detect_latent_revenue(df, thresholds)
+    store_performance = detect_store_performance(df, thresholds)
+    store_macro_summary = build_store_macro_summary(store_performance)
 
     named_sheets = load_named_sheets(path)
     dead_stock = detect_dead_stock(named_sheets.get("Estoque"), thresholds)
@@ -734,6 +825,7 @@ def run_audit(
         rfm_champions=rfm_champions, contribution_margin_alerts=contribution_margin_alerts,
         latent_revenue=latent_revenue, dead_stock=dead_stock, gmroi=gmroi,
         data_completeness=data_completeness,
+        store_performance=store_performance, store_macro_summary=store_macro_summary,
         generated_at=datetime.now(timezone.utc).isoformat(),
     )
 

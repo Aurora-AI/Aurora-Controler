@@ -37,6 +37,7 @@ class SalesRecord(BaseModel):
     quantity: float | None = None
     entry_cost: float | None = None
     category: str | None = None
+    store: str | None = None
     source_file: str
     source_row: int
 
@@ -168,6 +169,45 @@ class GmroiEntry(BaseModel):
     sample_size: int  # nº de vendas que compuseram a margem bruta
 
 
+class StorePerformance(BaseModel):
+    """D1 — P&L por loja: agrega a MESMA lógica de margem de contribuição de
+    `detect_contribution_margin` (preço médio − custo de entrada médio −
+    `variable_cost_pct`% do preço), por LOJA em vez de por produto. `gross_revenue`
+    soma TODO o valor de venda da loja (inclui estornos negativos — mesmo critério de
+    receita usado em `detect_revenue_leaks`); nunca confundido com a margem de
+    contribuição real, que só considera vendas com custo de entrada conhecido e
+    valor > 0 (estorno não tem "preço", ver A1). `contribution_margin_total` é a
+    margem de contribuição REAL da loja em R$ (média por venda × nº de vendas com
+    custo conhecido) — é esse número, não `gross_revenue`, que decide se a loja dá
+    lucro ou prejuízo."""
+    store: str
+    gross_revenue: float
+    revenue_sample_size: int  # nº de vendas (linhas) que compuseram gross_revenue
+    avg_price: float  # preço médio das vendas com custo de entrada conhecido (valor > 0)
+    avg_entry_cost: float
+    variable_cost_pct: float
+    contribution_margin_avg: float  # margem de contribuição média por venda (R$)
+    contribution_margin_total: float  # contribution_margin_avg × margin_sample_size (R$)
+    margin_sample_size: int  # nº de vendas com custo de entrada conhecido que compuseram a margem
+
+
+class StoreMacroSummary(BaseModel):
+    """D1 — Resumo macro do P&L por loja: ranking por faturamento bruto vs. ranking
+    por margem de contribuição real (mesmo conjunto de lojas, ordens possivelmente
+    diferentes — loja de alto volume pode ter margem negativa). `masked_amount` é o
+    quanto o agregado saudável da rede MASCARA: soma, em módulo, da
+    `contribution_margin_total` de cada loja com margem negativa — a rede "pensa" que
+    ganha `network_contribution_margin_total`, mas isso já é o líquido depois do
+    prejuízo dessas lojas ter sido absorvido pelo resto; `masked_amount` é quanto
+    maior o resultado seria sem elas."""
+    stores_with_negative_margin: list[str] = Field(default_factory=list)
+    masked_amount: float
+    network_contribution_margin_total: float
+    revenue_rank: list[str] = Field(default_factory=list)  # lojas por faturamento bruto, desc
+    margin_rank: list[str] = Field(default_factory=list)  # lojas por margem de contribuição real, desc
+    rank_differs: bool  # True se a ordem dos dois rankings acima não é idêntica
+
+
 class DataCompletenessFinding(BaseModel):
     """A1 — Completude de cadastro (telefone + CPF), aba Clientes. Métrica de
     completude POR CAMPO (não por cliente): telefone e CPF podem faltar
@@ -200,4 +240,6 @@ class ExecutiveAuditReport(BaseModel):
     dead_stock: list[DeadStockFinding] = Field(default_factory=list)
     gmroi: list[GmroiEntry] = Field(default_factory=list)
     data_completeness: list[DataCompletenessFinding] = Field(default_factory=list)
+    store_performance: list[StorePerformance] = Field(default_factory=list)
+    store_macro_summary: StoreMacroSummary | None = None
     generated_at: str

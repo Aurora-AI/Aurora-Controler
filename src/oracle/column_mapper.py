@@ -28,6 +28,7 @@ _ROLE_KEYWORDS: dict[str, list[str]] = {
     "quantity": ["qtd", "quant", "quantidade"],
     "cost": ["custo"],
     "category": ["categoria", "familia", "linha"],
+    "store": ["loja", "filial", "unidade"],
 }
 
 _REQUIRED_ROLES = ("date", "product", "customer", "value")
