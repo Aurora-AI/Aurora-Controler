@@ -25,6 +25,7 @@ class AuditThresholdsConfig(BaseModel):
     latent_revenue_conversion_pct: float = 20.0
     dead_stock_months: int = 8
     contingency_completeness_pct: float = 30.0
+    outlier_median_ratio: float = 20.0  # valor > N× a mediana do próprio produto = erro de digitação
 
 
 class SalesRecord(BaseModel):
@@ -40,12 +41,24 @@ class SalesRecord(BaseModel):
     source_row: int
 
 
+class WinsorizedValue(BaseModel):
+    """Procedência de uma linha cujo valor foi podado por ser outlier estatístico
+    (cerca de Tukey) — nunca some em silêncio, sempre rastreável até a linha de
+    origem."""
+    source_file: str
+    source_row: int
+    product: str
+    original_value: float
+    capped_value: float
+
+
 class CleaningSummary(BaseModel):
     """Contabilidade da higienização — nada é descartado em silêncio."""
     rows_read: int
     rows_accepted: int
     rows_discarded_by_reason: dict[str, int] = Field(default_factory=dict)
     files_skipped: list[dict] = Field(default_factory=list)
+    values_winsorized: list[WinsorizedValue] = Field(default_factory=list)
 
 
 class RevenueLeakAnomaly(BaseModel):

@@ -21,7 +21,7 @@ from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
     DataCompletenessFinding, DeadStockFinding, ExecutiveAuditReport, GmroiEntry,
     LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SeasonalityCurve,
+    SeasonalityCurve, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -113,11 +113,20 @@ def load_sales_records(
             qty = quantities.iloc[i]
             cost = entry_costs.iloc[i]
             cat = categories.iloc[i]
+            # Unidade econômica correta da linha é preço × quantidade — não só o
+            # preço unitário (bug real: uma devolução com qtd=-1 entrava como venda
+            # POSITIVA de mesmo valor, porque quantity nunca era usada). Quantidade
+            # ausente/não mapeada assume 1 (preserva o comportamento de todo arquivo
+            # sem coluna de quantidade — nada muda pra eles). Isso também expõe erro
+            # de digitação de quantidade (ex. qtd=99) para a poda de outlier abaixo —
+            # nunca escala o erro em silêncio, só deixa visível pra ser podado.
+            effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
+            line_value = float(values.iloc[i]) * effective_qty
             records.append(SalesRecord(
                 date=dates.iloc[i].to_pydatetime(),
                 product=products.iloc[i],
                 customer=customer,
-                value=float(values.iloc[i]),
+                value=line_value,
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
                 entry_cost=None if cost is None or pd.isna(cost) else float(cost),
                 category=None if cat is None or pd.isna(cat) else str(cat),
@@ -130,6 +139,59 @@ def load_sales_records(
         rows_discarded_by_reason=discarded_by_reason, files_skipped=files_skipped,
     )
     return records, summary
+
+
+def winsorize_outliers(
+    records: list[SalesRecord], thresholds: AuditThresholdsConfig,
+) -> tuple[list[SalesRecord], list[WinsorizedValue]]:
+    """Poda estatística de outlier de valor — valor > `outlier_median_ratio`× a
+    MEDIANA do PRÓPRIO produto = erro clássico de digitação (dígito a mais no preço,
+    ou quantidade errada que infla o total da linha); não pode inflar faturamento nem
+    contaminar médias/medianas a jusante.
+
+    Razão-para-a-própria-mediana, não cerca de Tukey (Q3+k×IQR): testado contra o
+    dado real, IQR por produto — mesmo com cerca "extrema" (3×) e amostra mínima alta
+    — gerava dezenas de falsos positivos, porque produtos de ótica legitimamente têm
+    preço BIMODAL sob o mesmo SKU (armação básica vs. premium no mesmo código,
+    variação de ~2-11x observada) — Q1/Q3 fica instável com poucas vendas por
+    produto. Mediana é robusta mesmo com poucas amostras (n=2 já basta) e a separação
+    real é gigante: variância legítima máxima observada ~11x a mediana; os 2 erros de
+    digitação reais da planilha estão a ~148x. `outlier_median_ratio=20` (default)
+    fica confortavelmente no meio, sem colar na borda de nenhum dos dois lados.
+
+    A razão é POR PRODUTO, nunca sobre a rede inteira: um produto legitimamente mais
+    caro que a média da rede (categoria premium/sazonal) não é outlier de si mesmo —
+    só é outlier relativo à sua PRÓPRIA distribuição de preço (bug pego pela própria
+    fixture sintética: SOLAR-SEASONAL, ticket ~3x a mediana da rede, foi podado por
+    engano quando a cerca era calculada globalmente).
+
+    Nunca deleta a transação: produto, cliente e data continuam contando para
+    frequência/recência; só a contribuição monetária é limitada ao teto estatístico.
+    Poda só o teto superior — retorno negativo (estorno) é sinal válido, não erro de
+    digitação. Toda poda é registrada para procedência (nunca silenciosa)."""
+    by_product: dict[str, list[int]] = {}
+    for idx, r in enumerate(records):
+        by_product.setdefault(r.product, []).append(idx)
+
+    winsorized: list[WinsorizedValue] = []
+    adjusted = list(records)
+    for product, indices in by_product.items():
+        positive_values = pd.Series([records[i].value for i in indices if records[i].value > 0])
+        if len(positive_values) < 2:
+            continue
+        median = positive_values.median()
+        if median <= 0:
+            continue
+        upper_bound = float(median * thresholds.outlier_median_ratio)
+        for i in indices:
+            r = records[i]
+            if r.value > upper_bound:
+                winsorized.append(WinsorizedValue(
+                    source_file=r.source_file, source_row=r.source_row, product=r.product,
+                    original_value=r.value, capped_value=upper_bound,
+                ))
+                adjusted[i] = r.model_copy(update={"value": upper_bound})
+    return adjusted, winsorized
 
 
 def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
@@ -392,10 +454,13 @@ def detect_contribution_margin(
     variáveis (imposto+comissão+taxa, % configurável do preço). Produto com margem
     negativa dá prejuízo em cada venda, antes até de despesa fixa. Sem coluna de custo
     de entrada no arquivo de origem, não há como calcular — retorna vazio (nunca
-    inventa custo)."""
+    inventa custo). Estorno (valor <= 0, ver winsorize_outliers/sinal de quantidade)
+    não é uma venda a um "preço" — é reversão de caixa; entrar na média de preço
+    arrastaria o "preço médio" pra baixo por um motivo que não é preço."""
     if "entry_cost" not in df.columns:
         return []
     valid = df.dropna(subset=["entry_cost"])
+    valid = valid[valid["value"] > 0]
     if valid.empty:
         return []
 
@@ -626,6 +691,9 @@ def run_audit(
     """Ponto de entrada do motor: ingestão + limpeza + 4 detectores + anonimização."""
     thresholds = thresholds or AuditThresholdsConfig()
     records, cleaning = load_sales_records(path, mapping_override=mapping_override)
+    records, winsorized = winsorize_outliers(records, thresholds)
+    if winsorized:
+        cleaning = cleaning.model_copy(update={"values_winsorized": winsorized})
 
     df = _records_to_frame(records)
 
