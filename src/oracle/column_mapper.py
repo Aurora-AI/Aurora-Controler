@@ -184,9 +184,16 @@ def coerce_date_series(series: pd.Series, date_format: str | None = None) -> pd.
     infere um único formato a partir da 1a linha; se essa linha for ambígua (dia e mês
     ambos <=12), ele troca dia/mês em silêncio e aplica a troca à coluna inteira,
     gerando datas erradas nas linhas que "batem" e NaT em massa nas que não batem. ISO
-    é tratado à parte, sem depender de dayfirst."""
+    é tratado à parte, sem depender de dayfirst.
+
+    2º bug real (exposto por dado mais sujo da mesma planilha): exigir que TODAS as
+    linhas batam o padrão ISO para acionar esse caminho é frágil — uma única linha
+    genuinamente malformada (ex. "31/02/2026", texto solto no meio de uma coluna ISO)
+    derrubava a detecção pra coluna INTEIRA e reativava o bug acima. Maioria (não
+    unanimidade) já basta: linha malformada isolada vira NaT (descarte correto,
+    rastreado), sem contaminar as milhares de linhas ISO válidas ao redor dela."""
     non_null = series.dropna().astype(str).str.strip()
-    if len(non_null) and non_null.str.match(_ISO_DATE_RE).all():
+    if len(non_null) and non_null.str.match(_ISO_DATE_RE).mean() > 0.5:
         return pd.to_datetime(series, format="mixed", dayfirst=False, errors="coerce")
     if date_format is None:
         if _detect_mixed_date_format(series):
