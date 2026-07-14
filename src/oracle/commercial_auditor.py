@@ -209,6 +209,22 @@ def winsorize_outliers(
 
 
 def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
+    if not records:
+        # Lista vazia (arquivo sem linhas, ou toda linha descartada na limpeza) — sem
+        # os dtypes explícitos, um DataFrame([]) não tem NENHUMA coluna, e todo
+        # detector que acessa df["date"]/["value"]/etc. quebra com KeyError antes de
+        # `run_audit` conseguir montar um relatório vazio válido. Colunas tipadas e
+        # vazias deixam cada detector cair no próprio caminho de "sem dado" (guards
+        # de `len(series) < N`, `.empty`, etc.) em vez de estourar.
+        return pd.DataFrame({
+            "date": pd.Series([], dtype="datetime64[ns]"),
+            "product": pd.Series([], dtype="object"),
+            "customer": pd.Series([], dtype="object"),
+            "value": pd.Series([], dtype="float64"),
+            "entry_cost": pd.Series([], dtype="float64"),
+            "category": pd.Series([], dtype="object"),
+            "store": pd.Series([], dtype="object"),
+        })
     return pd.DataFrame([{
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
@@ -347,6 +363,8 @@ def detect_product_trends(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -
     df = df.copy()
     df["period"] = df["date"].dt.to_period("M")
     periods = sorted(df["period"].unique())
+    if not periods:
+        return []
     midpoint = periods[len(periods) // 2]
 
     def _growth_pct(values_before: float, values_after: float) -> float:
