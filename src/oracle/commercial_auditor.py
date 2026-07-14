@@ -36,6 +36,46 @@ _UNKNOWN_STORE = "LOJA_NAO_IDENTIFICADA"
 # ausente NA linha vira um pseudo-grupo estável em vez de sumir da agregação. Nunca
 # cravado como um vendedor_id real.
 _UNKNOWN_SALESPERSON = "VENDEDOR_NAO_IDENTIFICADO"
+
+# Registro ÚNICO de identidades sintéticas — nunca uma pessoa/loja/vendedor real,
+# sempre um agregado de "não identificado" (walk-in sem cadastro, loja/vendedor sem
+# valor mapeado na linha). Achado 3x nesta sessão ANTES de virar registro único
+# (RFM e churn excluíam _ANONYMOUS_CUSTOMER cada um com seu próprio filtro inline; o
+# SEV esqueceu de excluir _UNKNOWN_SALESPERSON da mediana de referência de volume) —
+# a partir daqui, todo detector novo que precisar filtrar pseudo-entidade usa isto,
+# nunca reinventa o filtro.
+#
+# Usado em dois papéis DIFERENTES, nunca confundidos:
+#   (1) Alguns detectores excluem a pseudo-entidade da ANÁLISE INTEIRA — ela não é uma
+#       unidade de análise válida (cliente anônimo não tem "comportamento de
+#       cliente"). Ver detect_churn, detect_rfm_champions, detect_latent_revenue.
+#   (2) Outros a mantêm VISÍVEL no relatório (fato bruto — a venda/receita é real) mas
+#       a excluem de qualquer RÉGUA DE REFERÊNCIA cross-entidade (mediana, percentil,
+#       quantil) usada pra avaliar as entidades reais. Ver `benchmark_population`.
+_PSEUDO_ENTITY_IDS: frozenset[str] = frozenset({
+    _ANONYMOUS_CUSTOMER, _UNKNOWN_STORE, _UNKNOWN_SALESPERSON,
+})
+
+
+def is_pseudo_entity(entity_id: str) -> bool:
+    """True se `entity_id` é uma identidade sintética do registro único acima —
+    nunca uma pessoa/loja/vendedor real."""
+    return entity_id in _PSEUDO_ENTITY_IDS
+
+
+def benchmark_population(entity_stats: dict[str, dict], predicate=lambda stats: True) -> list[dict]:
+    """Filtra `entity_stats` (dict entity_id -> métricas) para uma régua de
+    referência cross-entidade (mediana, percentil, quantil, etc.) — SEMPRE exclui
+    pseudo-entidades via `is_pseudo_entity`, e aceita um `predicate` extra por cima
+    (ex. "só quem tem tenure suficiente"). Uso OBRIGATÓRIO em qualquer detector que
+    compute estatística de referência entre entidades reais — nunca um filtro ad-hoc
+    inline de novo (é assim que a mesma classe de bug reaparece pela N-ésima vez)."""
+    return [
+        stats for entity_id, stats in entity_stats.items()
+        if not is_pseudo_entity(entity_id) and predicate(stats)
+    ]
+
+
 # D3 — conversão dias -> "meses corridos" para medir a janela de histórico PRÓPRIA de
 # uma loja (aproximação documentada: média de dias por mês do calendário gregoriano,
 # não uma contagem de meses-calendário exata — suficiente para comparar contra
@@ -326,12 +366,11 @@ def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
 def detect_churn(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[ChurnFinding]:
     """Cliente com >= churn_min_purchases compras e cadência média M; sem comprar há
     mais que churn_cadence_multiplier x M -> churn invisível (nunca cancelou formalmente).
-    Vendas sem cliente identificado (pseudo-cliente `_ANONYMOUS_CUSTOMER`) não são uma
-    pessoa — excluídas, senão o volume agregado de vários clientes anônimos distorce a
-    cadência de um cliente que não existe."""
+    Pseudo-cliente (ver `is_pseudo_entity`) não é uma pessoa — excluído, senão o volume
+    agregado de vários clientes anônimos distorce a cadência de um cliente que não existe."""
     findings: list[ChurnFinding] = []
     global_max_date = df["date"].max()
-    df = df[df["customer"] != _ANONYMOUS_CUSTOMER]
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
 
     for customer, group in df.groupby("customer"):
         purchase_dates = sorted(group["date"].dt.normalize().unique())
@@ -440,10 +479,11 @@ def detect_rfm_champions(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
     só por ter ciclo longo). Em vez de quantil, recência vira um GATE de "ainda ativo":
     reaproveita o mesmo limiar do detector de churn (A3) sobre a cadência PRÓPRIA do
     cliente — régua vem do cliente, não da rede. Cliente com 1 única compra não tem
-    cadência própria (sem base) e fica fora do gate. Pseudo-cliente `_ANONYMOUS_CUSTOMER`
-    (vendas sem identificação) é excluído — não é uma pessoa, é a soma de vários
-    walk-ins; contá-lo distorceria frequência/valor com volume que não é de ninguém."""
-    df = df[df["customer"] != _ANONYMOUS_CUSTOMER]
+    cadência própria (sem base) e fica fora do gate. Pseudo-cliente (ver
+    `is_pseudo_entity`, vendas sem identificação) é excluído — não é uma pessoa, é a
+    soma de vários walk-ins; contá-lo distorceria frequência/valor com volume que não
+    é de ninguém."""
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
     if df.empty:
         return []
     bins = thresholds.rfm_bins
@@ -654,8 +694,8 @@ def detect_salesperson_performance(
     outra (ver docstring completa em `SalespersonPerformance`):
 
     1. Captura de cliente: `capture_rate_pct` = % das vendas do vendedor com cliente
-       identificado (exclui `_ANONYMOUS_CUSTOMER` da contagem de "capturado", mas as
-       vendas anônimas continuam em `sample_size`/`total_revenue` — é isso que deixa a
+       identificado (exclui pseudo-cliente da contagem de "capturado", mas as vendas
+       anônimas continuam em `sample_size`/`total_revenue` — é isso que deixa a
        captura baixa visível mesmo quando o vendedor converte bem). `low_capture_flag`
        é avaliado SEMPRE, sem gate de tenure nem de receita.
 
@@ -664,11 +704,15 @@ def detect_salesperson_performance(
        `months_of_history` em D3, em dias). `has_sufficient_tenure` compara contra
        `thresholds.sev_ramp_min_days`. `low_volume_flag` só pode ser True quando
        `has_sufficient_tenure=True`: o piso de "volume baixo" é a MEDIANA de
-       `sample_size` entre os PARES com tenure suficiente (nunca a rede inteira, que
-       incluiria vendedores em ramp e puxaria o piso pra baixo artificialmente) —
-       estatística robusta calculada a partir do próprio dado, não um terceiro limiar
-       mágico. Sem nenhum par com tenure suficiente, não há benchmark — ninguém é
-       marcado (nunca inventa piso sem base)."""
+       `sample_size` entre os PARES com tenure suficiente, via `benchmark_population`
+       — que por sua vez SEMPRE exclui pseudo-entidade (`_UNKNOWN_SALESPERSON`, venda
+       sem vendedor mapeado na linha). Bug real pego por QA review: sem essa exclusão,
+       um pseudo-grupo volumoso (muitas vendas sem vendedor identificado) puxava a
+       mediana pra cima/baixo e penalizava vendedor real por um motivo que não era o
+       desempenho dele — mesma classe de bug já corrigida 2x antes para
+       `_ANONYMOUS_CUSTOMER` (RFM, churn), agora resolvida na raiz via registro único.
+       Sem nenhum par com tenure suficiente, não há benchmark — ninguém é marcado
+       (nunca inventa piso sem base)."""
     if "salesperson" not in df.columns or df["salesperson"].isna().all():
         return []
     df = df.copy()
@@ -677,7 +721,7 @@ def detect_salesperson_performance(
 
     revenue_by_sp = df.groupby("salesperson")["value"].sum()
     count_by_sp = df.groupby("salesperson").size()
-    captured_by_sp = df[df["customer"] != _ANONYMOUS_CUSTOMER].groupby("salesperson").size()
+    captured_by_sp = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)].groupby("salesperson").size()
     first_sale_by_sp = df.groupby("salesperson")["date"].min()
 
     raw: dict[str, dict] = {}
@@ -696,7 +740,8 @@ def detect_salesperson_performance(
             "has_sufficient_tenure": has_sufficient_tenure,
         }
 
-    tenured_sample_sizes = [v["sample_size"] for v in raw.values() if v["has_sufficient_tenure"]]
+    tenured_population = benchmark_population(raw, predicate=lambda v: v["has_sufficient_tenure"])
+    tenured_sample_sizes = [v["sample_size"] for v in tenured_population]
     median_sample_size = (
         float(pd.Series(tenured_sample_sizes).median()) if tenured_sample_sizes else None
     )
@@ -733,7 +778,7 @@ def detect_latent_revenue(
     categoria no arquivo de origem, não há como segmentar — retorna vazio."""
     if "category" not in df.columns or df["category"].isna().all():
         return []
-    df = df[df["customer"] != _ANONYMOUS_CUSTOMER]
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
     anchor = thresholds.latent_revenue_anchor_category
     target = thresholds.latent_revenue_target_category
 
