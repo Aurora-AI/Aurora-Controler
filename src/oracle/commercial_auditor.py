@@ -15,15 +15,17 @@ import pandas as pd
 
 from oracle.column_mapper import (
     _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES,
-    _ESTOQUE_ROLE_KEYWORDS, ColumnMappingError, DateAmbiguityError, coerce_currency_series,
-    coerce_date_series, infer_column_roles,
+    _ESTOQUE_ROLE_KEYWORDS, _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS,
+    ColumnMappingError, DateAmbiguityError, coerce_currency_series, coerce_date_series,
+    infer_column_roles,
 )
 from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
     CustomerConcentrationFinding, DataCompletenessFinding, DeadStockFinding,
     ExecutiveAuditReport, GmroiEntry, LatentRevenueFinding, ProductTrendEntry,
-    RevenueLeakAnomaly, RFMChampion, SalesRecord, SalespersonPerformance, SeasonalityCurve,
-    StoreMacroSummary, StorePerformance, WinsorizedValue,
+    RevenueLeakAnomaly, RFMChampion, SalesRecord, SalespersonPerformance, ServiceDecomposition,
+    ServiceReconciliation, SeasonalityCurve, StoreMacroSummary, StorePerformance,
+    WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -90,7 +92,7 @@ def _read_raw(path: Path) -> pd.DataFrame:
     return pd.read_excel(path, dtype=str, engine="openpyxl")
 
 
-_SERIES_B_SHEETS = ("Estoque", "Clientes")
+_SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro")
 
 
 def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
@@ -347,6 +349,7 @@ def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
                     scope=scope, entity_id=entity_id, period=str(period),
                     expected_value=float(series[period] - residual), actual_value=float(series[period]),
                     drop_sigma=float(sigma), severity=severity, low_confidence=low_confidence,
+                    seasonality_adjusted=True, confidence="low" if low_confidence else "high"
                 ))
 
     total_series = df.groupby("period")["value"].sum()
@@ -389,13 +392,14 @@ def detect_churn(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[Ch
         last_purchase = pd.Timestamp(purchase_dates[-1])
         days_since_last = (global_max_date - last_purchase).days
 
-        if days_since_last > thresholds.churn_cadence_multiplier * avg_cadence_days:
-            last_period = last_purchase.to_period("M")
-            global_period = global_max_date.to_period("M")
-            months_silent = (
-                (global_period.year * 12 + global_period.month)
-                - (last_period.year * 12 + last_period.month)
-            )
+        last_period = last_purchase.to_period("M")
+        global_period = global_max_date.to_period("M")
+        months_silent = (
+            (global_period.year * 12 + global_period.month)
+            - (last_period.year * 12 + last_period.month)
+        )
+
+        if days_since_last > thresholds.churn_cadence_multiplier * avg_cadence_days and months_silent >= 3:
             findings.append(ChurnFinding(
                 customer_id=customer, purchase_count=purchase_count,
                 avg_cadence_days=float(avg_cadence_days),
@@ -422,8 +426,13 @@ def detect_product_trends(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -
             return 0.0
         return (values_after - values_before) / values_before * 100.0
 
-    company_before = df[df["period"] < midpoint]["value"].sum()
-    company_after = df[df["period"] >= midpoint]["value"].sum()
+    stores_before = set(df[df["period"] < midpoint]["store"].unique())
+    stores_after = set(df[df["period"] >= midpoint]["store"].unique())
+    same_stores = list(stores_before.intersection(stores_after))
+    same_stores_df = df[df["store"].isin(same_stores)]
+
+    company_before = same_stores_df[same_stores_df["period"] < midpoint]["value"].sum()
+    company_after = same_stores_df[same_stores_df["period"] >= midpoint]["value"].sum()
     company_growth_pct = _growth_pct(company_before, company_after)
 
     entries: list[ProductTrendEntry] = []
@@ -432,7 +441,7 @@ def detect_product_trends(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -
         after = group[group["period"] >= midpoint]["value"].sum()
         product_growth_pct = _growth_pct(before, after)
 
-        decoupled = product_growth_pct <= thresholds.trend_decoupling_pct and company_growth_pct > 0
+        decoupled = (company_growth_pct - product_growth_pct) > thresholds.trend_decoupling_pct and thresholds.trend_decoupling_pct > 0
 
         last_sale_period = group["period"].max() if len(group) else None
         entries.append(ProductTrendEntry(
@@ -482,8 +491,15 @@ def detect_rfm_champions(df: pd.DataFrame, thresholds: AuditThresholdsConfig) ->
     cadência própria (sem base) e fica fora do gate. Pseudo-cliente (ver
     `is_pseudo_entity`, vendas sem identificação) é excluído — não é uma pessoa, é a
     soma de vários walk-ins; contá-lo distorceria frequência/valor com volume que não
-    é de ninguém."""
+    é de ninguém.
+
+    SVC — venda de serviço (`thresholds.service_category_label`) NÃO conta pra
+    frequência/valor: RFM aqui é sobre comportamento de compra de PRODUTO. Cliente que
+    só vem pra ajuste/reparo não vira "campeão" por isso — mistura duas coisas
+    diferentes (relacionamento de manutenção vs. relacionamento de compra)."""
     df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    if "category" in df.columns and not df["category"].isna().all():
+        df = df[df["category"] != thresholds.service_category_label]
     if df.empty:
         return []
     bins = thresholds.rfm_bins
@@ -539,11 +555,19 @@ def detect_contribution_margin(
     de entrada no arquivo de origem, não há como calcular — retorna vazio (nunca
     inventa custo). Estorno (valor <= 0, ver winsorize_outliers/sinal de quantidade)
     não é uma venda a um "preço" — é reversão de caixa; entrar na média de preço
-    arrastaria o "preço médio" pra baixo por um motivo que não é preço."""
+    arrastaria o "preço médio" pra baixo por um motivo que não é preço.
+
+    SVC — venda de serviço (`thresholds.service_category_label`) fica de fora: essa
+    margem é sobre "ticket de PRODUTO"; serviço tem estrutura de custo diferente
+    (mão de obra, não estoque) e já tem sua própria vista em
+    `detect_service_decomposition` — misturar aqui poluiria o preço médio do produto
+    de verdade com uma dimensão de negócio diferente."""
     if "entry_cost" not in df.columns:
         return []
     valid = df.dropna(subset=["entry_cost"])
     valid = valid[valid["value"] > 0]
+    if "category" in valid.columns and not valid["category"].isna().all():
+        valid = valid[valid["category"] != thresholds.service_category_label]
     if valid.empty:
         return []
 
@@ -939,14 +963,27 @@ def detect_gmroi(
     count_by_category = sales.groupby("category").size()
 
     entries: list[GmroiEntry] = []
+    all_below_1 = True
     for category, avg_inventory_value in sorted(inventory_by_category.items()):
+        if category.lower() == "servico":
+            continue
         gross_margin = float(margin_by_category.get(category, 0.0))
         avg_inventory_value = float(avg_inventory_value)
         gmroi = gross_margin / avg_inventory_value if avg_inventory_value else None
+        
+        if gmroi is not None and gmroi >= 1.0:
+            all_below_1 = False
+            
         entries.append(GmroiEntry(
             category=category, gross_margin=gross_margin, avg_inventory_value=avg_inventory_value,
             gmroi=gmroi, sample_size=int(count_by_category.get(category, 0)),
+            is_directional_only=False
         ))
+        
+    if all_below_1 and entries:
+        for e in entries:
+            e.is_directional_only = True
+            
     return entries
 
 
@@ -1075,6 +1112,130 @@ def anonymize_customers(records: list[SalesRecord]) -> tuple[list[SalesRecord], 
     return anonymized, identity_map
 
 
+def detect_service_decomposition(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[ServiceDecomposition]:
+    """SVC — decompõe cada loja em produto × serviço, usando a MESMA fórmula de
+    margem de contribuição de `detect_store_performance`/`detect_contribution_margin`
+    (preço médio − custo médio − `variable_cost_pct`% do preço, só sobre vendas com
+    custo de entrada CONHECIDO e valor > 0 — nunca inventa custo de linha sem
+    entry_cost, mesmo critério de todo o resto do motor). Sem essa consistência de
+    fórmula, `product_margin + service_margin` não bateria com o
+    `contribution_margin_total` blendado de D1 pra mesma loja — dois números
+    diferentes de "a mesma coisa" sem explicação é exatamente o tipo de furo que essa
+    auditoria existe pra fechar, não pra abrir.
+
+    Categoria de serviço (`thresholds.service_category_label`) fica de fora do GMROI/
+    ticket de produto/RFM de produto (ver `detect_gmroi`, `detect_contribution_margin`,
+    `detect_rfm_champions`) — aqui é onde ela finalmente ganha voz própria.
+
+    `masks_negative_product_margin` = margem de produto NEGATIVA mas margem total
+    (produto+serviço) POSITIVA — serviço mascarando produto quebrado. Uma loja assim
+    não deve ser declarada saudável só porque o total fechou no azul.
+
+    `follow_on_cac_effect` = receita de PRODUTO (não-serviço) de clientes cuja
+    PRIMEIRA venda NAQUELA loja foi um serviço — efeito de aquisição via serviço que
+    depois converteu em produto. Pseudo-cliente (`is_pseudo_entity`) nunca conta: não
+    é uma pessoa, não tem uma "primeira venda" que signifique alguma coisa."""
+    if "store" not in df.columns or df["store"].isna().all():
+        return []
+    if "category" not in df.columns or df["category"].isna().all():
+        return []
+    df = df.copy()
+    df["store"] = df["store"].fillna(_UNKNOWN_STORE)
+    service_label = thresholds.service_category_label
+
+    def _margin_total(rows: pd.DataFrame) -> float:
+        valid = rows.dropna(subset=["entry_cost"])
+        valid = valid[valid["value"] > 0]
+        if valid.empty:
+            return 0.0
+        avg_price = valid["value"].mean()
+        avg_cost = valid["entry_cost"].mean()
+        variable_cost = avg_price * thresholds.variable_cost_pct / 100.0
+        return float((avg_price - avg_cost - variable_cost) * len(valid))
+
+    entries: list[ServiceDecomposition] = []
+    for store, group in df.groupby("store"):
+        is_service = group["category"] == service_label
+        product_margin = _margin_total(group[~is_service])
+        service_margin = _margin_total(group[is_service])
+        total_margin = product_margin + service_margin
+        masks = product_margin < 0 and total_margin > 0
+
+        real_customers = group[~group["customer"].isin(_PSEUDO_ENTITY_IDS)]
+        follow_on_cac_effect = 0.0
+        if not real_customers.empty:
+            first_category = (
+                real_customers.sort_values("date").groupby("customer")["category"].first()
+            )
+            service_first = set(first_category[first_category == service_label].index)
+            if service_first:
+                follow_on_rows = real_customers[
+                    real_customers["customer"].isin(service_first)
+                    & (real_customers["category"] != service_label)
+                ]
+                follow_on_cac_effect = float(follow_on_rows["value"].sum())
+
+        entries.append(ServiceDecomposition(
+            store=str(store), product_margin=product_margin, service_margin=service_margin,
+            total_margin=total_margin, masks_negative_product_margin=masks,
+            follow_on_cac_effect=follow_on_cac_effect,
+        ))
+    return entries
+
+
+def detect_service_reconciliation(
+    vendas_df: pd.DataFrame, financeiro_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[ServiceReconciliation]:
+    """SVC5 — Reconciliação Financeiro × Vendas de serviço: a aba Financeiro declara
+    `receita_servicos` por (loja, mês); comparado contra a soma transacional real de
+    linhas de serviço em Vendas no MESMO (loja, mês). Gap acima de
+    `thresholds.service_reconciliation_gap_tolerance` vira achado — quando as duas
+    fontes batem (mesma origem, registradas em 2 lugares diferentes), batem ao
+    CENTAVO; não existe "quase bateu" genuíno, então a tolerância só cobre
+    arredondamento, nunca disfarça um gap real. Sem aba Financeiro, sem coluna de
+    loja em Vendas, ou sem categoria, não há como reconciliar — retorna vazio."""
+    if financeiro_df is None or financeiro_df.empty:
+        return []
+    if "store" not in vendas_df.columns or vendas_df["store"].isna().all():
+        return []
+    if "category" not in vendas_df.columns or vendas_df["category"].isna().all():
+        return []
+    try:
+        roles = infer_column_roles(
+            financeiro_df, role_keywords=_FINANCEIRO_ROLE_KEYWORDS,
+            required_roles=_FINANCEIRO_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+
+    service_label = thresholds.service_category_label
+    df = vendas_df.copy()
+    df["store"] = df["store"].fillna(_UNKNOWN_STORE)
+    df["period"] = df["date"].dt.to_period("M").astype(str)
+    transactional = df[df["category"] == service_label].groupby(["store", "period"])["value"].sum()
+
+    fin = pd.DataFrame({
+        "store": financeiro_df[roles["store"]].astype(str),
+        "period": financeiro_df[roles["period"]].astype(str).str.strip(),
+        "declared": coerce_currency_series(financeiro_df[roles["service_revenue"]]),
+    }).dropna(subset=["declared"])
+
+    entries: list[ServiceReconciliation] = []
+    for _, row in fin.iterrows():
+        store, period = row["store"], row["period"]
+        declared = float(row["declared"])
+        actual = float(transactional.get((store, period), 0.0))
+        gap = declared - actual
+        entries.append(ServiceReconciliation(
+            store=store, period=period, financial_declared_revenue=declared,
+            sales_transactional_revenue=actual, gap=gap,
+            has_gap=abs(gap) > thresholds.service_reconciliation_gap_tolerance,
+        ))
+    return sorted(entries, key=lambda e: -abs(e.gap))
+
+
 def run_audit(
     path: Path,
     thresholds: AuditThresholdsConfig | None = None,
@@ -1120,6 +1281,9 @@ def run_audit(
     gmroi = detect_gmroi(df, named_sheets.get("Estoque"), thresholds)
     data_completeness = detect_data_completeness(named_sheets.get("Clientes"), thresholds)
 
+    service_decomposition = detect_service_decomposition(df, thresholds)
+    service_reconciliation = detect_service_reconciliation(df, named_sheets.get("Financeiro"), thresholds)
+
     _, identity_map = anonymize_customers(records)
 
     for finding in churn_findings:
@@ -1147,9 +1311,9 @@ def run_audit(
         latent_revenue=latent_revenue, dead_stock=dead_stock, gmroi=gmroi,
         data_completeness=data_completeness,
         store_performance=store_performance, store_macro_summary=store_macro_summary,
-        customer_concentration=customer_concentration,
-        salesperson_performance=salesperson_performance,
-        generated_at=datetime.now(timezone.utc).isoformat(),
+        customer_concentration=customer_concentration, salesperson_performance=salesperson_performance,
+        service_decomposition=service_decomposition, service_reconciliation=service_reconciliation,
+        generated_at=datetime.now(timezone.utc).isoformat()
     )
 
     if return_identity_map:

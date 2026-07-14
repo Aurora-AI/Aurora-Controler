@@ -54,6 +54,15 @@ _CLIENTES_ROLE_KEYWORDS: dict[str, list[str]] = {
 }
 _CLIENTES_REQUIRED_ROLES = ("customer_id",)
 
+# SVC5 — vocabulário da aba Financeiro (receita declarada por loja/mês) — dict
+# separado, mesma razão dos anteriores (vocabulário compartilhado colidiria).
+_FINANCEIRO_ROLE_KEYWORDS: dict[str, list[str]] = {
+    "period": ["mes", "periodo", "competencia"],
+    "store": ["loja", "filial", "unidade"],
+    "service_revenue": ["receita_servico", "servicos"],
+}
+_FINANCEIRO_REQUIRED_ROLES = ("period", "store", "service_revenue")
+
 
 def _normalize(text: str) -> str:
     """Remove acentos e caixa — 'Líquido' -> 'liquido'."""

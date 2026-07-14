@@ -15,7 +15,7 @@ class AuditThresholdsConfig(BaseModel):
     revenue_drop_sigma: float = 2.0
     churn_cadence_multiplier: float = 2.0
     churn_min_purchases: int = 3
-    trend_decoupling_pct: float = 0.0
+    trend_decoupling_pct: float = 20.0
     seasonality_min_months: int = 12
     materiality_revenue_pct: float = 1.0
     rfm_bins: int = 5
@@ -68,6 +68,21 @@ class AuditThresholdsConfig(BaseModel):
     # resto da distribuição. 25% fica confortavelmente no vão entre os dois — separa o
     # ruído de amostra pequena do sinal real sem colar em nenhuma borda.
     concentration_risk_pct: float = 25.0
+    # SVC — camada de serviço: valor da coluna "categoria" que identifica uma linha de
+    # SERVIÇO (ajuste/reparo/conserto), não produto. Configurável como
+    # latent_revenue_anchor_category/target_category já são (nome de categoria como
+    # valor de negócio, não número, mas mesma filosofia: nunca string cravada dentro
+    # de uma função, sempre um campo aqui). Serviço não tem estoque (sem SKU na aba
+    # Estoque) — precisa ficar fora de GMROI, e fora do ticket/RFM de PRODUTO (ver
+    # detect_rfm_champions, detect_contribution_margin, detect_service_decomposition).
+    service_category_label: str = "servico"
+    # SVC5 — Reconciliação Financeiro × Vendas de serviço: tolerância em R$ acima da
+    # qual (loja, mês) vira gap reportável. Observado no dado real: quando a aba
+    # Financeiro e a soma transacional de Vendas batem, batem ao CENTAVO (mesma fonte,
+    # dois lugares) — não há "quase bateu" genuíno. Um valor pequeno (R$1, cobre só
+    # arredondamento) já separa reconciliação real de gap real, sem precisar de um
+    # percentual (que erraria em lojas de receita de serviço pequena).
+    service_reconciliation_gap_tolerance: float = 1.0
 
 
 class SalesRecord(BaseModel):
@@ -113,6 +128,8 @@ class RevenueLeakAnomaly(BaseModel):
     expected_value: float
     actual_value: float
     drop_sigma: float
+    seasonality_adjusted: bool = False
+    confidence: str = "high"
     severity: str  # "low" | "medium" | "high"
     low_confidence: bool = False
 
@@ -210,6 +227,7 @@ class GmroiEntry(BaseModel):
     avg_inventory_value: float
     gmroi: float | None  # None se não há estoque nessa categoria (divisão por zero)
     sample_size: int  # nº de vendas que compuseram a margem bruta
+    is_directional_only: bool = False
 
 
 class StorePerformance(BaseModel):
@@ -358,6 +376,29 @@ class DataCompletenessFinding(BaseModel):
     contingency_triggered: bool
 
 
+class ServiceDecomposition(BaseModel):
+    """SVC — Decomposição de Produto vs Serviço na mesma loja.
+    Se a margem do produto for negativa mas a do serviço cobrir o buraco (lucro total > 0),
+    `masks_negative_product_margin` será True."""
+    store: str
+    product_margin: float
+    service_margin: float
+    total_margin: float
+    masks_negative_product_margin: bool
+    follow_on_cac_effect: float  # Receita de produto gerada por clientes que entraram primeiro via serviço
+
+
+class ServiceReconciliation(BaseModel):
+    """SVC5 — Reconciliação entre aba Financeiro e aba Vendas para Serviços.
+    Se a receita declarada não bater com a soma transacional, `has_gap` é True."""
+    store: str
+    period: str  # "YYYY-MM"
+    financial_declared_revenue: float
+    sales_transactional_revenue: float
+    gap: float
+    has_gap: bool
+
+
 class ExecutiveAuditReport(BaseModel):
     """Artefato final: encapsula toda a auditoria. Campos de cliente já vêm
     pseudo-anonimizados (Client_A, Client_B...) — nomes reais nunca aparecem aqui."""
@@ -378,5 +419,7 @@ class ExecutiveAuditReport(BaseModel):
     store_performance: list[StorePerformance] = Field(default_factory=list)
     store_macro_summary: StoreMacroSummary | None = None
     customer_concentration: list[CustomerConcentrationFinding] = Field(default_factory=list)
+    service_decomposition: list[ServiceDecomposition] = Field(default_factory=list)
+    service_reconciliation: list[ServiceReconciliation] = Field(default_factory=list)
     salesperson_performance: list[SalespersonPerformance] = Field(default_factory=list)
     generated_at: str
