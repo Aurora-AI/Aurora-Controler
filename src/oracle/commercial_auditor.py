@@ -1144,8 +1144,15 @@ def detect_service_decomposition(
     df = df.copy()
     df["store"] = df["store"].fillna(_UNKNOWN_STORE)
     service_label = thresholds.service_category_label
+    # Sem coluna de custo de entrada no arquivo de origem, não há como calcular margem
+    # (nunca inventa custo) — mesmo guard que `detect_store_performance` já aplica via
+    # `"entry_cost" in df.columns else df.iloc[0:0]`. Sem isso, `.dropna(subset=[...])`
+    # sobre uma coluna inexistente estoura KeyError em vez de degradar pra 0.0.
+    has_entry_cost = "entry_cost" in df.columns
 
     def _margin_total(rows: pd.DataFrame) -> float:
+        if not has_entry_cost:
+            return 0.0
         valid = rows.dropna(subset=["entry_cost"])
         valid = valid[valid["value"] > 0]
         if valid.empty:
@@ -1166,8 +1173,14 @@ def detect_service_decomposition(
         real_customers = group[~group["customer"].isin(_PSEUDO_ENTITY_IDS)]
         follow_on_cac_effect = 0.0
         if not real_customers.empty:
+            # kind="stable" preserva a ordem original da linha em empates de mesma
+            # data (sem granularidade de horário, duas vendas no mesmo dia não têm
+            # uma ordem real conhecida) — sem isso, o quicksort default do pandas não
+            # é estável e "primeira categoria" viraria não-determinístico em empate,
+            # violando a reprodutibilidade que todo o motor promete.
             first_category = (
-                real_customers.sort_values("date").groupby("customer")["category"].first()
+                real_customers.sort_values("date", kind="stable")
+                .groupby("customer")["category"].first()
             )
             service_first = set(first_category[first_category == service_label].index)
             if service_first:
