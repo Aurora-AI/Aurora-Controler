@@ -50,6 +50,24 @@ class AuditThresholdsConfig(BaseModel):
     # vendedores mais recentes da rede) — margem de quase 2x sobre o maior desses,
     # não colado na borda.
     sev_ramp_min_days: float = 180.0
+    # B7 — concentração de cliente (risco de key-account): % da receita de UMA loja que
+    # vem de um único cliente, acima do qual perder aquele cliente machuca a economia
+    # daquela loja de verdade — ver `detect_customer_concentration`. Referência comum de
+    # risco de concentração de cliente para uma unidade de negócio pequena (uma única
+    # loja, não a rede inteira) gira em torno de 20-25%: é o mesmo tipo de corte usado
+    # em divulgação contábil de "cliente significativo" (tipicamente >=10% no nível da
+    # EMPRESA inteira, universo muito maior) escalado para cima porque aqui o universo é
+    # uma única loja — perder 10% de UMA loja para um cliente é corriqueiro, perder 25%
+    # não é. Calibrado contra a distribuição REAL de concentração cliente×loja em
+    # `tests/fixtures/consultoria_real_test.xlsx` (sem ler a aba Gabarito — só a
+    # distribuição bruta, via `detect_customer_concentration` rodado sobre os dados de
+    # Vendas): média ~2.3%, terceiro quartil ~2.6%, e o segundo maior valor observado no
+    # dado inteiro (~17.4%) vem de uma loja cold-start de baixíssimo volume (10 clientes
+    # distintos, ~R$ 6,5 mil de receita total — ruído estatístico de amostra pequena,
+    # não risco estrutural). O maior valor observado no dado (~32%) destoa claramente do
+    # resto da distribuição. 25% fica confortavelmente no vão entre os dois — separa o
+    # ruído de amostra pequena do sinal real sem colar em nenhuma borda.
+    concentration_risk_pct: float = 25.0
 
 
 class SalesRecord(BaseModel):
@@ -259,6 +277,34 @@ class StoreMacroSummary(BaseModel):
     rank_differs: bool  # True se a ordem dos dois rankings acima não é idêntica
 
 
+class CustomerConcentrationFinding(BaseModel):
+    """B7 — Concentração de cliente (risco de key-account): cliente cuja fatia da
+    receita de UMA loja é alta o bastante para configurar risco real — se ele parar de
+    comprar, a loja sente de verdade (perda desproporcional para uma única unidade de
+    negócio, diferente de perder um cliente qualquer de uma base de centenas).
+
+    `concentration_pct` = `customer_revenue` (soma de `value` do cliente NAQUELA loja) ÷
+    `store_revenue` (soma de `value` de TODA a loja — mesmo critério de receita bruta
+    usado em `StorePerformance.gross_revenue`: inclui estornos negativos, sem filtrar
+    por custo de entrada conhecido; as duas somas vêm da mesma base, só o numerador
+    restringe a 1 cliente). Agrupamento é DINÂMICO por (loja, cliente) — nunca uma
+    lista fixa de lojas ou clientes, funciona para qualquer rede.
+
+    Pseudo-cliente (`is_pseudo_entity`, walk-in sem cadastro) nunca aparece como
+    `customer` aqui: ele é a soma de MUITOS passantes diferentes, não uma pessoa — sem
+    essa exclusão, ele facilmente pareceria "concentrar" boa parte da receita de uma
+    loja só por agregar volume de gente que não tem relação nenhuma entre si, gerando um
+    falso alarme de key-account que não é ninguém de verdade (mesma classe de bug já
+    corrigida em churn/RFM/receita latente/SEV — ver registro único
+    `_PSEUDO_ENTITY_IDS`/`is_pseudo_entity` em `commercial_auditor.py`)."""
+    store: str
+    customer: str
+    customer_revenue: float  # receita do cliente NAQUELA loja (inclui estornos)
+    store_revenue: float  # receita bruta TOTAL da loja — mesmo critério de StorePerformance.gross_revenue
+    concentration_pct: float  # customer_revenue / store_revenue × 100
+    sample_size: int  # nº de vendas (linhas) do cliente naquela loja — procedência
+
+
 class SalespersonPerformance(BaseModel):
     """D4 — SEV (Sistema de Eficiência de Venda): duas asserções INDEPENDENTES uma da
     outra, nunca uma mascarando a outra.
@@ -331,5 +377,6 @@ class ExecutiveAuditReport(BaseModel):
     data_completeness: list[DataCompletenessFinding] = Field(default_factory=list)
     store_performance: list[StorePerformance] = Field(default_factory=list)
     store_macro_summary: StoreMacroSummary | None = None
+    customer_concentration: list[CustomerConcentrationFinding] = Field(default_factory=list)
     salesperson_performance: list[SalespersonPerformance] = Field(default_factory=list)
     generated_at: str

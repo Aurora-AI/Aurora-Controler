@@ -20,10 +20,10 @@ from oracle.column_mapper import (
 )
 from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
-    DataCompletenessFinding, DeadStockFinding, ExecutiveAuditReport, GmroiEntry,
-    LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SalespersonPerformance, SeasonalityCurve, StoreMacroSummary, StorePerformance,
-    WinsorizedValue,
+    CustomerConcentrationFinding, DataCompletenessFinding, DeadStockFinding,
+    ExecutiveAuditReport, GmroiEntry, LatentRevenueFinding, ProductTrendEntry,
+    RevenueLeakAnomaly, RFMChampion, SalesRecord, SalespersonPerformance, SeasonalityCurve,
+    StoreMacroSummary, StorePerformance, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -681,6 +681,59 @@ def build_store_macro_summary(
     )
 
 
+def detect_customer_concentration(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[CustomerConcentrationFinding]:
+    """B7 — Concentração de cliente (risco de key-account): agrupa DINAMICAMENTE por
+    (loja, cliente) — nunca uma lista fixa de lojas ou clientes, funciona para
+    qualquer rede. `store_revenue` (denominador) é a MESMA soma de receita bruta usada
+    em `detect_store_performance`/`StorePerformance.gross_revenue` — TODA venda da
+    loja, estornos negativos inclusos, groupby sobre o que existir no dado (mesmo
+    `df["store"].fillna(_UNKNOWN_STORE)` de D1). `customer_revenue` (numerador) é a
+    soma de `value` de 1 cliente naquela loja. Sem coluna de loja identificada no
+    arquivo de origem, não há como segmentar — retorna vazio, mesmo critério de
+    `detect_store_performance`.
+
+    Pseudo-cliente (`is_pseudo_entity`, walk-in sem cadastro — ver `_ANONYMOUS_CUSTOMER`
+    no registro único `_PSEUDO_ENTITY_IDS`) NUNCA é contado como "um cliente" aqui: é a
+    soma de vários passantes diferentes, não uma pessoa. Sem essa exclusão, ele
+    facilmente pareceria concentrar boa parte da receita de uma loja — porque agrega
+    MUITOS clientes reais diferentes sob 1 só rótulo — gerando um falso alarme de
+    key-account que não é ninguém de verdade (mesma classe de bug já corrigida em
+    churn/RFM/receita latente/SEV, agora resolvida na raiz via registro único). O
+    pseudo-cliente É excluído do NUMERADOR (nunca aparece como `customer` de um
+    achado); a loja pseudo (`_UNKNOWN_STORE`) continua sendo uma unidade de
+    agrupamento válida no DENOMINADOR — mesmo tratamento que D1 já dá a ela (fato
+    bruto de receita, nunca escondida)."""
+    if "store" not in df.columns or df["store"].isna().all():
+        return []
+    df = df.copy()
+    df["store"] = df["store"].fillna(_UNKNOWN_STORE)
+
+    store_revenue = df.groupby("store")["value"].sum()
+
+    customer_df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    if customer_df.empty:
+        return []
+    grouped = customer_df.groupby(["store", "customer"]).agg(
+        customer_revenue=("value", "sum"), sample_size=("value", "count"),
+    )
+
+    findings: list[CustomerConcentrationFinding] = []
+    for (store, customer), row in grouped.iterrows():
+        revenue = float(store_revenue.get(store, 0.0))
+        if revenue == 0:
+            continue
+        concentration_pct = 100.0 * float(row["customer_revenue"]) / revenue
+        if concentration_pct >= thresholds.concentration_risk_pct:
+            findings.append(CustomerConcentrationFinding(
+                store=str(store), customer=str(customer),
+                customer_revenue=float(row["customer_revenue"]), store_revenue=revenue,
+                concentration_pct=float(concentration_pct), sample_size=int(row["sample_size"]),
+            ))
+    return sorted(findings, key=lambda f: -f.concentration_pct)
+
+
 def detect_salesperson_performance(
     df: pd.DataFrame, thresholds: AuditThresholdsConfig,
 ) -> list[SalespersonPerformance]:
@@ -1060,6 +1113,7 @@ def run_audit(
     latent_revenue = detect_latent_revenue(df, thresholds)
     store_performance = detect_store_performance(df, thresholds)
     store_macro_summary = build_store_macro_summary(store_performance)
+    customer_concentration = detect_customer_concentration(df, thresholds)
     salesperson_performance = detect_salesperson_performance(df, thresholds)
 
     dead_stock = detect_dead_stock(named_sheets.get("Estoque"), thresholds)
@@ -1079,6 +1133,8 @@ def run_audit(
         finding.non_buyer_customers = [
             identity_map.get(c, c) for c in finding.non_buyer_customers
         ]
+    for finding in customer_concentration:
+        finding.customer = identity_map.get(finding.customer, finding.customer)
 
     period_start = str(df["date"].min().to_period("M")) if len(df) else ""
     period_end = str(df["date"].max().to_period("M")) if len(df) else ""
@@ -1091,6 +1147,7 @@ def run_audit(
         latent_revenue=latent_revenue, dead_stock=dead_stock, gmroi=gmroi,
         data_completeness=data_completeness,
         store_performance=store_performance, store_macro_summary=store_macro_summary,
+        customer_concentration=customer_concentration,
         salesperson_performance=salesperson_performance,
         generated_at=datetime.now(timezone.utc).isoformat(),
     )

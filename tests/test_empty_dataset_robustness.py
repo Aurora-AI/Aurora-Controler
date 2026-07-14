@@ -45,6 +45,7 @@ def test_zero_rows_produces_empty_report_not_a_crash(tmp_path):
     assert report.contribution_margin_alerts == []
     assert report.store_performance == []
     assert report.store_macro_summary is None
+    assert report.customer_concentration == []
 
 
 def test_all_rows_discarded_produces_empty_report_not_a_crash(tmp_path):
