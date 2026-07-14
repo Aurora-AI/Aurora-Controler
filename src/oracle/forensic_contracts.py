@@ -31,6 +31,25 @@ class AuditThresholdsConfig(BaseModel):
     # métricas sejam tratadas como fato derivado com a mesma confiança de uma loja
     # madura — ver `detect_store_performance`/`StorePerformance.has_sufficient_history`.
     cold_start_min_months: float = 4.0
+    # D4 — SEV, captura de cliente: piso de % de vendas COM cliente identificado
+    # (não-anônimo, ver `_ANONYMOUS_CUSTOMER`) abaixo do qual um vendedor tem "captura
+    # baixa". Calibrado contra o dado real de referência (`consultoria_real_test.xlsx`):
+    # entre os vendedores maduros (tenure > 1 ano), a maioria captura entre ~64% e ~77%
+    # dos clientes; um único vendedor destoa do grupo em ~55% — 60% fica no meio do
+    # vão entre os dois clusters (não colado em nenhuma borda), separando o outlier
+    # real sem depender de nome/ID cravado — ver `detect_salesperson_performance`.
+    sev_min_capture_pct: float = 60.0
+    # D4 — SEV, ramp-up: tenure mínima (dias desde a PRÓPRIA primeira venda do
+    # vendedor até a data mais recente conhecida na rede — mesmo estilo de
+    # `cold_start_min_months`, em dias em vez de meses) abaixo da qual um vendedor
+    # ainda está em curva de maturação e NUNCA pode ser penalizado por volume baixo
+    # (`SalespersonPerformance.low_volume_flag`). 180 dias (~6 meses) é referência
+    # comum de tempo-de-rampa em venda de produto técnico (ótica: portfólio +
+    # relacionamento não se aprende em semanas). Confortavelmente acima de qualquer
+    # tenure real de vendedor novo observada no dado de referência (~39-101 dias,
+    # vendedores mais recentes da rede) — margem de quase 2x sobre o maior desses,
+    # não colado na borda.
+    sev_ramp_min_days: float = 180.0
 
 
 class SalesRecord(BaseModel):
@@ -43,6 +62,7 @@ class SalesRecord(BaseModel):
     entry_cost: float | None = None
     category: str | None = None
     store: str | None = None
+    salesperson: str | None = None
     source_file: str
     source_row: int
 
@@ -239,6 +259,44 @@ class StoreMacroSummary(BaseModel):
     rank_differs: bool  # True se a ordem dos dois rankings acima não é idêntica
 
 
+class SalespersonPerformance(BaseModel):
+    """D4 — SEV (Sistema de Eficiência de Venda): duas asserções INDEPENDENTES uma da
+    outra, nunca uma mascarando a outra.
+
+    (1) Captura de cliente: `capture_rate_pct` é a % das vendas do vendedor com
+    cliente identificado (não-anônimo, ver `_ANONYMOUS_CUSTOMER` — mesmo pseudo-grupo
+    de walk-in já usado por churn/RFM/receita latente). `low_capture_flag` é
+    `capture_rate_pct < thresholds.sev_min_capture_pct` e é SEMPRE avaliado — nunca
+    suprimido por `has_sufficient_tenure` nem por `total_revenue`/`sample_size` altos.
+    Um vendedor pode converter muito bem (receita e volume altos) e ainda ter captura
+    baixa; são dimensões diferentes, uma não perdoa a outra.
+
+    (2) Ramp-up: `days_since_first_sale` é a tenure do vendedor — da PRÓPRIA primeira
+    venda dele até a data mais recente conhecida na rede (mesmo estilo de
+    `StorePerformance.months_of_history`/D3, em dias em vez de meses).
+    `has_sufficient_tenure` é `days_since_first_sale >= thresholds.sev_ramp_min_days`.
+    `low_volume_flag` só pode ser True quando `has_sufficient_tenure=True` — um
+    vendedor em ramp (tenure curta) NUNCA é penalizado por volume baixo, mesmo que o
+    volume dele seja objetivamente baixo comparado à rede; volume baixo em ramp é
+    esperado, não é sinal de baixo desempenho. A comparação de "baixo" usa a MEDIANA de
+    `sample_size` entre os pares com tenure suficiente (nunca a rede inteira, que
+    incluiria vendedores em ramp e enviesaria o piso para baixo) — estatística robusta,
+    não um terceiro limiar mágico.
+
+    `total_revenue`/`sample_size` somam TODA venda do vendedor (inclui vendas
+    anônimas e estornos negativos — mesmo critério de `StorePerformance.gross_revenue`)
+    — é exatamente por incluir as vendas anônimas na base que a captura baixa fica
+    visível mesmo quando o vendedor "converte bem"."""
+    salesperson: str
+    total_revenue: float
+    sample_size: int  # nº de vendas do vendedor (procedência de todas as métricas abaixo)
+    capture_rate_pct: float  # % das vendas com cliente identificado (não-anônimo)
+    low_capture_flag: bool  # capture_rate_pct < sev_min_capture_pct — SEMPRE avaliado
+    days_since_first_sale: int  # tenure: primeira venda DELE -> data mais recente da rede
+    has_sufficient_tenure: bool  # days_since_first_sale >= sev_ramp_min_days
+    low_volume_flag: bool  # só pode ser True quando has_sufficient_tenure=True
+
+
 class DataCompletenessFinding(BaseModel):
     """A1 — Completude de cadastro (telefone + CPF), aba Clientes. Métrica de
     completude POR CAMPO (não por cliente): telefone e CPF podem faltar
@@ -273,4 +331,5 @@ class ExecutiveAuditReport(BaseModel):
     data_completeness: list[DataCompletenessFinding] = Field(default_factory=list)
     store_performance: list[StorePerformance] = Field(default_factory=list)
     store_macro_summary: StoreMacroSummary | None = None
+    salesperson_performance: list[SalespersonPerformance] = Field(default_factory=list)
     generated_at: str

@@ -22,7 +22,8 @@ from oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
     DataCompletenessFinding, DeadStockFinding, ExecutiveAuditReport, GmroiEntry,
     LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SeasonalityCurve, StoreMacroSummary, StorePerformance, WinsorizedValue,
+    SalespersonPerformance, SeasonalityCurve, StoreMacroSummary, StorePerformance,
+    WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -31,6 +32,10 @@ _ANONYMOUS_CUSTOMER = "SEM_CADASTRO"
 # é descartada nem some da agregação, vira um pseudo-grupo estável (mesmo padrão de
 # _ANONYMOUS_CUSTOMER para cliente ausente). Nunca cravado como nome de loja real.
 _UNKNOWN_STORE = "LOJA_NAO_IDENTIFICADA"
+# D4 — mesmo padrão de _UNKNOWN_STORE: venda com coluna de vendedor mapeada mas valor
+# ausente NA linha vira um pseudo-grupo estável em vez de sumir da agregação. Nunca
+# cravado como um vendedor_id real.
+_UNKNOWN_SALESPERSON = "VENDEDOR_NAO_IDENTIFICADO"
 # D3 — conversão dias -> "meses corridos" para medir a janela de histórico PRÓPRIA de
 # uma loja (aproximação documentada: média de dias por mês do calendário gregoriano,
 # não uma contagem de meses-calendário exata — suficiente para comparar contra
@@ -102,6 +107,9 @@ def load_sales_records(
             # real de cliente ausente.
             categories = raw[roles["category"]] if "category" in roles else pd.Series([None] * len(raw))
             stores = raw[roles["store"]] if "store" in roles else pd.Series([None] * len(raw))
+            salespersons = (
+                raw[roles["salesperson"]] if "salesperson" in roles else pd.Series([None] * len(raw))
+            )
         except (ColumnMappingError, DateAmbiguityError) as e:
             # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
             # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
@@ -126,6 +134,7 @@ def load_sales_records(
             cost = entry_costs.iloc[i]
             cat = categories.iloc[i]
             store = stores.iloc[i]
+            salesperson = salespersons.iloc[i]
             # Unidade econômica correta da linha é preço × quantidade — não só o
             # preço unitário (bug real: uma devolução com qtd=-1 entrava como venda
             # POSITIVA de mesmo valor, porque quantity nunca era usada). Quantidade
@@ -144,6 +153,7 @@ def load_sales_records(
                 entry_cost=None if cost is None or pd.isna(cost) else float(cost),
                 category=None if cat is None or pd.isna(cat) else str(cat),
                 store=None if store is None or pd.isna(store) else str(store),
+                salesperson=None if salesperson is None or pd.isna(salesperson) else str(salesperson),
                 source_file=file_path.name,
                 source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
             ))
@@ -224,11 +234,12 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
             "entry_cost": pd.Series([], dtype="float64"),
             "category": pd.Series([], dtype="object"),
             "store": pd.Series([], dtype="object"),
+            "salesperson": pd.Series([], dtype="object"),
         })
     return pd.DataFrame([{
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
-        "category": r.category, "store": r.store,
+        "category": r.category, "store": r.store, "salesperson": r.salesperson,
     } for r in records])
 
 
@@ -630,6 +641,84 @@ def build_store_macro_summary(
     )
 
 
+def detect_salesperson_performance(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[SalespersonPerformance]:
+    """D4 — SEV (Sistema de Eficiência de Venda): agrupa DINAMICAMENTE por vendedor
+    (groupby sobre o que existir no dado — nunca uma lista fixa de `vendedor_id`).
+    Sem coluna de vendedor identificada no arquivo de origem, não há como segmentar —
+    retorna vazio (nunca inventa vendedor), mesmo critério de
+    `detect_store_performance` para loja.
+
+    Duas asserções independentes, calculadas separadamente e nunca uma mascarando a
+    outra (ver docstring completa em `SalespersonPerformance`):
+
+    1. Captura de cliente: `capture_rate_pct` = % das vendas do vendedor com cliente
+       identificado (exclui `_ANONYMOUS_CUSTOMER` da contagem de "capturado", mas as
+       vendas anônimas continuam em `sample_size`/`total_revenue` — é isso que deixa a
+       captura baixa visível mesmo quando o vendedor converte bem). `low_capture_flag`
+       é avaliado SEMPRE, sem gate de tenure nem de receita.
+
+    2. Ramp-up: `days_since_first_sale` (primeira venda DAQUELE vendedor até a data
+       mais recente conhecida na rede, `global_max_date` — mesmo estilo de
+       `months_of_history` em D3, em dias). `has_sufficient_tenure` compara contra
+       `thresholds.sev_ramp_min_days`. `low_volume_flag` só pode ser True quando
+       `has_sufficient_tenure=True`: o piso de "volume baixo" é a MEDIANA de
+       `sample_size` entre os PARES com tenure suficiente (nunca a rede inteira, que
+       incluiria vendedores em ramp e puxaria o piso pra baixo artificialmente) —
+       estatística robusta calculada a partir do próprio dado, não um terceiro limiar
+       mágico. Sem nenhum par com tenure suficiente, não há benchmark — ninguém é
+       marcado (nunca inventa piso sem base)."""
+    if "salesperson" not in df.columns or df["salesperson"].isna().all():
+        return []
+    df = df.copy()
+    df["salesperson"] = df["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    global_max_date = df["date"].max()
+
+    revenue_by_sp = df.groupby("salesperson")["value"].sum()
+    count_by_sp = df.groupby("salesperson").size()
+    captured_by_sp = df[df["customer"] != _ANONYMOUS_CUSTOMER].groupby("salesperson").size()
+    first_sale_by_sp = df.groupby("salesperson")["date"].min()
+
+    raw: dict[str, dict] = {}
+    for sp in sorted(count_by_sp.index):
+        n = int(count_by_sp[sp])
+        captured = int(captured_by_sp.get(sp, 0))
+        capture_rate_pct = 100.0 * captured / n if n else 0.0
+        days_since_first_sale = int((global_max_date - first_sale_by_sp[sp]).days)
+        has_sufficient_tenure = days_since_first_sale >= thresholds.sev_ramp_min_days
+        raw[sp] = {
+            "total_revenue": float(revenue_by_sp[sp]),
+            "sample_size": n,
+            "capture_rate_pct": capture_rate_pct,
+            "low_capture_flag": capture_rate_pct < thresholds.sev_min_capture_pct,
+            "days_since_first_sale": days_since_first_sale,
+            "has_sufficient_tenure": has_sufficient_tenure,
+        }
+
+    tenured_sample_sizes = [v["sample_size"] for v in raw.values() if v["has_sufficient_tenure"]]
+    median_sample_size = (
+        float(pd.Series(tenured_sample_sizes).median()) if tenured_sample_sizes else None
+    )
+
+    entries: list[SalespersonPerformance] = []
+    for sp, stats in raw.items():
+        low_volume_flag = bool(
+            stats["has_sufficient_tenure"]
+            and median_sample_size is not None
+            and stats["sample_size"] < median_sample_size
+        )
+        entries.append(SalespersonPerformance(
+            salesperson=str(sp), total_revenue=stats["total_revenue"],
+            sample_size=stats["sample_size"], capture_rate_pct=float(stats["capture_rate_pct"]),
+            low_capture_flag=bool(stats["low_capture_flag"]),
+            days_since_first_sale=stats["days_since_first_sale"],
+            has_sufficient_tenure=bool(stats["has_sufficient_tenure"]),
+            low_volume_flag=low_volume_flag,
+        ))
+    return entries
+
+
 def detect_latent_revenue(
     df: pd.DataFrame, thresholds: AuditThresholdsConfig,
 ) -> list[LatentRevenueFinding]:
@@ -926,6 +1015,7 @@ def run_audit(
     latent_revenue = detect_latent_revenue(df, thresholds)
     store_performance = detect_store_performance(df, thresholds)
     store_macro_summary = build_store_macro_summary(store_performance)
+    salesperson_performance = detect_salesperson_performance(df, thresholds)
 
     dead_stock = detect_dead_stock(named_sheets.get("Estoque"), thresholds)
     gmroi = detect_gmroi(df, named_sheets.get("Estoque"), thresholds)
@@ -956,6 +1046,7 @@ def run_audit(
         latent_revenue=latent_revenue, dead_stock=dead_stock, gmroi=gmroi,
         data_completeness=data_completeness,
         store_performance=store_performance, store_macro_summary=store_macro_summary,
+        salesperson_performance=salesperson_performance,
         generated_at=datetime.now(timezone.utc).isoformat(),
     )
 
