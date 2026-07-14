@@ -7,6 +7,7 @@ pseudo-anonimização de identidades de cliente antes de montar o artefato final
 LLM aqui — toda decisão é determinística e reproduzível (thresholds registrados no
 report).
 """
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -707,6 +708,67 @@ def detect_gmroi(
     return entries
 
 
+def build_cpf_canonical_map(clientes_df: pd.DataFrame | None) -> dict[str, str]:
+    """D2 — Dedupe por CPF: dois cadastros `cliente_id` DIFERENTES (possivelmente em
+    lojas diferentes) que compartilham o MESMO CPF na aba Clientes são a MESMA pessoa
+    física — precisam contar como 1 identidade só em qualquer detector por-cliente
+    (RFM, churn, receita latente, base de clientes, concentração se existir). O
+    agrupamento é DINÂMICO sobre o que existir na aba Clientes — nunca um cliente_id
+    específico cravado no código; funciona para qualquer par/trio que compartilhe CPF.
+
+    CPF é normalizado (só dígitos) antes de agrupar, para que "123.456.789-00" e
+    "12345678900" — mesmo documento, formatação diferente — colidam. Cliente sem CPF
+    (vazio/ausente) ou sem cadastro na aba Clientes NUNCA é mesclado — preserva
+    identidade própria (regra inegociável: um CPF vazio não é uma chave de
+    agrupamento, é a ausência de uma).
+
+    ID canônico do grupo = o menor `cliente_id` em ordem lexicográfica — escolha
+    arbitrária mas determinística e estável (mesma entrada sempre produz o mesmo
+    canônico), documentada aqui por não haver "certo" entre os membros do grupo.
+
+    Retorna um dict {cliente_id_bruto -> cliente_id_canônico} contendo só os
+    cliente_id que de fato pertencem a um grupo de >= 2 identidades (grupos
+    singulares não entram no mapa — `dict.get(id, id)` já resolve identidade pra
+    quem não está aqui). Sem aba Clientes ou sem coluna de documento identificável,
+    retorna {} — nunca inventa dedupe."""
+    if clientes_df is None or clientes_df.empty:
+        return {}
+    try:
+        roles = infer_column_roles(
+            clientes_df, role_keywords=_CLIENTES_ROLE_KEYWORDS, required_roles=_CLIENTES_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return {}
+    if "document" not in roles:
+        return {}
+
+    ids_raw = clientes_df[roles["customer_id"]]
+    docs_raw = clientes_df[roles["document"]]
+
+    groups: dict[str, list[str]] = {}
+    for cid_val, doc_val in zip(ids_raw, docs_raw):
+        # pd.isna antes de qualquer .astype(str): célula vazia tem que continuar NaN
+        # (nunca virar a string literal "nan") até esta checagem — mesma armadilha já
+        # documentada em load_sales_records/build_cpf_canonical_map's siblings.
+        if pd.isna(cid_val) or pd.isna(doc_val):
+            continue
+        cid = str(cid_val).strip()
+        doc_digits = re.sub(r"\D", "", str(doc_val))
+        if not cid or not doc_digits:
+            continue
+        groups.setdefault(doc_digits, []).append(cid)
+
+    canonical_map: dict[str, str] = {}
+    for members in groups.values():
+        unique_members = sorted(set(members))
+        if len(unique_members) < 2:
+            continue
+        canonical = unique_members[0]
+        for member in unique_members:
+            canonical_map[member] = canonical
+    return canonical_map
+
+
 def detect_data_completeness(
     clientes_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
 ) -> list[DataCompletenessFinding]:
@@ -784,6 +846,20 @@ def run_audit(
     if winsorized:
         cleaning = cleaning.model_copy(update={"values_winsorized": winsorized})
 
+    named_sheets = load_named_sheets(path)
+
+    # D2 — Dedupe por CPF: dois cliente_id que compartilham o mesmo CPF na aba
+    # Clientes viram UMA identidade canônica ANTES de qualquer detector por-cliente
+    # (RFM, churn, receita latente) rodar e antes da pseudonimização — assim
+    # frequência/recência/valor agregam pela pessoa física real, não pelo cadastro
+    # duplicado. Sem aba Clientes ou sem CPF, o mapa vem vazio e nada muda.
+    customer_canonical_map = build_cpf_canonical_map(named_sheets.get("Clientes"))
+    if customer_canonical_map:
+        records = [
+            r.model_copy(update={"customer": customer_canonical_map.get(r.customer, r.customer)})
+            for r in records
+        ]
+
     df = _records_to_frame(records)
 
     revenue_leaks = detect_revenue_leaks(df, thresholds)
@@ -796,7 +872,6 @@ def run_audit(
     store_performance = detect_store_performance(df, thresholds)
     store_macro_summary = build_store_macro_summary(store_performance)
 
-    named_sheets = load_named_sheets(path)
     dead_stock = detect_dead_stock(named_sheets.get("Estoque"), thresholds)
     gmroi = detect_gmroi(df, named_sheets.get("Estoque"), thresholds)
     data_completeness = detect_data_completeness(named_sheets.get("Clientes"), thresholds)
