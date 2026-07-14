@@ -31,6 +31,12 @@ _ANONYMOUS_CUSTOMER = "SEM_CADASTRO"
 # é descartada nem some da agregação, vira um pseudo-grupo estável (mesmo padrão de
 # _ANONYMOUS_CUSTOMER para cliente ausente). Nunca cravado como nome de loja real.
 _UNKNOWN_STORE = "LOJA_NAO_IDENTIFICADA"
+# D3 — conversão dias -> "meses corridos" para medir a janela de histórico PRÓPRIA de
+# uma loja (aproximação documentada: média de dias por mês do calendário gregoriano,
+# não uma contagem de meses-calendário exata — suficiente para comparar contra
+# `cold_start_min_months`, que é ele mesmo um limiar de referência, não uma fronteira
+# de precisão de dia).
+_AVG_DAYS_PER_MONTH = 30.44
 
 
 def _read_raw(path: Path) -> pd.DataFrame:
@@ -506,7 +512,15 @@ def detect_store_performance(
     tem "preço", ver A1) — as duas métricas medem coisas diferentes de propósito, uma
     loja pode ter faturamento alto e margem real negativa ao mesmo tempo. Sem coluna
     de loja identificada no arquivo de origem, não há como segmentar — retorna vazio
-    (nunca inventa loja)."""
+    (nunca inventa loja).
+
+    D3 — cold-start: `months_of_history` é calculado DINAMICAMENTE por loja
+    (`max(date) − min(date)` das vendas DAQUELA loja, groupby, nunca um nome cravado)
+    e comparado contra `thresholds.cold_start_min_months`. Loja com histórico curto
+    demais recebe `has_sufficient_history=False` — continua no relatório com seus
+    números reais (nunca removida, nunca escondida), só marcada para que o consumidor
+    do relatório a trate como cenário assumido / dado insuficiente, não como fato tão
+    confiável quanto uma loja madura."""
     if "store" not in df.columns or df["store"].isna().all():
         return []
     df = df.copy()
@@ -514,6 +528,7 @@ def detect_store_performance(
 
     revenue_by_store = df.groupby("store")["value"].sum()
     count_by_store = df.groupby("store").size()
+    history_span_by_store = df.groupby("store")["date"].agg(["min", "max"])
 
     valid = df.dropna(subset=["entry_cost"]) if "entry_cost" in df.columns else df.iloc[0:0]
     valid = valid[valid["value"] > 0]
@@ -532,6 +547,11 @@ def detect_store_performance(
             variable_cost = avg_price * thresholds.variable_cost_pct / 100.0
             contribution_margin_avg = avg_price - avg_entry_cost - variable_cost
         contribution_margin_total = contribution_margin_avg * margin_sample_size
+
+        span_days = (history_span_by_store.loc[store, "max"] - history_span_by_store.loc[store, "min"]).days
+        months_of_history = float(span_days) / _AVG_DAYS_PER_MONTH
+        has_sufficient_history = months_of_history >= thresholds.cold_start_min_months
+
         entries.append(StorePerformance(
             store=str(store), gross_revenue=float(revenue_by_store[store]),
             revenue_sample_size=int(count_by_store[store]),
@@ -540,6 +560,8 @@ def detect_store_performance(
             contribution_margin_avg=float(contribution_margin_avg),
             contribution_margin_total=float(contribution_margin_total),
             margin_sample_size=margin_sample_size,
+            months_of_history=months_of_history,
+            has_sufficient_history=has_sufficient_history,
         ))
     return entries
 
@@ -556,14 +578,29 @@ def build_store_macro_summary(
     positivo somando o resultado de todas as lojas, mas isso já é o líquido depois de
     absorver o prejuízo das lojas negativas; `masked_amount` é quanto maior o
     resultado seria sem elas. Sem loja identificada, retorna None — nunca inventa
-    ranking."""
+    ranking.
+
+    D3 — cold-start: `revenue_rank`/`margin_rank`/`network_contribution_margin_total`
+    incluem TODAS as lojas (cold-start inclusive — dinheiro que já entrou/saiu de
+    caixa é fato, e não há motivo para esconder a loja do ranking). Mas
+    `stores_with_negative_margin`/`masked_amount` são uma alegação interpretativa
+    ("estas lojas estruturalmente mascaram o resultado saudável da rede") — rotular
+    uma loja cold-start assim, com poucas semanas/meses de dado, confundiria ruído de
+    amostra pequena com prejuízo estrutural; por isso essas duas métricas consideram
+    só lojas com `has_sufficient_history=True`. Uma loja cold-start com margem
+    negativa continua visível em `StorePerformance.contribution_margin_total` (fato
+    bruto, nunca escondido) — só não entra nessa narrativa específica de
+    "mascaramento estrutural"."""
     if not store_performance:
         return None
     revenue_rank = [s.store for s in sorted(store_performance, key=lambda s: -s.gross_revenue)]
     margin_rank = [
         s.store for s in sorted(store_performance, key=lambda s: -s.contribution_margin_total)
     ]
-    negative = [s for s in store_performance if s.contribution_margin_total < 0]
+    negative = [
+        s for s in store_performance
+        if s.contribution_margin_total < 0 and s.has_sufficient_history
+    ]
     masked_amount = float(sum(-s.contribution_margin_total for s in negative))
     network_contribution_margin_total = float(sum(s.contribution_margin_total for s in store_performance))
     return StoreMacroSummary(

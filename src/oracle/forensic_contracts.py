@@ -26,6 +26,11 @@ class AuditThresholdsConfig(BaseModel):
     dead_stock_months: int = 8
     contingency_completeness_pct: float = 30.0
     outlier_median_ratio: float = 20.0  # valor > N× a mediana do próprio produto = erro de digitação
+    # D3 — cold-start: loja cuja PRÓPRIA janela de histórico (primeira à última venda
+    # NELA, não da rede) é menor que isto não tem base estatística para que suas
+    # métricas sejam tratadas como fato derivado com a mesma confiança de uma loja
+    # madura — ver `detect_store_performance`/`StorePerformance.has_sufficient_history`.
+    cold_start_min_months: float = 4.0
 
 
 class SalesRecord(BaseModel):
@@ -179,7 +184,18 @@ class StorePerformance(BaseModel):
     valor > 0 (estorno não tem "preço", ver A1). `contribution_margin_total` é a
     margem de contribuição REAL da loja em R$ (média por venda × nº de vendas com
     custo conhecido) — é esse número, não `gross_revenue`, que decide se a loja dá
-    lucro ou prejuízo."""
+    lucro ou prejuízo.
+
+    D3 — cold-start: `months_of_history` é a janela PRÓPRIA da loja (última venda −
+    primeira venda NELA, não da rede) em meses corridos (aproximação, dias / 30.44).
+    Loja com `months_of_history < cold_start_min_months` tem `has_sufficient_history
+    = False` — suas métricas (faturamento, margem, ranking) não têm base estatística
+    para serem apresentadas como fato derivado com a mesma confiança de uma loja
+    madura; o consumidor do relatório deve rotulá-las "cenário assumido" / dado
+    insuficiente, nunca escondê-las nem tratá-las como equivalentes ao resto da rede.
+    Mesmo princípio de `SeasonalityCurve.insufficient_data` (curva de sazonalidade) e
+    de `LatentRevenueFinding` (fato medido vs. cenário assumido) — nunca inventa
+    confiança que o histórico não sustenta."""
     store: str
     gross_revenue: float
     revenue_sample_size: int  # nº de vendas (linhas) que compuseram gross_revenue
@@ -189,6 +205,8 @@ class StorePerformance(BaseModel):
     contribution_margin_avg: float  # margem de contribuição média por venda (R$)
     contribution_margin_total: float  # contribution_margin_avg × margin_sample_size (R$)
     margin_sample_size: int  # nº de vendas com custo de entrada conhecido que compuseram a margem
+    months_of_history: float  # (última venda − primeira venda) da PRÓPRIA loja, em meses
+    has_sufficient_history: bool  # months_of_history >= thresholds.cold_start_min_months
 
 
 class StoreMacroSummary(BaseModel):
@@ -199,7 +217,20 @@ class StoreMacroSummary(BaseModel):
     `contribution_margin_total` de cada loja com margem negativa — a rede "pensa" que
     ganha `network_contribution_margin_total`, mas isso já é o líquido depois do
     prejuízo dessas lojas ter sido absorvido pelo resto; `masked_amount` é quanto
-    maior o resultado seria sem elas."""
+    maior o resultado seria sem elas.
+
+    D3 — cold-start: `revenue_rank`/`margin_rank` incluem TODAS as lojas, cold-start
+    inclusive (não há motivo para escondê-las do ranking, só para rotular a
+    confiança). `network_contribution_margin_total` também soma TODAS as lojas —
+    dinheiro que já entrou/saiu de caixa é fato, não deixa de ser real por a loja ser
+    nova. Já `stores_with_negative_margin`/`masked_amount` são uma alegação
+    interpretativa ("estas lojas estruturalmente mascaram o resultado saudável da
+    rede") — atribuir esse rótulo a uma loja cold-start com poucas semanas/meses de
+    dado confundiria ruído estatístico de amostra pequena com prejuízo estrutural;
+    por isso essas duas métricas somam apenas lojas com `has_sufficient_history =
+    True`. Loja cold-start com margem negativa continua aparecendo em
+    `StorePerformance.contribution_margin_total` normalmente (fato bruto), só não
+    entra na narrativa de "mascaramento estrutural"."""
     stores_with_negative_margin: list[str] = Field(default_factory=list)
     masked_amount: float
     network_contribution_margin_total: float

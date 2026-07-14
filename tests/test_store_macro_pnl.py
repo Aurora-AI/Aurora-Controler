@@ -30,16 +30,21 @@ NO_STORE_FIXTURE = Path(__file__).parent / "fixtures" / "sales_history_test.xlsx
 
 def _synthetic_df() -> pd.DataFrame:
     """2 lojas fabricadas: 'Loja Saudavel' (preço >> custo) e 'Loja Prejuizo' (preço <<
-    custo) — só para testar a fórmula, nomes nunca aparecem em produção."""
+    custo) — só para testar a fórmula, nomes nunca aparecem em produção. Datas
+    espalhadas ao longo de 6 meses (não um único dia) para que as DUAS lojas fiquem
+    acima do `cold_start_min_months` padrão (D3) — este teste mede a ARITMÉTICA da
+    margem, isolado da rotulagem de cold-start (que tem teste dedicado em
+    test_store_coldstart.py)."""
     rows = []
+    dates = pd.date_range("2025-01-01", periods=10, freq="18D")  # ~5.6 meses de span
     for i in range(10):
         rows.append({
-            "date": pd.Timestamp("2025-01-01"), "product": "P1", "customer": f"C{i}",
+            "date": dates[i], "product": "P1", "customer": f"C{i}",
             "value": 100.0, "entry_cost": 40.0, "category": None, "store": "Loja Saudavel",
         })
     for i in range(10):
         rows.append({
-            "date": pd.Timestamp("2025-01-01"), "product": "P2", "customer": f"C{i}",
+            "date": dates[i], "product": "P2", "customer": f"C{i}",
             "value": 50.0, "entry_cost": 60.0, "category": None, "store": "Loja Prejuizo",
         })
     return pd.DataFrame(rows)
