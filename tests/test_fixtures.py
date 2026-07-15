@@ -18,10 +18,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for p in [
-    REPO_ROOT / "src" / "phase_a4",
-    REPO_ROOT / "src" / "phase_a1_5",
-    REPO_ROOT / "src" / "phase_a2_5",
-    REPO_ROOT / "libs" / "trustware",
+    REPO_ROOT / "src" / "product_a" / "phase_a4",
+    REPO_ROOT / "src" / "kernel" / "phase_a1_5",
+    REPO_ROOT / "src" / "product_a" / "phase_a2_5",
+    REPO_ROOT / "src" / "product_a" / "trustware",
 ]:
     sys.path.insert(0, str(p))
 

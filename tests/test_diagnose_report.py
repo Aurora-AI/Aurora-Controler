@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src", REPO_ROOT / "libs" / "trustware"):
+for _p in (REPO_ROOT / "src", REPO_ROOT / "src" / "product_a" / "trustware"):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 

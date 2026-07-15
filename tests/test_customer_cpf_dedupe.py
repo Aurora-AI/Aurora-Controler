@@ -13,11 +13,11 @@ descoberto lendo a planilha, nunca hardcoded aqui.
 from datetime import datetime
 from pathlib import Path
 
-from oracle.commercial_auditor import (
+from product_b.oracle.commercial_auditor import (
     _records_to_frame, build_cpf_canonical_map, detect_churn, detect_rfm_champions,
     load_named_sheets, load_sales_records, run_audit,
 )
-from oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
 
 FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 NO_CLIENTES_FIXTURE = Path(__file__).parent / "fixtures" / "sales_history_test.xlsx"

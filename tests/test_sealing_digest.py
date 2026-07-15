@@ -6,9 +6,9 @@ Garante a propriedade da qual depende a prova inteira: o digest é reproduzível
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "libs" / "trustware"))
 
-from pipeline_contracts import (
+
+from product_a.trustware.pipeline_contracts import (
     CertifiedModule, DomainModule, MismatchReport, ValidationResult,
 )
 from sealing import canonical_digest
@@ -41,7 +41,7 @@ def test_digest_is_deterministic_across_iterations():
 
 def test_digest_ignores_seal_field():
     """Preencher `seal` não muda o digest — o selo não cobre a si mesmo."""
-    from pipeline_contracts import CertificationSeal
+    from product_a.trustware.pipeline_contracts import CertificationSeal
 
     base = _certified()
     sealed = base.model_copy(update={"seal": CertificationSeal(

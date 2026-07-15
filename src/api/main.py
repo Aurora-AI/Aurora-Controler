@@ -7,9 +7,11 @@ from pathlib import Path
 _HERE = Path(__file__).resolve().parent
 _PROJECT_ROOT = _HERE.parents[1]
 
+# phase_c0-c3 = Track C (Dashboard Engine) — pipeline independente do Produto B,
+# fora do escopo kernel/product_a/product_b; ver docs/ARCHITECTURE.md.
 # Add trustware and phase folders to sys.path
 for _p in [
-    _PROJECT_ROOT / "libs" / "trustware",
+    _PROJECT_ROOT / "src" / "product_a" / "trustware",
     _PROJECT_ROOT / "src" / "phase_c0",
     _PROJECT_ROOT / "src" / "phase_c1",
     _PROJECT_ROOT / "src" / "phase_c2",
@@ -28,7 +30,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from dashboard_contracts import DashboardSpec, C0Dataset
-from unpivot import build_c0_dataset
+from phase_c0.unpivot import build_c0_dataset
 from semantic import build_semantic_model
 from metrics import build_metrics_report
 from spec_builder import build_dashboard_spec, validate_spec_self_contained

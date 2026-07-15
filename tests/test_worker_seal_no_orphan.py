@@ -14,9 +14,9 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for _p in (
-    REPO_ROOT / "libs" / "trustware", REPO_ROOT / "src" / "orchestrator",
+    REPO_ROOT / "src" / "product_a" / "trustware", REPO_ROOT / "src" / "orchestrator",
     REPO_ROOT / "src" / "api", REPO_ROOT / "src" / "worker",
-    REPO_ROOT / "src" / "phase_a4",
+    REPO_ROOT / "src" / "product_a" / "phase_a4",
 ):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))

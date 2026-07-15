@@ -2,10 +2,10 @@ import pytest
 from pathlib import Path
 import sys
 
-# Ensure libs/trustware is in path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "libs" / "trustware"))
+# Ensure src/product_a/trustware is in path
 
-from pipeline_contracts import WorkbookClass, CompileDecision
+
+from product_a.trustware.pipeline_contracts import WorkbookClass, CompileDecision
 from src.orchestrator.pipeline_orchestrator import route
 
 def test_route_escalate():

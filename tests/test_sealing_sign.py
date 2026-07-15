@@ -12,9 +12,9 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PublicKey,
 )
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "libs" / "trustware"))
 
-from pipeline_contracts import (
+
+from product_a.trustware.pipeline_contracts import (
     CertifiedModule, DomainModule, MismatchReport, ValidationResult,
 )
 from sealing import (

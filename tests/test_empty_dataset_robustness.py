@@ -20,7 +20,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from oracle.commercial_auditor import run_audit
+from product_b.oracle.commercial_auditor import run_audit
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 

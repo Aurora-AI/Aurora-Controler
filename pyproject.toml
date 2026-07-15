@@ -29,6 +29,7 @@ exrs = "cli.main:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 markers = [
     "broker: gate de broker real (Celery+Redis) — roda só em CI/Linux com EXRS_BROKER_E2E=1",
 ]

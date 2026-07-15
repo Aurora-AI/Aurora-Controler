@@ -5,11 +5,11 @@ from unittest.mock import patch, MagicMock
 
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
-sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a3"))
 
-from translator import extract_unresolved, build_prompt, translate_formula, translate_workbook
-from pipeline_contracts import (
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from product_a.phase_a3.translator import extract_unresolved, build_prompt, translate_formula, translate_workbook
+from product_a.trustware.pipeline_contracts import (
     FormulaRegistryMap, FormulaPattern, PatternClass,
     NormalizedWorkbookIR, NormalizedSheet, NormalizedCell,
     FormulaToken, FormulaTokenType, SemanticTranslationRequest
@@ -109,9 +109,9 @@ class TestPhaseA3(unittest.TestCase):
         self.assertEqual(result.confidence, 0.9)
         self.assertIn("def complex_business_logic", result.python_code)
 
-    @patch('translator.translate_formula')
+    @patch('product_a.phase_a3.translator.translate_formula')
     def test_translate_workbook(self, mock_translate):
-        from pipeline_contracts import SemanticTranslationResult
+        from product_a.trustware.pipeline_contracts import SemanticTranslationResult
         mock_translate.return_value = SemanticTranslationResult(
             node_id='Sheet1!B1',
             function_name='complex_func',

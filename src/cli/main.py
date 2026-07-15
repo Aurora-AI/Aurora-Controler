@@ -12,16 +12,16 @@ from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 for _p in (
-    _REPO_ROOT / "libs" / "trustware", _REPO_ROOT / "src" / "orchestrator",
-    _REPO_ROOT / "src" / "phase_a0", _REPO_ROOT / "src" / "phase_a1",
-    _REPO_ROOT / "src" / "phase_a1_5", _REPO_ROOT / "src" / "phase_a2",
-    _REPO_ROOT / "src" / "phase_a2_5", _REPO_ROOT / "src" / "phase_a3",
-    _REPO_ROOT / "src" / "phase_a4", _REPO_ROOT / "src" / "phase_b2",
+    _REPO_ROOT / "src" / "product_a" / "trustware", _REPO_ROOT / "src" / "orchestrator",
+    _REPO_ROOT / "src" / "kernel" / "phase_a0", _REPO_ROOT / "src" / "kernel" / "phase_a1",
+    _REPO_ROOT / "src" / "kernel" / "phase_a1_5", _REPO_ROOT / "src" / "product_a" / "phase_a2",
+    _REPO_ROOT / "src" / "product_a" / "phase_a2_5", _REPO_ROOT / "src" / "product_a" / "phase_a3",
+    _REPO_ROOT / "src" / "product_a" / "phase_a4", _REPO_ROOT / "src" / "product_a" / "phase_b2",
 ):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
-from pipeline_contracts import ExecutionDAG, FormulaRegistryMap, NormalizedWorkbookIR
+from product_a.trustware.pipeline_contracts import ExecutionDAG, FormulaRegistryMap, NormalizedWorkbookIR
 from storage_manager import StorageManager
 from pipeline_orchestrator import orchestrate_pipeline
 
@@ -33,15 +33,15 @@ from normalizer import normalize_workbook
 from graph_builder import build_dag
 from pattern_registry import classify_workbook as classify_patterns, build_registry
 from pipeline_orchestrator import route
-from pipeline_contracts import IntentCapture
+from product_a.trustware.pipeline_contracts import IntentCapture
 from graph_assembler import build_graph
 from html_visualizer import generate_html
 
 from cli.risk_analysis import analyze_risks
 from cli.diagnose_report import render_diagnose_report
 
-from oracle.column_mapper import ColumnMappingError, DateAmbiguityError
-from oracle.commercial_auditor import run_audit
+from product_b.oracle.column_mapper import ColumnMappingError, DateAmbiguityError
+from product_b.oracle.commercial_auditor import run_audit
 from cli.audit_report import render_audit_report
 
 

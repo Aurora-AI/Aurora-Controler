@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from oracle.commercial_auditor import load_sales_records, run_audit, winsorize_outliers
+from product_b.oracle.commercial_auditor import load_sales_records, run_audit, winsorize_outliers
 
 FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 
@@ -40,8 +40,8 @@ def test_outlier_winsorization_uses_own_product_median_not_network_wide():
     deve nunca ser podado por comparação com a rede inteira (regressão do bug pego
     pela própria fixture sintética: SOLAR-SEASONAL, ticket ~3x a mediana da rede, era
     podado por engano quando a cerca era global)."""
-    from oracle.forensic_contracts import AuditThresholdsConfig
-    from oracle.commercial_auditor import load_sales_records as load, _records_to_frame
+    from product_b.oracle.forensic_contracts import AuditThresholdsConfig
+    from product_b.oracle.commercial_auditor import load_sales_records as load, _records_to_frame
 
     otica = Path(__file__).parent / "fixtures" / "otica_test_bom.xlsx"
     records, _ = load(otica)
@@ -56,7 +56,7 @@ def test_network_median_ticket_barely_moves_after_winsorization():
     além de uma tolerância pequena comparado a excluir os outliers manualmente."""
     records, _ = load_sales_records(FIXTURE)
     adjusted, winsorized = winsorize_outliers(records, __import__(
-        "oracle.forensic_contracts", fromlist=["AuditThresholdsConfig"],
+        "product_b.oracle.forensic_contracts", fromlist=["AuditThresholdsConfig"],
     ).AuditThresholdsConfig())
     assert winsorized, "fixture não gerou nenhuma poda — teste não testa nada"
 

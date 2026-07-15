@@ -32,11 +32,11 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from oracle.commercial_auditor import (
+from product_b.oracle.commercial_auditor import (
     _ANONYMOUS_CUSTOMER, _records_to_frame, detect_service_decomposition,
     detect_store_performance, run_audit,
 )
-from oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
 
 _FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 
@@ -60,7 +60,7 @@ def test_margin_sum_matches_store_performance_on_real_fixture_for_every_store():
     thresholds."""
     th = AuditThresholdsConfig()
     records, _cleaning = __import__(
-        "oracle.commercial_auditor", fromlist=["load_sales_records"]
+        "product_b.oracle.commercial_auditor", fromlist=["load_sales_records"]
     ).load_sales_records(_FIXTURE)
     df = _records_to_frame(records)
 

@@ -7,7 +7,7 @@ Fase A1.5). `RiskFinding` é local a este módulo, não um contrato compartilhad
 """
 from pydantic import BaseModel
 
-from pipeline_contracts import (
+from product_a.trustware.pipeline_contracts import (
     ExecutionDAG, FormulaRegistryMap, FormulaTokenType, NormalizedWorkbookIR, PatternClass,
 )
 

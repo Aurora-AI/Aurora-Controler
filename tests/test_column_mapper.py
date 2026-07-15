@@ -1,5 +1,5 @@
 """
-Testes de src/oracle/column_mapper.py — inferência de colunas + coerção de localização.
+Testes de src/product_b/oracle/column_mapper.py — inferência de colunas + coerção de localização.
 
 FASE RED (TDD): estes testes devem FALHAR agora (ModuleNotFoundError). Cobrem
 especificamente as 2 regras endurecidas exigidas pelo CSO: coerção agressiva de moeda/data
@@ -16,7 +16,7 @@ for _p in (REPO_ROOT / "src",):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
-from oracle.column_mapper import (
+from product_b.oracle.column_mapper import (
     ColumnMappingError, DateAmbiguityError, coerce_currency_series,
     coerce_date_series, infer_column_roles,
 )

@@ -9,7 +9,7 @@ a tradução de volta acontece apenas aqui, no artefato de leitura local.
 """
 import datetime
 
-from oracle.forensic_contracts import ExecutiveAuditReport
+from product_b.oracle.forensic_contracts import ExecutiveAuditReport
 
 _SEVERITY_COLORS = {"low": "#64748B", "medium": "#D97706", "high": "#DC2626"}
 _MONTH_NAMES = {

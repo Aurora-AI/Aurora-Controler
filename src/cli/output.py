@@ -8,12 +8,12 @@ mas só são copiados para a pasta final de entrega quando debug=True.
 import shutil
 from pathlib import Path
 
-from phase_a4.html_reporter import generate_html_report
+from product_a.phase_a4.html_reporter import generate_html_report
 
 from cli.codegen import render_replay_module
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_FORMULA_ENGINE_SRC = _REPO_ROOT / "src" / "phase_a4" / "formula_evaluator.py"
+_FORMULA_ENGINE_SRC = _REPO_ROOT / "src" / "product_a" / "phase_a4" / "formula_evaluator.py"
 
 # _exrs_range_utils.py NÃO é uma cópia vendorizada de normalizer.py — normalizer.py tem
 # efeitos colaterais de import (sys.path.insert, import de pipeline_contracts) que quebram
@@ -22,7 +22,7 @@ _FORMULA_ENGINE_SRC = _REPO_ROOT / "src" / "phase_a4" / "formula_evaluator.py"
 # dependências transitivas (parse_cell_coordinate, FULL_COLUMN_PATTERN) — sem sys.path,
 # sem pipeline_contracts.
 _RANGE_UTILS_SRC_TEXT = '''"""
-Módulo vendorizado standalone — expand_range (extraído de src/phase_a1_5/normalizer.py).
+Módulo vendorizado standalone — expand_range (extraído de src/kernel/phase_a1_5/normalizer.py).
 Sem dependências do repositório EXRS: só `re` e `openpyxl.utils`.
 """
 import re

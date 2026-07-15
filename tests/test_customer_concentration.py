@@ -20,11 +20,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from oracle.commercial_auditor import (
+from product_b.oracle.commercial_auditor import (
     _ANONYMOUS_CUSTOMER, _records_to_frame, detect_customer_concentration,
     load_named_sheets, load_sales_records, run_audit,
 )
-from oracle.forensic_contracts import AuditThresholdsConfig
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig
 
 FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 NO_STORE_FIXTURE = Path(__file__).parent / "fixtures" / "sales_history_test.xlsx"
@@ -221,7 +221,7 @@ def test_customer_concentration_procedence_sample_size_matches_row_counts():
         reverse_map.setdefault(pseudonym, []).append(raw_id)
 
     named_sheets = load_named_sheets(FIXTURE)
-    from oracle.commercial_auditor import build_cpf_canonical_map
+    from product_b.oracle.commercial_auditor import build_cpf_canonical_map
     canonical_map = build_cpf_canonical_map(named_sheets.get("Clientes"))
     records, _ = load_sales_records(FIXTURE)
     records = [
@@ -239,7 +239,7 @@ def test_customer_concentration_procedence_sample_size_matches_row_counts():
 
 
 def test_no_production_code_reads_the_gabarito_sheet_for_concentration():
-    """Anti-overfit: o motor (src/oracle) nunca lê a aba 'Gabarito' — checagem
+    """Anti-overfit: o motor (src/product_b/oracle) nunca lê a aba 'Gabarito' — checagem
     indireta: rodar contra a fixture real não exige a aba, e ela não é uma das séries B
     carregadas por `load_named_sheets`."""
     named_sheets = load_named_sheets(FIXTURE)

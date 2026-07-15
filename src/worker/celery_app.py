@@ -19,7 +19,7 @@ from pathlib import Path
 _HERE = Path(__file__).resolve().parent
 _ROOT = _HERE.parents[1]
 for _p in [
-    _ROOT / "libs" / "trustware",
+    _ROOT / "src" / "product_a" / "trustware",
     _ROOT / "src" / "orchestrator",
     _ROOT / "src" / "api",
     *[_ROOT / "src" / f"phase_{x}" for x in

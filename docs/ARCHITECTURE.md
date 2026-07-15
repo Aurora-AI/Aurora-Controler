@@ -40,3 +40,34 @@ Focado na análise de dados tabulares (ex: relatórios, planilhas planas) para a
 1. **Unificação de Ponto de Entrada:** Um job, roteamento inteligente via A0.
 2. **Separação de Contextos de Execução:** Tracks A e C operam em background (workers), Track B isolado para interações CLI.
 3. **Segurança (A4):** A execução do código Python do usuário em A4 acontece sob Sandbox rígida (whitelist de built-ins + subprocess timeout).
+
+## Nota de mapeamento — refatoração kernel / product_a / product_b
+
+A refatoração que criou `src/kernel/`, `src/product_a/` e `src/product_b/` reorganizou
+o **Track A** (A0/A1/A1.5 → `src/kernel/`; A2 em diante + Track B + Trustware →
+`src/product_a/`) e trouxe o motor comercial (antigo `src/oracle/`) para
+`src/product_b/oracle/`. Um blueprint anterior dessa refatoração mapeou o **Track C**
+(`phase_c0` a `phase_c4`, `src/api/main.py`) incorretamente como se fosse o Produto B
+— não é. Track C é a **Dashboard Engine**, um terceiro pipeline independente que já
+existia antes dessa refatoração (ver `docs/superpowers/specs/2026-05-16-phase-c-dashboard-generator-design.md`),
+serve os endpoints `/api/v1/dashboard/generate` e `/upload-and-generate` em
+`src/api/main.py`, e tem testes próprios em `tests/test_api.py`. Track C fica **fora
+do escopo** da separação Kernel/Produto A/Produto B; uma classificação formal dele
+nessa nova nomenclatura (possível "Produto C") é trabalho de uma OS futura, não desta.
+
+### ADR — Produto B não consome o IR do kernel; utilitários de robustez ficam nele por ora
+
+O `src/kernel/contracts.py` (IR de planilha: `WorkbookIR`, DAG, formulários
+normalizados) é um contrato de **compilador**, construído para o Track A. O Produto B
+(`src/product_b/oracle/`) audita dados tabulares de vendas com ingestão própria
+(`column_mapper.py`) e nunca precisou desse IR — não force essa dependência por
+uniformidade arquitetural; o Produto B funciona e está testado.
+
+Cogitou-se também mover utilitários de robustez hoje só existentes no Produto B —
+dedupe de cliente por CPF, registro de pseudo-entidade (`is_pseudo_entity`,
+`benchmark_population`), guarda de dataset vazio — para o kernel, como código
+"compartilhado" entre A e B. Na data desta nota, `src/kernel` e `src/product_a` têm
+**zero** ocorrências desses conceitos: não há duplicação para eliminar, só uma aposta
+sobre necessidade futura do Produto A. Mantidos em `src/product_b/oracle/` até que o
+Produto A tenha um consumidor real — aí a extração ganha uma segunda chamada forçando
+a interface certa, em vez de uma adivinhada hoje.

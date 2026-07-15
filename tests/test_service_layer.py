@@ -9,11 +9,11 @@ tests/test_service_decomposition_adversarial.py (gerado pelo workflow).
 """
 import datetime as dt
 
-from oracle.commercial_auditor import (
+from product_b.oracle.commercial_auditor import (
     _records_to_frame, detect_contribution_margin, detect_rfm_champions,
     detect_service_reconciliation,
 )
-from oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
 
 
 def _record(date, customer, category, value=200.0, entry_cost=100.0, store="L1"):
@@ -112,7 +112,7 @@ def test_real_fixture_reconciliation_matches_l7_l8_l6_post_2025_08_exactly():
     lojas (ex. L1-Centro), então hoje o gap é residual (2 pares em toda a rede) em vez
     de sistêmico — ver test_real_fixture_reconciliation_gap_is_residual_after_correction."""
     from pathlib import Path
-    from oracle.commercial_auditor import run_audit
+    from product_b.oracle.commercial_auditor import run_audit
 
     report = run_audit(Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx")
     by_store_period = {(r.store, r.period): r for r in report.service_reconciliation}
@@ -132,7 +132,7 @@ def test_real_fixture_reconciliation_gap_is_residual_after_correction():
     """A correção na planilha fechou o gap sistêmico (era 235 de 267 meses-loja);
     hoje sobra gap residual em só 2 pares de toda a rede."""
     from pathlib import Path
-    from oracle.commercial_auditor import run_audit
+    from product_b.oracle.commercial_auditor import run_audit
 
     report = run_audit(Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx")
     gapped = [r for r in report.service_reconciliation if r.has_gap]

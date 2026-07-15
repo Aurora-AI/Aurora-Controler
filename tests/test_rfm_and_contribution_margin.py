@@ -14,7 +14,7 @@ saudável (margem ~40-60%) deve disparar falso positivo.
 """
 from pathlib import Path
 
-from oracle.commercial_auditor import run_audit
+from product_b.oracle.commercial_auditor import run_audit
 
 FIXTURE = Path(__file__).parent / "fixtures" / "otica_test_bom.xlsx"
 

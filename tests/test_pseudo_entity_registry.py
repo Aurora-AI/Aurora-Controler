@@ -18,12 +18,12 @@ nas duas rodadas (invariância a ruído de pseudo-entidade).
 """
 import datetime as dt
 
-from oracle.commercial_auditor import (
+from product_b.oracle.commercial_auditor import (
     _ANONYMOUS_CUSTOMER, _PSEUDO_ENTITY_IDS, _UNKNOWN_SALESPERSON, _UNKNOWN_STORE,
     _records_to_frame, benchmark_population, detect_churn, detect_rfm_champions,
     detect_salesperson_performance, is_pseudo_entity,
 )
-from oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
 
 
 # ── Registro único ──────────────────────────────────────────────────────────────────

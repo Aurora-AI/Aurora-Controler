@@ -6,10 +6,10 @@ from pathlib import Path
 
 # Garantir que o repositório esteja no path
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a1"))
-sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
+sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from extractor import extract_structure
+
+from kernel.phase_a1.extractor import extract_structure
 from openpyxl import Workbook
 from openpyxl.workbook.defined_name import DefinedName
 import tempfile

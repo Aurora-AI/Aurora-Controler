@@ -6,12 +6,12 @@ from unittest.mock import patch, MagicMock
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for p in [
-    REPO_ROOT / "src" / "phase_b1",
-    REPO_ROOT / "libs" / "trustware",
+    REPO_ROOT / "src" / "product_a" / "phase_b1",
+    REPO_ROOT / "src" / "product_a" / "trustware",
 ]:
     sys.path.insert(0, str(p))
 
-from pipeline_contracts import InputParameter, OutputMetric, IntentCapture
+from product_a.trustware.pipeline_contracts import InputParameter, OutputMetric, IntentCapture
 
 
 def test_input_parameter_model():
@@ -280,7 +280,7 @@ def test_phase_b1_package_imports_cleanly():
     _src = str(REPO_ROOT / "src")
     if _src not in _sys.path:
         _sys.path.insert(0, _src)
-    import phase_b1
+    import product_a.phase_b1
     import context_builder
     import intent_extractor
     import chat_loop

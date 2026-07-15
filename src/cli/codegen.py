@@ -3,11 +3,11 @@ EXRS CLI — Codegen do módulo Python 'replay'.
 
 Gera um .py standalone que reproduz o grafo de cálculo de uma planilha sem depender de
 Excel nem de LLM: usa o MESMO motor (evaluate_formula + expand_range) que a Fase A4 já usa
-para validar o workbook (src/phase_a4/runner.py::validate_workbook), só que emitido como
+para validar o workbook (src/product_a/phase_a4/runner.py::validate_workbook), só que emitido como
 código-fonte estático em vez de executado inline. Fórmulas EXTERNAL_REF e UNRESOLVED são
 excluídas (não avaliáveis deterministicamente — mesma regra do validador).
 """
-from pipeline_contracts import (
+from product_a.trustware.pipeline_contracts import (
     ExecutionDAG, FormulaRegistryMap, NormalizedWorkbookIR, PatternClass,
 )
 

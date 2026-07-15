@@ -4,14 +4,14 @@ from datetime import datetime
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 for mod_path in [
-    REPO_ROOT / "libs" / "trustware",
-    REPO_ROOT / "src" / "phase_a0",
-    REPO_ROOT / "src" / "phase_a1",
-    REPO_ROOT / "src" / "phase_a1_5",
-    REPO_ROOT / "src" / "phase_a2",
-    REPO_ROOT / "src" / "phase_a2_5",
-    REPO_ROOT / "src" / "phase_a3",
-    REPO_ROOT / "src" / "phase_a4",
+    REPO_ROOT / "src" / "product_a" / "trustware",
+    REPO_ROOT / "src" / "kernel" / "phase_a0",
+    REPO_ROOT / "src" / "kernel" / "phase_a1",
+    REPO_ROOT / "src" / "kernel" / "phase_a1_5",
+    REPO_ROOT / "src" / "product_a" / "phase_a2",
+    REPO_ROOT / "src" / "product_a" / "phase_a2_5",
+    REPO_ROOT / "src" / "product_a" / "phase_a3",
+    REPO_ROOT / "src" / "product_a" / "phase_a4",
     REPO_ROOT / "src" / "orchestrator",
 ]:
     p = str(mod_path)
@@ -27,7 +27,7 @@ from pattern_registry import classify_workbook as classify_patterns, build_regis
 from gabarito_extractor import extract_gabarito
 from runner import validate_workbook
 from repair_orchestrator import identify_repair_candidates
-from pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
+from product_a.trustware.pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
 from certification_gate import verify_certification, CertificationGateError
 from factory_events import trace, set_job, factory_tool_unavailable
 from sealing import seal_module, load_private_key, SigningKeyUnavailable

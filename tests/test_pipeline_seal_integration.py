@@ -14,11 +14,11 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for _p in (
-    REPO_ROOT / "libs" / "trustware", REPO_ROOT / "src" / "orchestrator",
-    REPO_ROOT / "src" / "phase_a0", REPO_ROOT / "src" / "phase_a1",
-    REPO_ROOT / "src" / "phase_a1_5", REPO_ROOT / "src" / "phase_a2",
-    REPO_ROOT / "src" / "phase_a2_5", REPO_ROOT / "src" / "phase_a3",
-    REPO_ROOT / "src" / "phase_a4",
+    REPO_ROOT / "src" / "product_a" / "trustware", REPO_ROOT / "src" / "orchestrator",
+    REPO_ROOT / "src" / "kernel" / "phase_a0", REPO_ROOT / "src" / "kernel" / "phase_a1",
+    REPO_ROOT / "src" / "kernel" / "phase_a1_5", REPO_ROOT / "src" / "product_a" / "phase_a2",
+    REPO_ROOT / "src" / "product_a" / "phase_a2_5", REPO_ROOT / "src" / "product_a" / "phase_a3",
+    REPO_ROOT / "src" / "product_a" / "phase_a4",
 ):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))

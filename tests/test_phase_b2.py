@@ -5,12 +5,12 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for p in [
-    REPO_ROOT / "src" / "phase_b2",
-    REPO_ROOT / "libs" / "trustware",
+    REPO_ROOT / "src" / "product_a" / "phase_b2",
+    REPO_ROOT / "src" / "product_a" / "trustware",
 ]:
     sys.path.insert(0, str(p))
 
-from pipeline_contracts import (
+from product_a.trustware.pipeline_contracts import (
     GraphNodeType, GraphNode, GraphEdge, StagedRuleGraph,
     InputParameter, OutputMetric, IntentCapture,
 )
@@ -280,7 +280,7 @@ def test_phase_b2_package_imports_cleanly():
     _src = str(REPO_ROOT / "src")
     if _src not in _sys.path:
         _sys.path.insert(0, _src)
-    import phase_b2
+    import product_a.phase_b2
     import graph_assembler
     import html_visualizer
     assert True

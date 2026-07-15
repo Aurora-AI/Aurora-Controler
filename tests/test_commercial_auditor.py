@@ -1,5 +1,5 @@
 """
-Testes de src/oracle/commercial_auditor.py — motor determinístico dos 4 detectores +
+Testes de src/product_b/oracle/commercial_auditor.py — motor determinístico dos 4 detectores +
 pseudo-anonimização.
 
 FASE RED (TDD): estes testes devem FALHAR agora (ModuleNotFoundError). Rodam contra
@@ -29,8 +29,8 @@ sys.path.insert(0, str(REPO_ROOT / "tests" / "fixtures"))
 
 from datetime import datetime
 
-from oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
-from oracle.commercial_auditor import (
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig, SalesRecord
+from product_b.oracle.commercial_auditor import (
     anonymize_customers, load_sales_records, run_audit,
 )
 

@@ -5,12 +5,12 @@ from unittest.mock import patch, MagicMock
 
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
-sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a4"))
+
+sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from gabarito_extractor import extract_gabarito
 from runner import execute_in_sandbox, validate_workbook
-from pipeline_contracts import (
+from product_a.trustware.pipeline_contracts import (
     ExecutionDAG, DAGNode, DomainModule, DomainFunction,
     FormulaRegistryMap, FormulaPattern, PatternClass,
     NormalizedWorkbookIR, NormalizedSheet, NormalizedCell

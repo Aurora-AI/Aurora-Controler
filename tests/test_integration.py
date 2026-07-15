@@ -10,10 +10,10 @@ from unittest.mock import patch
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for _p in [
-    REPO_ROOT / "libs" / "trustware",
-    REPO_ROOT / "src" / "phase_b1",
-    REPO_ROOT / "src" / "phase_b2",
-    REPO_ROOT / "src" / "phase_b3",
+    REPO_ROOT / "src" / "product_a" / "trustware",
+    REPO_ROOT / "src" / "product_a" / "phase_b1",
+    REPO_ROOT / "src" / "product_a" / "phase_b2",
+    REPO_ROOT / "src" / "product_a" / "phase_b3",
 ]:
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
@@ -46,7 +46,7 @@ def test_run_pipeline_deterministic(tmp_path):
 
 def test_b2_graph_assembly_from_intent(tmp_path):
     """B2 graph assembler funciona com IntentCapture mínimo."""
-    from pipeline_contracts import (
+    from product_a.trustware.pipeline_contracts import (
         IntentCapture, InputParameter, OutputMetric,
         GraphNodeType,
     )
@@ -60,7 +60,7 @@ def test_b2_graph_assembly_from_intent(tmp_path):
 
 def test_b3_simulation_roundtrip():
     """B3 SimulationAudit serializa e deserializa sem perda."""
-    from pipeline_contracts import SimulationAudit, SimulationStep, StagedRuleGraph, GraphNode, GraphEdge, GraphNodeType, IntentCapture, InputParameter, OutputMetric
+    from product_a.trustware.pipeline_contracts import SimulationAudit, SimulationStep, StagedRuleGraph, GraphNode, GraphEdge, GraphNodeType, IntentCapture, InputParameter, OutputMetric
     from simulation_engine import run_simulation, make_step
     from hitl_loop import run_hitl
 

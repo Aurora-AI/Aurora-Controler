@@ -4,7 +4,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for _p in [
-    REPO_ROOT / "libs" / "trustware",
+    REPO_ROOT / "src" / "product_a" / "trustware",
     REPO_ROOT / "src" / "api",
     REPO_ROOT / "src" / "phase_c1",
     REPO_ROOT / "src" / "phase_c2",

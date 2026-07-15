@@ -6,11 +6,11 @@ from pathlib import Path
 
 # Garantir que o repositório esteja no path
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a0"))
-sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
+sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from classifier import classify_workbook, classify_formula
-from pipeline_contracts import WorkbookClass, CompileDecision
+
+from kernel.phase_a0.classifier import classify_workbook, classify_formula
+from product_a.trustware.pipeline_contracts import WorkbookClass, CompileDecision
 import openpyxl
 import tempfile
 

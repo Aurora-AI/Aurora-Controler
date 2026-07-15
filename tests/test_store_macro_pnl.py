@@ -16,11 +16,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from oracle.commercial_auditor import (
+from product_b.oracle.commercial_auditor import (
     _records_to_frame, build_store_macro_summary, detect_store_performance,
     load_named_sheets, load_sales_records, run_audit,
 )
-from oracle.forensic_contracts import AuditThresholdsConfig
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig
 
 FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 NO_STORE_FIXTURE = Path(__file__).parent / "fixtures" / "sales_history_test.xlsx"
@@ -159,7 +159,7 @@ def test_masked_amount_equals_sum_of_negative_store_margins():
 
 
 def test_no_production_code_reads_the_gabarito_sheet():
-    """Anti-overfit: o motor (src/oracle) nunca lê a aba 'Gabarito' — checagem
+    """Anti-overfit: o motor (src/product_b/oracle) nunca lê a aba 'Gabarito' — checagem
     indireta: rodar contra a fixture real não deve levantar exceção nem exigir a aba,
     e a aba Gabarito não é uma das séries B carregadas por load_named_sheets."""
     named_sheets = load_named_sheets(FIXTURE)

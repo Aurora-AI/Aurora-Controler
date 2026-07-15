@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from src.phase_a4.runner import execute_in_sandbox, _docker_available
+from product_a.phase_a4.runner import execute_in_sandbox, _docker_available
 
 # Os testes do sandbox exigem o engine Docker real (isolamento de SO, não whitelist).
 # Pular explicitamente — sem mascarar — quando o engine não estiver disponível.
@@ -83,7 +83,7 @@ def test_sandbox_container_filesystem_isolation():
 
 def test_sandbox_unavailable_never_falls_back_to_local(monkeypatch):
     """Se o Docker sumir, o sandbox falha explícito — nunca executa código localmente."""
-    monkeypatch.setattr("src.phase_a4.runner._docker_available", lambda: False)
+    monkeypatch.setattr("product_a.phase_a4.runner._docker_available", lambda: False)
     result = execute_in_sandbox("def f():\n    return 1\n", "f", {})
     assert isinstance(result, str)
     assert "SANDBOX_UNAVAILABLE" in result

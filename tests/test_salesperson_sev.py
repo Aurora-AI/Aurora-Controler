@@ -24,8 +24,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from oracle.commercial_auditor import _ANONYMOUS_CUSTOMER, detect_salesperson_performance, run_audit
-from oracle.forensic_contracts import AuditThresholdsConfig
+from product_b.oracle.commercial_auditor import _ANONYMOUS_CUSTOMER, detect_salesperson_performance, run_audit
+from product_b.oracle.forensic_contracts import AuditThresholdsConfig
 
 FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 

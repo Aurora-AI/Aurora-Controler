@@ -4,11 +4,11 @@ from pathlib import Path
 import tempfile
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src" / "phase_a4"))
-sys.path.insert(0, str(REPO_ROOT / "libs" / "trustware"))
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
 
 from html_reporter import generate_html_report, _esc, _pct
-from pipeline_contracts import ValidationResult
+from product_a.trustware.pipeline_contracts import ValidationResult
 
 
 def _make_results():
@@ -143,7 +143,7 @@ def test_formula_with_double_quote_in_title_attr():
             status="PASSED",
         )
     ]
-    from pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass, PatternRegistryEntry
+    from product_a.trustware.pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass, PatternRegistryEntry
     pattern = FormulaPattern(
         node_id="S!A1",
         formula_raw='=IF(A1="x",1,0)',   # aspas duplas na fórmula
@@ -179,7 +179,7 @@ def test_breakdown_without_fmap_shows_unclassified():
 
 def test_breakdown_with_fmap_shows_patterns():
     """Com fmap real, o breakdown deve mostrar as classes corretas."""
-    from pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass
+    from product_a.trustware.pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass
     results = [
         ValidationResult(node_id="S!A1", expected_value=1, actual_value=1,
                          passed=True, status="PASSED"),

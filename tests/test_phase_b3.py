@@ -5,12 +5,12 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 for p in [
-    REPO_ROOT / "src" / "phase_b3",
-    REPO_ROOT / "libs" / "trustware",
+    REPO_ROOT / "src" / "product_a" / "phase_b3",
+    REPO_ROOT / "src" / "product_a" / "trustware",
 ]:
     sys.path.insert(0, str(p))
 
-from pipeline_contracts import (
+from product_a.trustware.pipeline_contracts import (
     SimulationStep, SimulationAudit,
     GraphNode, GraphEdge, GraphNodeType, StagedRuleGraph,
     InputParameter, OutputMetric, IntentCapture,
@@ -311,8 +311,8 @@ def test_phase_b3_package_imports_cleanly():
     src_path = str(REPO_ROOT / "src")
     if src_path not in sys.path:
         sys.path.insert(0, src_path)
-    import phase_b3  # noqa: F401
-    assert phase_b3.__file__  # confirms package was found
+    import product_a.phase_b3  # noqa: F401
+    assert product_a.phase_b3.__file__  # confirms package was found
 
 
 def test_run_hitl_roundtrip_json():

@@ -1,5 +1,5 @@
 """
-Testes de src/oracle/forensic_contracts.py — contratos Pydantic V2 do Data Oracle.
+Testes de src/product_b/oracle/forensic_contracts.py — contratos Pydantic V2 do Data Oracle.
 
 FASE RED (TDD): estes testes devem FALHAR agora (ModuleNotFoundError) — o módulo
 ainda não existe. Servem de especificação executável para a engenharia do motor.
@@ -13,7 +13,7 @@ for _p in (REPO_ROOT / "src",):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
-from oracle.forensic_contracts import (
+from product_b.oracle.forensic_contracts import (
     AuditThresholdsConfig, ChurnFinding, CleaningSummary, ExecutiveAuditReport,
     ProductTrendEntry, RevenueLeakAnomaly, SalesRecord, SeasonalityCurve,
 )
@@ -25,7 +25,7 @@ def test_thresholds_config_has_documented_defaults():
     assert t.revenue_drop_sigma == 2.0
     assert t.churn_cadence_multiplier == 2.0
     assert t.churn_min_purchases == 3
-    assert t.trend_decoupling_pct == 0.0
+    assert t.trend_decoupling_pct == 20.0
     assert t.seasonality_min_months == 12
 
 

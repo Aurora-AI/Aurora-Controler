@@ -23,7 +23,7 @@ dado real). Trava só a forma do contrato (categorias presentes, tipos corretos)
 """
 from pathlib import Path
 
-from oracle.commercial_auditor import run_audit
+from product_b.oracle.commercial_auditor import run_audit
 
 FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
 
