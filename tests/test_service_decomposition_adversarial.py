@@ -283,14 +283,18 @@ def test_masks_flag_false_when_product_margin_is_exactly_zero():
     assert entry.masks_negative_product_margin is False
 
 
-def test_real_fixture_has_no_store_with_positive_total_and_negative_product_today():
-    """Documenta o estado atual do dado real: nenhuma loja hoje bate a condição de
-    masks_negative_product_margin (a mais próxima, L7-Oeste, tem TOTAL negativo, não
-    positivo) — é por isso que os testes centrais acima são sintéticos. Se esse
-    fato do dado mudar, este teste (não a lógica de produção) precisa ser revisto."""
+def test_real_fixture_has_l7_oeste_masking_negative_product_after_correction():
+    """Documenta o estado atual do dado real (pós-correção da planilha): L7-Oeste
+    agora bate a condição de masks_negative_product_margin de verdade — produto
+    negativo (~-R$3.346), serviço cresceu o bastante para cobrir e o total virou
+    positivo (~+R$10.494). Antes da correção, o total de L7 ainda era negativo
+    (não mascarava) e nenhuma loja da rede batia essa condição — por isso os
+    testes centrais acima continuam sintéticos, mas agora há também um caso real."""
     report = run_audit(_FIXTURE)
-    assert not any(s.masks_negative_product_margin for s in report.service_decomposition)
-    assert len(report.service_decomposition) > 0
+    masking = [s for s in report.service_decomposition if s.masks_negative_product_margin]
+    assert [s.store for s in masking] == ["L7 - Oeste"]
+    assert masking[0].product_margin < 0
+    assert masking[0].total_margin > 0
 
 
 # ---------------------------------------------------------------------------

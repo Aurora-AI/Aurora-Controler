@@ -106,9 +106,11 @@ def test_service_reconciliation_empty_without_financeiro_sheet():
 
 
 def test_real_fixture_reconciliation_matches_l7_l8_l6_post_2025_08_exactly():
-    """Regressão contra o dado real: L6/L7/L8 reconciliam ao centavo a partir de
-    2025-08 (POS passou a capturar serviço); antes disso e nas demais 7 lojas, gap
-    total (Financeiro declara receita de serviço sem venda correspondente)."""
+    """Regressão contra o dado real (pós-correção da planilha): L6/L7/L8 reconciliam
+    ao centavo a partir de 2025-08 (POS passou a capturar serviço). A correção também
+    zerou a receita de serviço fantasma que o Financeiro declarava para as demais 7
+    lojas (ex. L1-Centro), então hoje o gap é residual (2 pares em toda a rede) em vez
+    de sistêmico — ver test_real_fixture_reconciliation_gap_is_residual_after_correction."""
     from pathlib import Path
     from oracle.commercial_auditor import run_audit
 
@@ -120,8 +122,21 @@ def test_real_fixture_reconciliation_matches_l7_l8_l6_post_2025_08_exactly():
     assert not reconciled.has_gap
     assert reconciled.sales_transactional_revenue > 0
 
-    unreconciled = by_store_period.get(("L1 - Centro", "2024-06"))
-    assert unreconciled is not None
-    assert unreconciled.has_gap
-    assert unreconciled.sales_transactional_revenue == 0.0
-    assert unreconciled.financial_declared_revenue > 0
+    non_service_store = by_store_period.get(("L1 - Centro", "2024-06"))
+    assert non_service_store is not None
+    assert not non_service_store.has_gap
+    assert non_service_store.financial_declared_revenue == 0.0
+
+
+def test_real_fixture_reconciliation_gap_is_residual_after_correction():
+    """A correção na planilha fechou o gap sistêmico (era 235 de 267 meses-loja);
+    hoje sobra gap residual em só 2 pares de toda a rede."""
+    from pathlib import Path
+    from oracle.commercial_auditor import run_audit
+
+    report = run_audit(Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx")
+    gapped = [r for r in report.service_reconciliation if r.has_gap]
+    assert len(gapped) == 2
+    assert {(r.store, r.period) for r in gapped} == {
+        ("L7 - Oeste", "2026-06"), ("L8 - Praia", "2026-03"),
+    }
