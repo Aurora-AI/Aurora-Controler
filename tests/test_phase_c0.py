@@ -1,0 +1,284 @@
+"""Testes da Fase C0 — Ingestão + Un-pivot."""
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+for _p in [
+    REPO_ROOT / "src" / "product_a" / "trustware",
+    REPO_ROOT / "src" / "phase_c0",
+]:
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
+from dashboard_contracts import (
+    IngestionStrategy, DetectedStructure, SourceMapEntry,
+    DiscardedRow, ValidationSummary, C0Dataset,
+)
+
+
+def test_ingestion_strategy_model():
+    s = IngestionStrategy(primary="structured_model", fallback="grid_scraping",
+                          used="grid_scraping", reason="pivot detected")
+    assert s.used == "grid_scraping"
+
+
+def test_validation_summary_closure_fields():
+    v = ValidationSummary(total_rows_read=200, source_rows_emitted=120,
+                          source_rows_context=25, source_rows_discarded=55,
+                          dataset_rows_emitted=580)
+    assert v.source_rows_emitted + v.source_rows_context + v.source_rows_discarded == v.total_rows_read
+    assert v.warnings == []
+
+
+def test_c0_dataset_roundtrip():
+    ds = C0Dataset(
+        source_file="Propostas.xlsx",
+        ingestion_strategy=IngestionStrategy(primary="structured_model",
+            fallback="grid_scraping", used="structured_model", reason="clean table"),
+        detected_structure=DetectedStructure(table_kind="flat"),
+        dataset=[{"row_id": 1, "cnpj": "X", "status": "Aprovado", "quantidade": 10}],
+        source_map=[SourceMapEntry(row_id=1, origin_sheet="Plan1",
+            origin_cells={"cnpj": "A2", "quantidade": "B2"})],
+        discarded_rows=[DiscardedRow(origin_row=9, reason="grand_total", raw=["Total", 99])],
+        validation_summary=ValidationSummary(total_rows_read=10, source_rows_emitted=8,
+            source_rows_context=1, source_rows_discarded=1, dataset_rows_emitted=8),
+    )
+    assert ds.schema_version == "c0_dataset.v1"
+    data = ds.model_dump()
+    assert C0Dataset.model_validate(data).schema_version == "c0_dataset.v1"
+
+
+# --- Task 5: ingest ---
+import csv as _csv
+from ingest import read_table
+
+
+def test_read_table_csv(tmp_path):
+    p = tmp_path / "dados.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+    sheet, rows = read_table(str(p))
+    assert sheet == "dados"
+    assert rows[0] == ["cnpj", "status", "quantidade"]
+    assert rows[1] == ["X1", "Aprovado", "10"]
+
+
+def test_read_table_rejects_unknown_format(tmp_path):
+    p = tmp_path / "x.txt"
+    p.write_text("nada", encoding="utf-8")
+    import pytest
+    with pytest.raises(ValueError):
+        read_table(str(p))
+
+
+# --- Task 6: detecção + un-pivot wide ---
+from unpivot import _is_number, classify_columns, detect_structure, unpivot_wide
+
+
+def test_is_number_handles_locale():
+    assert _is_number("1.234") is True
+    assert _is_number("12,5") is True
+    assert _is_number("Aprovado") is False
+    assert _is_number(None) is False
+
+
+def test_classify_columns_separates_dim_and_measure():
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", "20"], ["X2", "5", "7"]]
+    dim_idx, measure_idx = classify_columns(header, data)
+    assert dim_idx == [0]
+    assert measure_idx == [1, 2]
+
+
+def test_detect_structure_wide():
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", "20"]]
+    s = detect_structure(header, data)
+    assert s.table_kind == "wide"
+    assert s.unpivot_source_columns == ["Aprovado", "Reprovado"]
+    assert s.canonical_dimension_from_columns == "status"
+    assert s.canonical_measure == "quantidade"
+
+
+def test_detect_structure_flat():
+    header = ["cnpj", "status", "quantidade"]
+    data = [["X1", "Aprovado", "10"]]
+    s = detect_structure(header, data)
+    assert s.table_kind == "flat"
+
+
+def test_unpivot_wide_emits_long_rows():
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", "20"]]
+    long_rows = unpivot_wide(header, data, [0], [1, 2])
+    assert {"cnpj": "X1", "status": "Aprovado", "quantidade": 10.0} in long_rows
+    assert {"cnpj": "X1", "status": "Reprovado", "quantidade": 20.0} in long_rows
+
+
+def test_to_number_en_us_decimal():
+    from unpivot import _to_number
+    assert _to_number("12.5") == 12.5          # ponto decimal en-US
+    assert _to_number("1,234.56") == 1234.56   # milhar en-US
+
+
+def test_to_number_pt_br_decimal():
+    from unpivot import _to_number
+    assert _to_number("12,5") == 12.5          # vírgula decimal pt-BR
+    assert _to_number("1.234,56") == 1234.56   # milhar pt-BR
+
+
+def test_unpivot_wide_skips_empty_and_ragged():
+    from unpivot import unpivot_wide
+    header = ["cnpj", "Aprovado", "Reprovado"]
+    data = [["X1", "10", ""], ["X2"]]  # célula vazia + linha ragged
+    long_rows = unpivot_wide(header, data, [0], [1, 2])
+    # X1: só Aprovado (Reprovado vazio); X2: nada (ragged, sem measures)
+    assert len(long_rows) == 1
+    assert long_rows[0] == {"cnpj": "X1", "status": "Aprovado", "quantidade": 10.0}
+
+
+# --- Task 7: build_c0_dataset ---
+from unpivot import build_c0_dataset
+
+
+def test_build_c0_dataset_flat_csv(tmp_path):
+    p = tmp_path / "flat.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+        w.writerow(["X2", "Reprovado", "20"])
+    ds = build_c0_dataset(str(p))
+    assert ds.ingestion_strategy.used == "structured_model"
+    assert ds.detected_structure.table_kind == "flat"
+    assert len(ds.dataset) == 2
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+
+
+def test_build_c0_dataset_wide_unpivot(tmp_path):
+    p = tmp_path / "wide.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "Aprovado", "Reprovado"])
+        w.writerow(["X1", "10", "20"])
+    ds = build_c0_dataset(str(p))
+    assert ds.ingestion_strategy.used == "grid_scraping"
+    assert ds.detected_structure.table_kind == "wide"
+    assert len(ds.dataset) == 2  # 1 linha larga -> 2 longas
+    assert ds.validation_summary.dataset_rows_emitted == 2
+
+
+def test_build_c0_dataset_discards_grand_total(tmp_path):
+    p = tmp_path / "gt.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+        w.writerow(["Total Geral", "", "10"])
+    ds = build_c0_dataset(str(p))
+    assert len(ds.dataset) == 1
+    assert any(d.reason == "grand_total" for d in ds.discarded_rows)
+
+
+def test_build_c0_dataset_source_map_covers_dataset(tmp_path):
+    p = tmp_path / "sm.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+    ds = build_c0_dataset(str(p))
+    mapped_ids = {e.row_id for e in ds.source_map}
+    dataset_ids = {r["row_id"] for r in ds.dataset}
+    assert dataset_ids.issubset(mapped_ids)
+
+
+def test_build_c0_dataset_wide_skips_no_measure_row(tmp_path):
+    p = tmp_path / "wnm.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "Aprovado", "Reprovado"])
+        w.writerow(["X1", "10", "20"])
+        w.writerow(["X2", "", ""])  # linha sem measures
+    ds = build_c0_dataset(str(p))
+    assert len(ds.dataset) == 2  # só X1 (Aprovado + Reprovado)
+    assert any(d.reason == "no_measures" for d in ds.discarded_rows)
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted == 1
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+
+
+# --- Task 8: __main__ ---
+import json as _json
+import subprocess as _sub
+
+
+def test_phase_c0_cli_writes_artifact(tmp_path):
+    src = tmp_path / "Propostas.csv"
+    with src.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["cnpj", "status", "quantidade"])
+        w.writerow(["X1", "Aprovado", "10"])
+    result = _sub.run(
+        [sys.executable, "-m", "phase_c0", str(src)],
+        cwd=str(REPO_ROOT), capture_output=True, text=True,
+        env={**__import__("os").environ, "PYTHONPATH": str(REPO_ROOT / "src")},
+    )
+    assert result.returncode == 0, result.stderr
+    out = src.with_name("Propostas_c0_dataset.json")
+    assert out.exists()
+    data = _json.loads(out.read_text(encoding="utf-8"))
+    assert data["schema_version"] == "c0_dataset.v1"
+
+
+# --- Task 21: un-pivot hierárquico ---
+from unpivot import detect_hierarchical, _is_parent_row
+
+
+def test_is_parent_row_detects_context_row():
+    # col 0 preenchida, colunas-measure (1,2) vazias
+    assert _is_parent_row(["00.1/0001-01", "", ""], [1, 2]) is True
+    assert _is_parent_row(["Atendente", "10", "20"], [1, 2]) is False
+
+
+def test_detect_hierarchical_true_when_parent_rows_exist():
+    body = [
+        ["00.1/0001-01", "", ""],
+        ["Atendente", "10", "20"],
+    ]
+    assert detect_hierarchical(body, [1, 2]) is True
+
+
+def test_detect_hierarchical_false_for_flat_table():
+    body = [["X1", "Aprovado", "10"]]
+    assert detect_hierarchical(body, [2]) is False
+
+
+def test_build_c0_dataset_hierarchical(tmp_path):
+    p = tmp_path / "pivot.csv"
+    with p.open("w", encoding="utf-8", newline="") as fh:
+        w = _csv.writer(fh)
+        w.writerow(["CNPJ", "Aprovado", "Reprovado"])
+        w.writerow(["00.1/0001-01", "", ""])       # linha-pai
+        w.writerow(["Atendente", "10", "20"])       # filha
+        w.writerow(["Promotor", "5", "7"])          # filha
+        w.writerow(["00.1/0001-01 Total", "15", "27"])  # subtotal
+        w.writerow(["Total Geral", "15", "27"])     # total geral
+    ds = build_c0_dataset(str(p))
+    assert ds.detected_structure.table_kind == "pivot_hierarchical"
+    assert ds.ingestion_strategy.used == "grid_scraping"
+    assert ds.detected_structure.hierarchy == {"parent": "CNPJ", "child": "subgrupo"}
+    assert ds.detected_structure.subtotal_rows_detected == 1
+    # 2 filhas x 2 colunas-measure = 4 linhas longas
+    assert len(ds.dataset) == 4
+    vs = ds.validation_summary
+    assert vs.source_rows_emitted == 2
+    assert vs.source_rows_context == 1
+    assert vs.source_rows_discarded == 2
+    assert vs.source_rows_emitted + vs.source_rows_context + vs.source_rows_discarded == vs.total_rows_read
+    first = ds.dataset[0]
+    assert first["CNPJ"] == "00.1/0001-01"
+    assert "subgrupo" in first and "status" in first and "quantidade" in first
+

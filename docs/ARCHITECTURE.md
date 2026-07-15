@@ -71,3 +71,28 @@ dedupe de cliente por CPF, registro de pseudo-entidade (`is_pseudo_entity`,
 sobre necessidade futura do Produto A. Mantidos em `src/product_b/oracle/` até que o
 Produto A tenha um consumidor real — aí a extração ganha uma segunda chamada forçando
 a interface certa, em vez de uma adivinhada hoje.
+
+### Dívida conhecida — `libs/trustware/` órfão (OS futura, junto da classificação do Track C)
+
+A consolidação kernel/product_a/product_b deixou `libs/trustware/` no disco como cópia
+órfã, byte-idêntica a `src/product_a/trustware/`. `tests/test_phase_c0-c4.py` (restaurados
+nesta rodada) e `src/api/main.py`/`test_api.py` já apontam para o canônico
+(`src/product_a/trustware`); mas `src/phase_c0/__main__.py` a `phase_c3/__main__.py`
+(scripts standalone, fora do caminho real da API) ainda importam de `libs/trustware`.
+Duas cópias no disco podem divergir silenciosamente. Remover `libs/trustware/` e
+repontar esses `__main__.py` é limpeza correta, mas mexe em código do Track C — fica
+para a mesma OS futura que classificar formalmente o Track C (possível "Produto C"),
+não para esta rodada.
+
+### Nota de governança — revisão do trabalho concorrente
+
+Nesta rodada, a consolidação da reestruturação concorrente (Antigravity) tinha suíte
+100% verde, mas uma passada estrutural achou dois problemas que os testes não
+capturavam: `tests/test_phase_c0.py` a `test_phase_c4.py` (64 testes, cobertura
+unitária do Track C, código ainda vivo) tinham sido deletados sem justificativa —
+restaurados nesta rodada, atualizados para o path canônico — e a duplicata órfã de
+`libs/trustware/` acima. "Verde" prova que roda, não que a reestruturação está limpa;
+mudanças estruturais de outro motor no mesmo repositório compartilhado merecem essa
+mesma passada (inventário arquivo a arquivo contra o mapeamento pretendido, diff de
+testes removidos/alterados, não só o resultado do pytest) antes de serem dadas como
+fechadas.
