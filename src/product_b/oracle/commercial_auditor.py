@@ -13,6 +13,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from kernel.robustness import benchmark_population as _benchmark_population_generic
+from kernel.robustness import dedup_by_key
+from kernel.tabular import records_to_frame as _records_to_frame_generic
 from product_b.oracle.column_mapper import (
     _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES,
     _ESTOQUE_ROLE_KEYWORDS, _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS,
@@ -71,11 +74,10 @@ def benchmark_population(entity_stats: dict[str, dict], predicate=lambda stats: 
     pseudo-entidades via `is_pseudo_entity`, e aceita um `predicate` extra por cima
     (ex. "só quem tem tenure suficiente"). Uso OBRIGATÓRIO em qualquer detector que
     compute estatística de referência entre entidades reais — nunca um filtro ad-hoc
-    inline de novo (é assim que a mesma classe de bug reaparece pela N-ésima vez)."""
-    return [
-        stats for entity_id, stats in entity_stats.items()
-        if not is_pseudo_entity(entity_id) and predicate(stats)
-    ]
+    inline de novo (é assim que a mesma classe de bug reaparece pela N-ésima vez).
+    Mecanismo genérico agora mora no kernel (`kernel.robustness.benchmark_population`)
+    — aqui só fornecemos o predicado de pseudo-entidade do domínio (Produto B)."""
+    return _benchmark_population_generic(entity_stats, is_pseudo_entity, predicate=predicate)
 
 
 # D3 — conversão dias -> "meses corridos" para medir a janela de histórico PRÓPRIA de
@@ -260,29 +262,22 @@ def winsorize_outliers(
     return adjusted, winsorized
 
 
+# Schema da linha de venda usada pela guarda de dataset vazio — o mecanismo genérico
+# (typed-empty-frame quando `records` está vazio) mora no kernel
+# (`kernel.tabular.records_to_frame`); aqui só declaramos o schema do domínio.
+_SALES_FRAME_SCHEMA: dict[str, str] = {
+    "date": "datetime64[ns]", "product": "object", "customer": "object",
+    "value": "float64", "entry_cost": "float64", "category": "object",
+    "store": "object", "salesperson": "object",
+}
+
+
 def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
-    if not records:
-        # Lista vazia (arquivo sem linhas, ou toda linha descartada na limpeza) — sem
-        # os dtypes explícitos, um DataFrame([]) não tem NENHUMA coluna, e todo
-        # detector que acessa df["date"]/["value"]/etc. quebra com KeyError antes de
-        # `run_audit` conseguir montar um relatório vazio válido. Colunas tipadas e
-        # vazias deixam cada detector cair no próprio caminho de "sem dado" (guards
-        # de `len(series) < N`, `.empty`, etc.) em vez de estourar.
-        return pd.DataFrame({
-            "date": pd.Series([], dtype="datetime64[ns]"),
-            "product": pd.Series([], dtype="object"),
-            "customer": pd.Series([], dtype="object"),
-            "value": pd.Series([], dtype="float64"),
-            "entry_cost": pd.Series([], dtype="float64"),
-            "category": pd.Series([], dtype="object"),
-            "store": pd.Series([], dtype="object"),
-            "salesperson": pd.Series([], dtype="object"),
-        })
-    return pd.DataFrame([{
+    return _records_to_frame_generic([{
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
-    } for r in records])
+    } for r in records], _SALES_FRAME_SCHEMA)
 
 
 def detect_revenue_leaks(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[RevenueLeakAnomaly]:
@@ -1024,28 +1019,21 @@ def build_cpf_canonical_map(clientes_df: pd.DataFrame | None) -> dict[str, str]:
     ids_raw = clientes_df[roles["customer_id"]]
     docs_raw = clientes_df[roles["document"]]
 
-    groups: dict[str, list[str]] = {}
-    for cid_val, doc_val in zip(ids_raw, docs_raw):
-        # pd.isna antes de qualquer .astype(str): célula vazia tem que continuar NaN
-        # (nunca virar a string literal "nan") até esta checagem — mesma armadilha já
-        # documentada em load_sales_records/build_cpf_canonical_map's siblings.
-        if pd.isna(cid_val) or pd.isna(doc_val):
-            continue
-        cid = str(cid_val).strip()
-        doc_digits = re.sub(r"\D", "", str(doc_val))
-        if not cid or not doc_digits:
-            continue
-        groups.setdefault(doc_digits, []).append(cid)
-
-    canonical_map: dict[str, str] = {}
-    for members in groups.values():
-        unique_members = sorted(set(members))
-        if len(unique_members) < 2:
-            continue
-        canonical = unique_members[0]
-        for member in unique_members:
-            canonical_map[member] = canonical
-    return canonical_map
+    # pd.isna antes de qualquer .astype(str): célula vazia tem que continuar NaN
+    # (nunca virar a string literal "nan") até esta checagem — mesma armadilha já
+    # documentada em load_sales_records/build_cpf_canonical_map's siblings. Kernel
+    # não sabe de pandas/NaN, então o filtro fica aqui; o agrupamento em si (mesmo
+    # documento normalizado = mesma pessoa) é o mecanismo genérico
+    # `kernel.robustness.dedup_by_key`, com CPF como a chave e o domínio (Produto B)
+    # fornecendo só o normalizador (só dígitos).
+    pairs = [
+        (str(cid_val).strip(), str(doc_val))
+        for cid_val, doc_val in zip(ids_raw, docs_raw)
+        if not pd.isna(cid_val) and not pd.isna(doc_val)
+    ]
+    ids = [cid for cid, _ in pairs]
+    docs = [doc for _, doc in pairs]
+    return dedup_by_key(ids, docs, key_normalizer=lambda d: re.sub(r"\D", "", d))
 
 
 def detect_data_completeness(
