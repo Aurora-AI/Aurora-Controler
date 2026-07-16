@@ -198,7 +198,11 @@ def records_to_frame(records: list[dict], schema: dict[str, str]) -> pd.DataFram
     DataFrame. Lista vazia (arquivo sem linhas, ou toda linha descartada na limpeza)
     retorna `typed_empty_frame(schema)` em vez de um DataFrame sem colunas — mesmo
     raciocínio de `typed_empty_frame`. `schema` só é usado no caminho vazio (o
-    caminho não-vazio já tipa via os próprios valores dos dicts, como sempre fez)."""
+    caminho não-vazio já tipa via os próprios valores dos dicts, como sempre fez —
+    note que colunas de texto podem sair como `StringDtype` em vez de `object`
+    dependendo da versão do pandas; nenhum código a jusante hoje faz asserção de
+    dtype, então isso é inofensivo, mas é bom saber se for depurar algo dtype-sensível
+    mais adiante)."""
     if not records:
         return typed_empty_frame(schema)
     return pd.DataFrame(records)
