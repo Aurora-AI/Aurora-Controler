@@ -35,20 +35,18 @@ def _normalize(text: str) -> str:
 
 
 def infer_column_roles(
-    df: pd.DataFrame, override: dict[str, str] | None = None,
-    role_keywords: dict[str, list[str]] | None = None,
-    required_roles: tuple[str, ...] | None = None,
+    df: pd.DataFrame,
+    role_keywords: dict[str, list[str]],
+    required_roles: tuple[str, ...],
+    override: dict[str, str] | None = None,
 ) -> dict[str, str]:
     """Infere qual coluna corresponde a cada papel via vocabulário fornecido pelo
     chamador. `override` tem prioridade absoluta sobre a heurística. Levanta
     ColumnMappingError se um dos papéis obrigatórios não for identificado.
-    `role_keywords`/`required_roles` são OBRIGATÓRIOS de fato (sem eles, nada a
-    inferir) — mantidos opcionais na assinatura só para não quebrar chamada
-    posicional existente; quem chama sempre fornece o vocabulário do próprio
-    domínio."""
-    role_keywords = role_keywords if role_keywords is not None else {}
-    required_roles = required_roles if required_roles is not None else ()
-
+    `role_keywords`/`required_roles` são obrigatórios de verdade (kernel não tem
+    vocabulário próprio pra inferir nada) — sem default degenerado: um consumidor
+    que esquecer de fornecer o vocabulário do próprio domínio recebe um TypeError
+    claro na hora, não um `{}` silencioso que só quebra mais adiante."""
     roles: dict[str, str] = {}
     assigned_columns: set[str] = set()
 
