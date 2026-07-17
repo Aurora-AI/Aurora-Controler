@@ -23,12 +23,12 @@ from product_b.oracle.column_mapper import (
     infer_column_roles,
 )
 from product_b.oracle.forensic_contracts import (
-    AuditThresholdsConfig, ChurnFinding, CleaningSummary, ContributionMarginAlert,
-    CustomerConcentrationFinding, DataCompletenessFinding, DeadStockFinding,
-    ExecutiveAuditReport, GmroiEntry, LatentRevenueFinding, ProductTrendEntry,
-    RevenueLeakAnomaly, RFMChampion, SalesRecord, SalespersonPerformance, ServiceDecomposition,
-    ServiceReconciliation, SeasonalityCurve, StoreMacroSummary, StorePerformance,
-    WinsorizedValue,
+    ActionPlanItem, AuditThresholdsConfig, ChurnFinding, CleaningSummary,
+    ContributionMarginAlert, CustomerConcentrationFinding, DataCompletenessFinding,
+    DeadStockFinding, DiscardedAlarm, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
+    LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
+    SalespersonPerformance, ServiceDecomposition, ServiceReconciliation, SeasonalityCurve,
+    StoreMacroSummary, StorePerformance, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -1235,6 +1235,116 @@ def detect_service_reconciliation(
             has_gap=abs(gap) > thresholds.service_reconciliation_gap_tolerance,
         ))
     return sorted(entries, key=lambda e: -abs(e.gap))
+
+
+def build_executive_summary(
+    contribution_margin_alerts: list[ContributionMarginAlert],
+    dead_stock: list[DeadStockFinding],
+    churn_findings: list[ChurnFinding],
+    salesperson_performance: list[SalespersonPerformance],
+    store_performance: list[StorePerformance],
+    thresholds: AuditThresholdsConfig,
+) -> ExecutiveSummary:
+    """ES — Sumário executivo: agrega os outputs JÁ CALCULADOS pelos detectores acima
+    em três totais de natureza contábil diferente (nunca somados entre si), mais os
+    alarmes descartados e o plano de ação. Função pura, sem novo acesso a `df` — só
+    recombina o que os detectores já retornaram, mesma filosofia de
+    `build_store_macro_summary`.
+
+    `total_operational_loss`: soma de |contribution_margin| de todo item em
+    `contribution_margin_alerts` (a lista já só contém margem < 0, ver
+    `detect_contribution_margin`). Não soma com `service_decomposition` (evitaria
+    dupla contagem). Não exclui promoção (sem sinal no dado) — rotular como "a
+    confirmar" é responsabilidade de quem exibe este campo, não deste cálculo.
+
+    `total_capital_frozen`: `dead_stock[0].capital_frozen` se houver achado —
+    `detect_dead_stock` estruturalmente nunca retorna mais que 1 item (sempre soma a
+    rede inteira), então não há double-count possível aqui.
+
+    `total_ltv_risk`: soma de `historical_annual_value` de todo `churn_findings`.
+
+    `discarded_alarms`: só as duas categorias que o motor genuinamente checa hoje —
+    vendedor em rampa (`has_sufficient_tenure=False`) e loja cold-start
+    (`has_sufficient_history=False`). "Queda sazonal descartada" fica de fora: o
+    motor de vazamento de receita não expõe candidatos que ficaram abaixo do limiar
+    de sazonalidade, só os que viraram anomalia — ver
+    docs/superpowers/specs/2026-07-17-laudo-executive-summary-e-frontend-drilldown-design.md,
+    seção 4.3.
+
+    `action_plan`: até 3 itens fixos (operacional/capital/LTV), cada um só aparece se
+    o total correspondente for > 0, ordenados por tier ascendente e R$ descendente
+    dentro do tier. Receita latente nunca entra aqui (é cenário, não fato) — por
+    isso esta função nem recebe `latent_revenue` como parâmetro."""
+    total_operational_loss = float(
+        sum(abs(a.contribution_margin) for a in contribution_margin_alerts)
+    )
+    total_capital_frozen = float(dead_stock[0].capital_frozen) if dead_stock else 0.0
+    total_ltv_risk = float(sum(c.historical_annual_value for c in churn_findings))
+
+    discarded_alarms: list[DiscardedAlarm] = []
+    for sp in salesperson_performance:
+        if not sp.has_sufficient_tenure:
+            discarded_alarms.append(DiscardedAlarm(
+                category="salesperson_ramp", entity_id=sp.salesperson,
+                reason=(
+                    f"Vendedor em rampa há {sp.days_since_first_sale} dias "
+                    f"(mínimo de maturidade: {thresholds.sev_ramp_min_days:.0f} dias) — "
+                    "volume baixo não é penalizado."
+                ),
+            ))
+    for s in store_performance:
+        if not s.has_sufficient_history:
+            discarded_alarms.append(DiscardedAlarm(
+                category="store_cold_start", entity_id=s.store,
+                reason=(
+                    f"Loja com {s.months_of_history:.1f} meses de histórico "
+                    f"(mínimo: {thresholds.cold_start_min_months:.0f} meses) — dado "
+                    "insuficiente para tratar suas métricas com a mesma confiança de "
+                    "uma loja madura."
+                ),
+            ))
+
+    action_plan: list[ActionPlanItem] = []
+    if total_operational_loss > 0:
+        action_plan.append(ActionPlanItem(
+            id="act-operational", category="margem_produto",
+            title="Estancar Sangria Operacional",
+            description=(
+                "SKUs vendendo abaixo da margem de contribuição — ajustar "
+                "precificação ou descontinuar. Pode incluir promoção intencional, "
+                "a confirmar."
+            ),
+            impact_brl=total_operational_loss, nature="operational", tier=1,
+        ))
+    if total_capital_frozen > 0:
+        action_plan.append(ActionPlanItem(
+            id="act-capital", category="estoque",
+            title="Liquidar Dinheiro Parado",
+            description=(
+                "Capital travado em estoque sem movimento — requer outlet ou "
+                "transferência entre lojas."
+            ),
+            impact_brl=total_capital_frozen, nature="capital", tier=2,
+        ))
+    if total_ltv_risk > 0:
+        action_plan.append(ActionPlanItem(
+            id="act-ltv", category="churn",
+            title="Mitigar Evasão Silenciosa (Churn)",
+            description=(
+                "Clientes recorrentes que sumiram além do ciclo de compra esperado — "
+                "ativação via CRM prioritária."
+            ),
+            impact_brl=total_ltv_risk, nature="ltv_risk", tier=3,
+        ))
+    action_plan.sort(key=lambda item: (item.tier, -item.impact_brl))
+
+    return ExecutiveSummary(
+        total_operational_loss=total_operational_loss,
+        total_capital_frozen=total_capital_frozen,
+        total_ltv_risk=total_ltv_risk,
+        discarded_alarms=discarded_alarms,
+        action_plan=action_plan,
+    )
 
 
 def run_audit(
