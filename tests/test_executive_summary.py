@@ -144,3 +144,18 @@ def test_build_executive_summary_cannot_leak_latent_revenue_into_the_plan():
     ação como se fosse fato, mesmo por engano futuro."""
     params = inspect.signature(build_executive_summary).parameters
     assert "latent_revenue" not in params
+
+
+from pathlib import Path
+
+from product_b.oracle.commercial_auditor import run_audit
+
+_FIXTURE = Path(__file__).parent / "fixtures" / "consultoria_real_test.xlsx"
+
+
+def test_run_audit_populates_executive_summary():
+    report = run_audit(_FIXTURE)
+    assert report.executive_summary is not None
+    assert report.executive_summary.total_operational_loss >= 0.0
+    assert report.executive_summary.total_capital_frozen >= 0.0
+    assert report.executive_summary.total_ltv_risk >= 0.0

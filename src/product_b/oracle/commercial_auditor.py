@@ -1395,6 +1395,15 @@ def run_audit(
     service_decomposition = detect_service_decomposition(df, thresholds)
     service_reconciliation = detect_service_reconciliation(df, named_sheets.get("Financeiro"), thresholds)
 
+    executive_summary = build_executive_summary(
+        contribution_margin_alerts=contribution_margin_alerts,
+        dead_stock=dead_stock,
+        churn_findings=churn_findings,
+        salesperson_performance=salesperson_performance,
+        store_performance=store_performance,
+        thresholds=thresholds,
+    )
+
     _, identity_map = anonymize_customers(records)
 
     for finding in churn_findings:
@@ -1424,6 +1433,7 @@ def run_audit(
         store_performance=store_performance, store_macro_summary=store_macro_summary,
         customer_concentration=customer_concentration, salesperson_performance=salesperson_performance,
         service_decomposition=service_decomposition, service_reconciliation=service_reconciliation,
+        executive_summary=executive_summary,
         generated_at=datetime.now(timezone.utc).isoformat()
     )
 
