@@ -67,14 +67,14 @@ Estas regras são o contrato final; qualquer alteração passa por nova decisão
 `total_operational_loss`, `total_capital_frozen` e `total_ltv_risk` são três fatos de natureza contábil diferente (fluxo "a confirmar" / capital recuperável / LTV projetado e incerto) e **nunca são somados entre si** em nenhum campo do relatório. `latent_revenue` (receita latente) fica inteiramente fora de `ExecutiveSummary` — é cenário/hipótese, nunca fato, e não deve ser confundido com os três totais acima em nenhuma tela.
 
 ### 4.3 `discarded_alarms` (lista, não contagem)
-Cobre só os checks que o motor genuinamente faz hoje:
-- Queda sazonal descartada — `revenue_leaks` com `seasonality_adjusted=True` (a série foi ajustada por sazonalidade e mesmo assim não configurou anomalia real — nota: precisa checar se candidatos ajustados que ficam abaixo do limiar chegam a ser instanciados; se `_scan_yoy` só cria `RevenueLeakAnomaly` quando `sigma >= threshold`, então não há um "candidato descartado" per se aqui — **ver ressalva de implementação abaixo**).
+
+**Decisão final (não fica para confirmar durante a implementação): a categoria "queda sazonal descartada" fica FORA de `discarded_alarms` nesta rodada.** `detect_revenue_leaks`/`_scan_yoy` (linha 312-348 de `commercial_auditor.py`) só instancia `RevenueLeakAnomaly` quando `sigma >= thresholds.revenue_drop_sigma` — ou seja, o motor não expõe, em nenhuma estrutura, os candidatos que passaram pelo ajuste de sazonalidade e ficaram *abaixo* do limiar (o "checado e limpo"). `seasonality_adjusted=True` marca uma anomalia real que sobreviveu ao ajuste, não um descarte. Não há dado de onde extrair essa categoria sem alterar `detect_revenue_leaks` para também emitir os "quase" — isso é mudança de detector, fora de escopo (ver seção 8, ADR: fica reservado para quando a sazonalidade virar análise de planejamento, não filtro).
+
+`discarded_alarms` nesta rodada cobre só:
 - Vendedor em rampa — `salesperson_performance` com `has_sufficient_tenure=False`.
 - Loja em cold-start — `store_performance` com `has_sufficient_history=False`.
 
-Não inclui "estoque sazonal" nem "promoção descartada" (sem sinal no dado hoje — ver seção 8).
-
-**Ressalva de implementação a resolver no plano:** para "queda sazonal descartada" produzir pelo menos um item real, é preciso confirmar que existe algum caso no dado de referência onde a série passou pelo ajuste de sazonalidade (`_scan_yoy`) e o resultado NÃO cruzou o limiar (i.e., não virou `RevenueLeakAnomaly`) — hoje esse caminho não é observável a partir do que `detect_revenue_leaks` retorna (só vemos o que passou do limiar). Se não houver como obter isso sem alterar `detect_revenue_leaks` para também emitir os "quase" (o que foi rejeitado como fora de escopo nesta rodada), a categoria "queda sazonal descartada" fica de fora de `discarded_alarms` nesta rodada, e a lista cobre só rampa de vendedor e cold-start de loja. Isso deve ser confirmado durante a implementação (não durante o design) e documentado no código se a categoria for descartada.
+Não inclui "estoque sazonal", "promoção descartada" nem "queda sazonal descartada" (sem sinal no dado hoje para os três — ver seção 8). Consequência aceita: a seção "o que não é problema" fica mais enxuta nesta rodada — perde o exemplo mais forte de confiança (a queda sazonal óbvia), mas não mostra o que o motor não checou de verdade. É honesto agora e recupera força quando a camada de sazonalidade-para-planejamento (fora de escopo, seção 8) reframar o índice sazonal existente como orientação, não como filtro de alarme.
 
 ### 4.4 `action_plan[]`
 - Mapeamento base fixo: `churn_findings` → item de natureza `ltv_risk`; `dead_stock` → item de natureza `capital`; `total_operational_loss` → item de natureza `operational`. Cada item só aparece se o total correspondente for > 0.
@@ -110,6 +110,22 @@ Decidida em sessão de brainstorming, implementação em sessão própria:
 
 `tests/fixtures/golden_laudo_v3.json` e `tests/test_golden_laudo_v3.py` fazem igualdade exata contra `report.model_dump(mode="json")` — adicionar `executive_summary` ao `ExecutiveAuditReport` quebra `test_laudo_matches_golden_master_exactly` por design. A regeneração do fixture é parte obrigatória da entrega desta funcionalidade, não um acidente a corrigir depois. `test_key_findings_from_the_meeting_stay_pinned` trava campos específicos hoje (`service_decomposition`, `dead_stock[0]`, `customer_concentration[0]`, `churn_findings`, `service_reconciliation`) — nenhum desses é alterado por este trabalho, mas o plano de implementação deve rodar a suíte completa (`python -m pytest tests/ -q`) antes de considerar a entrega pronta.
 
+### 7.1 Verificar antes de congelar (passo obrigatório, não opcional)
+
+Regenerar o fixture deixa o teste verde **por construção** — ele congela o que o código emitiu, bug incluso. Se `build_executive_summary` tiver um erro (soma errada, tier fora de ordem, receita latente vazando para dentro de um total), a regeneração assa esse erro dentro do golden master e o teste passa para sempre contra o valor errado. "Verde" aqui não significa "correto".
+
+Ordem obrigatória da entrega:
+
+1. Rodar o motor sobre o dado de referência (`consultoria_real_test.xlsx` ou o dataset usado em v4) e obter o `executive_summary` gerado.
+2. **Conferir os valores à mão (ou com um teste independente que recalcula da fonte, não que compara contra o próprio dump) contra as regras da seção 4:**
+   - `total_operational_loss` bate a soma de `|contribution_margin|` de todo item negativo em `contribution_margin_alerts`, e não inclui nada de `service_decomposition`?
+   - `total_operational_loss`, `total_capital_frozen` e `total_ltv_risk` permanecem três campos separados em nenhum lugar somados entre si, e `latent_revenue` não vazou para dentro de nenhum dos três?
+   - `discarded_alarms` só contém categorias com check real (rampa de vendedor, cold-start de loja — e sazonal, se e somente se um caso real for observável; ver 4.3) — sem item artificial/padding?
+   - `action_plan` está ordenado por `tier` ascendente e, dentro do mesmo tier, por `impact_brl` descendente — e nenhum item de natureza `latent`/cenário aparece nele?
+3. **Só depois dessa conferência** regenerar `golden_laudo_v3.json` e rodar a suíte completa (`python -m pytest tests/ -q`).
+
+Regenerar sem o passo 2 é trocar a âncora de regressão por uma âncora falsa — o plano de implementação deve tratar este passo como parte da definição de "pronto", não como uma checagem opcional de qualidade.
+
 ## 8. Fora de escopo desta rodada (registrar como ADR / próxima OS)
 
 - Detector novo de margem de contribuição por loja×SKU (perda mascarada por loja continua reportada só via `service_decomposition`, não soma em `total_operational_loss`).
@@ -120,5 +136,5 @@ Decidida em sessão de brainstorming, implementação em sessão própria:
 
 ## 9. Riscos
 
-- Se, durante a implementação, nenhum caso real de "queda sazonal descartada" for observável a partir do que `detect_revenue_leaks` já retorna (ver 4.3), a categoria deve ser removida de `discarded_alarms` nesta rodada — documentar a decisão no código, não inventar um caso artificial para popular a lista.
-- `total_operational_loss` sem exclusão de promoção pode gerar número maior do que o "real" aos olhos do cliente de negócio — mitigado pelo rótulo obrigatório "a confirmar" (seção 4.1); qualquer UI que remova esse rótulo para simplificar o texto reintroduz o risco que a regra foi desenhada para evitar.
+- `total_operational_loss` sem exclusão de promoção pode gerar número maior do que o "real" aos olhos do cliente de negócio — mitigado pelo rótulo obrigatório "a confirmar" (seção 4.1); qualquer UI que remova esse rótulo para simplificar o texto reintroduz o risco que a regra foi desenhada para evitar. O rótulo é parte da correção, não um detalhe de copy — carrega a honestidade que o número sozinho não carrega.
+- Regenerar o golden master sem verificação independente dos valores novos (seção 7.1) congela qualquer bug de `build_executive_summary` como "correto" permanentemente — o teste ficaria verde por construção, não por estar certo. Mitigado por tornar a verificação passo 2 obrigatório antes do passo 3 (regenerar) na seção 7.1.
