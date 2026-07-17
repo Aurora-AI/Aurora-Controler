@@ -390,13 +390,52 @@ class ServiceDecomposition(BaseModel):
 
 class ServiceReconciliation(BaseModel):
     """SVC5 — Reconciliação entre aba Financeiro e aba Vendas para Serviços.
-    Se a receita declarada não bater com a soma transacional, `has_gap` é True."""
+    Se a receita declarada não batter com a soma transacional, `has_gap` é True."""
     store: str
     period: str  # "YYYY-MM"
     financial_declared_revenue: float
     sales_transactional_revenue: float
     gap: float
     has_gap: bool
+
+
+class DiscardedAlarm(BaseModel):
+    """ES — Sumário executivo: um candidato que o motor avaliou e decidiu NÃO
+    reportar como achado, com o motivo. Cobre só categorias que o motor genuinamente
+    checa hoje (rampa de vendedor, cold-start de loja) — nunca populado com um caso
+    artificial só para não ficar vazio."""
+    category: str  # "salesperson_ramp" | "store_cold_start"
+    entity_id: str
+    reason: str
+
+
+class ActionPlanItem(BaseModel):
+    """ES — Item do plano de ação, pré-ordenado pelo motor (tier ascendente, R$
+    descendente dentro do tier). O frontend renderiza na ordem que veio, nunca
+    reordena nem recalcula."""
+    id: str
+    category: str
+    title: str
+    description: str
+    impact_brl: float
+    nature: str  # "operational" | "capital" | "ltv_risk"
+    tier: int  # 1 = perda certa/recorrente, 2 = capital recuperável, 3 = LTV projetado
+
+
+class ExecutiveSummary(BaseModel):
+    """ES — Agregados de topo do laudo. Cada total vem DA FONTE (dos detectores),
+    contado uma vez; as três naturezas (operacional/capital/LTV) nunca são somadas
+    entre si em lugar nenhum — são fatos de natureza contábil diferente. Receita
+    latente (cenário) fica de fora: nunca soma aqui, nunca entra em `action_plan`.
+
+    `total_operational_loss` não exclui promoção legítima (sem sinal disso no dado de
+    origem hoje) — quem consome este campo DEVE rotular como "a confirmar", nunca
+    como perda estrutural confirmada."""
+    total_operational_loss: float
+    total_capital_frozen: float
+    total_ltv_risk: float
+    discarded_alarms: list[DiscardedAlarm] = Field(default_factory=list)
+    action_plan: list[ActionPlanItem] = Field(default_factory=list)
 
 
 class ExecutiveAuditReport(BaseModel):
@@ -422,4 +461,5 @@ class ExecutiveAuditReport(BaseModel):
     service_decomposition: list[ServiceDecomposition] = Field(default_factory=list)
     service_reconciliation: list[ServiceReconciliation] = Field(default_factory=list)
     salesperson_performance: list[SalespersonPerformance] = Field(default_factory=list)
+    executive_summary: ExecutiveSummary
     generated_at: str

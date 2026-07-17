@@ -14,8 +14,8 @@ for _p in (REPO_ROOT / "src",):
         sys.path.insert(0, str(_p))
 
 from product_b.oracle.forensic_contracts import (
-    AuditThresholdsConfig, ChurnFinding, CleaningSummary, ExecutiveAuditReport,
-    ProductTrendEntry, RevenueLeakAnomaly, SalesRecord, SeasonalityCurve,
+    ActionPlanItem, AuditThresholdsConfig, ChurnFinding, CleaningSummary, DiscardedAlarm,
+    ExecutiveAuditReport, ExecutiveSummary, ProductTrendEntry, RevenueLeakAnomaly, SalesRecord, SeasonalityCurve,
 )
 
 
@@ -104,7 +104,49 @@ def test_executive_audit_report_assembles_all_sections():
                                   rows_discarded_by_reason={}, files_skipped=[]),
         thresholds=AuditThresholdsConfig(),
         revenue_leaks=[], churn_findings=[], product_trends=[], seasonality=[],
+        executive_summary=ExecutiveSummary(
+            total_operational_loss=0.0, total_capital_frozen=0.0, total_ltv_risk=0.0,
+        ),
         generated_at="2026-07-06T00:00:00",
     )
     assert report.period_start == "2023-01"
     assert report.thresholds.revenue_drop_sigma == 2.0
+    assert report.executive_summary.total_operational_loss == 0.0
+
+
+def test_discarded_alarm_carries_category_entity_and_reason():
+    alarm = DiscardedAlarm(
+        category="salesperson_ramp", entity_id="Vendedor Novo",
+        reason="Vendedor em rampa há 60 dias — volume baixo não é penalizado.",
+    )
+    assert alarm.category == "salesperson_ramp"
+    assert alarm.entity_id == "Vendedor Novo"
+
+
+def test_action_plan_item_carries_tier_for_ordering():
+    item = ActionPlanItem(
+        id="act-operational", category="margem_produto", title="Estancar Sangria",
+        description="...", impact_brl=1000.0, nature="operational", tier=1,
+    )
+    assert item.tier == 1
+    assert item.nature == "operational"
+
+
+def test_executive_summary_defaults_to_empty_alarms_and_plan():
+    summary = ExecutiveSummary(
+        total_operational_loss=0.0, total_capital_frozen=0.0, total_ltv_risk=0.0,
+    )
+    assert summary.discarded_alarms == []
+    assert summary.action_plan == []
+
+
+def test_executive_summary_natures_stay_as_three_separate_fields():
+    """Guarda de regressão: os três totais são campos INDEPENDENTES — nenhum é
+    calculado como soma dos outros dois (isso seria uma violação da regra de que as
+    três naturezas contábeis nunca se somam)."""
+    summary = ExecutiveSummary(
+        total_operational_loss=100.0, total_capital_frozen=200.0, total_ltv_risk=300.0,
+    )
+    assert summary.total_operational_loss == 100.0
+    assert summary.total_capital_frozen == 200.0
+    assert summary.total_ltv_risk == 300.0
