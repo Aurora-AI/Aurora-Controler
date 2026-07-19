@@ -1279,7 +1279,11 @@ def build_executive_summary(
         sum(abs(a.contribution_margin) for a in contribution_margin_alerts)
     )
     total_capital_frozen = float(dead_stock[0].capital_frozen) if dead_stock else 0.0
-    total_ltv_risk = float(sum(c.historical_annual_value for c in churn_findings))
+    # Piso em 0 por cliente antes de somar: um cliente com valor histórico líquido
+    # negativo (estornos pesados) nunca deve cancelar o risco real de outro cliente
+    # churnado com valor positivo — cada achado é avaliado isoladamente, nunca
+    # mascarado por outro (mesmo princípio de SEV/D3/D4 no resto do arquivo).
+    total_ltv_risk = float(sum(max(0.0, c.historical_annual_value) for c in churn_findings))
 
     discarded_alarms: list[DiscardedAlarm] = []
     for sp in salesperson_performance:
@@ -1288,7 +1292,7 @@ def build_executive_summary(
                 category="salesperson_ramp", entity_id=sp.salesperson,
                 reason=(
                     f"Vendedor em rampa há {sp.days_since_first_sale} dias "
-                    f"(mínimo de maturidade: {thresholds.sev_ramp_min_days:.0f} dias) — "
+                    f"(mínimo de maturidade: {thresholds.sev_ramp_min_days:.1f} dias) — "
                     "volume baixo não é penalizado."
                 ),
             ))
@@ -1298,7 +1302,7 @@ def build_executive_summary(
                 category="store_cold_start", entity_id=s.store,
                 reason=(
                     f"Loja com {s.months_of_history:.1f} meses de histórico "
-                    f"(mínimo: {thresholds.cold_start_min_months:.0f} meses) — dado "
+                    f"(mínimo: {thresholds.cold_start_min_months:.1f} meses) — dado "
                     "insuficiente para tratar suas métricas com a mesma confiança de "
                     "uma loja madura."
                 ),
@@ -1336,6 +1340,9 @@ def build_executive_summary(
             ),
             impact_brl=total_ltv_risk, nature="ltv_risk", tier=3,
         ))
+    # Nota: com o mapeamento fixo atual (no máximo 1 item por tier), o desempate por
+    # -impact_brl nunca é exercitado — o sort existe como salvaguarda caso um tier
+    # futuro passe a ter mais de um item, não é código morto.
     action_plan.sort(key=lambda item: (item.tier, -item.impact_brl))
 
     return ExecutiveSummary(
