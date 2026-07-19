@@ -189,7 +189,7 @@ export default function AchadosPorTema({ report, expandedId, onToggle }: Section
                 ))}
               </div>
             }
-            footnote={churn.length > 15 ? `+ ${churn.length - 15} outros clientes.` : undefined}
+            footnote={churn.length > 15 ? `Mostrando ${churn.slice(0, 15).length} de ${churn.length} clientes.` : undefined}
           />
         )}
 
