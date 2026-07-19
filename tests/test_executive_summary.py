@@ -70,6 +70,25 @@ def test_total_ltv_risk_sums_historical_annual_value():
     assert summary.total_ltv_risk == 60000.0
 
 
+def test_total_ltv_risk_floors_each_customer_at_zero_before_summing():
+    """Um cliente com valor histórico líquido negativo (estornos pesados) nunca pode
+    cancelar o risco real de outro cliente churnado com valor positivo — cada achado é
+    avaliado isoladamente. Sem o piso, -500 + 300 = -200 apagaria o item de plano de
+    ação inteiro mesmo havendo R$300 de risco real."""
+    churn = [
+        ChurnFinding(customer_id="Client_A", purchase_count=3, avg_cadence_days=30.0,
+                     last_purchase="2024-01-01", months_silent=6, historical_annual_value=-500.0),
+        ChurnFinding(customer_id="Client_B", purchase_count=3, avg_cadence_days=30.0,
+                     last_purchase="2024-01-01", months_silent=6, historical_annual_value=300.0),
+    ]
+    summary = build_executive_summary(
+        contribution_margin_alerts=[], dead_stock=[], churn_findings=churn,
+        salesperson_performance=[], store_performance=[], thresholds=_thresholds(),
+    )
+    assert summary.total_ltv_risk == 300.0
+    assert any(item.nature == "ltv_risk" for item in summary.action_plan)
+
+
 def test_discarded_alarms_flags_ramping_salesperson_and_cold_start_store():
     salespeople = [
         SalespersonPerformance(
