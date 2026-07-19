@@ -390,7 +390,7 @@ class ServiceDecomposition(BaseModel):
 
 class ServiceReconciliation(BaseModel):
     """SVC5 — Reconciliação entre aba Financeiro e aba Vendas para Serviços.
-    Se a receita declarada não batter com a soma transacional, `has_gap` é True."""
+    Se a receita declarada não bater com a soma transacional, `has_gap` é True."""
     store: str
     period: str  # "YYYY-MM"
     financial_declared_revenue: float
