@@ -42,7 +42,7 @@ export default function RankingDeLojas({ report, expandedId, onToggle }: Section
                 <span className="text-sm font-semibold">{s.store}</span>
                 <div style={{ display: 'flex', gap: '1rem', textAlign: 'right' }}>
                   <span className="text-xs text-muted">Faturamento: #{s.revenuePosition}</span>
-                  <span className={`text-xs ${s.performance && s.performance.contribution_margin_total < 0 ? 'text-accent-red' : 'text-muted'}`}>
+                  <span className={`text-xs ${s.performance && s.performance.contribution_margin_total < 0 && s.performance.has_sufficient_history ? 'text-accent-red' : 'text-muted'}`}>
                     Margem: #{s.marginPosition}
                     {s.performance && !s.performance.has_sufficient_history ? ' (dado insuficiente)' : ''}
                   </span>
