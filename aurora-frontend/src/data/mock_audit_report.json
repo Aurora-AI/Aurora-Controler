@@ -1,0 +1,6002 @@
+{
+  "period_start": "2023-03",
+  "period_end": "2026-07",
+  "cleaning": {
+    "rows_read": 3045,
+    "rows_accepted": 3021,
+    "rows_discarded_by_reason": {
+      "valor_nao_numerico": 23,
+      "data_invalida": 1
+    },
+    "files_skipped": [],
+    "values_winsorized": [
+      {
+        "source_file": "consultoria_real_test.xlsx",
+        "source_row": 2613,
+        "product": "ARP-001",
+        "original_value": 33900.0,
+        "capped_value": 4573.5
+      },
+      {
+        "source_file": "consultoria_real_test.xlsx",
+        "source_row": 2614,
+        "product": "ARM-001",
+        "original_value": 20295.0,
+        "capped_value": 2716.2
+      }
+    ]
+  },
+  "thresholds": {
+    "revenue_drop_sigma": 2.0,
+    "churn_cadence_multiplier": 2.0,
+    "churn_min_purchases": 3,
+    "trend_decoupling_pct": 20.0,
+    "seasonality_min_months": 12,
+    "materiality_revenue_pct": 1.0,
+    "rfm_bins": 5,
+    "variable_cost_pct": 15.0,
+    "latent_revenue_anchor_category": "lente",
+    "latent_revenue_target_category": "solar",
+    "latent_revenue_conversion_pct": 20.0,
+    "dead_stock_months": 8,
+    "contingency_completeness_pct": 30.0,
+    "outlier_median_ratio": 20.0,
+    "cold_start_min_months": 4.0,
+    "sev_min_capture_pct": 60.0,
+    "sev_ramp_min_days": 180.0,
+    "concentration_risk_pct": 25.0,
+    "service_category_label": "servico",
+    "service_reconciliation_gap_tolerance": 1.0
+  },
+  "revenue_leaks": [
+    {
+      "scope": "total",
+      "entity_id": "total",
+      "period": "2025-02",
+      "expected_value": 58744.54,
+      "actual_value": 29171.91,
+      "drop_sigma": 2.397118402286875,
+      "seasonality_adjusted": false,
+      "confidence": "high",
+      "severity": "medium",
+      "low_confidence": false
+    },
+    {
+      "scope": "total",
+      "entity_id": "total",
+      "period": "2026-07",
+      "expected_value": 52868.94,
+      "actual_value": 23935.56,
+      "drop_sigma": 2.345301640008312,
+      "seasonality_adjusted": false,
+      "confidence": "high",
+      "severity": "medium",
+      "low_confidence": false
+    },
+    {
+      "scope": "product",
+      "entity_id": "AG-12",
+      "period": "2025-04",
+      "expected_value": 1874.44,
+      "actual_value": 1115.31,
+      "drop_sigma": 2.3752065986151734,
+      "seasonality_adjusted": true,
+      "confidence": "high",
+      "severity": "medium",
+      "low_confidence": false
+    },
+    {
+      "scope": "product",
+      "entity_id": "AG-12",
+      "period": "2025-05",
+      "expected_value": 2015.885,
+      "actual_value": 1137.81,
+      "drop_sigma": 2.7473680846218937,
+      "seasonality_adjusted": true,
+      "confidence": "high",
+      "severity": "medium",
+      "low_confidence": false
+    },
+    {
+      "scope": "product",
+      "entity_id": "AG-12",
+      "period": "2025-06",
+      "expected_value": 1888.7350000000001,
+      "actual_value": 1123.2,
+      "drop_sigma": 2.3952469056299535,
+      "seasonality_adjusted": true,
+      "confidence": "high",
+      "severity": "medium",
+      "low_confidence": false
+    },
+    {
+      "scope": "product",
+      "entity_id": "ARP-001",
+      "period": "2025-05",
+      "expected_value": 4573.5,
+      "actual_value": 235.82,
+      "drop_sigma": 2.163340113178798,
+      "seasonality_adjusted": true,
+      "confidence": "low",
+      "severity": "medium",
+      "low_confidence": true
+    },
+    {
+      "scope": "product",
+      "entity_id": "ARP-002",
+      "period": "2025-12",
+      "expected_value": 5087.51,
+      "actual_value": 1659.36,
+      "drop_sigma": 2.46620400101647,
+      "seasonality_adjusted": true,
+      "confidence": "low",
+      "severity": "medium",
+      "low_confidence": true
+    },
+    {
+      "scope": "product",
+      "entity_id": "ARP-016",
+      "period": "2024-07",
+      "expected_value": 3699.47,
+      "actual_value": 377.81,
+      "drop_sigma": 2.107589731295578,
+      "seasonality_adjusted": true,
+      "confidence": "low",
+      "severity": "medium",
+      "low_confidence": true
+    },
+    {
+      "scope": "product",
+      "entity_id": "ARP-018",
+      "period": "2026-06",
+      "expected_value": 2884.12,
+      "actual_value": 734.63,
+      "drop_sigma": 2.0280423791058833,
+      "seasonality_adjusted": true,
+      "confidence": "low",
+      "severity": "medium",
+      "low_confidence": true
+    },
+    {
+      "scope": "product",
+      "entity_id": "SOLAR-SEASONAL",
+      "period": "2024-12",
+      "expected_value": 2478.77,
+      "actual_value": 2022.48,
+      "drop_sigma": 2.6935380598239984,
+      "seasonality_adjusted": true,
+      "confidence": "high",
+      "severity": "medium",
+      "low_confidence": false
+    }
+  ],
+  "churn_findings": [
+    {
+      "customer_id": "Client_CY",
+      "purchase_count": 5,
+      "avg_cadence_days": 75.0,
+      "last_purchase": "2025-08-01",
+      "months_silent": 11,
+      "historical_annual_value": 3828.9700000000003
+    },
+    {
+      "customer_id": "Client_DP",
+      "purchase_count": 4,
+      "avg_cadence_days": 60.0,
+      "last_purchase": "2025-07-10",
+      "months_silent": 12,
+      "historical_annual_value": 3586.85
+    },
+    {
+      "customer_id": "Client_CI",
+      "purchase_count": 5,
+      "avg_cadence_days": 60.0,
+      "last_purchase": "2025-08-21",
+      "months_silent": 11,
+      "historical_annual_value": 4221.18
+    },
+    {
+      "customer_id": "Client_EU",
+      "purchase_count": 4,
+      "avg_cadence_days": 60.0,
+      "last_purchase": "2025-07-30",
+      "months_silent": 12,
+      "historical_annual_value": 3075.01
+    },
+    {
+      "customer_id": "Client_CF",
+      "purchase_count": 5,
+      "avg_cadence_days": 60.0,
+      "last_purchase": "2025-08-05",
+      "months_silent": 11,
+      "historical_annual_value": 4257.03
+    },
+    {
+      "customer_id": "Client_ER",
+      "purchase_count": 4,
+      "avg_cadence_days": 166.66666666666666,
+      "last_purchase": "2025-06-06",
+      "months_silent": 13,
+      "historical_annual_value": 3136.0099999999998
+    },
+    {
+      "customer_id": "Client_IR",
+      "purchase_count": 6,
+      "avg_cadence_days": 92.6,
+      "last_purchase": "2025-09-28",
+      "months_silent": 10,
+      "historical_annual_value": 1609.92
+    },
+    {
+      "customer_id": "Client_IB",
+      "purchase_count": 6,
+      "avg_cadence_days": 82.2,
+      "last_purchase": "2026-01-27",
+      "months_silent": 6,
+      "historical_annual_value": 1724.56
+    },
+    {
+      "customer_id": "Client_HN",
+      "purchase_count": 5,
+      "avg_cadence_days": 94.5,
+      "last_purchase": "2025-08-09",
+      "months_silent": 11,
+      "historical_annual_value": 1937.6599999999999
+    },
+    {
+      "customer_id": "Client_LY",
+      "purchase_count": 4,
+      "avg_cadence_days": 73.66666666666667,
+      "last_purchase": "2025-03-30",
+      "months_silent": 16,
+      "historical_annual_value": 1174.55
+    },
+    {
+      "customer_id": "Client_LV",
+      "purchase_count": 4,
+      "avg_cadence_days": 156.66666666666666,
+      "last_purchase": "2025-09-14",
+      "months_silent": 10,
+      "historical_annual_value": 1181.57
+    },
+    {
+      "customer_id": "Client_PL",
+      "purchase_count": 4,
+      "avg_cadence_days": 129.33333333333334,
+      "last_purchase": "2025-08-24",
+      "months_silent": 11,
+      "historical_annual_value": 798.9099999999999
+    },
+    {
+      "customer_id": "Client_IN",
+      "purchase_count": 6,
+      "avg_cadence_days": 89.0,
+      "last_purchase": "2025-12-25",
+      "months_silent": 7,
+      "historical_annual_value": 1647.2800000000002
+    },
+    {
+      "customer_id": "Client_LZ",
+      "purchase_count": 6,
+      "avg_cadence_days": 57.6,
+      "last_purchase": "2025-10-11",
+      "months_silent": 9,
+      "historical_annual_value": 1170.7300000000002
+    },
+    {
+      "customer_id": "Client_LO",
+      "purchase_count": 5,
+      "avg_cadence_days": 106.25,
+      "last_purchase": "2025-10-31",
+      "months_silent": 9,
+      "historical_annual_value": 1230.67
+    },
+    {
+      "customer_id": "Client_KR",
+      "purchase_count": 5,
+      "avg_cadence_days": 102.75,
+      "last_purchase": "2025-09-10",
+      "months_silent": 10,
+      "historical_annual_value": 1318.22
+    },
+    {
+      "customer_id": "Client_NB",
+      "purchase_count": 5,
+      "avg_cadence_days": 91.75,
+      "last_purchase": "2025-08-24",
+      "months_silent": 11,
+      "historical_annual_value": 1032.45
+    },
+    {
+      "customer_id": "Client_MV",
+      "purchase_count": 5,
+      "avg_cadence_days": 87.25,
+      "last_purchase": "2025-11-15",
+      "months_silent": 8,
+      "historical_annual_value": 1057.5700000000002
+    },
+    {
+      "customer_id": "Client_OQ",
+      "purchase_count": 7,
+      "avg_cadence_days": 67.66666666666667,
+      "last_purchase": "2025-10-22",
+      "months_silent": 9,
+      "historical_annual_value": 869.79
+    },
+    {
+      "customer_id": "Client_LL",
+      "purchase_count": 9,
+      "avg_cadence_days": 71.5,
+      "last_purchase": "2026-02-02",
+      "months_silent": 5,
+      "historical_annual_value": 1244.1
+    },
+    {
+      "customer_id": "Client_IE",
+      "purchase_count": 10,
+      "avg_cadence_days": 69.22222222222223,
+      "last_purchase": "2026-02-16",
+      "months_silent": 5,
+      "historical_annual_value": 1707.1700000000003
+    },
+    {
+      "customer_id": "Client_MK",
+      "purchase_count": 12,
+      "avg_cadence_days": 50.54545454545455,
+      "last_purchase": "2026-03-08",
+      "months_silent": 4,
+      "historical_annual_value": 1111.47
+    },
+    {
+      "customer_id": "Client_KW",
+      "purchase_count": 9,
+      "avg_cadence_days": 62.5,
+      "last_purchase": "2025-11-14",
+      "months_silent": 8,
+      "historical_annual_value": 1295.86
+    },
+    {
+      "customer_id": "Client_QD",
+      "purchase_count": 7,
+      "avg_cadence_days": 60.833333333333336,
+      "last_purchase": "2025-06-23",
+      "months_silent": 13,
+      "historical_annual_value": 715.9
+    },
+    {
+      "customer_id": "Client_JJ",
+      "purchase_count": 10,
+      "avg_cadence_days": 66.55555555555556,
+      "last_purchase": "2026-02-19",
+      "months_silent": 5,
+      "historical_annual_value": 1519.6799999999998
+    },
+    {
+      "customer_id": "Client_HZ",
+      "purchase_count": 6,
+      "avg_cadence_days": 81.0,
+      "last_purchase": "2025-07-18",
+      "months_silent": 12,
+      "historical_annual_value": 1766.6
+    },
+    {
+      "customer_id": "Client_NK",
+      "purchase_count": 4,
+      "avg_cadence_days": 120.33333333333333,
+      "last_purchase": "2025-09-14",
+      "months_silent": 10,
+      "historical_annual_value": 999.4100000000001
+    },
+    {
+      "customer_id": "Client_JU",
+      "purchase_count": 10,
+      "avg_cadence_days": 60.111111111111114,
+      "last_purchase": "2026-02-13",
+      "months_silent": 5,
+      "historical_annual_value": 1458.45
+    },
+    {
+      "customer_id": "Client_MY",
+      "purchase_count": 8,
+      "avg_cadence_days": 86.14285714285714,
+      "last_purchase": "2026-01-26",
+      "months_silent": 6,
+      "historical_annual_value": 1045.49
+    },
+    {
+      "customer_id": "Client_OT",
+      "purchase_count": 8,
+      "avg_cadence_days": 71.28571428571429,
+      "last_purchase": "2026-02-02",
+      "months_silent": 5,
+      "historical_annual_value": 861.2
+    },
+    {
+      "customer_id": "Client_MM",
+      "purchase_count": 8,
+      "avg_cadence_days": 81.85714285714286,
+      "last_purchase": "2026-01-30",
+      "months_silent": 6,
+      "historical_annual_value": 1095.19
+    },
+    {
+      "customer_id": "Client_KT",
+      "purchase_count": 10,
+      "avg_cadence_days": 67.88888888888889,
+      "last_purchase": "2026-02-16",
+      "months_silent": 5,
+      "historical_annual_value": 1315.06
+    },
+    {
+      "customer_id": "Client_F",
+      "purchase_count": 8,
+      "avg_cadence_days": 75.0,
+      "last_purchase": "2025-08-11",
+      "months_silent": 11,
+      "historical_annual_value": 9072.0
+    },
+    {
+      "customer_id": "Client_G",
+      "purchase_count": 8,
+      "avg_cadence_days": 58.857142857142854,
+      "last_purchase": "2025-08-10",
+      "months_silent": 11,
+      "historical_annual_value": 9072.0
+    },
+    {
+      "customer_id": "Client_H",
+      "purchase_count": 8,
+      "avg_cadence_days": 53.857142857142854,
+      "last_purchase": "2025-06-20",
+      "months_silent": 13,
+      "historical_annual_value": 9072.0
+    },
+    {
+      "customer_id": "Client_OV",
+      "purchase_count": 4,
+      "avg_cadence_days": 39.333333333333336,
+      "last_purchase": "2026-01-20",
+      "months_silent": 6,
+      "historical_annual_value": 858.71
+    },
+    {
+      "customer_id": "Client_RQ",
+      "purchase_count": 3,
+      "avg_cadence_days": 52.0,
+      "last_purchase": "2026-02-09",
+      "months_silent": 5,
+      "historical_annual_value": 279.41
+    },
+    {
+      "customer_id": "Client_QS",
+      "purchase_count": 3,
+      "avg_cadence_days": 78.0,
+      "last_purchase": "2026-01-20",
+      "months_silent": 6,
+      "historical_annual_value": 582.04
+    },
+    {
+      "customer_id": "Client_PW",
+      "purchase_count": 3,
+      "avg_cadence_days": 65.5,
+      "last_purchase": "2026-01-03",
+      "months_silent": 6,
+      "historical_annual_value": 772.01
+    },
+    {
+      "customer_id": "Client_SA",
+      "purchase_count": 3,
+      "avg_cadence_days": 18.5,
+      "last_purchase": "2025-10-12",
+      "months_silent": 9,
+      "historical_annual_value": 209.45999999999998
+    },
+    {
+      "customer_id": "Client_LP",
+      "purchase_count": 7,
+      "avg_cadence_days": 34.666666666666664,
+      "last_purchase": "2026-03-07",
+      "months_silent": 4,
+      "historical_annual_value": 1211.6000000000001
+    },
+    {
+      "customer_id": "Client_HD",
+      "purchase_count": 9,
+      "avg_cadence_days": 23.75,
+      "last_purchase": "2026-03-28",
+      "months_silent": 4,
+      "historical_annual_value": 2111.0600000000004
+    },
+    {
+      "customer_id": "Client_OM",
+      "purchase_count": 5,
+      "avg_cadence_days": 31.5,
+      "last_purchase": "2026-01-31",
+      "months_silent": 6,
+      "historical_annual_value": 886.01
+    },
+    {
+      "customer_id": "Client_OK",
+      "purchase_count": 5,
+      "avg_cadence_days": 31.25,
+      "last_purchase": "2026-04-10",
+      "months_silent": 3,
+      "historical_annual_value": 898.75
+    },
+    {
+      "customer_id": "Client_PI",
+      "purchase_count": 4,
+      "avg_cadence_days": 14.666666666666666,
+      "last_purchase": "2026-03-23",
+      "months_silent": 4,
+      "historical_annual_value": 812.39
+    },
+    {
+      "customer_id": "Client_NW",
+      "purchase_count": 4,
+      "avg_cadence_days": 25.666666666666668,
+      "last_purchase": "2026-03-24",
+      "months_silent": 4,
+      "historical_annual_value": 960.8299999999999
+    },
+    {
+      "customer_id": "Client_RP",
+      "purchase_count": 3,
+      "avg_cadence_days": 19.0,
+      "last_purchase": "2026-03-09",
+      "months_silent": 4,
+      "historical_annual_value": 285.21
+    }
+  ],
+  "product_trends": [
+    {
+      "product": "AG-12",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -2.0310389732514835,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "AGX-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "AGX-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -26.67144442389494,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "AGX-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 240.90265547843504,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "AGX-004",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -14.038373917885899,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "AGX-005",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -45.5647266489322,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "AGX-006",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 361.8325608191269,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "AGX-007",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 53.745514354067005,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "AGX-008",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 87.18827508455469,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "AGX-009",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 57.7347720501715,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "AGX-010",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -11.687803180265812,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "AGX-011",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 140.83751545566946,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "AGX-012",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 175.99646179001257,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "AGX-013",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 170.31881562268308,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "AGX-014",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 64.66021736534098,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "AGX-015",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 39.71611242912863,
+      "decoupled": true,
+      "last_sale_month": "2025-11"
+    },
+    {
+      "product": "AGX-016",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 39.48435888621519,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "AGX-017",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 717.137444023424,
+      "decoupled": false,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "AGX-018",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 328.826071299964,
+      "decoupled": false,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "ARM-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 675.9707893821723,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARM-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1308.5194162240218,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARM-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 580.2577805721471,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-004",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 406.44183043699735,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARM-005",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 2292.2839028916032,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-006",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -6.522290273941543,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-007",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 66.58614113159568,
+      "decoupled": true,
+      "last_sale_month": "2025-05"
+    },
+    {
+      "product": "ARM-008",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 3477.174761830392,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-009",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 9.77243713619808,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "ARM-010",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 63.29763096670096,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-011",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 408.10968494749113,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARM-012",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1634.5853519521231,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-013",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 753.8372062283554,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-014",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1105.2999548940008,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-015",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 712.4320329409278,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-016",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 392.96896034462867,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-017",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 595.9531512101604,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-018",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 15.74469955925831,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARM-019",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -30.218889000367877,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-021",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-022",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 122.0620452455816,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-023",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-01"
+    },
+    {
+      "product": "ARM-024",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 28.215139913626253,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-025",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 106.82648560932628,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-026",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-05"
+    },
+    {
+      "product": "ARM-027",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 131.43241325215703,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-028",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-06"
+    },
+    {
+      "product": "ARM-029",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "ARM-030",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 180.56986117330948,
+      "decoupled": false,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-031",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 252.65713889274318,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-032",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-033",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-05"
+    },
+    {
+      "product": "ARM-034",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 187.72320393302715,
+      "decoupled": false,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-035",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -100.0,
+      "decoupled": true,
+      "last_sale_month": "2024-12"
+    },
+    {
+      "product": "ARM-036",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 203.79922748359937,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-037",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 47.22367389600209,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-038",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 577.2787083466695,
+      "decoupled": false,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-039",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-040",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-041",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 43.66231909070739,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-042",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-043",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-044",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -19.29788961038961,
+      "decoupled": true,
+      "last_sale_month": "2025-01"
+    },
+    {
+      "product": "ARM-045",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARM-046",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 456.78851741034646,
+      "decoupled": false,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARM-047",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-048",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-049",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-050",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARM-051",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 200.67141377185044,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-053",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-054",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARM-055",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-056",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 40.14933118081182,
+      "decoupled": true,
+      "last_sale_month": "2025-06"
+    },
+    {
+      "product": "ARM-057",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-058",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-05"
+    },
+    {
+      "product": "ARM-059",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-060",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-07"
+    },
+    {
+      "product": "ARM-061",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 351.30682718200535,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-062",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 35.65438548254055,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "ARM-063",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-064",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-03"
+    },
+    {
+      "product": "ARM-065",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-066",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 17.229997697208503,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-067",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-068",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 195.68029976315879,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-069",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 159.05200032859608,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-070",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -20.751659206667686,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-071",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-072",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-073",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-074",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "ARM-075",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-076",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 184.54066056064394,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-077",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-06"
+    },
+    {
+      "product": "ARM-078",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -46.3001851661907,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-079",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 53.642780236870436,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-080",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -100.0,
+      "decoupled": true,
+      "last_sale_month": "2024-11"
+    },
+    {
+      "product": "ARM-081",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-04"
+    },
+    {
+      "product": "ARM-082",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-11"
+    },
+    {
+      "product": "ARM-083",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-084",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 128.31233924685094,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-085",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 434.4512277115887,
+      "decoupled": false,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-086",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -5.371432982528368,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-087",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-11"
+    },
+    {
+      "product": "ARM-088",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-089",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-090",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -38.113948919449896,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARM-091",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 543.4700831402481,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-093",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-094",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -32.2825638911789,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-095",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-096",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 658.5264312915509,
+      "decoupled": false,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARM-097",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "ARM-098",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 284.13914153502475,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-099",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-100",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -53.557721057095605,
+      "decoupled": true,
+      "last_sale_month": "2025-06"
+    },
+    {
+      "product": "ARM-101",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-102",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "ARM-103",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARM-105",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-05"
+    },
+    {
+      "product": "ARM-106",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 221.41154231382347,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-108",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 32.78824746793768,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-109",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-110",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -23.556503733450466,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-111",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -31.32358734188296,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-112",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "ARM-113",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-114",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-06"
+    },
+    {
+      "product": "ARM-115",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARM-116",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARM-117",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARM-118",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 53.115948202419496,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "ARM-119",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARM-120",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-11"
+    },
+    {
+      "product": "ARP-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 251.67878192058657,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 15.521729516764509,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 22.64929813179591,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-004",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 24.83772887547716,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-005",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 6413.380869888016,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-006",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 16.535220060347513,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-007",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 202.96999210465896,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-008",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 38.614573750706846,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-009",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 2.1223994641537964,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-010",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 554.1482828218473,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-011",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 350.3244287522483,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-012",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 259.4562663744628,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-013",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 89.72468790937297,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-014",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 420.36234542804164,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-015",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 158.21169897401396,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-016",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 499.92434693605094,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-017",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 236.07917402380346,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "ARP-018",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 567.073085947684,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-019",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -54.21411584459537,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARP-020",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-021",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 199.852994281119,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-022",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARP-023",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 517.7623944620062,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARP-024",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 121.62984062799309,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARP-025",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 174.796281146415,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-026",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 649.849697423666,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-027",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 192.91125888803222,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-028",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 190.83847879376526,
+      "decoupled": false,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARP-029",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 82.4706412108722,
+      "decoupled": true,
+      "last_sale_month": "2025-07"
+    },
+    {
+      "product": "ARP-030",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 34.388212968545986,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARP-031",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "ARP-032",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -5.992717030616693,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARP-033",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 115.86671685184801,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARP-034",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 23.978348486268626,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARP-035",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 86.35041977427605,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "ARP-036",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 213.7094031448785,
+      "decoupled": false,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "ARP-037",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 32.34565169285241,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "ARP-038",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 27.168785790546433,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARP-039",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -36.36350254653935,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "ARP-040",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 612.217789434635,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 541.1518846581541,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LC-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 65.5544990924021,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 127.79040828680974,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-004",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "LC-005",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 122.32795502944956,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "LC-006",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-007",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 54.32926329591087,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "LC-008",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1465.48031155344,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LC-009",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LC-010",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 142.87901071525047,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-011",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 86.29458882406539,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LC-012",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 465.03160796615816,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LC-013",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -57.610181516153034,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LC-014",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 21.650898332768342,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LC-015",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 19.26812416076761,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LC-016",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 137.78017048003588,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LC-017",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LC-018",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LC-019",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -42.93061014583257,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LC-020",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "LEN-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 2007.382262996942,
+      "decoupled": false,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 409.3647112250028,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1861.5949632738723,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-004",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-005",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -6.824920997333554,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "LEN-006",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 2140.7347719202403,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "LEN-007",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 88.29957607159683,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-008",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-009",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 42.1704589666035,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "LEN-010",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -59.3816136899603,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "LEN-011",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 464.09307244843995,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-012",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -63.44672082188508,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "LEN-013",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 98.65820645625678,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "LEN-014",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 760.309164519691,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-015",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1086.6666666666667,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LEN-016",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 349.39589943861364,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-017",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 315.3096844516191,
+      "decoupled": false,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "LEN-018",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1821.3262703551109,
+      "decoupled": false,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "LEN-019",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -13.457054549398112,
+      "decoupled": true,
+      "last_sale_month": "2025-02"
+    },
+    {
+      "product": "LEN-020",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-03"
+    },
+    {
+      "product": "LEN-021",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 260.9369658596038,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LEN-022",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 33.67622435327388,
+      "decoupled": true,
+      "last_sale_month": "2025-03"
+    },
+    {
+      "product": "LEN-023",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 394.5547514484238,
+      "decoupled": false,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-024",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-026",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-027",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 124.20526479643019,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-028",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 135.46533778326395,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LEN-030",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-031",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 23.299508257297965,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-032",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "LEN-033",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 21.031929662193438,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "LEN-034",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 112.52906976744184,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-035",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-036",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-037",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -41.175247009880394,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "LEN-038",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 75.11105279928027,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "LEN-039",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LEN-040",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-041",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "LEN-042",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 105.4828541407966,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "LEN-043",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-044",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 294.6225596529284,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-045",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-01"
+    },
+    {
+      "product": "LEN-046",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 70.4963081053868,
+      "decoupled": true,
+      "last_sale_month": "2025-04"
+    },
+    {
+      "product": "LEN-047",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 145.54811715481173,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-048",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "LEN-049",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -100.0,
+      "decoupled": true,
+      "last_sale_month": "2024-07"
+    },
+    {
+      "product": "LEN-050",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 128.03952680941984,
+      "decoupled": true,
+      "last_sale_month": "2025-06"
+    },
+    {
+      "product": "LEN-051",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-052",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-053",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-054",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -21.421415317065513,
+      "decoupled": true,
+      "last_sale_month": "2025-07"
+    },
+    {
+      "product": "LEN-055",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 159.51385000494056,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-056",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-057",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 457.8933468765871,
+      "decoupled": false,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-058",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-059",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LEN-060",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -25.261026578625277,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-061",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "LEN-062",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 311.07384166011326,
+      "decoupled": false,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "LEN-063",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -76.56411612191037,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-064",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-01"
+    },
+    {
+      "product": "LEN-065",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-08"
+    },
+    {
+      "product": "LEN-066",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 22.44068654191275,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "LEN-067",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -63.45714096887185,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-068",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-069",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-070",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-071",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -100.0,
+      "decoupled": true,
+      "last_sale_month": "2024-11"
+    },
+    {
+      "product": "LEN-072",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": -23.83731625332375,
+      "decoupled": true,
+      "last_sale_month": "2025-01"
+    },
+    {
+      "product": "LEN-073",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-11"
+    },
+    {
+      "product": "LEN-074",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "LEN-076",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 71.98093535895143,
+      "decoupled": true,
+      "last_sale_month": "2025-10"
+    },
+    {
+      "product": "LEN-077",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 339.42083557468175,
+      "decoupled": false,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-078",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 203.04899512227826,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LEN-079",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "LEN-080",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-09"
+    },
+    {
+      "product": "NEG-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "NEG-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "NEG-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "PROMO-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SERV-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-001",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 3387.897110063538,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-002",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1651.130839995179,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-003",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 904.6189294576392,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-004",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 596.980567079447,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-005",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 124.88245646292448,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-006",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 140.47833765452978,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-007",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 228.63991356205125,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-008",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 791.0657203229126,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-009",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1654.4262295081967,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-010",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 423.98378028757645,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-011",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 181.39365574622983,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-012",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 353.74934175882044,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-013",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 377.84796115645156,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-014",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 1019.8363790905227,
+      "decoupled": false,
+      "last_sale_month": "2026-07"
+    },
+    {
+      "product": "SOL-015",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 688.9243536546443,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-016",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 85.98917310208587,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-017",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 230.5771365149833,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-018",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 307.60242766597736,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-019",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-020",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-021",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-022",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "SOL-023",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2025-12"
+    },
+    {
+      "product": "SOL-024",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "SOL-025",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "SOL-026",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-027",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-028",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "SOL-029",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-030",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-031",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-032",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-033",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-034",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-035",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "SOL-036",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04"
+    },
+    {
+      "product": "SOL-037",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-038",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-03"
+    },
+    {
+      "product": "SOL-039",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "SOL-040",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 0.0,
+      "decoupled": true,
+      "last_sale_month": "2026-02"
+    },
+    {
+      "product": "SOLAR-SEASONAL",
+      "company_growth_pct": 192.6845552977609,
+      "product_growth_pct": 6.791464528237921,
+      "decoupled": true,
+      "last_sale_month": "2026-07"
+    }
+  ],
+  "seasonality": [
+    {
+      "scope": "total",
+      "entity": "total",
+      "monthly_index": {
+        "1": 1.525624515943585,
+        "2": 1.124355602601346,
+        "3": 0.8701986221107472,
+        "4": 1.1309610713456373,
+        "5": 1.0784195670054073,
+        "6": 1.1834139754302984,
+        "7": 0.845502511132192,
+        "8": 0.9056107969896336,
+        "9": 0.7480769850553147,
+        "10": 0.7229935219800554,
+        "11": 0.8301082167271283,
+        "12": 1.129500902597677
+      },
+      "insufficient_data": false,
+      "months_available": 38
+    }
+  ],
+  "rfm_champions": [
+    {
+      "customer_id": "Client_E",
+      "recency_days": 63.0,
+      "frequency": 7,
+      "monetary": 10613.24,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_O",
+      "recency_days": 39.0,
+      "frequency": 7,
+      "monetary": 7002.35,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_I",
+      "recency_days": 42.0,
+      "frequency": 7,
+      "monetary": 8893.51,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_C",
+      "recency_days": 66.0,
+      "frequency": 7,
+      "monetary": 11081.22,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_D",
+      "recency_days": 38.0,
+      "frequency": 9,
+      "monetary": 11040.77,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_CO",
+      "recency_days": 24.0,
+      "frequency": 7,
+      "monetary": 3984.25,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AQ",
+      "recency_days": 10.0,
+      "frequency": 9,
+      "monetary": 5351.68,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_BQ",
+      "recency_days": 19.0,
+      "frequency": 9,
+      "monetary": 4549.72,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_CA",
+      "recency_days": 17.0,
+      "frequency": 9,
+      "monetary": 4354.78,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_CL",
+      "recency_days": 78.0,
+      "frequency": 10,
+      "monetary": 4167.17,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AO",
+      "recency_days": 79.0,
+      "frequency": 8,
+      "monetary": 5371.78,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_B",
+      "recency_days": 13.0,
+      "frequency": 12,
+      "monetary": 17273.03,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_P",
+      "recency_days": 122.0,
+      "frequency": 8,
+      "monetary": 6936.0,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    }
+  ],
+  "contribution_margin_alerts": [
+    {
+      "product": "AGX-002",
+      "avg_price": 107.10714285714286,
+      "avg_entry_cost": 120.36428571428571,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -29.323214285714283,
+      "sample_size": 7
+    },
+    {
+      "product": "AGX-003",
+      "avg_price": 106.40083333333332,
+      "avg_entry_cost": 120.22583333333334,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -29.785125000000015,
+      "sample_size": 12
+    },
+    {
+      "product": "AGX-005",
+      "avg_price": 124.23700000000001,
+      "avg_entry_cost": 117.33599999999998,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -11.734549999999977,
+      "sample_size": 10
+    },
+    {
+      "product": "AGX-008",
+      "avg_price": 141.52,
+      "avg_entry_cost": 121.07777777777778,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -0.7857777777777741,
+      "sample_size": 9
+    },
+    {
+      "product": "AGX-010",
+      "avg_price": 108.21125,
+      "avg_entry_cost": 118.87125,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -26.891687499999996,
+      "sample_size": 8
+    },
+    {
+      "product": "AGX-012",
+      "avg_price": 127.52090909090909,
+      "avg_entry_cost": 121.61818181818181,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -13.225409090909086,
+      "sample_size": 11
+    },
+    {
+      "product": "AGX-014",
+      "avg_price": 126.62857142857142,
+      "avg_entry_cost": 122.11714285714285,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -14.482857142857146,
+      "sample_size": 7
+    },
+    {
+      "product": "AGX-017",
+      "avg_price": 133.1225,
+      "avg_entry_cost": 120.8225,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -7.668375000000005,
+      "sample_size": 8
+    },
+    {
+      "product": "NEG-001",
+      "avg_price": 200.0,
+      "avg_entry_cost": 190.0,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -20.0,
+      "sample_size": 8
+    },
+    {
+      "product": "NEG-002",
+      "avg_price": 200.0,
+      "avg_entry_cost": 190.0,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -20.0,
+      "sample_size": 8
+    },
+    {
+      "product": "NEG-003",
+      "avg_price": 200.0,
+      "avg_entry_cost": 190.0,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -20.0,
+      "sample_size": 8
+    },
+    {
+      "product": "PROMO-001",
+      "avg_price": 112.0,
+      "avg_entry_cost": 100.0,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -4.800000000000001,
+      "sample_size": 12
+    },
+    {
+      "product": "SOL-005",
+      "avg_price": 130.1957894736842,
+      "avg_entry_cost": 114.37315789473685,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -3.7067368421052898,
+      "sample_size": 19
+    }
+  ],
+  "latent_revenue": [
+    {
+      "anchor_category": "lente",
+      "target_category": "solar",
+      "eligible_customers": 221,
+      "non_buyers_count": 85,
+      "attach_rate_pct": 61.53846153846154,
+      "avg_ticket_target_category": 266.55315789473684,
+      "assumed_conversion_pct": 20.0,
+      "estimated_latent_revenue": 4531.403684210526,
+      "non_buyer_customers": [
+        "Client_O",
+        "Client_J",
+        "Client_Z",
+        "Client_M",
+        "Client_AV",
+        "Client_I",
+        "Client_K",
+        "Client_C",
+        "Client_D",
+        "Client_CY",
+        "Client_DP",
+        "Client_CI",
+        "Client_EU",
+        "Client_CF",
+        "Client_Q",
+        "Client_BZ",
+        "Client_HL",
+        "Client_JX",
+        "Client_CV",
+        "Client_FG",
+        "Client_HU",
+        "Client_DR",
+        "Client_DE",
+        "Client_Y",
+        "Client_ER",
+        "Client_AF",
+        "Client_GS",
+        "Client_CM",
+        "Client_FR",
+        "Client_GC",
+        "Client_DL",
+        "Client_DT",
+        "Client_HO",
+        "Client_HV",
+        "Client_PU",
+        "Client_ME",
+        "Client_MI",
+        "Client_BO",
+        "Client_BS",
+        "Client_JW",
+        "Client_GY",
+        "Client_LW",
+        "Client_BM",
+        "Client_BE",
+        "Client_JQ",
+        "Client_FM",
+        "Client_DN",
+        "Client_GE",
+        "Client_RL",
+        "Client_IY",
+        "Client_NA",
+        "Client_FK",
+        "Client_EX",
+        "Client_RN",
+        "Client_IB",
+        "Client_RA",
+        "Client_HN",
+        "Client_RV",
+        "Client_PZ",
+        "Client_LY",
+        "Client_RE",
+        "Client_QN",
+        "Client_KD",
+        "Client_QG",
+        "Client_IT",
+        "Client_FQ",
+        "Client_FB",
+        "Client_QB",
+        "Client_OV",
+        "Client_QQ",
+        "Client_QS",
+        "Client_QU",
+        "Client_PD",
+        "Client_OJ",
+        "Client_LQ",
+        "Client_NY",
+        "Client_IG",
+        "Client_OI",
+        "Client_OG",
+        "Client_LE",
+        "Client_OM",
+        "Client_OK",
+        "Client_PQ",
+        "Client_PI",
+        "Client_QF"
+      ]
+    }
+  ],
+  "dead_stock": [
+    {
+      "dead_stock_months": 8,
+      "sku_count": 16,
+      "capital_frozen": 35040.0,
+      "total_inventory_value": 1181595.8200000003,
+      "dead_stock_pct": 2.9654810390239863,
+      "skus": [
+        "DEAD-001",
+        "DEAD-002",
+        "DEAD-003",
+        "DEAD-004",
+        "DEAD-005",
+        "DEAD-006",
+        "DEAD-007",
+        "DEAD-008",
+        "DEAD-009",
+        "DEAD-010",
+        "DEAD-011",
+        "DEAD-012",
+        "DEADX-001",
+        "DEADX-002",
+        "DEADX-003",
+        "DEADX-004"
+      ]
+    }
+  ],
+  "gmroi": [
+    {
+      "category": "armacao_agricola",
+      "gross_margin": 50396.95,
+      "avg_inventory_value": 55255.79,
+      "gmroi": 0.9120664096920883,
+      "sample_size": 342,
+      "is_directional_only": true
+    },
+    {
+      "category": "armacao_basica",
+      "gross_margin": 115669.85,
+      "avg_inventory_value": 224051.15,
+      "gmroi": 0.5162653706530853,
+      "sample_size": 468,
+      "is_directional_only": true
+    },
+    {
+      "category": "armacao_premium",
+      "gross_margin": 349538.5,
+      "avg_inventory_value": 408218.6,
+      "gmroi": 0.8562532427478807,
+      "sample_size": 656,
+      "is_directional_only": true
+    },
+    {
+      "category": "lente",
+      "gross_margin": 92507.22,
+      "avg_inventory_value": 241180.67,
+      "gmroi": 0.38355984333238646,
+      "sample_size": 374,
+      "is_directional_only": true
+    },
+    {
+      "category": "lente_contato",
+      "gross_margin": 15643.53,
+      "avg_inventory_value": 79879.05,
+      "gmroi": 0.19584021091888298,
+      "sample_size": 157,
+      "is_directional_only": true
+    },
+    {
+      "category": "solar",
+      "gross_margin": 116772.39,
+      "avg_inventory_value": 173010.56,
+      "gmroi": 0.6749437144183569,
+      "sample_size": 656,
+      "is_directional_only": true
+    }
+  ],
+  "data_completeness": [
+    {
+      "total_customers": 507,
+      "phone_filled_pct": 94.87179487179488,
+      "document_filled_pct": 95.06903353057199,
+      "completeness_pct": 94.97041420118343,
+      "contingency_triggered": false
+    }
+  ],
+  "store_performance": [
+    {
+      "store": "L1 - Centro",
+      "gross_revenue": 405056.47,
+      "revenue_sample_size": 517,
+      "avg_price": 783.4747969052224,
+      "avg_entry_cost": 343.82104448742746,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 322.1325328820116,
+      "contribution_margin_total": 166542.5195,
+      "margin_sample_size": 517,
+      "months_of_history": 40.70302233902759,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L10 - Industrial",
+      "gross_revenue": 6506.37,
+      "revenue_sample_size": 26,
+      "avg_price": 250.245,
+      "avg_entry_cost": 104.82807692307694,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 107.88017307692306,
+      "contribution_margin_total": 2804.8844999999997,
+      "margin_sample_size": 26,
+      "months_of_history": 3.3180026281208934,
+      "has_sufficient_history": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "gross_revenue": 310794.22,
+      "revenue_sample_size": 471,
+      "avg_price": 659.86033970276,
+      "avg_entry_cost": 281.97452229299364,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 278.90676645435235,
+      "contribution_margin_total": 131365.08699999997,
+      "margin_sample_size": 471,
+      "months_of_history": 36.826544021024965,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L3 - Bairro",
+      "gross_revenue": 309745.02,
+      "revenue_sample_size": 488,
+      "avg_price": 634.7234016393443,
+      "avg_entry_cost": 268.24926229508196,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 271.2656290983607,
+      "contribution_margin_total": 132377.62700000004,
+      "margin_sample_size": 488,
+      "months_of_history": 36.4323258869908,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "gross_revenue": 56668.42,
+      "revenue_sample_size": 118,
+      "avg_price": 480.2408474576271,
+      "avg_entry_cost": 146.96101694915257,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 261.2437033898305,
+      "contribution_margin_total": 30826.756999999998,
+      "margin_sample_size": 118,
+      "months_of_history": 27.299605781865964,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L5 - Norte",
+      "gross_revenue": 53438.85,
+      "revenue_sample_size": 107,
+      "avg_price": 499.42850467289725,
+      "avg_entry_cost": 140.7151401869159,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 283.79908878504676,
+      "contribution_margin_total": 30366.502500000002,
+      "margin_sample_size": 107,
+      "months_of_history": 30.157687253613666,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L6 - Leste",
+      "gross_revenue": 28179.96,
+      "revenue_sample_size": 158,
+      "avg_price": 228.02605263157895,
+      "avg_entry_cost": 82.37815789473684,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 111.44398684210525,
+      "contribution_margin_total": 16939.485999999997,
+      "margin_sample_size": 152,
+      "months_of_history": 25.755584756898816,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L7 - Oeste",
+      "gross_revenue": 85226.93000000001,
+      "revenue_sample_size": 596,
+      "avg_price": 142.99820469798655,
+      "avg_entry_cost": 103.94104026845638,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 17.607433724832195,
+      "contribution_margin_total": 10494.030499999988,
+      "margin_sample_size": 596,
+      "months_of_history": 25.7227332457293,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L8 - Praia",
+      "gross_revenue": 87263.4,
+      "revenue_sample_size": 263,
+      "avg_price": 331.8,
+      "avg_entry_cost": 95.62,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 186.41,
+      "contribution_margin_total": 49025.83,
+      "margin_sample_size": 263,
+      "months_of_history": 25.657030223390276,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "L9 - Serra",
+      "gross_revenue": 43873.32,
+      "revenue_sample_size": 277,
+      "avg_price": 158.38743682310468,
+      "avg_entry_cost": 150.0915884476534,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": -15.462267148014433,
+      "contribution_margin_total": -4283.047999999998,
+      "margin_sample_size": 277,
+      "months_of_history": 25.78843626806833,
+      "has_sufficient_history": true
+    }
+  ],
+  "store_macro_summary": {
+    "stores_with_negative_margin": [
+      "L9 - Serra"
+    ],
+    "masked_amount": 4283.047999999998,
+    "network_contribution_margin_total": 566459.676,
+    "revenue_rank": [
+      "L1 - Centro",
+      "L2 - Shopping",
+      "L3 - Bairro",
+      "L8 - Praia",
+      "L7 - Oeste",
+      "L4 - Zona Sul",
+      "L5 - Norte",
+      "L9 - Serra",
+      "L6 - Leste",
+      "L10 - Industrial"
+    ],
+    "margin_rank": [
+      "L1 - Centro",
+      "L3 - Bairro",
+      "L2 - Shopping",
+      "L8 - Praia",
+      "L4 - Zona Sul",
+      "L5 - Norte",
+      "L6 - Leste",
+      "L7 - Oeste",
+      "L10 - Industrial",
+      "L9 - Serra"
+    ],
+    "rank_differs": true
+  },
+  "customer_concentration": [
+    {
+      "store": "L5 - Norte",
+      "customer": "Client_B",
+      "customer_revenue": 17273.03,
+      "store_revenue": 53438.85,
+      "concentration_pct": 32.32298224980515,
+      "sample_size": 12
+    }
+  ],
+  "service_decomposition": [
+    {
+      "store": "L1 - Centro",
+      "product_margin": 166542.5195,
+      "service_margin": 0.0,
+      "total_margin": 166542.5195,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    },
+    {
+      "store": "L10 - Industrial",
+      "product_margin": 2804.8844999999997,
+      "service_margin": 0.0,
+      "total_margin": 2804.8844999999997,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    },
+    {
+      "store": "L2 - Shopping",
+      "product_margin": 131365.08699999997,
+      "service_margin": 0.0,
+      "total_margin": 131365.08699999997,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    },
+    {
+      "store": "L3 - Bairro",
+      "product_margin": 132377.62700000004,
+      "service_margin": 0.0,
+      "total_margin": 132377.62700000004,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "product_margin": 30826.756999999998,
+      "service_margin": 0.0,
+      "total_margin": 30826.756999999998,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    },
+    {
+      "store": "L5 - Norte",
+      "product_margin": 30366.502500000002,
+      "service_margin": 0.0,
+      "total_margin": 30366.502500000002,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    },
+    {
+      "store": "L6 - Leste",
+      "product_margin": 14429.469000000001,
+      "service_margin": 2510.017,
+      "total_margin": 16939.486,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 6909.290000000001
+    },
+    {
+      "store": "L7 - Oeste",
+      "product_margin": -3346.0885000000026,
+      "service_margin": 13840.118999999999,
+      "total_margin": 10494.030499999997,
+      "masks_negative_product_margin": true,
+      "follow_on_cac_effect": 11921.51
+    },
+    {
+      "store": "L8 - Praia",
+      "product_margin": 44100.21999999999,
+      "service_margin": 4925.610000000004,
+      "total_margin": 49025.82999999999,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 17467.460000000003
+    },
+    {
+      "store": "L9 - Serra",
+      "product_margin": -4283.047999999998,
+      "service_margin": 0.0,
+      "total_margin": -4283.047999999998,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 0.0
+    }
+  ],
+  "service_reconciliation": [
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 1658.93,
+      "gap": -1658.93,
+      "has_gap": true
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 1427.31,
+      "gap": -1427.31,
+      "has_gap": true
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-05",
+      "financial_declared_revenue": 2602.39,
+      "sales_transactional_revenue": 2602.3900000000003,
+      "gap": -4.547473508864641e-13,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-08",
+      "financial_declared_revenue": 1772.57,
+      "sales_transactional_revenue": 1772.5700000000002,
+      "gap": -2.2737367544323206e-13,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-10",
+      "financial_declared_revenue": 536.57,
+      "sales_transactional_revenue": 536.5699999999999,
+      "gap": 1.1368683772161603e-13,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-12",
+      "financial_declared_revenue": 315.95,
+      "sales_transactional_revenue": 315.95000000000005,
+      "gap": -5.684341886080802e-14,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2023-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2023-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2023-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2023-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2023-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2023-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2023-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2023-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2023-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2023-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2023-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2023-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2023-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2023-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2023-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2023-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2023-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2023-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2025-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2025-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2025-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L1 - Centro",
+      "period": "2026-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L2 - Shopping",
+      "period": "2026-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L3 - Bairro",
+      "period": "2026-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2024-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-08",
+      "financial_declared_revenue": 793.4,
+      "sales_transactional_revenue": 793.4,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-08",
+      "financial_declared_revenue": 498.91,
+      "sales_transactional_revenue": 498.91,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-08",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-09",
+      "financial_declared_revenue": 446.68,
+      "sales_transactional_revenue": 446.68,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-09",
+      "financial_declared_revenue": 1814.55,
+      "sales_transactional_revenue": 1814.55,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-09",
+      "financial_declared_revenue": 925.35,
+      "sales_transactional_revenue": 925.35,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-09",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-10",
+      "financial_declared_revenue": 500.19,
+      "sales_transactional_revenue": 500.19,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-10",
+      "financial_declared_revenue": 2353.77,
+      "sales_transactional_revenue": 2353.77,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-10",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2025-11",
+      "financial_declared_revenue": 426.4,
+      "sales_transactional_revenue": 426.4,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-11",
+      "financial_declared_revenue": 2008.99,
+      "sales_transactional_revenue": 2008.99,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-11",
+      "financial_declared_revenue": 336.07,
+      "sales_transactional_revenue": 336.07,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-11",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2025-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2025-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2025-12",
+      "financial_declared_revenue": 2190.98,
+      "sales_transactional_revenue": 2190.98,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2025-12",
+      "financial_declared_revenue": 950.9,
+      "sales_transactional_revenue": 950.9,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2025-12",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2026-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2026-01",
+      "financial_declared_revenue": 235.59,
+      "sales_transactional_revenue": 235.59,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-01",
+      "financial_declared_revenue": 2060.18,
+      "sales_transactional_revenue": 2060.18,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-01",
+      "financial_declared_revenue": 771.43,
+      "sales_transactional_revenue": 771.43,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-01",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2026-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-02",
+      "financial_declared_revenue": 2399.74,
+      "sales_transactional_revenue": 2399.74,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-02",
+      "financial_declared_revenue": 1550.86,
+      "sales_transactional_revenue": 1550.86,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-02",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-03",
+      "financial_declared_revenue": 1784.25,
+      "sales_transactional_revenue": 1784.25,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-03",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L10 - Industrial",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2026-04",
+      "financial_declared_revenue": 267.19,
+      "sales_transactional_revenue": 267.19,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-04",
+      "financial_declared_revenue": 1185.63,
+      "sales_transactional_revenue": 1185.63,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-04",
+      "financial_declared_revenue": 214.57,
+      "sales_transactional_revenue": 214.57,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-04",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L10 - Industrial",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-05",
+      "financial_declared_revenue": 813.28,
+      "sales_transactional_revenue": 813.28,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-05",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L10 - Industrial",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L4 - Zona Sul",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L6 - Leste",
+      "period": "2026-06",
+      "financial_declared_revenue": 313.94,
+      "sales_transactional_revenue": 313.94,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-06",
+      "financial_declared_revenue": 595.12,
+      "sales_transactional_revenue": 595.12,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-06",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L10 - Industrial",
+      "period": "2026-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L5 - Norte",
+      "period": "2026-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L7 - Oeste",
+      "period": "2026-07",
+      "financial_declared_revenue": 2248.16,
+      "sales_transactional_revenue": 2248.16,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L8 - Praia",
+      "period": "2026-07",
+      "financial_declared_revenue": 281.63,
+      "sales_transactional_revenue": 281.63,
+      "gap": 0.0,
+      "has_gap": false
+    },
+    {
+      "store": "L9 - Serra",
+      "period": "2026-07",
+      "financial_declared_revenue": 0.0,
+      "sales_transactional_revenue": 0.0,
+      "gap": 0.0,
+      "has_gap": false
+    }
+  ],
+  "salesperson_performance": [
+    {
+      "salesperson": "V-01",
+      "total_revenue": 78292.38,
+      "sample_size": 109,
+      "capture_rate_pct": 70.64220183486239,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1083,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-02",
+      "total_revenue": 95921.56999999999,
+      "sample_size": 120,
+      "capture_rate_pct": 74.16666666666667,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1243,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-03",
+      "total_revenue": 127384.97,
+      "sample_size": 179,
+      "capture_rate_pct": 55.3072625698324,
+      "low_capture_flag": true,
+      "days_since_first_sale": 1116,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-04",
+      "total_revenue": 103457.55,
+      "sample_size": 109,
+      "capture_rate_pct": 70.64220183486239,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1096,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-05",
+      "total_revenue": 95692.88,
+      "sample_size": 136,
+      "capture_rate_pct": 64.70588235294117,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1084,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-06",
+      "total_revenue": 87900.97,
+      "sample_size": 120,
+      "capture_rate_pct": 75.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1121,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-07",
+      "total_revenue": 48562.44,
+      "sample_size": 96,
+      "capture_rate_pct": 66.66666666666667,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1065,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-08",
+      "total_revenue": 78637.93000000001,
+      "sample_size": 119,
+      "capture_rate_pct": 76.47058823529412,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1007,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-09",
+      "total_revenue": 85899.2,
+      "sample_size": 123,
+      "capture_rate_pct": 69.10569105691057,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1087,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-10",
+      "total_revenue": 82343.42,
+      "sample_size": 128,
+      "capture_rate_pct": 71.09375,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1108,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-11",
+      "total_revenue": 51351.61,
+      "sample_size": 98,
+      "capture_rate_pct": 65.3061224489796,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1067,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-12",
+      "total_revenue": 90150.79,
+      "sample_size": 139,
+      "capture_rate_pct": 72.66187050359713,
+      "low_capture_flag": false,
+      "days_since_first_sale": 1119,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-14",
+      "total_revenue": 19755.11,
+      "sample_size": 41,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 779,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-15",
+      "total_revenue": 15282.66,
+      "sample_size": 32,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 825,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-16",
+      "total_revenue": 21630.65,
+      "sample_size": 45,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 875,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-17",
+      "total_revenue": 16598.07,
+      "sample_size": 39,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 927,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-18",
+      "total_revenue": 16057.1,
+      "sample_size": 35,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 925,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-19",
+      "total_revenue": 20783.68,
+      "sample_size": 33,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 931,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-20",
+      "total_revenue": 10408.98,
+      "sample_size": 55,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 785,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-21",
+      "total_revenue": 7571.51,
+      "sample_size": 47,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 771,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-22",
+      "total_revenue": 10199.47,
+      "sample_size": 56,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 731,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-23",
+      "total_revenue": 27028.8,
+      "sample_size": 189,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 780,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-24",
+      "total_revenue": 26904.76,
+      "sample_size": 197,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 777,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-25",
+      "total_revenue": 31293.37,
+      "sample_size": 210,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 784,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-26",
+      "total_revenue": 28096.670000000002,
+      "sample_size": 94,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 781,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-27",
+      "total_revenue": 26339.06,
+      "sample_size": 85,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 774,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-28",
+      "total_revenue": 32827.67,
+      "sample_size": 84,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 764,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-29",
+      "total_revenue": 10436.9,
+      "sample_size": 78,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 780,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-30",
+      "total_revenue": 13503.23,
+      "sample_size": 101,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 785,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-31",
+      "total_revenue": 19933.19,
+      "sample_size": 98,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 774,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-32",
+      "total_revenue": 1766.02,
+      "sample_size": 8,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 101,
+      "has_sufficient_tenure": false,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-33",
+      "total_revenue": 2245.52,
+      "sample_size": 6,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 91,
+      "has_sufficient_tenure": false,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-34",
+      "total_revenue": 1600.83,
+      "sample_size": 6,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 48,
+      "has_sufficient_tenure": false,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-35",
+      "total_revenue": 894.0,
+      "sample_size": 6,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 39,
+      "has_sufficient_tenure": false,
+      "low_volume_flag": false
+    }
+  ],
+  "executive_summary": {
+    "total_operational_loss": 202.40373263936357,
+    "total_capital_frozen": 35040.0,
+    "total_ltv_risk": 92077.99,
+    "discarded_alarms": [
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-32",
+        "reason": "Vendedor em rampa há 101 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-33",
+        "reason": "Vendedor em rampa há 91 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-34",
+        "reason": "Vendedor em rampa há 48 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-35",
+        "reason": "Vendedor em rampa há 39 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "store_cold_start",
+        "entity_id": "L10 - Industrial",
+        "reason": "Loja com 3.3 meses de histórico (mínimo: 4 meses) — dado insuficiente para tratar suas métricas com a mesma confiança de uma loja madura."
+      }
+    ],
+    "action_plan": [
+      {
+        "id": "act-operational",
+        "category": "margem_produto",
+        "title": "Estancar Sangria Operacional",
+        "description": "SKUs vendendo abaixo da margem de contribuição — ajustar precificação ou descontinuar. Pode incluir promoção intencional, a confirmar.",
+        "impact_brl": 202.40373263936357,
+        "nature": "operational",
+        "tier": 1
+      },
+      {
+        "id": "act-capital",
+        "category": "estoque",
+        "title": "Liquidar Dinheiro Parado",
+        "description": "Capital travado em estoque sem movimento — requer outlet ou transferência entre lojas.",
+        "impact_brl": 35040.0,
+        "nature": "capital",
+        "tier": 2
+      },
+      {
+        "id": "act-ltv",
+        "category": "churn",
+        "title": "Mitigar Evasão Silenciosa (Churn)",
+        "description": "Clientes recorrentes que sumiram além do ciclo de compra esperado — ativação via CRM prioritária.",
+        "impact_brl": 92077.99,
+        "nature": "ltv_risk",
+        "tier": 3
+      }
+    ]
+  },
+  "generated_at": "2026-07-19T14:33:33.612948+00:00"
+}
