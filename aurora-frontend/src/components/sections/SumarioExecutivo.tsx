@@ -113,7 +113,7 @@ export default function SumarioExecutivo({ report, expandedId, onToggle }: Secti
                 ))}
               </div>
             }
-            footnote={report.churn_findings.length > 10 ? `+ ${report.churn_findings.length - 10} outros clientes.` : undefined}
+            footnote={sortedChurnFindings(report).length > 10 ? `Mostrando ${sortedChurnFindings(report).slice(0, 10).length} de ${sortedChurnFindings(report).length} clientes.` : undefined}
           />
         )}
 

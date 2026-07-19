@@ -8,6 +8,9 @@ import { orderedActionPlan } from '@/lib/selectors';
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(value);
 
+// Nota: esta seção NÃO usa ExpandableCard de propósito — é um resumo final pra ação
+// rápida, não uma seção de investigação; não faz sentido esconder a descrição atrás
+// de um clique. Exceção documentada e confirmada, não um desvio do padrão N0/N1/N2.
 export default function PlanoDeAcao({ report }: { report: ExecutiveAuditReport }) {
   const actionPlan = orderedActionPlan(report);
   if (actionPlan.length === 0) return null;
