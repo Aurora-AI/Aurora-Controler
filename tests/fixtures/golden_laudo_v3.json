@@ -554,6 +554,67 @@
       "total_inventory_value": 1181595.8200000003
     }
   ],
+  "executive_summary": {
+    "action_plan": [
+      {
+        "category": "margem_produto",
+        "description": "SKUs vendendo abaixo da margem de contribuição — ajustar precificação ou descontinuar. Pode incluir promoção intencional, a confirmar.",
+        "id": "act-operational",
+        "impact_brl": 202.40373263936357,
+        "nature": "operational",
+        "tier": 1,
+        "title": "Estancar Sangria Operacional"
+      },
+      {
+        "category": "estoque",
+        "description": "Capital travado em estoque sem movimento — requer outlet ou transferência entre lojas.",
+        "id": "act-capital",
+        "impact_brl": 35040.0,
+        "nature": "capital",
+        "tier": 2,
+        "title": "Liquidar Dinheiro Parado"
+      },
+      {
+        "category": "churn",
+        "description": "Clientes recorrentes que sumiram além do ciclo de compra esperado — ativação via CRM prioritária.",
+        "id": "act-ltv",
+        "impact_brl": 92077.99,
+        "nature": "ltv_risk",
+        "tier": 3,
+        "title": "Mitigar Evasão Silenciosa (Churn)"
+      }
+    ],
+    "discarded_alarms": [
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-32",
+        "reason": "Vendedor em rampa há 101 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-33",
+        "reason": "Vendedor em rampa há 91 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-34",
+        "reason": "Vendedor em rampa há 48 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "salesperson_ramp",
+        "entity_id": "V-35",
+        "reason": "Vendedor em rampa há 39 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+      },
+      {
+        "category": "store_cold_start",
+        "entity_id": "L10 - Industrial",
+        "reason": "Loja com 3.3 meses de histórico (mínimo: 4 meses) — dado insuficiente para tratar suas métricas com a mesma confiança de uma loja madura."
+      }
+    ],
+    "total_capital_frozen": 35040.0,
+    "total_ltv_risk": 92077.99,
+    "total_operational_loss": 202.40373263936357
+  },
   "gmroi": [
     {
       "avg_inventory_value": 55255.79,
