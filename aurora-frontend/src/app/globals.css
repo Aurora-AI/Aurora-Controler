@@ -109,6 +109,7 @@ a {
 
 /* Aurora Utility Colors */
 .text-red { color: var(--accent-red); }
+.text-accent-red { color: var(--accent-red); }
 .text-accent { color: var(--accent); font-weight: 600; }
 .text-muted { color: var(--text-secondary); }
 .text-md { font-size: 1rem; line-height: 1.5rem; }
