@@ -16,6 +16,10 @@
   --border-subtle: #eaeaea;
   --border-strong: #cccccc;
 
+  /* Accent neutro (ênfase, não indica positivo/negativo) */
+  --accent: var(--text-primary);
+  --fg: var(--text-primary);
+
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
@@ -42,9 +46,12 @@
     --accent-red-bg: rgba(255, 77, 77, 0.1);
     --accent-green: #38bdf8; /* Adjusting for a more 'tech' look in dark mode, or stick to green */
     --accent-green-bg: rgba(56, 189, 248, 0.1);
-    
+
     --border-subtle: #262626;
     --border-strong: #404040;
+
+    --accent: var(--text-primary);
+    --fg: var(--text-primary);
   }
 }
 
@@ -102,7 +109,9 @@ a {
 
 /* Aurora Utility Colors */
 .text-red { color: var(--accent-red); }
+.text-accent { color: var(--accent); font-weight: 600; }
 .text-muted { color: var(--text-secondary); }
+.text-md { font-size: 1rem; line-height: 1.5rem; }
 .bg-red-subtle { background-color: var(--accent-red-bg); }
 
 /* Card Component Base */
