@@ -588,27 +588,27 @@
       {
         "category": "salesperson_ramp",
         "entity_id": "V-32",
-        "reason": "Vendedor em rampa há 101 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 101 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
       },
       {
         "category": "salesperson_ramp",
         "entity_id": "V-33",
-        "reason": "Vendedor em rampa há 91 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 91 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
       },
       {
         "category": "salesperson_ramp",
         "entity_id": "V-34",
-        "reason": "Vendedor em rampa há 48 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 48 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
       },
       {
         "category": "salesperson_ramp",
         "entity_id": "V-35",
-        "reason": "Vendedor em rampa há 39 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 39 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
       },
       {
         "category": "store_cold_start",
         "entity_id": "L10 - Industrial",
-        "reason": "Loja com 3.3 meses de histórico (mínimo: 4 meses) — dado insuficiente para tratar suas métricas com a mesma confiança de uma loja madura."
+        "reason": "Loja com 3.3 meses de histórico (mínimo: 4.0 meses) — dado insuficiente para tratar suas métricas com a mesma confiança de uma loja madura."
       }
     ],
     "total_capital_frozen": 35040.0,
