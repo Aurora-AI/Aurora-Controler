@@ -64,3 +64,13 @@ def test_key_findings_from_the_meeting_stay_pinned():
 
     gaps = [r for r in d["service_reconciliation"] if r["has_gap"]]
     assert len(gaps) == 2
+
+    summary = d["executive_summary"]
+    assert round(summary["total_capital_frozen"], 2) == 35040.0
+    assert round(summary["total_ltv_risk"], 2) == 92077.99
+    assert [item["tier"] for item in summary["action_plan"]] == sorted(
+        item["tier"] for item in summary["action_plan"]
+    )
+    assert {a["category"] for a in summary["discarded_alarms"]} <= {
+        "salesperson_ramp", "store_cold_start",
+    }
