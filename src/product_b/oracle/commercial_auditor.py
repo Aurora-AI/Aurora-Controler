@@ -1391,9 +1391,14 @@ def _classify_discrepancy(evidence: DiscrepancyEvidence) -> str | None:
         # o preço/custo de referência da REDE não descreve a operação — nunca culpa
         # de quem vendeu, é o cadastro que está errado.
         return "suspected_cadastral_error"
-    if evidence.is_promo_flagged or (evidence.sku_in_dead_stock and not evidence.below_cost):
+    if not evidence.below_cost and (evidence.is_promo_flagged or evidence.sku_in_dead_stock):
         # desconto explicado por decisão comercial deliberada (promoção C3, ou giro
-        # de capital parado) — desde que não esteja, ADEMAIS, vendendo abaixo do custo.
+        # de capital parado) — desde que não esteja, ADEMAIS, vendendo abaixo do
+        # custo. QA (achado): promoção e estoque morto têm que se submeter à MESMA
+        # trava — uma venda abaixo do custo marcada como "promocao" não vira
+        # liquidação de graça; ela é exatamente o tipo de sangria disfarçada que este
+        # sistema existe para pegar (vendedor pode marcar qualquer desconto como
+        # promoção pra evitar escrutínio).
         return "deliberate_liquidation"
     if evidence.below_cost:
         return "below_cost_sale"
@@ -1497,10 +1502,22 @@ def detect_discrepancy_triage(
     # que já disparou o Trigger A — isso não é padrão sistêmico, é a mesma transação
     # se auto-confirmando. "Sistêmico" só existe quando mais de uma pessoa mostra o
     # mesmo desvio (o denominador comum vira a tabela/loja, não o indivíduo).
+    # QA (achado): "vendedores distintos" nunca conta pseudo-entidade — mesma régua
+    # de `benchmark_population`/RFM/churn/receita latente (registro único
+    # `_PSEUDO_ENTITY_IDS`, ver comentário no topo do arquivo). Sem isso, 1 vendedor
+    # real + vendas sem vendedor identificado contariam como "2 pessoas confirmando
+    # o padrão" — inflando falso-positivo de padrão sistêmico. Groupby+merge
+    # vetorizado (nunca laço por linha/grupo).
+    identified_sellers = sales[~sales["salesperson"].isin(_PSEUDO_ENTITY_IDS)]
+    distinct_sellers = (
+        identified_sellers.groupby(["store", "product"])["salesperson"].nunique()
+        .rename("distinct_sellers")
+    )
     store_sku_stats = sales.groupby(["store", "product"]).agg(
         store_median_discount_pct=("discount_over_list_pct", "median"),
-        distinct_sellers=("salesperson", "nunique"),
     ).reset_index()
+    store_sku_stats = store_sku_stats.merge(distinct_sellers, on=["store", "product"], how="left")
+    store_sku_stats["distinct_sellers"] = store_sku_stats["distinct_sellers"].fillna(0).astype(int)
     candidates = candidates.merge(store_sku_stats, on=["store", "product"], how="left")
     candidates["store_systemic_pattern"] = (
         (candidates["store_median_discount_pct"].abs() > thresholds.manual_review_discount_pct)
@@ -2052,6 +2069,15 @@ def run_audit(
     return report
 
 
+class ManualReviewMismatchError(ValueError):
+    """O arquivo de veredito humano não referencia o relatório que está sendo
+    mesclado. IDs de fila (`DTQ-0001`...) são sequenciais e POSICIONAIS — só são
+    estáveis dentro do MESMO relatório congelado que os gerou; reaplicar um arquivo
+    de outra rodada misclassificaria itens em silêncio (`DTQ-0003` da v2 viraria o
+    veredito de um item completamente diferente na v3). Rejeitar alto é a mesma
+    filosofia de `load_sales_records`: "pulado e reportado — nunca mesclado errado"."""
+
+
 def apply_manual_review_verdicts(
     report: ExecutiveAuditReport, manual_review_path: Path,
 ) -> ExecutiveAuditReport:
@@ -2061,6 +2087,13 @@ def apply_manual_review_verdicts(
     `manual_queue` para `auto_classified` (status `manually_reviewed`, mesma taxonomia
     de veredito da árvore automática — humano e máquina falam a mesma língua).
 
+    QA (achado crítico, corrigido): o arquivo de veredito precisa declarar
+    `audit_report_generated_at` batendo EXATAMENTE com `report.generated_at`.
+    Ausente ou divergente => `ManualReviewMismatchError` — nunca mescla em silêncio.
+    Arquivo campo ausente é aceito com uma ressalva: arquivos legados/escritos à mão
+    sem o campo passam (não há como validar o que não foi declarado), mas qualquer
+    valor DECLARADO que não bata é rejeitado.
+
     Arquivo ausente, sem triagem no report, ou sem item da fila = devolve o `report`
     inalterado (todo item da fila permanece `pending_manual_review` — estado válido e
     renderizável, nunca um erro)."""
@@ -2069,6 +2102,14 @@ def apply_manual_review_verdicts(
         return report
 
     payload = json.loads(manual_review_path.read_text(encoding="utf-8"))
+    declared_ref = payload.get("audit_report_generated_at")
+    if declared_ref is not None and declared_ref != report.generated_at:
+        raise ManualReviewMismatchError(
+            f"{manual_review_path.name} referencia audit_report_generated_at="
+            f"{declared_ref!r}, mas o relatório sendo mesclado tem generated_at="
+            f"{report.generated_at!r}. Arquivo de outra rodada — não aplicado."
+        )
+
     verdict_by_id = {r["queue_item_id"]: r["verdict"] for r in payload.get("reviews", [])}
     if not verdict_by_id:
         return report

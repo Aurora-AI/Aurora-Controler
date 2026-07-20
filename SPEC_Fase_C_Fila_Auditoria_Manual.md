@@ -126,6 +126,7 @@ O `audit_report.json` é congelado (Spec v4 §1) — o veredito humano é poster
 {
   "rodada": "v3",
   "audit_report_ref": "audit_report_v3.json",
+  "audit_report_generated_at": "2026-07-20T14:32:01.123456+00:00",
   "reviews": [
     {
       "queue_item_id": "DTQ-0001",
@@ -137,6 +138,8 @@ O `audit_report.json` é congelado (Spec v4 §1) — o veredito humano é poster
   ]
 }
 ```
+
+**`audit_report_generated_at` [INEGOCIÁVEL, achado de QA pós-execução]:** cópia exata de `ExecutiveAuditReport.generated_at` do relatório que a triagem originou. IDs de fila (`DTQ-0001`...) são sequenciais e POSICIONAIS — só estáveis dentro do MESMO relatório congelado. `apply_manual_review_verdicts` REJEITA (`ManualReviewMismatchError`) qualquer arquivo cujo `audit_report_generated_at` declarado não bata com o relatório sendo mesclado — nunca mescla em silêncio um veredito de outra rodada.
 
 - `queue_item_id` referencia o item no bloco `discrepancy_triage` do relatório congelado (procedência preservada nos dois sentidos).
 - `verdict` usa EXATAMENTE a mesma taxonomia dos vereditos automáticos — humano e máquina falam a mesma língua.

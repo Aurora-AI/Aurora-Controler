@@ -14,7 +14,8 @@ import pandas as pd
 import pytest
 
 from product_b.oracle.commercial_auditor import (
-    _classify_discrepancy, apply_manual_review_verdicts, detect_discrepancy_triage,
+    ManualReviewMismatchError, _classify_discrepancy, apply_manual_review_verdicts,
+    detect_discrepancy_triage,
 )
 from product_b.oracle.forensic_contracts import (
     AuditThresholdsConfig, DeadStockFinding, DiscrepancyEvidence, DiscrepancyTriage,
@@ -87,6 +88,17 @@ def test_classify_below_cost_alone():
     assert _classify_discrepancy(ev) == "below_cost_sale"
 
 
+def test_classify_below_cost_beats_promo():
+    """QA (achado): promoção não pode ser tapete pra venda abaixo do custo — mesma
+    trava que já existe para estoque morto. Um vendedor marcando qualquer desconto
+    como "promocao" não pode escapar do escrutínio de below_cost_sale."""
+    ev = DiscrepancyEvidence(
+        below_cost=True, sku_in_dead_stock=False, is_promo_flagged=True,
+        cost_diverges_from_nf=False, store_systemic_pattern=False,
+    )
+    assert _classify_discrepancy(ev) == "below_cost_sale"
+
+
 def test_classify_no_evidence_is_pending():
     ev = DiscrepancyEvidence(
         below_cost=False, sku_in_dead_stock=False, is_promo_flagged=False,
@@ -137,21 +149,38 @@ def test_cadastral_error_via_store_systemic_pattern():
 
 
 def test_deliberate_liquidation_via_promo_flag():
+    # promo, ACIMA do custo (48 > 45) — liquidação de fato, sem sangria escondida
     vendas = _sales([
-        {"product": "PROMO-X", "customer": "C1", "value": 40.0, "entry_cost": 45.0,
+        {"product": "PROMO-X", "customer": "C1", "value": 48.0, "entry_cost": 45.0,
          "salesperson": "V-01", "store": "L1", "payment_method": "promocao"},
-        {"product": "PROMO-X", "customer": "C2", "value": 42.0, "entry_cost": 45.0,
+        {"product": "PROMO-X", "customer": "C2", "value": 49.0, "entry_cost": 45.0,
          "salesperson": "V-01", "store": "L1", "payment_method": "promocao"},
     ])
     estoque = _estoque([{"sku": "PROMO-X", "custo_unit": 45.0, "qtd_atual": 5.0, "preco_venda": 200.0}])
     triage = detect_discrepancy_triage(vendas, estoque, None, [], THRESHOLDS)
     assert triage.triggered_count == 1
     item = triage.auto_classified[0]
-    # below_cost também é True aqui (40<45), mas promo é sinal de intenção deliberada
-    # tão forte quanto — no entanto a árvore prioriza below_cost sobre liquidação
-    # pura quando NÃO é dead_stock; aqui confirmamos que promo isolado (sem below_cost
-    # coexistindo) classifica como liquidação.
     assert item.evidence.is_promo_flagged is True
+    assert item.evidence.below_cost is False
+    assert item.verdict == "deliberate_liquidation"
+
+
+def test_promo_below_cost_end_to_end_is_below_cost_sale():
+    """QA (achado, fim-a-fim): mesmo cenário acima, mas AGORA abaixo do custo (40<45)
+    — precisa sair como below_cost_sale, nunca deliberate_liquidation. Promoção não é
+    imunidade para sangria disfarçada."""
+    vendas = _sales([
+        {"product": "PROMO-Z", "customer": "C1", "value": 40.0, "entry_cost": 45.0,
+         "salesperson": "V-01", "store": "L1", "payment_method": "promocao"},
+        {"product": "PROMO-Z", "customer": "C2", "value": 41.0, "entry_cost": 45.0,
+         "salesperson": "V-01", "store": "L1", "payment_method": "promocao"},
+    ])
+    estoque = _estoque([{"sku": "PROMO-Z", "custo_unit": 45.0, "qtd_atual": 5.0, "preco_venda": 200.0}])
+    triage = detect_discrepancy_triage(vendas, estoque, None, [], THRESHOLDS)
+    item = triage.auto_classified[0]
+    assert item.evidence.is_promo_flagged is True
+    assert item.evidence.below_cost is True
+    assert item.verdict == "below_cost_sale"
 
 
 def test_promo_reverts_to_pending_with_one_non_promo_sale():
@@ -222,6 +251,22 @@ def test_no_store_column_returns_none():
 def test_no_salesperson_column_returns_none():
     vendas = _sales([{"product": "X", "customer": "C1", "value": 10.0, "store": "L1"}])
     assert detect_discrepancy_triage(vendas, None, None, [], THRESHOLDS) is None
+
+
+def test_store_systemic_pattern_excludes_unidentified_salesperson():
+    """QA (achado): 1 vendedor real + vendas sem vendedor identificado não pode
+    contar como "2 pessoas confirmando o padrão sistêmico" — mesma exclusão de
+    pseudo-entidade que RFM/churn/receita latente/SEV já aplicam em todo o arquivo."""
+    vendas = _sales([
+        {"product": "SKU-X", "customer": "C1", "value": 100.0, "entry_cost": 50.0,
+         "salesperson": "V-01", "store": "L1"},
+        # mesma loja/SKU, sem vendedor identificado — não pode contar como 2ª pessoa
+        {"product": "SKU-X", "customer": "C2", "value": 105.0, "entry_cost": 50.0, "store": "L1"},
+    ])
+    estoque = _estoque([{"sku": "SKU-X", "custo_unit": 50.0, "qtd_atual": 5.0, "preco_venda": 500.0}])
+    triage = detect_discrepancy_triage(vendas, estoque, None, [], THRESHOLDS)
+    v01 = next(i for i in triage.auto_classified + triage.manual_queue if i.salesperson == "V-01")
+    assert v01.evidence.store_systemic_pattern is False
 
 
 def test_never_crashes_when_entry_cost_column_is_entirely_absent():
@@ -304,3 +349,61 @@ def test_apply_manual_review_missing_file_returns_report_unchanged(tmp_path):
     report = _blank_report(triage)
     result = apply_manual_review_verdicts(report, tmp_path / "does_not_exist.json")
     assert result is report
+
+
+def _pending_item(id_="DTQ-0001"):
+    return DiscrepancyTriageItem(
+        id=id_, sku="SKU-W", store="L2", salesperson="V-05",
+        practiced_price=100.0, entry_cost=150.0,
+        evidence=DiscrepancyEvidence(
+            below_cost=False, sku_in_dead_stock=False, is_promo_flagged=False,
+            cost_diverges_from_nf=False, store_systemic_pattern=False,
+        ),
+        status="pending_manual_review",
+    )
+
+
+def test_apply_manual_review_rejects_mismatched_report(tmp_path):
+    """QA (achado crítico): arquivo de veredito referenciando OUTRO relatório
+    (generated_at diferente) precisa ser rejeitado alto — nunca mesclado em silêncio.
+    IDs são sequenciais/posicionais, só estáveis dentro do mesmo relatório congelado."""
+    triage = DiscrepancyTriage(triggered_count=1, manual_queue=[_pending_item()])
+    report = _blank_report(triage)  # generated_at = "2026-01-01T00:00:00+00:00"
+
+    review_path = tmp_path / "manual_review_outra_rodada.json"
+    review_path.write_text(json.dumps({
+        "audit_report_generated_at": "2025-01-01T00:00:00+00:00",  # rodada diferente
+        "reviews": [{"queue_item_id": "DTQ-0001", "verdict": "deliberate_liquidation"}],
+    }), encoding="utf-8")
+
+    with pytest.raises(ManualReviewMismatchError):
+        apply_manual_review_verdicts(report, review_path)
+
+
+def test_apply_manual_review_accepts_matching_report_ref(tmp_path):
+    triage = DiscrepancyTriage(triggered_count=1, manual_queue=[_pending_item()])
+    report = _blank_report(triage)
+
+    review_path = tmp_path / "manual_review_v3.json"
+    review_path.write_text(json.dumps({
+        "audit_report_generated_at": report.generated_at,
+        "reviews": [{"queue_item_id": "DTQ-0001", "verdict": "deliberate_liquidation"}],
+    }), encoding="utf-8")
+
+    updated = apply_manual_review_verdicts(report, review_path)
+    assert updated.advanced_metrics.discrepancy_triage.manual_queue == []
+
+
+def test_apply_manual_review_accepts_file_without_ref_field(tmp_path):
+    """Arquivo legado/escrito à mão sem o campo passa (não há o que validar contra
+    nada declarado) — só um valor DECLARADO e divergente é rejeitado."""
+    triage = DiscrepancyTriage(triggered_count=1, manual_queue=[_pending_item()])
+    report = _blank_report(triage)
+
+    review_path = tmp_path / "manual_review_sem_ref.json"
+    review_path.write_text(json.dumps({
+        "reviews": [{"queue_item_id": "DTQ-0001", "verdict": "below_cost_sale"}],
+    }), encoding="utf-8")
+
+    updated = apply_manual_review_verdicts(report, review_path)
+    assert updated.advanced_metrics.discrepancy_triage.manual_queue == []
