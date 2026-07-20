@@ -213,4 +213,25 @@ O arquivo `EXRS_Template_Laudo_Executivo_v4.html` é a **implementação canôni
 
 ---
 
+## 15. TRIAGEM DE DISCREPÂNCIAS E FILA DE AUDITORIA MANUAL [INEGOCIÁVEL]
+
+Decisão de produto (20/07/2026), motivada pelo caso real de desconto agregado de 337% (V-30/L9): distorção numérica severa não é erro para descartar nem fato para exibir cru. OS executável completa: `SPEC_Fase_C_Fila_Auditoria_Manual.md` (raiz do repo). O que é LEI para o laudo:
+
+15.1. **Número implausível nunca aparece cru na visão executiva.** Transação/agregado que dispare os guard-rails de plausibilidade (desconto sobre tabela além do limiar, venda abaixo do custo) entra em TRIAGEM antes de qualquer renderização.
+
+15.2. **A máquina classifica primeiro; o humano recebe só o resíduo.** O motor pré-classifica com as evidências do próprio dado (custo da linha, NF de compra/aba Compras, estoque morto, flag de promoção, padrão sistêmico da loja) na taxonomia fixa: `suspected_cadastral_error` · `below_cost_sale` · `deliberate_liquidation`. Só o inclassificável vai à fila manual. Fila inundada = árvore de decisão errada, nunca "trabalho para depois".
+
+15.3. **Pendente nunca vira fato.** Item `pending_manual_review` não entra em soma, card ou plano de ação. Renderiza-se no máximo como "Em auditoria: N desvios em verificação contra a NF de compra" — processo, não fragilidade. O validador (`build_laudo.py`) REPROVA laudo que viole isto.
+
+15.4. **Destino por veredito (auto ou humano — mesma taxonomia):**
+- `deliberate_liquidation` → Ato 4 ("O que NÃO é problema"): desova consciente de capital parado, com motivo.
+- `below_cost_sale` → capítulo Lucro Fantasma, com R$ agregado e gancho de governança de balcão.
+- `cadastral_error` → NUNCA como perda do dono; vira achado de qualidade de dado ("sua tabela não descreve sua operação") — gancho de venda próprio.
+
+15.5. **Culpa exige referência confiável.** Vendedor cujo desconto vem de tabela cadastralmente errada nunca é apresentado como "corrosivo" — o alerta correspondente carrega `tainted_by_triage` e fica fora de qualquer narrativa de culpa individual.
+
+15.6. **Veredito humano vive fora do relatório congelado** (arquivo-irmão `manual_review_<rodada>.json`, referenciando itens por id) — o `audit_report.json` permanece imutável (§1); o gerador funde os dois na renderização.
+
+---
+
 *Fim da lei. Qualquer laudo do EXRS Data Oracle gerado após esta data obedece a este documento na íntegra.*
