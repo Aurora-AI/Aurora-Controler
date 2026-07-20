@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Audit Report — EXRS Data Oracle</title>
+<style>
+  :root{
+    --bg:#faf9f7; --ink:#26241f; --ink-soft:#6b675e; --line:#e4e1da;
+    --card:#ffffff; --red:#b3261e; --red-soft:#fbeae9;
+    --green:#2c6e49; --fake-green:#9dbfa9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;}
+  .sans{font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 48px;}
+
+  /* Cada ato é uma "tela": um achado por tela (Spec §6) */
+  section.act{min-height:96vh;padding:56px 0 64px;border-bottom:1px solid var(--line);}
+  .masthead{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:3px solid var(--ink);padding-bottom:14px;}
+  .masthead h1{font-size:14px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;}
+  .masthead .meta{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;}
+  .kicker{margin-top:34px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);}
+
+  .money-hero{font-size:clamp(60px,9vw,112px);font-weight:700;line-height:1;letter-spacing:-.02em;}
+  .money-hero .bleed{color:var(--red);}
+  .headline{margin-top:18px;font-size:clamp(24px,3.2vw,34px);line-height:1.28;font-weight:400;max-width:21em;}
+  .headline .bleed{color:var(--red);font-weight:700;}
+  .sub{margin-top:16px;font-size:16.5px;line-height:1.62;color:var(--ink-soft);max-width:46em;}
+  .sub strong{color:var(--ink);}
+  .composition{margin-top:24px;font-size:12.5px;color:var(--ink-soft);
+    border-left:2px solid var(--line);padding-left:14px;line-height:1.7;max-width:52em;}
+  .composition em{font-style:normal;color:var(--ink);}
+
+  .cards{margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:820px){.cards{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--red);
+    padding:26px 24px 22px;display:flex;flex-direction:column;min-height:260px;}
+  .card .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);}
+  .card .value{margin-top:12px;font-size:36px;font-weight:700;color:var(--red);}
+  .card .cause{margin-top:12px;font-size:15px;line-height:1.55;flex:1;}
+  .card .fact{margin-top:12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .card a{margin-top:8px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;}
+  .card a::after{content:" →";}
+
+  .chapter-num{margin-top:32px;font-size:clamp(46px,7vw,84px);font-weight:700;letter-spacing:-.02em;}
+  .chapter-num.bleed{color:var(--red);}
+  .chartbox{margin-top:38px;background:var(--card);border:1px solid var(--line);padding:38px 40px 28px;}
+  .evidence{margin-top:30px;display:flex;gap:18px;flex-wrap:wrap;}
+  .ev{flex:1;min-width:240px;background:var(--card);border:1px solid var(--line);padding:20px 22px;}
+  .ev .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);}
+  .ev p{margin-top:10px;font-size:14.5px;line-height:1.58;}
+  .cost-line{margin-top:28px;font-size:15.5px;line-height:1.6;max-width:46em;}
+  .cost-line b{color:var(--red);}
+  .hookband{margin-top:26px;padding:18px 22px;background:var(--card);
+    border:1px solid var(--line);border-left:4px solid var(--ink);
+    font-size:14.5px;line-height:1.6;max-width:52em;}
+
+  /* Treemap (flex proporcional) */
+  .treemap{display:flex;flex-wrap:wrap;gap:6px;min-height:230px;}
+  .treemap .cell{background:var(--red);color:#fff;display:flex;flex-direction:column;
+    justify-content:flex-end;padding:12px;font-size:12.5px;min-width:90px;}
+  .treemap .cell.agg{background:var(--red-soft);color:var(--ink);border:1px dashed var(--red);}
+  .treemap .cell b{font-size:16px;}
+
+  /* Barras / série */
+  .bars{display:flex;align-items:flex-end;gap:10px;height:220px;}
+  .bars .b{flex:1;background:var(--red);opacity:.9;position:relative;}
+  .bars .b span{position:absolute;bottom:100%;left:0;right:0;text-align:center;
+    font-size:11px;color:var(--ink-soft);margin-bottom:6px;}
+  .axis-note{margin-top:14px;font-size:12px;color:var(--ink-soft);}
+
+  /* Waterfall */
+  .wf{position:relative;height:340px;}
+  .wf .baseline{position:absolute;left:0;right:0;border-top:1px dashed #c9c5bc;}
+  .wf .zero{position:absolute;right:0;top:-18px;font-size:11px;color:var(--ink-soft);}
+  .wf .col{position:absolute;width:20%;}
+  .wf .bar{position:absolute;left:0;right:0;}
+  .wf .blab{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:18px;}
+  .wf .clab{position:absolute;left:0;right:0;text-align:center;font-size:13px;
+    color:var(--ink-soft);line-height:1.4;}
+  .wf .clab b{display:block;color:var(--ink);font-size:14px;}
+
+  /* Honestidade */
+  .honesty-list{margin-top:36px;display:grid;gap:14px;max-width:52em;}
+  .hn{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);
+    padding:18px 22px;font-size:14.5px;line-height:1.6;}
+  .hn b{color:var(--green);}
+
+  /* Plano */
+  .plan{margin-top:36px;display:grid;gap:14px;max-width:56em;}
+  .pl{background:var(--card);border:1px solid var(--line);padding:20px 24px;
+    display:flex;gap:20px;align-items:baseline;}
+  .pl .rank{font-size:26px;font-weight:700;color:var(--ink-soft);min-width:38px;}
+  .pl .body{flex:1;}
+  .pl .body b{font-size:16px;}
+  .pl .body p{margin-top:6px;font-size:14px;line-height:1.55;color:var(--ink-soft);}
+  .pl .impact{font-size:18px;font-weight:700;white-space:nowrap;}
+  .pl.scenario{border-style:dashed;}
+  .pl.scenario .impact::after{content:" (cenário)";font-size:11px;color:var(--ink-soft);font-weight:400;}
+
+  .footerband{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;}
+  .prov{font-size:11px;color:var(--ink-soft);letter-spacing:.04em;max-width:40em;line-height:1.6;}
+  .cta{font-size:14px;white-space:nowrap;color:var(--ink);text-decoration:none;
+    border:1px solid var(--ink);padding:12px 22px;letter-spacing:.04em;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     BLOCO DE DADOS — ÚNICO PONTO DE ENTRADA POR RODADA.
+     Regra (Spec §13): o agente gerador SUBSTITUI este objeto pelo
+     conteúdo derivado do audit_report.json congelado. É PROIBIDO
+     editar o HTML/CSS abaixo ou inventar campos ausentes: campo
+     ausente/null => o template renderiza o fallback honesto.
+     ============================================================ -->
+<script id="AUDIT_DATA" type="application/json">
+{
+  "rodada": "v3",
+  "cliente": "Rede de Óticas",
+  "manchete": {
+    "total_risco_display": "R$ 131 mil",
+    "frase": "escapando pelo ralo agora — e o pior vazamento está na sua melhor loja.",
+    "composicao": "R$ 92.078 em clientes que sumiram + R$ 35.040 parados em prateleira + prejuízo estrutural de margem nas lojas L7 e L9. Cenários projetados (ex.: R$ 4.531 de segunda venda) não entram nesta soma e aparecem sempre rotulados à parte."
+  },
+  "paradoxo": {
+    "loja": "L7-Oeste",
+    "produto": -3346.09,
+    "servico": 13840.12,
+    "total": 10494.03,
+    "contexto": "~235 serviços de conserto",
+    "controle": {
+      "loja": "L9-Serra",
+      "produto": -4702,
+      "frase": "vende os mesmos produtos, sem balcão de conserto — e aparece no vermelho. Ela é a L7 sem a máscara: mesma doença, sem o curativo."
+    }
+  },
+  "sangramentos": [
+    {
+      "id": "cap-clientes",
+      "titulo": "Clientes Evaporando",
+      "valor_display": "R$ 92.078",
+      "soco": "47 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
+      "serie_mensal": null,
+      "evidencias": [
+        "A detecção respeita o ciclo de compra de cada cliente — ninguém de ciclo anual foi contado como perdido.",
+        "3 dos seus melhores clientes estão em declínio claro de frequência — ainda dá tempo.",
+        "A fila de reativação sai pronta, ordenada por valor histórico, loja a loja."
+      ],
+      "custo_mensal": "Cada mês sem uma rotina de reativação, parte desses R$ 92.078 vira perda definitiva — cliente de ótica que troca de casa raramente volta sozinho.",
+      "gancho": "A campanha de reativação segmentada por ciclo é a consultoria rodando."
+    },
+    {
+      "id": "cap-caixa",
+      "titulo": "Caixa Preso",
+      "valor_display": "R$ 35.040",
+      "soco": "Capital dormindo em 16 produtos que não giram há mais de um ano.",
+      "treemap_itens": null,
+      "treemap_total_itens": 16,
+      "evidencias": [
+        "Nenhum item sazonal foi contado — solares em baixa de inverno ficaram fora da lista.",
+        "É caixa imobilizado: dinheiro que poderia estar em produto que gira ou no seu bolso.",
+        "A lista completa, com dias parados e valor por item, está no anexo — pronta para liquidação."
+      ],
+      "custo_mensal": "R$ 35.040 parados são R$ 35.040 que não financiam estoque que vende — e a prateleira ocupada bloqueia o produto certo.",
+      "gancho": "Liberar esse caixa (liquidação/devolução assistida) é execução — nossa entrega."
+    },
+    {
+      "id": "cap-lucro",
+      "titulo": "Lucro Fantasma",
+      "valor_display": "2 lojas",
+      "soco": "vendem produto no vermelho — e uma delas parece campeã nos seus relatórios.",
+      "evidencias": [
+        "L7-Oeste: prejuízo de produto mascarado pelo balcão de conserto (ver O Paradoxo).",
+        "L9-Serra: mesmo prejuízo, sem máscara — a única loja no vermelho total da rede.",
+        "Há produtos em que você paga R$ 190 para vender a R$ 200: depois do custo de operar, você paga para vender."
+      ],
+      "custo_mensal": "Enquanto o ranking for por faturamento, a doença fica invisível: o ranking por margem real conta outra história — e é ele que paga as suas contas.",
+      "gancho": "Repricing com trava no caixa e leitura mensal por margem real é parte da implantação."
+    }
+  ],
+  "honestidade": [
+    {
+      "alarme": "Queda de solares no inverno",
+      "motivo": "sazonalidade — não é estoque morto; o giro volta no verão."
+    },
+    {
+      "alarme": "Clientes de ciclo anual sem compra recente",
+      "motivo": "estão dentro do próprio ciclo — não é abandono."
+    },
+    {
+      "alarme": "Produto vendido com desconto agressivo",
+      "motivo": "promoção deliberada com margem bruta positiva — não é prejuízo estrutural."
+    },
+    {
+      "alarme": "Vendedores com números baixos",
+      "motivo": "estão em início de rampa (menos de 6 meses) — cedo demais para julgar."
+    }
+  ],
+  "plano": [
+    {
+      "acao": "Reativar os clientes que sumiram",
+      "impacto": 92078,
+      "impacto_display": "R$ 92.078",
+      "cenario": false,
+      "como": "Fila pronta, ordenada por valor histórico e ciclo. Começar pelos 3 campeões em declínio — esses ainda respondem."
+    },
+    {
+      "acao": "Liberar o caixa preso em prateleira",
+      "impacto": 35040,
+      "impacto_display": "R$ 35.040",
+      "cenario": false,
+      "como": "Liquidação/devolução dos 16 produtos sem giro. Dinheiro de volta ao estoque que vende."
+    },
+    {
+      "acao": "Estancar o prejuízo estrutural de produto (L7 e L9)",
+      "impacto": 8048,
+      "impacto_display": "−R$ 8.048/período",
+      "cenario": false,
+      "como": "Recompor mix e preço sem enfraquecer o serviço que sustenta a L7. Corrigir os produtos vendidos abaixo do custo."
+    },
+    {
+      "acao": "Capturar a segunda venda",
+      "impacto": 4531,
+      "impacto_display": "R$ 4.531",
+      "cenario": true,
+      "como": "4 em cada 10 clientes saem sem a segunda venda. Valor dimensionado como cenário — rotina de oferta no balcão."
+    }
+  ],
+  "cta": "Falar sobre a implantação",
+  "procedencia": "Todos os valores extraídos do audit_report congelado da rodada, com procedência linha a linha · Fato medido ≠ cenário projetado, sempre rotulado · Como calculamos → anexo de metodologia."
+}
+</script>
+
+<div id="app" class="wrap"></div>
+
+<script>
+/* ================================================================
+   MOTOR DE RENDERIZAÇÃO — NÃO EDITAR POR RODADA (Spec §13).
+   Lê AUDIT_DATA e monta o deck. Alturas de gráfico são CALCULADAS
+   dos valores (Spec §4.4) — nunca hard-coded.
+   ================================================================ */
+const D = JSON.parse(document.getElementById('AUDIT_DATA').textContent);
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mast = sub => `<header class="masthead sans"><h1>EXRS Data Oracle · Executive Audit Report</h1>
+  <div class="meta">${esc(D.cliente)} — Rodada ${esc(D.rodada)} · ${esc(sub)}</div></header>`;
+const foot = () => `<footer class="footerband sans"><p class="prov">${esc(D.procedencia)}</p>
+  <a class="cta" href="#plano">${esc(D.cta)}</a></footer>`;
+const brl = n => 'R$ ' + Math.abs(n).toLocaleString('pt-BR', {maximumFractionDigits: 0});
+
+/* ---------- ATO 1 — O SOCO ---------- */
+app.insertAdjacentHTML('beforeend', `
+<section class="act" id="ato1">
+  ${mast('dados verificados linha a linha')}
+  <p class="kicker sans">Sumário executivo</p>
+  <div class="money-hero sans" style="margin-top:16px;"><span class="bleed">${esc(D.manchete.total_risco_display)}</span></div>
+  <h2 class="headline">${esc(D.manchete.frase)}</h2>
+  <p class="composition sans"><em>Composição do total (fatos medidos):</em> ${esc(D.manchete.composicao)}</p>
+  <div class="cards sans">
+    ${D.sangramentos.map((s,i)=>`
+      <article class="card">
+        <div class="tag">Sangramento 0${i+1}</div>
+        <div class="value">${esc(s.valor_display)}</div>
+        <p class="cause">${esc(s.soco)}</p>
+        <div class="fact">Fato medido</div>
+        <a href="#${esc(s.id)}">Capítulo: ${esc(s.titulo)}</a>
+      </article>`).join('')}
+  </div>
+  ${foot()}
+</section>`);
+
+/* ---------- ATO 2 — O PARADOXO (waterfall calculado) ---------- */
+(() => {
+  const P = D.paradoxo;
+  const H = 340, PAD = 34;                       // área útil do gráfico
+  const maxUp = Math.max(P.total, P.servico + P.produto, 0);
+  const maxDown = Math.min(P.produto, 0);
+  const scale = (H - PAD*2) / (maxUp - maxDown); // px por R$
+  const zeroY = PAD + maxUp * scale;
+  const y = v => zeroY - v * scale;
+  const prodTop = zeroY, prodH = Math.abs(P.produto)*scale;
+  const svcTop = y(P.produto + P.servico), svcH = P.servico*scale;
+  const totTop = y(P.total), totH = P.total*scale;
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="ato2">
+  ${mast('Ato 2 · A causa raiz — ' + P.loja)}
+  <p class="kicker sans">O paradoxo</p>
+  <h2 class="headline">Sua loja campeã <span class="bleed">perde dinheiro em cada produto que vende.</span></h2>
+  <p class="sub">A ${esc(P.loja)} lidera os seus relatórios. Mas separando <strong>o que ela vende</strong>
+    do <strong>que ela conserta</strong> (${esc(P.contexto)}), o produto opera no prejuízo e o serviço
+    paga a conta — e esconde o rombo.</p>
+  <div class="chartbox sans"><div class="wf">
+    <div class="baseline" style="top:${zeroY}px;"><span class="zero">R$ 0</span></div>
+    <div class="col" style="left:6%;">
+      <div class="bar" style="top:${prodTop}px;height:${prodH}px;background:var(--red);"></div>
+      <div class="blab" style="top:${prodTop+prodH+8}px;color:var(--red);">−${brl(P.produto)}</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>Produto</b>o que a loja vende</div>
+    </div>
+    <div class="col" style="left:38%;">
+      <div class="bar" style="top:${svcTop}px;height:${svcH}px;background:var(--green);opacity:.85;"></div>
+      <div class="blab" style="top:${svcTop-30}px;color:var(--green);">+${brl(P.servico)}</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>Serviço</b>o que paga a conta</div>
+    </div>
+    <div class="col" style="left:70%;">
+      <div class="bar" style="top:${totTop}px;height:${totH}px;background:var(--fake-green);
+        background-image:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.45) 8px,rgba(255,255,255,.45) 12px);"></div>
+      <div class="blab" style="top:${totTop-30}px;color:var(--ink-soft);">+${brl(P.total)}</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>Total que você vê</b>o “verde” de mentira</div>
+    </div>
+  </div>
+  <p class="axis-note" style="margin-top:100px;">A barra final é hachurada de propósito: o número é
+    verdadeiro, a saúde é falsa — enquanto o total parecer saudável, o produto sangra sem alarme.</p>
+  </div>
+  <div class="evidence sans">
+    <div class="ev" style="border-left:4px solid var(--red);">
+      <div class="tag">A prova de controle</div>
+      <p><b>${esc(P.controle.loja)}</b> ${esc(P.controle.frase)} (produto ${P.controle.produto<0?'−':''}${brl(P.controle.produto)})</p>
+    </div>
+    <div class="ev" style="border-left:4px solid var(--ink);">
+      <div class="tag">O que isso pede</div>
+      <p>Recompor mix e preço do produto <b>sem enfraquecer o serviço</b> que sustenta a loja —
+      na ordem certa. Esse rebalanceamento é o trabalho de implantação.</p>
+    </div>
+  </div>
+  ${foot()}
+</section>`);
+})();
+
+/* ---------- ATO 3 — OS TRÊS SANGRAMENTOS ---------- */
+D.sangramentos.forEach((s, i) => {
+  let chart = '';
+  if (s.id === 'cap-caixa') {
+    if (Array.isArray(s.treemap_itens) && s.treemap_itens.length) {
+      const shown = s.treemap_itens.slice(0, 5);           // teto de 5 (Spec §6)
+      const rest = s.treemap_itens.slice(5);
+      const restSum = rest.reduce((a, x) => a + x.valor, 0);
+      chart = `<div class="chartbox sans"><div class="treemap">
+        ${shown.map(x=>`<div class="cell" style="flex-grow:${x.valor};"><b>${brl(x.valor)}</b>${esc(x.nome)}</div>`).join('')}
+        ${rest.length?`<div class="cell agg" style="flex-grow:${restSum};"><b>${brl(restSum)}</b>+ ${rest.length} produtos no anexo</div>`:''}
+      </div><p class="axis-note">Área proporcional ao capital preso por produto.</p></div>`;
+    } else {
+      chart = `<div class="chartbox sans"><div class="treemap">
+        <div class="cell" style="flex-grow:1;"><b>${esc(s.valor_display)}</b>${s.treemap_total_itens} produtos sem giro — detalhamento por item no anexo</div>
+      </div><p class="axis-note">Mapa por produto disponível quando o motor exportar o detalhamento (procedência preservada — nada é estimado aqui).</p></div>`;
+    }
+  } else if (s.id === 'cap-clientes') {
+    if (Array.isArray(s.serie_mensal) && s.serie_mensal.length) {
+      const mx = Math.max(...s.serie_mensal.map(m => m.valor));
+      chart = `<div class="chartbox sans"><div class="bars">
+        ${s.serie_mensal.map(m=>`<div class="b" style="height:${(m.valor/mx)*100}%;"><span>${esc(m.mes)}</span></div>`).join('')}
+      </div><p class="axis-note">Receita histórica dos clientes que pararam de comprar, mês a mês — o gotejamento.</p></div>`;
+    } else {
+      chart = `<div class="chartbox sans" style="text-align:center;padding:56px 40px;">
+        <div class="money-hero" style="font-size:clamp(48px,7vw,84px);"><span class="bleed">${esc(s.valor_display)}</span></div>
+        <p class="axis-note" style="margin-top:18px;">de receita histórica foi embora em silêncio ·
+        série mensal do gotejamento disponível quando o motor exportar a linha do tempo — nada é estimado aqui.</p>
+      </div>`;
+    }
+  } else {
+    chart = `<div class="chartbox sans" style="display:flex;gap:32px;align-items:center;justify-content:center;padding:48px 40px;flex-wrap:wrap;">
+      <div style="text-align:center;"><div style="font-size:13px;color:var(--ink-soft);">você paga</div>
+        <div style="font-size:52px;font-weight:700;">R$ 190</div></div>
+      <div style="font-size:30px;color:var(--ink-soft);">→</div>
+      <div style="text-align:center;"><div style="font-size:13px;color:var(--ink-soft);">vende por</div>
+        <div style="font-size:52px;font-weight:700;">R$ 200</div></div>
+      <div style="font-size:30px;color:var(--ink-soft);">=</div>
+      <div style="text-align:center;"><div style="font-size:13px;color:var(--red);">depois do custo de operar</div>
+        <div style="font-size:52px;font-weight:700;color:var(--red);">prejuízo</div></div>
+    </div>`;
+  }
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="${esc(s.id)}">
+  ${mast('Capítulo ' + (i+1) + ' de 3 · ' + s.titulo)}
+  <p class="kicker sans">Sangramento 0${i+1} — ${esc(s.titulo)}</p>
+  <div class="chapter-num sans bleed">${esc(s.valor_display)}</div>
+  <h2 class="headline" style="font-size:clamp(20px,2.6vw,28px);">${esc(s.soco)}</h2>
+  ${chart}
+  <div class="evidence sans">
+    ${s.evidencias.slice(0,3).map(e=>`<div class="ev"><p>${esc(e)}</p></div>`).join('')}
+  </div>
+  <p class="cost-line"><b>Se nada mudar:</b> ${esc(s.custo_mensal)}</p>
+  <div class="hookband sans">${esc(s.gancho)}</div>
+  ${foot()}
+</section>`);
+});
+
+/* ---------- ATO 4 — A ABSOLVIÇÃO ---------- */
+app.insertAdjacentHTML('beforeend', `
+<section class="act" id="ato4">
+  ${mast('Ato 4 · Os alarmes que descartamos')}
+  <p class="kicker sans" style="color:var(--green);">O que NÃO é problema</p>
+  <h2 class="headline">Um sistema que só encontra problemas está vendendo medo.</h2>
+  <p class="sub">O nosso descartou estes alarmes falsos antes de te mostrar qualquer vermelho.
+    É por isso que os vermelhos deste laudo são reais.</p>
+  <div class="honesty-list sans">
+    ${D.honestidade.map(h=>`<div class="hn"><b>${esc(h.alarme)}</b> — ${esc(h.motivo)}</div>`).join('')}
+  </div>
+  ${foot()}
+</section>`);
+
+/* ---------- ATO 5 — A SAÍDA (ordenado por impacto; cenário sempre por último entre iguais) ---------- */
+const plano = [...D.plano].sort((a,b) => (a.cenario - b.cenario) || (b.impacto - a.impacto));
+app.insertAdjacentHTML('beforeend', `
+<section class="act" id="plano" style="border-bottom:none;">
+  ${mast('Ato 5 · O plano — ordenado pelo que mais custa')}
+  <p class="kicker sans">A saída</p>
+  <h2 class="headline">O diagnóstico está feito. A ordem abaixo é a ordem do dinheiro.</h2>
+  <p class="sub">Cada item diz <strong>o quê</strong> corrigir. O <strong>como</strong> — implantação,
+    rotina e acompanhamento — é o trabalho da consultoria.</p>
+  <div class="plan sans">
+    ${plano.map((p,i)=>`
+      <div class="pl${p.cenario?' scenario':''}">
+        <div class="rank">${String(i+1).padStart(2,'0')}</div>
+        <div class="body"><b>${esc(p.acao)}</b><p>${esc(p.como)}</p></div>
+        <div class="impact">${esc(p.impacto_display)}</div>
+      </div>`).join('')}
+  </div>
+  ${foot()}
+</section>`);
+</script>
+</body>
+</html>
