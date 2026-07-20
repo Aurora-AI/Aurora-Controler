@@ -40,6 +40,11 @@ _ESTOQUE_ROLE_KEYWORDS: dict[str, list[str]] = {
     "qty_on_hand": ["qtd_atual", "estoque", "saldo", "quantidade"],
     "last_movement": ["ultimo_mov", "movimentacao"],
     "category": ["categoria", "familia", "linha"],
+    # Algoritmo 3 (corrosão de desconto) — preço de TABELA do produto, para comparar
+    # contra o preço efetivamente praticado na venda. Papel opcional: não entra em
+    # _ESTOQUE_REQUIRED_ROLES, então planilha sem esta coluna não quebra nenhum
+    # detector de Estoque existente — só desativa o detector que depende dela.
+    "list_price": ["preco_venda", "preco_tabela", "preco"],
 }
 _ESTOQUE_REQUIRED_ROLES = ("sku", "cost", "qty_on_hand", "last_movement")
 
