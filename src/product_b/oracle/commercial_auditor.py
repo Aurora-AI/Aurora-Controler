@@ -11,6 +11,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from kernel.robustness import benchmark_population as _benchmark_population_generic
@@ -23,12 +24,14 @@ from product_b.oracle.column_mapper import (
     infer_column_roles,
 )
 from product_b.oracle.forensic_contracts import (
-    ActionPlanItem, AuditThresholdsConfig, ChurnFinding, CleaningSummary,
-    ContributionMarginAlert, CustomerConcentrationFinding, DataCompletenessFinding,
+    ActionPlanItem, AdvancedMetrics, AttachRateOpportunity, AuditThresholdsConfig,
+    ChurnFinding, CleaningSummary, ConcentrationRiskAlert, ContributionMarginAlert,
+    CrossSellGapCustomer, CustomerConcentrationFinding, DataCompletenessFinding,
     DeadStockFinding, DiscardedAlarm, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
-    LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SalespersonPerformance, ServiceDecomposition, ServiceReconciliation, SeasonalityCurve,
-    StoreMacroSummary, StorePerformance, WinsorizedValue,
+    GmroiSkuAlert, LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly,
+    RFMChampion, SalesRecord, SalespersonPerformance, SellerMarginCorrosionAlert,
+    ServiceDecomposition, ServiceReconciliation, SeasonalityCurve, StoreMacroSummary,
+    StorePerformance, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -276,6 +279,7 @@ _SALES_FRAME_SCHEMA: dict[str, str] = {
     "date": "datetime64[ns]", "product": "object", "customer": "object",
     "value": "float64", "entry_cost": "float64", "category": "object",
     "store": "object", "salesperson": "object", "payment_method": "object",
+    "quantity": "float64",
 }
 
 
@@ -284,7 +288,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
-        "payment_method": r.payment_method,
+        "payment_method": r.payment_method, "quantity": r.quantity,
     } for r in records], _SALES_FRAME_SCHEMA)
 
 
@@ -1003,8 +1007,303 @@ def detect_gmroi(
     if all_below_1 and entries:
         for e in entries:
             e.is_directional_only = True
-            
+
     return entries
+
+
+# ---------------------------------------------------------------------------------
+# Fase B — 5 teses analíticas avançadas (SPEC_Fase_B_Formulas_Avancadas.md).
+# Cada detector é independente e degrada graciosamente (lista/None vazio) quando o
+# dado de origem não tem a coluna/aba necessária — nunca derruba os outros 4 nem o
+# motor inteiro. Nenhum laço `for` sobre linha de venda: todo agregado é feito por
+# `groupby`/operação vetorizada do pandas; os laços que existem abaixo iteram sobre
+# resultado JÁ AGREGADO (por SKU, por vendedor, por loja) — mesmo estilo de
+# `detect_gmroi`/`detect_customer_concentration` acima.
+# ---------------------------------------------------------------------------------
+
+
+def detect_gmroi_by_sku(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[GmroiSkuAlert]:
+    """Fase B, Algoritmo 1 — GMROI por SKU (granularidade de produto, não de
+    categoria — ver `detect_gmroi` para a versão por categoria). "Margem ilusória":
+    produto com markup% >= `gmroi_sku_high_margin_pct` (parece ótimo na etiqueta) E
+    GMROI < `gmroi_sku_low_ratio` (giro tão lento que o capital parado no próprio SKU
+    rende menos do que custa manter). Lista só contém quem bate as DUAS pernas — mesmo
+    padrão de `detect_contribution_margin` (só o alerta, não o universo inteiro).
+
+    SKU com `capital_frozen <= 0` é ignorado (sem capital investido, GMROI não tem
+    denominador de negócio — nunca `ZeroDivisionError`, nunca um GMROI infinito
+    fingido). Serviço (`service_category_label`) fica fora: não tem SKU em Estoque,
+    mesma exclusão de `detect_contribution_margin`/`detect_gmroi`."""
+    if estoque_df is None or estoque_df.empty:
+        return []
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+
+    est_frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "cost": coerce_currency_series(estoque_df[roles["cost"]]),
+        "qty": coerce_currency_series(estoque_df[roles["qty_on_hand"]]),
+    }).dropna()
+    if est_frame.empty:
+        return []
+    capital_by_sku = (est_frame["qty"] * est_frame["cost"]).groupby(est_frame["sku"]).sum()
+    capital_by_sku = capital_by_sku[capital_by_sku > 0]
+    if capital_by_sku.empty:
+        return []
+
+    sales = vendas_df.dropna(subset=["entry_cost"])
+    if "category" in sales.columns and not sales["category"].isna().all():
+        sales = sales[sales["category"] != thresholds.service_category_label]
+    if sales.empty:
+        return []
+    revenue_by_sku = sales.groupby("product")["value"].sum()
+    cost_by_sku = sales.groupby("product")["entry_cost"].sum()
+    margin_by_sku = revenue_by_sku - cost_by_sku
+
+    common = capital_by_sku.index.intersection(margin_by_sku.index)
+    common = common[revenue_by_sku.loc[common] > 0]  # markup% precisa de receita > 0
+    if common.empty:
+        return []
+
+    markup_pct = 100.0 * margin_by_sku.loc[common] / revenue_by_sku.loc[common]
+    gmroi = margin_by_sku.loc[common] / capital_by_sku.loc[common]
+    is_illusory = (
+        (markup_pct >= thresholds.gmroi_sku_high_margin_pct)
+        & (gmroi < thresholds.gmroi_sku_low_ratio)
+    )
+    illusory_skus = sorted(common[is_illusory])
+
+    return [
+        GmroiSkuAlert(
+            sku=str(sku), total_revenue=float(revenue_by_sku[sku]), total_cost=float(cost_by_sku[sku]),
+            gross_margin=float(margin_by_sku[sku]), markup_pct=float(markup_pct[sku]),
+            capital_frozen=float(capital_by_sku[sku]), gmroi=float(gmroi[sku]), is_illusory_margin=True,
+        )
+        for sku in illusory_skus
+    ]
+
+
+def detect_attach_rate_opportunities(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[AttachRateOpportunity]:
+    """Fase B, Algoritmo 2 — Attach Rate / Cross-sell Gap: reaproveita o MESMO par de
+    categorias de `detect_latent_revenue` (`latent_revenue_anchor_category`/
+    `..._target_category`) — um único vocabulário de negócio para "âncora/alvo" no
+    contrato, nunca dois pares divergentes pra mesma ideia. Diferença de propósito:
+    `detect_latent_revenue` projeta CENÁRIO de receita assumida; este algoritmo é só
+    o FATO do gap (quem comprou A e nunca B) mais os 5 clientes de maior receita na
+    âncora — a fila de abordagem mais valiosa primeiro (teto de 5, mesma régua da
+    visão executiva do laudo).
+
+    Pseudo-cliente nunca entra (não é "um cliente" pra régua de cross-sell). Sem
+    coluna de categoria ou sem ninguém na âncora, retorna vazio — nunca inventa
+    oportunidade sem base."""
+    if "category" not in df.columns or df["category"].isna().all():
+        return []
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    anchor = thresholds.latent_revenue_anchor_category
+    target = thresholds.latent_revenue_target_category
+
+    anchor_df = df[df["category"] == anchor]
+    if anchor_df.empty:
+        return []
+    eligible = set(anchor_df["customer"].unique())
+    target_buyers = set(df.loc[df["category"] == target, "customer"].unique())
+    gap_customers = eligible - target_buyers
+    attach_rate_pct = 100.0 * len(eligible & target_buyers) / len(eligible)
+
+    revenue_by_customer = anchor_df.groupby("customer")["value"].sum()
+    top5 = revenue_by_customer.loc[sorted(gap_customers)].sort_values(ascending=False).head(5)
+
+    return [AttachRateOpportunity(
+        anchor_category=anchor, target_category=target, eligible_customers=len(eligible),
+        attach_rate_pct=float(attach_rate_pct),
+        cross_sell_gap=[
+            CrossSellGapCustomer(customer_id=str(c), anchor_category_revenue=float(v))
+            for c, v in top5.items()
+        ],
+    )]
+
+
+def detect_seller_margin_corrosion(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[SellerMarginCorrosionAlert]:
+    """Fase B, Algoritmo 3 — Corrosão de ticket médio por vendedor: desconto
+    concedido = preço de TABELA (`list_price`, aba Estoque) − preço efetivamente
+    praticado na venda. Preço praticado é reconstruído de `value` (já totalizado por
+    quantidade na ingestão) ÷ `quantity` (1.0 quando ausente/≤0 — mesmo piso
+    conservador usado na ingestão original para `effective_qty`, nunca divide por
+    zero). `discount_pct` compara a receita do vendedor contra o benchmark de
+    desconto% dos PARES DA MESMA LOJA — vendedor de loja diferente não entra no
+    mesmo benchmark (política de preço difere por unidade).
+
+    Requer a coluna opcional `list_price` em Estoque e a coluna `salesperson` em
+    Vendas — sem qualquer uma delas, ou sem SKU em comum entre as duas abas, retorna
+    vazio (nunca inventa preço de tabela nem vendedor)."""
+    if estoque_df is None or estoque_df.empty:
+        return []
+    if "salesperson" not in vendas_df.columns or vendas_df["salesperson"].isna().all():
+        return []
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+    if "list_price" not in roles:
+        return []
+
+    list_price_frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "list_price": coerce_currency_series(estoque_df[roles["list_price"]]),
+    }).dropna()
+    if list_price_frame.empty:
+        return []
+    # Catálogo pode ter 1 linha por (SKU, loja) — preço de tabela representativo do
+    # SKU é a média entre as lojas que o carregam (aproximação rotulada, mesmo
+    # espírito de `avg_inventory_value` em GmroiEntry).
+    list_price_by_sku = list_price_frame.groupby("sku")["list_price"].mean()
+
+    sales = vendas_df.dropna(subset=["salesperson", "value"]).copy()
+    sales = sales[sales["product"].isin(list_price_by_sku.index)]
+    if sales.empty:
+        return []
+    if "store" not in sales.columns or sales["store"].isna().all():
+        return []
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+
+    qty = sales["quantity"] if "quantity" in sales.columns else pd.Series(1.0, index=sales.index)
+    qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
+    unit_price = sales["value"] / qty_safe
+    list_price = sales["product"].map(list_price_by_sku)
+    sales["discount"] = (list_price - unit_price) * qty_safe
+
+    grouped = sales.groupby(["store", "salesperson"]).agg(
+        total_discount=("discount", "sum"), total_revenue=("value", "sum"),
+        sample_size=("value", "count"),
+    )
+    grouped = grouped[grouped["total_revenue"] > 0]
+    if grouped.empty:
+        return []
+    grouped["discount_pct"] = 100.0 * grouped["total_discount"] / grouped["total_revenue"]
+
+    store_mean = grouped.groupby("store")["discount_pct"].transform("mean")
+    store_std = grouped.groupby("store")["discount_pct"].transform("std", ddof=0).fillna(0.0)
+    is_corrosive = grouped["discount_pct"] > (
+        store_mean + thresholds.seller_corrosion_std_multiplier * store_std
+    )
+
+    alerts = [
+        SellerMarginCorrosionAlert(
+            salesperson=str(salesperson), store=str(store),
+            total_revenue=float(row["total_revenue"]), total_discount=float(row["total_discount"]),
+            discount_pct=float(row["discount_pct"]),
+            store_mean_discount_pct=float(store_mean.loc[(store, salesperson)]),
+            store_std_discount_pct=float(store_std.loc[(store, salesperson)]),
+            sample_size=int(row["sample_size"]), is_corrosive=bool(is_corrosive.loc[(store, salesperson)]),
+        )
+        for (store, salesperson), row in grouped.iterrows()
+    ]
+    return sorted(alerts, key=lambda a: -a.discount_pct)
+
+
+def detect_vip_concentration_risk(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[ConcentrationRiskAlert]:
+    """Fase B, Algoritmo 4 — Curva ABC cruzada / risco de "sequestro de base": VIP =
+    top `vip_customer_top_pct`% clientes por receita, DENTRO DE CADA LOJA (Pareto
+    aproximado, nunca uma lista fixa) — ranking via `rank(method="first")` vetorizado,
+    sem laço sobre cliente. Alerta quando um único vendedor concentra mais de
+    `concentration_seller_vip_pct`% da receita VIP daquela loja.
+
+    Pseudo-cliente nunca vira VIP (não é uma pessoa real, ver `_PSEUDO_ENTITY_IDS`).
+    Sem loja ou sem vendedor identificado no dado, retorna vazio."""
+    if "store" not in df.columns or df["store"].isna().all():
+        return []
+    if "salesperson" not in df.columns or df["salesperson"].isna().all():
+        return []
+    df = df.copy()
+    df["store"] = df["store"].fillna(_UNKNOWN_STORE)
+
+    customer_df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    if customer_df.empty:
+        return []
+    cust_rev = (
+        customer_df.groupby(["store", "customer"])["value"].sum()
+        .rename("customer_revenue").reset_index()
+    )
+    n_by_store = cust_rev.groupby("store")["customer"].transform("count")
+    rank = cust_rev.groupby("store")["customer_revenue"].rank(method="first", ascending=False)
+    top_n = np.ceil(n_by_store * thresholds.vip_customer_top_pct / 100.0).clip(lower=1)
+    cust_rev["is_vip"] = rank <= top_n
+    vip_pairs = cust_rev.loc[cust_rev["is_vip"], ["store", "customer"]]
+    if vip_pairs.empty:
+        return []
+
+    sales = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)].copy()
+    sales["salesperson"] = sales["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    vip_index = pd.MultiIndex.from_frame(vip_pairs)
+    sales_index = pd.MultiIndex.from_arrays([sales["store"], sales["customer"]])
+    vip_sales = sales[sales_index.isin(vip_index)]
+    if vip_sales.empty:
+        return []
+
+    vip_by_store = vip_sales.groupby("store")["value"].sum()
+    vip_by_seller = vip_sales.groupby(["store", "salesperson"])["value"].sum()
+
+    alerts: list[ConcentrationRiskAlert] = []
+    for (store, salesperson), vip_revenue in vip_by_seller.items():
+        vip_total_store = float(vip_by_store[store])
+        if vip_total_store <= 0:
+            continue
+        concentration_pct = 100.0 * float(vip_revenue) / vip_total_store
+        alerts.append(ConcentrationRiskAlert(
+            store=str(store), salesperson=str(salesperson), vip_revenue=float(vip_revenue),
+            vip_total_store=vip_total_store, concentration_pct=concentration_pct,
+            is_high_risk=concentration_pct > thresholds.concentration_seller_vip_pct,
+        ))
+    return sorted(alerts, key=lambda a: -a.concentration_pct)
+
+
+def detect_follow_on_conversion(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> float | None:
+    """Fase B, Algoritmo 5 — Conversão Follow-on (Serviço -> Produto): fração de
+    clientes cuja PRIMEIRA transação (por data) foi serviço (`service_category_label`)
+    e que depois compraram produto (qualquer categoria != serviço, mesma convenção de
+    `detect_gmroi`/`detect_contribution_margin`) em data ESTRITAMENTE posterior — um
+    produto no mesmo dia da primeira visita não conta como follow-on.
+
+    Pseudo-cliente nunca entra (walk-in não tem "trajetória de cliente" rastreável).
+    Sem categoria de serviço no dado, ou ninguém iniciou por serviço, retorna `None`
+    (nunca `0.0` fingido — ausência de base é diferente de conversão zero)."""
+    if "category" not in df.columns or df["category"].isna().all():
+        return None
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    if df.empty:
+        return None
+    service_label = thresholds.service_category_label
+
+    first_txn = (
+        df.sort_values("date").groupby("customer")
+        .agg(first_category=("category", "first"), first_date=("date", "first"))
+    )
+    starters = first_txn[first_txn["first_category"] == service_label]
+    if starters.empty:
+        return None
+
+    product_sales = df[df["category"] != service_label]
+    if product_sales.empty:
+        return 0.0
+    first_product_date = product_sales.groupby("customer")["date"].min()
+
+    aligned_product_date = first_product_date.reindex(starters.index)
+    follow_on = aligned_product_date > starters["first_date"]
+    return float(follow_on.sum()) / float(len(starters))
 
 
 def build_cpf_canonical_map(clientes_df: pd.DataFrame | None) -> dict[str, str]:
@@ -1428,6 +1727,14 @@ def run_audit(
     service_decomposition = detect_service_decomposition(df, thresholds)
     service_reconciliation = detect_service_reconciliation(df, named_sheets.get("Financeiro"), thresholds)
 
+    advanced_metrics = AdvancedMetrics(
+        gmroi_alerts=detect_gmroi_by_sku(df, named_sheets.get("Estoque"), thresholds),
+        attach_rate_opportunities=detect_attach_rate_opportunities(df, thresholds),
+        seller_margin_corrosion=detect_seller_margin_corrosion(df, named_sheets.get("Estoque"), thresholds),
+        concentration_risk=detect_vip_concentration_risk(df, thresholds),
+        follow_on_conversion=detect_follow_on_conversion(df, thresholds),
+    )
+
     executive_summary = build_executive_summary(
         contribution_margin_alerts=contribution_margin_alerts,
         dead_stock=dead_stock,
@@ -1452,6 +1759,9 @@ def run_audit(
         ]
     for finding in customer_concentration:
         finding.customer = identity_map.get(finding.customer, finding.customer)
+    for opportunity in advanced_metrics.attach_rate_opportunities:
+        for gap_customer in opportunity.cross_sell_gap:
+            gap_customer.customer_id = identity_map.get(gap_customer.customer_id, gap_customer.customer_id)
 
     period_start = str(df["date"].min().to_period("M")) if len(df) else ""
     period_end = str(df["date"].max().to_period("M")) if len(df) else ""
@@ -1466,6 +1776,7 @@ def run_audit(
         store_performance=store_performance, store_macro_summary=store_macro_summary,
         customer_concentration=customer_concentration, salesperson_performance=salesperson_performance,
         service_decomposition=service_decomposition, service_reconciliation=service_reconciliation,
+        advanced_metrics=advanced_metrics,
         executive_summary=executive_summary,
         generated_at=datetime.now(timezone.utc).isoformat()
     )

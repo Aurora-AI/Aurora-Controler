@@ -86,6 +86,36 @@ class AuditThresholdsConfig(BaseModel):
     # arredondamento) já separa reconciliação real de gap real, sem precisar de um
     # percentual (que erraria em lojas de receita de serviço pequena).
     service_reconciliation_gap_tolerance: float = 1.0
+    # Fase B — Algoritmo 1 (GMROI por SKU): "margem ilusória" = markup alto mas giro
+    # lento — as duas pernas do alerta, cada uma com seu próprio corte. `..._high_
+    # margin_pct` é o piso de markup (%) acima do qual a margem é "alta". `..._low_
+    # ratio` é o teto de GMROI abaixo do qual o giro é "lento" — referência de mercado
+    # de varejo: GMROI >= 1.0 significa que a margem bruta anual já cobre o capital
+    # investido no próprio SKU; abaixo de 1.0 o capital parado custa mais do que a
+    # margem devolve. Um produto pode ter as duas coisas ao mesmo tempo (alta margem %
+    # E giro lento) — é exatamente essa combinação que o algoritmo caça.
+    gmroi_sku_high_margin_pct: float = 40.0
+    gmroi_sku_low_ratio: float = 1.0
+    # Fase B — Algoritmo 3 (corrosão de desconto por vendedor): quantos desvios-padrão
+    # ACIMA da média de desconto% DA MESMA LOJA (nunca da rede inteira — vendedores de
+    # lojas diferentes não competem no mesmo benchmark) um vendedor precisa estar para
+    # virar `is_corrosive`. 2 desvios é o mesmo corte estatístico já usado em
+    # `revenue_drop_sigma` neste contrato — consistência de vocabulário estatístico
+    # dentro do motor.
+    seller_corrosion_std_multiplier: float = 2.0
+    # Fase B — Algoritmo 4 (concentração de VIP por vendedor): dentro dos clientes VIP
+    # de UMA loja (ver `vip_customer_top_pct`), % da receita VIP daquela loja atrelada
+    # a um único vendedor acima do qual existe risco de "sequestro de base" (o
+    # vendedor, não a empresa, é dono do relacionamento). Mesma ordem de grandeza do
+    # corte de `concentration_risk_pct` (cliente único concentra loja) — aqui é
+    # vendedor único concentrando o segmento mais valioso da loja, risco maior por
+    # isso o corte é mais alto.
+    concentration_seller_vip_pct: float = 40.0
+    # Fase B — Algoritmo 4: fatia (%) dos clientes de MAIOR receita, por loja, tratada
+    # como "VIP" (Pareto aproximado — 20% é a referência clássica de curva ABC, não
+    # verificada empiricamente contra 80% de receita neste dado; é a definição
+    # operacional do algoritmo, não uma medição).
+    vip_customer_top_pct: float = 20.0
 
 
 class SalesRecord(BaseModel):
@@ -238,6 +268,99 @@ class GmroiEntry(BaseModel):
     gmroi: float | None  # None se não há estoque nessa categoria (divisão por zero)
     sample_size: int  # nº de vendas que compuseram a margem bruta
     is_directional_only: bool = False
+
+
+class GmroiSkuAlert(BaseModel):
+    """Fase B, Algoritmo 1 — GMROI por SKU (granularidade diferente de `GmroiEntry`,
+    que é por categoria): produto com markup% alto E giro lento ao mesmo tempo —
+    "margem ilusória", porque o preço parece ótimo na etiqueta mas o capital parado no
+    próprio SKU rende menos do que custa manter. Lista já vem filtrada só pros SKUs
+    que batem as DUAS pernas (`gmroi_sku_high_margin_pct` e `gmroi_sku_low_ratio`) —
+    mesmo padrão de `ContributionMarginAlert` (só o que é alerta, não o universo
+    inteiro)."""
+    sku: str
+    total_revenue: float
+    total_cost: float
+    gross_margin: float
+    markup_pct: float  # gross_margin / total_revenue × 100
+    capital_frozen: float  # qtd_atual × custo_unit deste SKU no snapshot de Estoque
+    gmroi: float  # gross_margin / capital_frozen
+    is_illusory_margin: bool = True  # sempre True nesta lista — documentativo
+
+
+class CrossSellGapCustomer(BaseModel):
+    """Um cliente elegível (comprou a categoria âncora) que nunca comprou a categoria
+    complementar — candidato a abordagem de cross-sell."""
+    customer_id: str
+    anchor_category_revenue: float  # receita já gerada por este cliente na âncora
+
+
+class AttachRateOpportunity(BaseModel):
+    """Fase B, Algoritmo 2 — Attach Rate: mesma régua fato-vs-cenário de
+    `LatentRevenueFinding` (âncora/alvo configuráveis nos MESMOS
+    `latent_revenue_anchor_category`/`latent_revenue_target_category` — um único par
+    de categorias no contrato, nunca dois vocabulários divergentes para a mesma ideia
+    de negócio). `attach_rate_pct` é FATO medido; `cross_sell_gap` traz só os 5
+    clientes de maior receita na âncora entre os que nunca compraram o alvo — a fila
+    de abordagem mais valiosa primeiro, nunca a lista inteira (ver Spec de laudo
+    executivo, teto de 5 na visão executiva)."""
+    anchor_category: str
+    target_category: str
+    eligible_customers: int  # compraram a âncora
+    attach_rate_pct: float  # % dos elegíveis que também compraram o alvo
+    cross_sell_gap: list[CrossSellGapCustomer] = Field(default_factory=list)
+
+
+class SellerMarginCorrosionAlert(BaseModel):
+    """Fase B, Algoritmo 3 — Corrosão de ticket médio por vendedor: desconto concedido
+    (preço de TABELA do Estoque − preço efetivamente praticado na venda) como % da
+    receita do vendedor, comparado contra a média de desconto% dos PARES DA MESMA
+    LOJA (nunca a rede inteira — lojas têm política de preço/piso diferentes).
+    `is_corrosive` só é True quando `discount_pct` excede a média da loja em mais de
+    `seller_corrosion_std_multiplier` desvios-padrão — vendedor que bate meta dando
+    desconto fora da curva dos colegas da mesma unidade."""
+    salesperson: str
+    store: str
+    total_revenue: float
+    total_discount: float  # Σ(preço_tabela − preço_praticado) × qtd, pode ser negativo
+    discount_pct: float  # total_discount / total_revenue × 100
+    store_mean_discount_pct: float
+    store_std_discount_pct: float
+    sample_size: int
+    is_corrosive: bool
+
+
+class ConcentrationRiskAlert(BaseModel):
+    """Fase B, Algoritmo 4 — Curva ABC cruzada / risco de "sequestro de base": dentro
+    dos clientes VIP de UMA loja (top `vip_customer_top_pct`% por receita, Pareto
+    aproximado), % da receita VIP daquela loja que passa pelas mãos de um único
+    vendedor. Vendedor com concentração alta É o dono do relacionamento com a base
+    mais valiosa da loja — risco de retenção se ele sair, não só de performance."""
+    store: str
+    salesperson: str
+    vip_revenue: float  # receita deste vendedor vinda de clientes VIP da loja
+    vip_total_store: float  # receita VIP total da loja (denominador)
+    concentration_pct: float
+    is_high_risk: bool  # concentration_pct > thresholds.concentration_seller_vip_pct
+
+
+class AdvancedMetrics(BaseModel):
+    """Fase B — bloco de teses analíticas avançadas (5 algoritmos), cada um com seu
+    próprio graceful degradation: dado insuficiente para um algoritmo (sem aba
+    Estoque, sem coluna de categoria/vendedor/pagamento, etc.) => lista vazia (ou
+    `None` para `follow_on_conversion_rate`, que é escalar), NUNCA quebra o motor
+    nem os outros 4 algoritmos."""
+    gmroi_alerts: list[GmroiSkuAlert] = Field(default_factory=list)
+    attach_rate_opportunities: list[AttachRateOpportunity] = Field(default_factory=list)
+    seller_margin_corrosion: list[SellerMarginCorrosionAlert] = Field(default_factory=list)
+    concentration_risk: list[ConcentrationRiskAlert] = Field(default_factory=list)
+    # Fração 0..1 (nunca %) de clientes cuja PRIMEIRA transação foi serviço e que
+    # depois compraram produto (categoria != service_category_label) em data
+    # estritamente posterior. None quando não há base de clientes "iniciados em
+    # serviço" no dado (sem categoria de serviço, ou ninguém começou por lá) — nunca
+    # 0.0 fingido. Nome do campo (`follow_on_conversion`, sem sufixo `_rate`) segue o
+    # schema literal da OS (SPEC_Fase_B_Formulas_Avancadas.md, seção 4).
+    follow_on_conversion: float | None = None
 
 
 class StorePerformance(BaseModel):
@@ -438,9 +561,9 @@ class ExecutiveSummary(BaseModel):
     entre si em lugar nenhum — são fatos de natureza contábil diferente. Receita
     latente (cenário) fica de fora: nunca soma aqui, nunca entra em `action_plan`.
 
-    `total_operational_loss` não exclui promoção legítima (sem sinal disso no dado de
-    origem hoje) — quem consome este campo DEVE rotular como "a confirmar", nunca
-    como perda estrutural confirmada."""
+    `total_operational_loss` exclui alerta de margem negativa `promotional=True` (C3:
+    forma_pagto=promoção, decisão comercial deliberada) — só soma o que é prejuízo
+    estrutural de verdade."""
     total_operational_loss: float
     total_capital_frozen: float
     total_ltv_risk: float
@@ -471,5 +594,6 @@ class ExecutiveAuditReport(BaseModel):
     service_decomposition: list[ServiceDecomposition] = Field(default_factory=list)
     service_reconciliation: list[ServiceReconciliation] = Field(default_factory=list)
     salesperson_performance: list[SalespersonPerformance] = Field(default_factory=list)
+    advanced_metrics: AdvancedMetrics = Field(default_factory=AdvancedMetrics)
     executive_summary: ExecutiveSummary
     generated_at: str

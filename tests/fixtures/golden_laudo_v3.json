@@ -47,7 +47,12 @@
     "sev_ramp_min_days": 180.0,
     "concentration_risk_pct": 25.0,
     "service_category_label": "servico",
-    "service_reconciliation_gap_tolerance": 1.0
+    "service_reconciliation_gap_tolerance": 1.0,
+    "gmroi_sku_high_margin_pct": 40.0,
+    "gmroi_sku_low_ratio": 1.0,
+    "seller_corrosion_std_multiplier": 2.0,
+    "concentration_seller_vip_pct": 40.0,
+    "vip_customer_top_pct": 20.0
   },
   "revenue_leaks": [
     {
@@ -5951,6 +5956,2871 @@
       "low_volume_flag": false
     }
   ],
+  "advanced_metrics": {
+    "gmroi_alerts": [
+      {
+        "sku": "ARM-002",
+        "total_revenue": 2925.17,
+        "total_cost": 1440.98,
+        "gross_margin": 1484.19,
+        "markup_pct": 50.73858955206022,
+        "capital_frozen": 6423.72,
+        "gmroi": 0.23104836449907531,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-003",
+        "total_revenue": 1241.0,
+        "total_cost": 651.26,
+        "gross_margin": 589.74,
+        "markup_pct": 47.52135374697824,
+        "capital_frozen": 8055.55,
+        "gmroi": 0.07320915393734755,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-004",
+        "total_revenue": 5119.4,
+        "total_cost": 2386.15,
+        "gross_margin": 2733.2499999999995,
+        "markup_pct": 53.39004570848145,
+        "capital_frozen": 6224.91,
+        "gmroi": 0.43908265340382424,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-005",
+        "total_revenue": 1611.76,
+        "total_cost": 833.1,
+        "gross_margin": 778.66,
+        "markup_pct": 48.31116295230059,
+        "capital_frozen": 6614.86,
+        "gmroi": 0.1177137535790629,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-006",
+        "total_revenue": 2899.96,
+        "total_cost": 1405.51,
+        "gross_margin": 1494.45,
+        "markup_pct": 51.53346942716451,
+        "capital_frozen": 7967.7,
+        "gmroi": 0.1875635377838021,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-007",
+        "total_revenue": 419.34000000000003,
+        "total_cost": 226.64,
+        "gross_margin": 192.70000000000005,
+        "markup_pct": 45.953164496589885,
+        "capital_frozen": 6878.719999999999,
+        "gmroi": 0.028013932824711582,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-008",
+        "total_revenue": 4708.99,
+        "total_cost": 2259.29,
+        "gross_margin": 2449.7,
+        "markup_pct": 52.02177112289471,
+        "capital_frozen": 2567.36,
+        "gmroi": 0.954170821388508,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-009",
+        "total_revenue": 1791.1,
+        "total_cost": 925.02,
+        "gross_margin": 866.0799999999999,
+        "markup_pct": 48.354642398526046,
+        "capital_frozen": 1577.0200000000002,
+        "gmroi": 0.5491877084627969,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-011",
+        "total_revenue": 2397.29,
+        "total_cost": 1238.3600000000001,
+        "gross_margin": 1158.9299999999998,
+        "markup_pct": 48.34333768546984,
+        "capital_frozen": 1478.96,
+        "gmroi": 0.7836114566993021,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-013",
+        "total_revenue": 3608.08,
+        "total_cost": 1754.98,
+        "gross_margin": 1853.1,
+        "markup_pct": 51.35972594842686,
+        "capital_frozen": 2339.55,
+        "gmroi": 0.7920753991152144,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-014",
+        "total_revenue": 1736.31,
+        "total_cost": 823.55,
+        "gross_margin": 912.76,
+        "markup_pct": 52.56895370066405,
+        "capital_frozen": 937.2,
+        "gmroi": 0.9739223218096457,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-015",
+        "total_revenue": 1728.42,
+        "total_cost": 878.28,
+        "gross_margin": 850.1400000000001,
+        "markup_pct": 49.18596174540911,
+        "capital_frozen": 2010.8600000000001,
+        "gmroi": 0.42277433535900066,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-016",
+        "total_revenue": 1541.6599999999999,
+        "total_cost": 748.1600000000001,
+        "gross_margin": 793.4999999999998,
+        "markup_pct": 51.47049284537445,
+        "capital_frozen": 1469.7999999999997,
+        "gmroi": 0.5398693699823105,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-017",
+        "total_revenue": 2657.21,
+        "total_cost": 1325.1100000000001,
+        "gross_margin": 1332.1,
+        "markup_pct": 50.13152893448391,
+        "capital_frozen": 1366.1000000000001,
+        "gmroi": 0.9751116316521483,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-021",
+        "total_revenue": 1933.42,
+        "total_cost": 919.77,
+        "gross_margin": 1013.6500000000001,
+        "markup_pct": 52.42782220107375,
+        "capital_frozen": 2074.8,
+        "gmroi": 0.48855311355311354,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-022",
+        "total_revenue": 2837.27,
+        "total_cost": 1324.04,
+        "gross_margin": 1513.23,
+        "markup_pct": 53.33401473952074,
+        "capital_frozen": 1821.75,
+        "gmroi": 0.830646356525319,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-023",
+        "total_revenue": 798.83,
+        "total_cost": 340.14,
+        "gross_margin": 458.69000000000005,
+        "markup_pct": 57.42022708210759,
+        "capital_frozen": 1596.75,
+        "gmroi": 0.28726475653671524,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-024",
+        "total_revenue": 2700.31,
+        "total_cost": 1123.72,
+        "gross_margin": 1576.59,
+        "markup_pct": 58.38551869970485,
+        "capital_frozen": 2998.8,
+        "gmroi": 0.5257402961184473,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-025",
+        "total_revenue": 3081.98,
+        "total_cost": 1399.75,
+        "gross_margin": 1682.23,
+        "markup_pct": 54.58276822042972,
+        "capital_frozen": 1951.8300000000002,
+        "gmroi": 0.8618732164174133,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-026",
+        "total_revenue": 1317.3600000000001,
+        "total_cost": 592.4,
+        "gross_margin": 724.9600000000002,
+        "markup_pct": 55.03127467055323,
+        "capital_frozen": 1378.57,
+        "gmroi": 0.5258782651588242,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-028",
+        "total_revenue": 435.02,
+        "total_cost": 217.24,
+        "gross_margin": 217.77999999999997,
+        "markup_pct": 50.062066111902894,
+        "capital_frozen": 1736.6,
+        "gmroi": 0.12540596568006449,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-029",
+        "total_revenue": 697.61,
+        "total_cost": 300.0,
+        "gross_margin": 397.61,
+        "markup_pct": 56.9960293000387,
+        "capital_frozen": 536.25,
+        "gmroi": 0.7414638694638694,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-031",
+        "total_revenue": 2936.0699999999997,
+        "total_cost": 1475.6799999999998,
+        "gross_margin": 1460.3899999999999,
+        "markup_pct": 49.73961792464077,
+        "capital_frozen": 3504.54,
+        "gmroi": 0.4167137484520079,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-032",
+        "total_revenue": 1227.24,
+        "total_cost": 600.0,
+        "gross_margin": 627.24,
+        "markup_pct": 51.10980737264105,
+        "capital_frozen": 1295.4,
+        "gmroi": 0.48420565076424266,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-033",
+        "total_revenue": 1692.33,
+        "total_cost": 737.11,
+        "gross_margin": 955.2199999999999,
+        "markup_pct": 56.444074146295335,
+        "capital_frozen": 1057.32,
+        "gmroi": 0.9034351000643135,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-034",
+        "total_revenue": 1671.94,
+        "total_cost": 754.61,
+        "gross_margin": 917.33,
+        "markup_pct": 54.86620333265547,
+        "capital_frozen": 1928.3200000000002,
+        "gmroi": 0.47571461168270823,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-035",
+        "total_revenue": 1559.5900000000001,
+        "total_cost": 701.8199999999999,
+        "gross_margin": 857.7700000000002,
+        "markup_pct": 54.999711462628,
+        "capital_frozen": 1641.6000000000001,
+        "gmroi": 0.5225207115009748,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-036",
+        "total_revenue": 1975.83,
+        "total_cost": 878.75,
+        "gross_margin": 1097.08,
+        "markup_pct": 55.52501986506937,
+        "capital_frozen": 2228.75,
+        "gmroi": 0.4922400448681996,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-037",
+        "total_revenue": 1135.35,
+        "total_cost": 495.89,
+        "gross_margin": 639.4599999999999,
+        "markup_pct": 56.32271986612058,
+        "capital_frozen": 2146.8,
+        "gmroi": 0.2978665921371343,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-039",
+        "total_revenue": 697.55,
+        "total_cost": 300.76,
+        "gross_margin": 396.78999999999996,
+        "markup_pct": 56.88337753566053,
+        "capital_frozen": 1320.8000000000002,
+        "gmroi": 0.300416414294367,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-040",
+        "total_revenue": 1335.27,
+        "total_cost": 602.45,
+        "gross_margin": 732.8199999999999,
+        "markup_pct": 54.881784208437246,
+        "capital_frozen": 1588.48,
+        "gmroi": 0.4613341055600322,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-041",
+        "total_revenue": 1976.54,
+        "total_cost": 908.95,
+        "gross_margin": 1067.59,
+        "markup_pct": 54.01307335040019,
+        "capital_frozen": 1106.76,
+        "gmroi": 0.964608406519932,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-042",
+        "total_revenue": 1258.67,
+        "total_cost": 570.73,
+        "gross_margin": 687.94,
+        "markup_pct": 54.65610525395854,
+        "capital_frozen": 1797.2399999999998,
+        "gmroi": 0.3827758118003161,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-044",
+        "total_revenue": 1157.65,
+        "total_cost": 538.27,
+        "gross_margin": 619.3800000000001,
+        "markup_pct": 53.50321772556473,
+        "capital_frozen": 2325.26,
+        "gmroi": 0.2663702123633486,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-045",
+        "total_revenue": 878.2,
+        "total_cost": 483.15999999999997,
+        "gross_margin": 395.0400000000001,
+        "markup_pct": 44.98291960828969,
+        "capital_frozen": 1853.26,
+        "gmroi": 0.21315951350593013,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-047",
+        "total_revenue": 1212.3,
+        "total_cost": 570.95,
+        "gross_margin": 641.3499999999999,
+        "markup_pct": 52.90357172317083,
+        "capital_frozen": 1052.16,
+        "gmroi": 0.6095555809002432,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-049",
+        "total_revenue": 2391.33,
+        "total_cost": 1127.97,
+        "gross_margin": 1263.36,
+        "markup_pct": 52.83085145086625,
+        "capital_frozen": 1316.8400000000001,
+        "gmroi": 0.9593876249202635,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-050",
+        "total_revenue": 608.19,
+        "total_cost": 298.78,
+        "gross_margin": 309.4100000000001,
+        "markup_pct": 50.873904536411324,
+        "capital_frozen": 995.6,
+        "gmroi": 0.3107774206508639,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-053",
+        "total_revenue": 618.56,
+        "total_cost": 279.79,
+        "gross_margin": 338.7699999999999,
+        "markup_pct": 54.767524573202266,
+        "capital_frozen": 1522.8,
+        "gmroi": 0.222465195692146,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-056",
+        "total_revenue": 1666.06,
+        "total_cost": 729.2,
+        "gross_margin": 936.8599999999999,
+        "markup_pct": 56.23206847292414,
+        "capital_frozen": 2158.26,
+        "gmroi": 0.434081157969846,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-058",
+        "total_revenue": 413.88,
+        "total_cost": 197.12,
+        "gross_margin": 216.76,
+        "markup_pct": 52.372668406301344,
+        "capital_frozen": 1428.42,
+        "gmroi": 0.15174808529704148,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-059",
+        "total_revenue": 631.03,
+        "total_cost": 274.88,
+        "gross_margin": 356.15,
+        "markup_pct": 56.439471974391076,
+        "capital_frozen": 963.27,
+        "gmroi": 0.36973018987407474,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-060",
+        "total_revenue": 1353.33,
+        "total_cost": 558.21,
+        "gross_margin": 795.1199999999999,
+        "markup_pct": 58.75285407106913,
+        "capital_frozen": 985.5,
+        "gmroi": 0.8068188736681886,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-062",
+        "total_revenue": 1028.49,
+        "total_cost": 454.91999999999996,
+        "gross_margin": 573.57,
+        "markup_pct": 55.768164979727565,
+        "capital_frozen": 1096.1799999999998,
+        "gmroi": 0.5232443576784835,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-063",
+        "total_revenue": 1393.6100000000001,
+        "total_cost": 604.73,
+        "gross_margin": 788.8800000000001,
+        "markup_pct": 56.60694168382834,
+        "capital_frozen": 1968.1200000000001,
+        "gmroi": 0.4008292177306262,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-064",
+        "total_revenue": 1155.08,
+        "total_cost": 507.69999999999993,
+        "gross_margin": 647.38,
+        "markup_pct": 56.046334453024905,
+        "capital_frozen": 1281.7399999999998,
+        "gmroi": 0.5050790331892584,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-065",
+        "total_revenue": 1160.98,
+        "total_cost": 546.55,
+        "gross_margin": 614.4300000000001,
+        "markup_pct": 52.923392306499686,
+        "capital_frozen": 1738.8799999999999,
+        "gmroi": 0.35334813213102695,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-067",
+        "total_revenue": 2656.82,
+        "total_cost": 1264.7,
+        "gross_margin": 1392.1200000000001,
+        "markup_pct": 52.397979539449416,
+        "capital_frozen": 1943.4999999999998,
+        "gmroi": 0.7162953434525342,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-069",
+        "total_revenue": 2185.37,
+        "total_cost": 941.3299999999999,
+        "gross_margin": 1244.04,
+        "markup_pct": 56.92582949340387,
+        "capital_frozen": 2255.7,
+        "gmroi": 0.5515095092432505,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-070",
+        "total_revenue": 1161.35,
+        "total_cost": 585.52,
+        "gross_margin": 575.8299999999999,
+        "markup_pct": 49.58281310543764,
+        "capital_frozen": 1500.62,
+        "gmroi": 0.38372805906891816,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-071",
+        "total_revenue": 1430.5,
+        "total_cost": 636.03,
+        "gross_margin": 794.47,
+        "markup_pct": 55.53792380286613,
+        "capital_frozen": 2021.3999999999999,
+        "gmroi": 0.39302958345701006,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-072",
+        "total_revenue": 1163.6399999999999,
+        "total_cost": 572.15,
+        "gross_margin": 591.4899999999999,
+        "markup_pct": 50.831013028084286,
+        "capital_frozen": 2127.84,
+        "gmroi": 0.2779767275735017,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-073",
+        "total_revenue": 2675.11,
+        "total_cost": 1229.49,
+        "gross_margin": 1445.6200000000001,
+        "markup_pct": 54.03964696778824,
+        "capital_frozen": 1861.5299999999997,
+        "gmroi": 0.7765762571648055,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-074",
+        "total_revenue": 814.59,
+        "total_cost": 350.69,
+        "gross_margin": 463.90000000000003,
+        "markup_pct": 56.948894535901495,
+        "capital_frozen": 1007.82,
+        "gmroi": 0.46030045047726775,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-075",
+        "total_revenue": 1827.3899999999999,
+        "total_cost": 869.3900000000001,
+        "gross_margin": 957.9999999999998,
+        "markup_pct": 52.42449613930249,
+        "capital_frozen": 1452.36,
+        "gmroi": 0.6596160731499077,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-076",
+        "total_revenue": 2216.8,
+        "total_cost": 1081.99,
+        "gross_margin": 1134.8100000000002,
+        "markup_pct": 51.19135691086251,
+        "capital_frozen": 1506.9599999999998,
+        "gmroi": 0.7530458671763022,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-077",
+        "total_revenue": 1279.9,
+        "total_cost": 618.08,
+        "gross_margin": 661.82,
+        "markup_pct": 51.70872724431596,
+        "capital_frozen": 1629.42,
+        "gmroi": 0.4061690662935278,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-078",
+        "total_revenue": 2847.12,
+        "total_cost": 1194.99,
+        "gross_margin": 1652.1299999999999,
+        "markup_pct": 58.02811261906769,
+        "capital_frozen": 2073.7200000000003,
+        "gmroi": 0.7966986864186099,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-080",
+        "total_revenue": 781.07,
+        "total_cost": 349.92,
+        "gross_margin": 431.15000000000003,
+        "markup_pct": 55.19991806112128,
+        "capital_frozen": 761.5999999999999,
+        "gmroi": 0.5661108193277312,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-081",
+        "total_revenue": 518.1,
+        "total_cost": 215.78,
+        "gross_margin": 302.32000000000005,
+        "markup_pct": 58.351669561860646,
+        "capital_frozen": 2182.14,
+        "gmroi": 0.13854289825584062,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-082",
+        "total_revenue": 1487.07,
+        "total_cost": 616.87,
+        "gross_margin": 870.1999999999999,
+        "markup_pct": 58.51775639344483,
+        "capital_frozen": 2067.6,
+        "gmroi": 0.4208744437995744,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-083",
+        "total_revenue": 1793.83,
+        "total_cost": 800.54,
+        "gross_margin": 993.29,
+        "markup_pct": 55.37258268620773,
+        "capital_frozen": 1487.98,
+        "gmroi": 0.667542574496969,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-084",
+        "total_revenue": 1493.46,
+        "total_cost": 674.03,
+        "gross_margin": 819.4300000000001,
+        "markup_pct": 54.867890669987815,
+        "capital_frozen": 986.81,
+        "gmroi": 0.830382748452083,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-087",
+        "total_revenue": 891.35,
+        "total_cost": 407.96000000000004,
+        "gross_margin": 483.39,
+        "markup_pct": 54.23122230324788,
+        "capital_frozen": 1490.5500000000002,
+        "gmroi": 0.3243031095904196,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-088",
+        "total_revenue": 2008.9299999999998,
+        "total_cost": 861.4100000000001,
+        "gross_margin": 1147.5199999999998,
+        "markup_pct": 57.12095493620981,
+        "capital_frozen": 1956.24,
+        "gmroi": 0.5865946918578496,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-089",
+        "total_revenue": 2631.23,
+        "total_cost": 1172.56,
+        "gross_margin": 1458.67,
+        "markup_pct": 55.43681092112814,
+        "capital_frozen": 1830.6,
+        "gmroi": 0.7968261772096581,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-090",
+        "total_revenue": 1112.4,
+        "total_cost": 502.29,
+        "gross_margin": 610.1100000000001,
+        "markup_pct": 54.84627831715211,
+        "capital_frozen": 1714.48,
+        "gmroi": 0.3558571695207877,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-091",
+        "total_revenue": 2727.42,
+        "total_cost": 1320.19,
+        "gross_margin": 1407.23,
+        "markup_pct": 51.595647168386236,
+        "capital_frozen": 2048.16,
+        "gmroi": 0.6870703460667136,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-093",
+        "total_revenue": 2716.9,
+        "total_cost": 1243.6100000000001,
+        "gross_margin": 1473.29,
+        "markup_pct": 54.226876219220436,
+        "capital_frozen": 1607.28,
+        "gmroi": 0.9166355582101439,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-095",
+        "total_revenue": 2289.67,
+        "total_cost": 1060.37,
+        "gross_margin": 1229.3000000000002,
+        "markup_pct": 53.688959544388496,
+        "capital_frozen": 1470.9199999999998,
+        "gmroi": 0.8357354580806572,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-096",
+        "total_revenue": 2660.23,
+        "total_cost": 1265.46,
+        "gross_margin": 1394.77,
+        "markup_pct": 52.430428947872926,
+        "capital_frozen": 2368.09,
+        "gmroi": 0.588985215933516,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-099",
+        "total_revenue": 728.12,
+        "total_cost": 314.15,
+        "gross_margin": 413.97,
+        "markup_pct": 56.85463934516289,
+        "capital_frozen": 1882.16,
+        "gmroi": 0.21994410677094403,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-102",
+        "total_revenue": 1814.45,
+        "total_cost": 803.68,
+        "gross_margin": 1010.7700000000001,
+        "markup_pct": 55.706687977072946,
+        "capital_frozen": 3387.9300000000003,
+        "gmroi": 0.2983444167972774,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-105",
+        "total_revenue": 1230.6100000000001,
+        "total_cost": 536.95,
+        "gross_margin": 693.6600000000001,
+        "markup_pct": 56.367167502295615,
+        "capital_frozen": 1431.23,
+        "gmroi": 0.4846600476513209,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-108",
+        "total_revenue": 2969.54,
+        "total_cost": 1407.26,
+        "gross_margin": 1562.28,
+        "markup_pct": 52.61016857829832,
+        "capital_frozen": 1653.52,
+        "gmroi": 0.9448207460448014,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-109",
+        "total_revenue": 1238.8,
+        "total_cost": 621.12,
+        "gross_margin": 617.68,
+        "markup_pct": 49.8611559573781,
+        "capital_frozen": 2464.96,
+        "gmroi": 0.25058418797870957,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-110",
+        "total_revenue": 1405.99,
+        "total_cost": 636.54,
+        "gross_margin": 769.45,
+        "markup_pct": 54.726562777829145,
+        "capital_frozen": 1551.6,
+        "gmroi": 0.49590745037380773,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-112",
+        "total_revenue": 1529.32,
+        "total_cost": 663.21,
+        "gross_margin": 866.1099999999999,
+        "markup_pct": 56.63366725080427,
+        "capital_frozen": 1108.23,
+        "gmroi": 0.781525495610117,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-113",
+        "total_revenue": 429.76,
+        "total_cost": 177.88,
+        "gross_margin": 251.88,
+        "markup_pct": 58.60945644080417,
+        "capital_frozen": 1777.38,
+        "gmroi": 0.14171420855416397,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-114",
+        "total_revenue": 1847.92,
+        "total_cost": 843.1700000000001,
+        "gross_margin": 1004.75,
+        "markup_pct": 54.37194250833369,
+        "capital_frozen": 1510.65,
+        "gmroi": 0.6651110449144407,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-115",
+        "total_revenue": 1229.8,
+        "total_cost": 569.97,
+        "gross_margin": 659.8299999999999,
+        "markup_pct": 53.653439583672146,
+        "capital_frozen": 1178.08,
+        "gmroi": 0.5600892978405541,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-116",
+        "total_revenue": 1567.38,
+        "total_cost": 711.48,
+        "gross_margin": 855.9000000000001,
+        "markup_pct": 54.607051257512545,
+        "capital_frozen": 1046.71,
+        "gmroi": 0.8177049994745441,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-117",
+        "total_revenue": 531.95,
+        "total_cost": 259.47,
+        "gross_margin": 272.48,
+        "markup_pct": 51.222859291286774,
+        "capital_frozen": 1241.17,
+        "gmroi": 0.21953479378328514,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-118",
+        "total_revenue": 1188.4299999999998,
+        "total_cost": 519.57,
+        "gross_margin": 668.8599999999998,
+        "markup_pct": 56.2809757411038,
+        "capital_frozen": 1815.99,
+        "gmroi": 0.3683170061509148,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-119",
+        "total_revenue": 935.79,
+        "total_cost": 427.03,
+        "gross_margin": 508.76,
+        "markup_pct": 54.36689855630003,
+        "capital_frozen": 2885.19,
+        "gmroi": 0.17633500739985927,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARM-120",
+        "total_revenue": 1121.77,
+        "total_cost": 526.89,
+        "gross_margin": 594.88,
+        "markup_pct": 53.03047861861166,
+        "capital_frozen": 1797.18,
+        "gmroi": 0.3310074672542539,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-002",
+        "total_revenue": 30020.97,
+        "total_cost": 8729.42,
+        "gross_margin": 21291.550000000003,
+        "markup_pct": 70.92225867451985,
+        "capital_frozen": 27940.05,
+        "gmroi": 0.7620440908301883,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-004",
+        "total_revenue": 15743.52,
+        "total_cost": 9059.71,
+        "gross_margin": 6683.810000000001,
+        "markup_pct": 42.454355823856424,
+        "capital_frozen": 25499.24,
+        "gmroi": 0.2621180082229902,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-007",
+        "total_revenue": 21589.48,
+        "total_cost": 11749.29,
+        "gross_margin": 9840.189999999999,
+        "markup_pct": 45.57863366787898,
+        "capital_frozen": 20176.38,
+        "gmroi": 0.4877083996237183,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-009",
+        "total_revenue": 14062.1,
+        "total_cost": 8206.69,
+        "gross_margin": 5855.41,
+        "markup_pct": 41.639655527979464,
+        "capital_frozen": 8933.74,
+        "gmroi": 0.6554265067037993,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-016",
+        "total_revenue": 14155.199999999999,
+        "total_cost": 7934.08,
+        "gross_margin": 6221.119999999999,
+        "markup_pct": 43.949361365434605,
+        "capital_frozen": 9600.85,
+        "gmroi": 0.647975960461834,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-017",
+        "total_revenue": 6470.63,
+        "total_cost": 3667.46,
+        "gross_margin": 2803.17,
+        "markup_pct": 43.32143856162383,
+        "capital_frozen": 3627.7200000000003,
+        "gmroi": 0.7727084780523303,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-019",
+        "total_revenue": 5100.289999999999,
+        "total_cost": 2312.0200000000004,
+        "gross_margin": 2788.2699999999986,
+        "markup_pct": 54.66885216330835,
+        "capital_frozen": 6714.24,
+        "gmroi": 0.4152770827375844,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-020",
+        "total_revenue": 11761.6,
+        "total_cost": 5362.18,
+        "gross_margin": 6399.42,
+        "markup_pct": 54.409434090599916,
+        "capital_frozen": 8448.44,
+        "gmroi": 0.7574676508325797,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-027",
+        "total_revenue": 14676.65,
+        "total_cost": 6693.71,
+        "gross_margin": 7982.94,
+        "markup_pct": 54.392112641508795,
+        "capital_frozen": 10388.52,
+        "gmroi": 0.7684386226334453,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-028",
+        "total_revenue": 13520.51,
+        "total_cost": 6283.780000000001,
+        "gross_margin": 7236.73,
+        "markup_pct": 53.52409043741693,
+        "capital_frozen": 9169.56,
+        "gmroi": 0.7892123504290283,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-031",
+        "total_revenue": 5570.43,
+        "total_cost": 2606.77,
+        "gross_margin": 2963.6600000000003,
+        "markup_pct": 53.20343312814272,
+        "capital_frozen": 6982.36,
+        "gmroi": 0.4244496130248226,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-032",
+        "total_revenue": 11406.6,
+        "total_cost": 5257.92,
+        "gross_margin": 6148.68,
+        "markup_pct": 53.904581558045344,
+        "capital_frozen": 11307.28,
+        "gmroi": 0.5437806439745014,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-034",
+        "total_revenue": 6690.950000000001,
+        "total_cost": 3047.13,
+        "gross_margin": 3643.8200000000006,
+        "markup_pct": 54.45893333532608,
+        "capital_frozen": 8538.75,
+        "gmroi": 0.4267392768262334,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-035",
+        "total_revenue": 10143.62,
+        "total_cost": 4619.7,
+        "gross_margin": 5523.920000000001,
+        "markup_pct": 54.45708731202471,
+        "capital_frozen": 7816.77,
+        "gmroi": 0.7066755194281015,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-037",
+        "total_revenue": 9449.73,
+        "total_cost": 4368.35,
+        "gross_margin": 5081.379999999999,
+        "markup_pct": 53.7727532955968,
+        "capital_frozen": 6438.42,
+        "gmroi": 0.78922779191168,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "ARP-039",
+        "total_revenue": 13340.04,
+        "total_cost": 5929.6900000000005,
+        "gross_margin": 7410.35,
+        "markup_pct": 55.54968350919487,
+        "capital_frozen": 10680.12,
+        "gmroi": 0.6938452002411958,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-001",
+        "total_revenue": 1932.85,
+        "total_cost": 971.87,
+        "gross_margin": 960.9799999999999,
+        "markup_pct": 49.71829164187598,
+        "capital_frozen": 1184.96,
+        "gmroi": 0.8109809613826626,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-002",
+        "total_revenue": 1536.1000000000001,
+        "total_cost": 908.51,
+        "gross_margin": 627.5900000000001,
+        "markup_pct": 40.856064058329544,
+        "capital_frozen": 9270.56,
+        "gmroi": 0.0676970970469961,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-003",
+        "total_revenue": 2436.63,
+        "total_cost": 1147.36,
+        "gross_margin": 1289.2700000000002,
+        "markup_pct": 52.91201372387273,
+        "capital_frozen": 10348.75,
+        "gmroi": 0.12458219591738134,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-004",
+        "total_revenue": 2564.9700000000003,
+        "total_cost": 1136.4,
+        "gross_margin": 1428.5700000000002,
+        "markup_pct": 55.69538825015498,
+        "capital_frozen": 10504.83,
+        "gmroi": 0.13599172951870714,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-005",
+        "total_revenue": 1680.07,
+        "total_cost": 864.22,
+        "gross_margin": 815.8499999999999,
+        "markup_pct": 48.56047664680638,
+        "capital_frozen": 9811.630000000001,
+        "gmroi": 0.08315132144200299,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-006",
+        "total_revenue": 1169.49,
+        "total_cost": 524.04,
+        "gross_margin": 645.45,
+        "markup_pct": 55.19072416181413,
+        "capital_frozen": 11316.2,
+        "gmroi": 0.057037698167229284,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-007",
+        "total_revenue": 1551.79,
+        "total_cost": 779.3199999999999,
+        "gross_margin": 772.47,
+        "markup_pct": 49.779287145812255,
+        "capital_frozen": 10645.949999999999,
+        "gmroi": 0.07255998760091867,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-009",
+        "total_revenue": 1440.59,
+        "total_cost": 760.74,
+        "gross_margin": 679.8499999999999,
+        "markup_pct": 47.19246975197661,
+        "capital_frozen": 2889.33,
+        "gmroi": 0.23529676430175853,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-010",
+        "total_revenue": 2284.74,
+        "total_cost": 1103.46,
+        "gross_margin": 1181.2799999999997,
+        "markup_pct": 51.703038420126575,
+        "capital_frozen": 2696.05,
+        "gmroi": 0.4381521114222658,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-011",
+        "total_revenue": 2105.21,
+        "total_cost": 1081.24,
+        "gross_margin": 1023.97,
+        "markup_pct": 48.63980315502966,
+        "capital_frozen": 1048.5700000000002,
+        "gmroi": 0.97653947757422,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-012",
+        "total_revenue": 1399.16,
+        "total_cost": 775.61,
+        "gross_margin": 623.5500000000001,
+        "markup_pct": 44.56602532948341,
+        "capital_frozen": 1089.18,
+        "gmroi": 0.5724949044235113,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-013",
+        "total_revenue": 1645.77,
+        "total_cost": 903.6,
+        "gross_margin": 742.17,
+        "markup_pct": 45.09560874241237,
+        "capital_frozen": 1560.49,
+        "gmroi": 0.47560061262808473,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-014",
+        "total_revenue": 1438.47,
+        "total_cost": 776.65,
+        "gross_margin": 661.82,
+        "markup_pct": 46.00860636648661,
+        "capital_frozen": 1945.2,
+        "gmroi": 0.34023236685173763,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-015",
+        "total_revenue": 1681.94,
+        "total_cost": 896.43,
+        "gross_margin": 785.5100000000001,
+        "markup_pct": 46.7026172158341,
+        "capital_frozen": 945.2099999999999,
+        "gmroi": 0.8310428370415042,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-017",
+        "total_revenue": 794.23,
+        "total_cost": 445.32,
+        "gross_margin": 348.91,
+        "markup_pct": 43.930599448522464,
+        "capital_frozen": 686.4,
+        "gmroi": 0.5083187645687646,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-018",
+        "total_revenue": 869.05,
+        "total_cost": 446.59000000000003,
+        "gross_margin": 422.4599999999999,
+        "markup_pct": 48.61170243369196,
+        "capital_frozen": 802.62,
+        "gmroi": 0.5263511998205874,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-019",
+        "total_revenue": 1282.77,
+        "total_cost": 574.16,
+        "gross_margin": 708.61,
+        "markup_pct": 55.24061211284954,
+        "capital_frozen": 801.8000000000001,
+        "gmroi": 0.8837740084809179,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LC-020",
+        "total_revenue": 548.2,
+        "total_cost": 240.51999999999998,
+        "gross_margin": 307.68000000000006,
+        "markup_pct": 56.1255016417366,
+        "capital_frozen": 912.2399999999999,
+        "gmroi": 0.3372796632465142,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-002",
+        "total_revenue": 3757.16,
+        "total_cost": 1738.11,
+        "gross_margin": 2019.05,
+        "markup_pct": 53.73872818831245,
+        "capital_frozen": 9147.7,
+        "gmroi": 0.2207166828820359,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-003",
+        "total_revenue": 982.35,
+        "total_cost": 501.05,
+        "gross_margin": 481.3,
+        "markup_pct": 48.99475746933374,
+        "capital_frozen": 10172.460000000001,
+        "gmroi": 0.04731402237020347,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-004",
+        "total_revenue": 1221.52,
+        "total_cost": 541.1800000000001,
+        "gross_margin": 680.3399999999999,
+        "markup_pct": 55.69618180627414,
+        "capital_frozen": 8434.93,
+        "gmroi": 0.08065745655269219,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-005",
+        "total_revenue": 5947.88,
+        "total_cost": 2776.53,
+        "gross_margin": 3171.35,
+        "markup_pct": 53.31899769329576,
+        "capital_frozen": 6414.76,
+        "gmroi": 0.494383266092574,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-006",
+        "total_revenue": 8569.43,
+        "total_cost": 1558.57,
+        "gross_margin": 7010.860000000001,
+        "markup_pct": 81.81244260119985,
+        "capital_frozen": 8587.93,
+        "gmroi": 0.8163620336914716,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-007",
+        "total_revenue": 1836.18,
+        "total_cost": 986.73,
+        "gross_margin": 849.45,
+        "markup_pct": 46.26180439826161,
+        "capital_frozen": 9439.88,
+        "gmroi": 0.08998525404983963,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-008",
+        "total_revenue": 1130.32,
+        "total_cost": 597.17,
+        "gross_margin": 533.15,
+        "markup_pct": 47.16805860287352,
+        "capital_frozen": 1191.49,
+        "gmroi": 0.44746493885806843,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-009",
+        "total_revenue": 1929.59,
+        "total_cost": 927.54,
+        "gross_margin": 1002.05,
+        "markup_pct": 51.93072103400205,
+        "capital_frozen": 3797.36,
+        "gmroi": 0.2638806960625276,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-010",
+        "total_revenue": 1395.3,
+        "total_cost": 727.83,
+        "gross_margin": 667.4699999999999,
+        "markup_pct": 47.83702429585035,
+        "capital_frozen": 3392.2000000000003,
+        "gmroi": 0.1967661104887683,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-011",
+        "total_revenue": 1632.54,
+        "total_cost": 827.65,
+        "gross_margin": 804.89,
+        "markup_pct": 49.302926727675896,
+        "capital_frozen": 2802.8,
+        "gmroi": 0.2871735407449693,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-012",
+        "total_revenue": 914.47,
+        "total_cost": 494.75,
+        "gross_margin": 419.72,
+        "markup_pct": 45.897623760210834,
+        "capital_frozen": 3497.0999999999995,
+        "gmroi": 0.12001944468273715,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-013",
+        "total_revenue": 3817.27,
+        "total_cost": 1796.67,
+        "gross_margin": 2020.6,
+        "markup_pct": 52.93311712297008,
+        "capital_frozen": 3516.1,
+        "gmroi": 0.5746708000341287,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-014",
+        "total_revenue": 1304.5800000000002,
+        "total_cost": 643.36,
+        "gross_margin": 661.2200000000001,
+        "markup_pct": 50.68451149028807,
+        "capital_frozen": 2954.61,
+        "gmroi": 0.2237926494528889,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-015",
+        "total_revenue": 773.93,
+        "total_cost": 406.77,
+        "gross_margin": 367.15999999999997,
+        "markup_pct": 47.44098303464138,
+        "capital_frozen": 2733.0,
+        "gmroi": 0.13434321258690082,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-016",
+        "total_revenue": 1800.7,
+        "total_cost": 782.61,
+        "gross_margin": 1018.09,
+        "markup_pct": 56.53856833453657,
+        "capital_frozen": 1683.5100000000002,
+        "gmroi": 0.6047424725721854,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-017",
+        "total_revenue": 3734.81,
+        "total_cost": 1732.88,
+        "gross_margin": 2001.9299999999998,
+        "markup_pct": 53.60192352489149,
+        "capital_frozen": 2082.6,
+        "gmroi": 0.9612647651973494,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-018",
+        "total_revenue": 1030.27,
+        "total_cost": 568.91,
+        "gross_margin": 461.36,
+        "markup_pct": 44.78049443349801,
+        "capital_frozen": 2149.35,
+        "gmroi": 0.21465094098215742,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-019",
+        "total_revenue": 1376.09,
+        "total_cost": 639.4100000000001,
+        "gross_margin": 736.6799999999998,
+        "markup_pct": 53.53428918166689,
+        "capital_frozen": 3455.0,
+        "gmroi": 0.2132214182344428,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-020",
+        "total_revenue": 727.68,
+        "total_cost": 316.02,
+        "gross_margin": 411.65999999999997,
+        "markup_pct": 56.57156992084433,
+        "capital_frozen": 3626.45,
+        "gmroi": 0.11351597292117635,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-021",
+        "total_revenue": 3101.23,
+        "total_cost": 1348.93,
+        "gross_margin": 1752.3,
+        "markup_pct": 56.50338736565814,
+        "capital_frozen": 3112.25,
+        "gmroi": 0.5630331753554503,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-023",
+        "total_revenue": 2883.65,
+        "total_cost": 1286.3899999999999,
+        "gross_margin": 1597.2600000000002,
+        "markup_pct": 55.39021725937614,
+        "capital_frozen": 2444.94,
+        "gmroi": 0.6532921053277382,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-024",
+        "total_revenue": 1692.5100000000002,
+        "total_cost": 843.05,
+        "gross_margin": 849.4600000000003,
+        "markup_pct": 50.18936372606367,
+        "capital_frozen": 2859.36,
+        "gmroi": 0.2970804655587265,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-026",
+        "total_revenue": 1758.04,
+        "total_cost": 765.78,
+        "gross_margin": 992.26,
+        "markup_pct": 56.4412641350595,
+        "capital_frozen": 1347.6,
+        "gmroi": 0.7363164143662808,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-027",
+        "total_revenue": 1874.49,
+        "total_cost": 904.55,
+        "gross_margin": 969.94,
+        "markup_pct": 51.74420775784347,
+        "capital_frozen": 2735.2000000000003,
+        "gmroi": 0.3546139221994735,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-028",
+        "total_revenue": 2201.29,
+        "total_cost": 937.16,
+        "gross_margin": 1264.13,
+        "markup_pct": 57.4267815689891,
+        "capital_frozen": 1717.54,
+        "gmroi": 0.736011970609127,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-030",
+        "total_revenue": 1721.81,
+        "total_cost": 753.13,
+        "gross_margin": 968.68,
+        "markup_pct": 56.25940144382946,
+        "capital_frozen": 1801.2399999999998,
+        "gmroi": 0.5377850813883769,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-031",
+        "total_revenue": 1571.1799999999998,
+        "total_cost": 697.91,
+        "gross_margin": 873.2699999999999,
+        "markup_pct": 55.58051910029404,
+        "capital_frozen": 2631.7200000000003,
+        "gmroi": 0.33182481418995935,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-032",
+        "total_revenue": 613.45,
+        "total_cost": 289.13,
+        "gross_margin": 324.32000000000005,
+        "markup_pct": 52.868204417637955,
+        "capital_frozen": 1771.7399999999998,
+        "gmroi": 0.18305168929978444,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-033",
+        "total_revenue": 1528.48,
+        "total_cost": 674.9300000000001,
+        "gross_margin": 853.55,
+        "markup_pct": 55.84305977179943,
+        "capital_frozen": 1336.72,
+        "gmroi": 0.6385406068585792,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-035",
+        "total_revenue": 2193.97,
+        "total_cost": 1008.6700000000001,
+        "gross_margin": 1185.2999999999997,
+        "markup_pct": 54.02535130380086,
+        "capital_frozen": 3437.0,
+        "gmroi": 0.34486470759383175,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-036",
+        "total_revenue": 1290.63,
+        "total_cost": 643.14,
+        "gross_margin": 647.4900000000001,
+        "markup_pct": 50.16852234955023,
+        "capital_frozen": 1543.6799999999998,
+        "gmroi": 0.4194457400497514,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-037",
+        "total_revenue": 1221.68,
+        "total_cost": 551.69,
+        "gross_margin": 669.99,
+        "markup_pct": 54.84169340580184,
+        "capital_frozen": 2658.5,
+        "gmroi": 0.2520180552943389,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-038",
+        "total_revenue": 1467.8,
+        "total_cost": 673.79,
+        "gross_margin": 794.01,
+        "markup_pct": 54.095244583730754,
+        "capital_frozen": 1845.84,
+        "gmroi": 0.4301618775191783,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-039",
+        "total_revenue": 1778.8799999999999,
+        "total_cost": 812.63,
+        "gross_margin": 966.2499999999999,
+        "markup_pct": 54.31788541104515,
+        "capital_frozen": 2882.0,
+        "gmroi": 0.33527064538514917,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-041",
+        "total_revenue": 1360.5900000000001,
+        "total_cost": 564.27,
+        "gross_margin": 796.3200000000002,
+        "markup_pct": 58.527550547924065,
+        "capital_frozen": 1876.7000000000003,
+        "gmroi": 0.42431928384931,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-042",
+        "total_revenue": 1599.05,
+        "total_cost": 700.34,
+        "gross_margin": 898.7099999999999,
+        "markup_pct": 56.20274538006941,
+        "capital_frozen": 3047.3199999999997,
+        "gmroi": 0.2949181575942139,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-043",
+        "total_revenue": 1142.39,
+        "total_cost": 503.52,
+        "gross_margin": 638.8700000000001,
+        "markup_pct": 55.92398392843075,
+        "capital_frozen": 4163.3,
+        "gmroi": 0.15345278985420222,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-044",
+        "total_revenue": 2280.21,
+        "total_cost": 1104.71,
+        "gross_margin": 1175.5,
+        "markup_pct": 51.5522693085286,
+        "capital_frozen": 2053.7999999999997,
+        "gmroi": 0.5723536858506184,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-045",
+        "total_revenue": 610.85,
+        "total_cost": 296.88,
+        "gross_margin": 313.97,
+        "markup_pct": 51.39887042645494,
+        "capital_frozen": 3485.2200000000003,
+        "gmroi": 0.09008613516506848,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-046",
+        "total_revenue": 1289.51,
+        "total_cost": 560.77,
+        "gross_margin": 728.74,
+        "markup_pct": 56.51293902334996,
+        "capital_frozen": 1745.34,
+        "gmroi": 0.41753469238085417,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-047",
+        "total_revenue": 1651.72,
+        "total_cost": 694.0699999999999,
+        "gross_margin": 957.6500000000001,
+        "markup_pct": 57.978955270869164,
+        "capital_frozen": 2409.0,
+        "gmroi": 0.397530095475301,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-048",
+        "total_revenue": 1797.7800000000002,
+        "total_cost": 819.32,
+        "gross_margin": 978.4600000000002,
+        "markup_pct": 54.42601430653362,
+        "capital_frozen": 3169.25,
+        "gmroi": 0.30873550524572063,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-049",
+        "total_revenue": 359.87,
+        "total_cost": 172.11,
+        "gross_margin": 187.76,
+        "markup_pct": 52.17439630977853,
+        "capital_frozen": 3556.44,
+        "gmroi": 0.052794367401108974,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-050",
+        "total_revenue": 2088.07,
+        "total_cost": 946.78,
+        "gross_margin": 1141.2900000000002,
+        "markup_pct": 54.65765036612758,
+        "capital_frozen": 2890.8,
+        "gmroi": 0.3948007471980075,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-051",
+        "total_revenue": 1133.17,
+        "total_cost": 522.1800000000001,
+        "gross_margin": 610.99,
+        "markup_pct": 53.91865298234157,
+        "capital_frozen": 3894.2400000000002,
+        "gmroi": 0.15689582562964788,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-052",
+        "total_revenue": 705.62,
+        "total_cost": 300.0,
+        "gross_margin": 405.62,
+        "markup_pct": 57.48419829369916,
+        "capital_frozen": 3402.04,
+        "gmroi": 0.11922846292224666,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-053",
+        "total_revenue": 358.8,
+        "total_cost": 175.44,
+        "gross_margin": 183.36,
+        "markup_pct": 51.103678929765884,
+        "capital_frozen": 1478.9,
+        "gmroi": 0.12398404219352221,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-054",
+        "total_revenue": 2049.85,
+        "total_cost": 895.8299999999999,
+        "gross_margin": 1154.02,
+        "markup_pct": 56.29777788618679,
+        "capital_frozen": 2160.5299999999997,
+        "gmroi": 0.5341374570128626,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-055",
+        "total_revenue": 2183.04,
+        "total_cost": 1027.92,
+        "gross_margin": 1155.12,
+        "markup_pct": 52.91336851363236,
+        "capital_frozen": 4617.76,
+        "gmroi": 0.25014725754478356,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-056",
+        "total_revenue": 1735.46,
+        "total_cost": 745.26,
+        "gross_margin": 990.2,
+        "markup_pct": 57.05691862676178,
+        "capital_frozen": 1651.32,
+        "gmroi": 0.5996414989220745,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-058",
+        "total_revenue": 1909.65,
+        "total_cost": 874.42,
+        "gross_margin": 1035.23,
+        "markup_pct": 54.21045741366218,
+        "capital_frozen": 5297.58,
+        "gmroi": 0.19541564261417477,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-059",
+        "total_revenue": 1811.46,
+        "total_cost": 780.1600000000001,
+        "gross_margin": 1031.3,
+        "markup_pct": 56.93197752089475,
+        "capital_frozen": 2034.58,
+        "gmroi": 0.5068859420617523,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-060",
+        "total_revenue": 1156.44,
+        "total_cost": 515.01,
+        "gross_margin": 641.4300000000001,
+        "markup_pct": 55.46591262841134,
+        "capital_frozen": 2080.1,
+        "gmroi": 0.3083649824527667,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-061",
+        "total_revenue": 473.72,
+        "total_cost": 222.99,
+        "gross_margin": 250.73000000000002,
+        "markup_pct": 52.92788989276365,
+        "capital_frozen": 2369.85,
+        "gmroi": 0.10579994514420746,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-062",
+        "total_revenue": 3184.4500000000003,
+        "total_cost": 1343.66,
+        "gross_margin": 1840.7900000000002,
+        "markup_pct": 57.80558652200538,
+        "capital_frozen": 2408.7799999999997,
+        "gmroi": 0.7642001345079253,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-063",
+        "total_revenue": 2661.29,
+        "total_cost": 1217.0500000000002,
+        "gross_margin": 1444.2399999999998,
+        "markup_pct": 54.26841869920226,
+        "capital_frozen": 2809.2,
+        "gmroi": 0.514110778869429,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-064",
+        "total_revenue": 2709.49,
+        "total_cost": 1320.95,
+        "gross_margin": 1388.5399999999997,
+        "markup_pct": 51.2472826989581,
+        "capital_frozen": 2025.52,
+        "gmroi": 0.6855227299656383,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-065",
+        "total_revenue": 2410.11,
+        "total_cost": 1105.42,
+        "gross_margin": 1304.69,
+        "markup_pct": 54.13404367435511,
+        "capital_frozen": 3099.88,
+        "gmroi": 0.4208840342206795,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-067",
+        "total_revenue": 2066.0299999999997,
+        "total_cost": 919.23,
+        "gross_margin": 1146.7999999999997,
+        "markup_pct": 55.50742244788313,
+        "capital_frozen": 1752.18,
+        "gmroi": 0.654498967001107,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-068",
+        "total_revenue": 649.19,
+        "total_cost": 319.52,
+        "gross_margin": 329.6700000000001,
+        "markup_pct": 50.78174340331799,
+        "capital_frozen": 2042.17,
+        "gmroi": 0.161431222670003,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-069",
+        "total_revenue": 2212.87,
+        "total_cost": 986.8,
+        "gross_margin": 1226.07,
+        "markup_pct": 55.40632752940751,
+        "capital_frozen": 1906.1999999999998,
+        "gmroi": 0.6432011331444759,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-070",
+        "total_revenue": 553.54,
+        "total_cost": 268.08,
+        "gross_margin": 285.46,
+        "markup_pct": 51.569895581168474,
+        "capital_frozen": 2205.9300000000003,
+        "gmroi": 0.12940573816938886,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-071",
+        "total_revenue": 426.86,
+        "total_cost": 187.14,
+        "gross_margin": 239.72000000000003,
+        "markup_pct": 56.15892798575646,
+        "capital_frozen": 2223.36,
+        "gmroi": 0.10781879677605066,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-072",
+        "total_revenue": 1053.4,
+        "total_cost": 443.31,
+        "gross_margin": 610.0900000000001,
+        "markup_pct": 57.91627112208089,
+        "capital_frozen": 3090.8500000000004,
+        "gmroi": 0.19738583237620722,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-073",
+        "total_revenue": 571.48,
+        "total_cost": 246.56,
+        "gross_margin": 324.92,
+        "markup_pct": 56.85588297053265,
+        "capital_frozen": 1186.24,
+        "gmroi": 0.2739074723496089,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-074",
+        "total_revenue": 1285.49,
+        "total_cost": 527.1500000000001,
+        "gross_margin": 758.3399999999999,
+        "markup_pct": 58.9922908774086,
+        "capital_frozen": 999.02,
+        "gmroi": 0.7590839022241797,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-076",
+        "total_revenue": 1826.08,
+        "total_cost": 866.81,
+        "gross_margin": 959.27,
+        "markup_pct": 52.531652501533344,
+        "capital_frozen": 1717.17,
+        "gmroi": 0.5586342645166175,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-077",
+        "total_revenue": 3008.35,
+        "total_cost": 1405.42,
+        "gross_margin": 1602.9299999999998,
+        "markup_pct": 53.28269649475625,
+        "capital_frozen": 3041.5,
+        "gmroi": 0.5270195627157652,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-078",
+        "total_revenue": 2404.55,
+        "total_cost": 1028.84,
+        "gross_margin": 1375.7100000000003,
+        "markup_pct": 57.21278409681646,
+        "capital_frozen": 1912.8199999999997,
+        "gmroi": 0.7192051526019179,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-079",
+        "total_revenue": 407.49,
+        "total_cost": 166.65,
+        "gross_margin": 240.84,
+        "markup_pct": 59.10329087830376,
+        "capital_frozen": 1777.75,
+        "gmroi": 0.13547461679088735,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "LEN-080",
+        "total_revenue": 686.57,
+        "total_cost": 310.39,
+        "gross_margin": 376.18000000000006,
+        "markup_pct": 54.79120847109545,
+        "capital_frozen": 2287.3500000000004,
+        "gmroi": 0.1644610575556867,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-002",
+        "total_revenue": 4608.0199999999995,
+        "total_cost": 2277.36,
+        "gross_margin": 2330.6599999999994,
+        "markup_pct": 50.57833950373479,
+        "capital_frozen": 13045.62,
+        "gmroi": 0.1786545982483009,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-003",
+        "total_revenue": 6232.26,
+        "total_cost": 2516.17,
+        "gross_margin": 3716.09,
+        "markup_pct": 59.62668438094688,
+        "capital_frozen": 10379.810000000001,
+        "gmroi": 0.35801137015032064,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-004",
+        "total_revenue": 2555.04,
+        "total_cost": 1504.48,
+        "gross_margin": 1050.56,
+        "markup_pct": 41.11716450623082,
+        "capital_frozen": 13663.07,
+        "gmroi": 0.07689047922611829,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-008",
+        "total_revenue": 5487.63,
+        "total_cost": 3013.89,
+        "gross_margin": 2473.7400000000002,
+        "markup_pct": 45.0784765007845,
+        "capital_frozen": 4840.58,
+        "gmroi": 0.511042065207062,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-010",
+        "total_revenue": 5016.58,
+        "total_cost": 2684.7,
+        "gross_margin": 2331.88,
+        "markup_pct": 46.48346084384182,
+        "capital_frozen": 4273.4400000000005,
+        "gmroi": 0.5456681268486278,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-019",
+        "total_revenue": 1553.58,
+        "total_cost": 750.0,
+        "gross_margin": 803.5799999999999,
+        "markup_pct": 51.72440427914881,
+        "capital_frozen": 3501.75,
+        "gmroi": 0.22947954594131503,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-020",
+        "total_revenue": 2762.41,
+        "total_cost": 1200.0,
+        "gross_margin": 1562.4099999999999,
+        "markup_pct": 56.55967072230408,
+        "capital_frozen": 3096.8599999999997,
+        "gmroi": 0.5045142499176586,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-021",
+        "total_revenue": 1053.07,
+        "total_cost": 600.0,
+        "gross_margin": 453.06999999999994,
+        "markup_pct": 43.02373061619835,
+        "capital_frozen": 3346.28,
+        "gmroi": 0.1353951253332058,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-022",
+        "total_revenue": 1568.56,
+        "total_cost": 750.0,
+        "gross_margin": 818.56,
+        "markup_pct": 52.18544397409089,
+        "capital_frozen": 3904.2499999999995,
+        "gmroi": 0.20965870525709165,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-023",
+        "total_revenue": 429.51,
+        "total_cost": 150.0,
+        "gross_margin": 279.51,
+        "markup_pct": 65.07648250331773,
+        "capital_frozen": 2298.66,
+        "gmroi": 0.12159693038552896,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-024",
+        "total_revenue": 1136.15,
+        "total_cost": 600.0,
+        "gross_margin": 536.1500000000001,
+        "markup_pct": 47.1900717334859,
+        "capital_frozen": 3044.2800000000007,
+        "gmroi": 0.17611717713219546,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-025",
+        "total_revenue": 983.68,
+        "total_cost": 450.0,
+        "gross_margin": 533.68,
+        "markup_pct": 54.25341574495771,
+        "capital_frozen": 3823.4700000000003,
+        "gmroi": 0.13958001501254094,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-026",
+        "total_revenue": 2118.26,
+        "total_cost": 900.0,
+        "gross_margin": 1218.2600000000002,
+        "markup_pct": 57.512297829350516,
+        "capital_frozen": 1724.1,
+        "gmroi": 0.7066063453395977,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-027",
+        "total_revenue": 700.94,
+        "total_cost": 300.0,
+        "gross_margin": 400.94000000000005,
+        "markup_pct": 57.20033098410706,
+        "capital_frozen": 2294.5,
+        "gmroi": 0.17473959468293748,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-028",
+        "total_revenue": 2585.51,
+        "total_cost": 1200.0,
+        "gross_margin": 1385.5100000000002,
+        "markup_pct": 53.587493376548544,
+        "capital_frozen": 1478.0700000000002,
+        "gmroi": 0.9373777967214002,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-029",
+        "total_revenue": 1024.8400000000001,
+        "total_cost": 450.0,
+        "gross_margin": 574.8400000000001,
+        "markup_pct": 56.090706842043645,
+        "capital_frozen": 2299.7999999999997,
+        "gmroi": 0.24995216975389173,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-030",
+        "total_revenue": 2091.02,
+        "total_cost": 900.0,
+        "gross_margin": 1191.02,
+        "markup_pct": 56.95880479383268,
+        "capital_frozen": 1923.21,
+        "gmroi": 0.6192875453018651,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-031",
+        "total_revenue": 1034.98,
+        "total_cost": 450.0,
+        "gross_margin": 584.98,
+        "markup_pct": 56.52089895456917,
+        "capital_frozen": 3352.3999999999996,
+        "gmroi": 0.17449588354611623,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-032",
+        "total_revenue": 1489.67,
+        "total_cost": 600.0,
+        "gross_margin": 889.6700000000001,
+        "markup_pct": 59.72262313129753,
+        "capital_frozen": 4628.75,
+        "gmroi": 0.19220523899540914,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-033",
+        "total_revenue": 1280.76,
+        "total_cost": 600.0,
+        "gross_margin": 680.76,
+        "markup_pct": 53.1528155157875,
+        "capital_frozen": 2540.88,
+        "gmroi": 0.2679229243411731,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-034",
+        "total_revenue": 1460.5700000000002,
+        "total_cost": 600.0,
+        "gross_margin": 860.5700000000002,
+        "markup_pct": 58.920147613602914,
+        "capital_frozen": 4518.0,
+        "gmroi": 0.19047587428065518,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-035",
+        "total_revenue": 616.45,
+        "total_cost": 300.0,
+        "gross_margin": 316.45000000000005,
+        "markup_pct": 51.33425257522914,
+        "capital_frozen": 4078.08,
+        "gmroi": 0.07759779111738858,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-036",
+        "total_revenue": 1274.9499999999998,
+        "total_cost": 600.0,
+        "gross_margin": 674.9499999999998,
+        "markup_pct": 52.93933095415506,
+        "capital_frozen": 2784.2000000000003,
+        "gmroi": 0.24242152144242501,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-037",
+        "total_revenue": 1369.64,
+        "total_cost": 600.0,
+        "gross_margin": 769.6400000000001,
+        "markup_pct": 56.1928681989428,
+        "capital_frozen": 1835.1000000000001,
+        "gmroi": 0.4193994877663343,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-038",
+        "total_revenue": 420.28,
+        "total_cost": 150.0,
+        "gross_margin": 270.28,
+        "markup_pct": 64.30950794708289,
+        "capital_frozen": 1405.81,
+        "gmroi": 0.19225926689950987,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-039",
+        "total_revenue": 1688.01,
+        "total_cost": 750.0,
+        "gross_margin": 938.01,
+        "markup_pct": 55.56898359606875,
+        "capital_frozen": 1833.58,
+        "gmroi": 0.511572988361566,
+        "is_illusory_margin": true
+      },
+      {
+        "sku": "SOL-040",
+        "total_revenue": 845.09,
+        "total_cost": 300.0,
+        "gross_margin": 545.09,
+        "markup_pct": 64.50082239761446,
+        "capital_frozen": 3443.5,
+        "gmroi": 0.15829533904457674,
+        "is_illusory_margin": true
+      }
+    ],
+    "attach_rate_opportunities": [
+      {
+        "anchor_category": "lente",
+        "target_category": "solar",
+        "eligible_customers": 221,
+        "attach_rate_pct": 61.53846153846154,
+        "cross_sell_gap": [
+          {
+            "customer_id": "Client_O",
+            "anchor_category_revenue": 2740.23
+          },
+          {
+            "customer_id": "Client_CF",
+            "anchor_category_revenue": 2514.48
+          },
+          {
+            "customer_id": "Client_I",
+            "anchor_category_revenue": 1847.34
+          },
+          {
+            "customer_id": "Client_CI",
+            "anchor_category_revenue": 1749.02
+          },
+          {
+            "customer_id": "Client_HL",
+            "anchor_category_revenue": 1673.48
+          }
+        ]
+      }
+    ],
+    "seller_margin_corrosion": [
+      {
+        "salesperson": "V-30",
+        "store": "L9 - Serra",
+        "total_revenue": 12444.38,
+        "total_discount": 42034.071961038964,
+        "discount_pct": 337.7755417388328,
+        "store_mean_discount_pct": 312.1254169286894,
+        "store_std_discount_pct": 31.612194972684506,
+        "sample_size": 91,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-29",
+        "store": "L9 - Serra",
+        "total_revenue": 9195.49,
+        "total_discount": 30438.061064935064,
+        "discount_pct": 331.0107570660733,
+        "store_mean_discount_pct": 312.1254169286894,
+        "store_std_discount_pct": 31.612194972684506,
+        "sample_size": 66,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-24",
+        "store": "L7 - Oeste",
+        "total_revenue": 18059.74,
+        "total_discount": 49803.940214285714,
+        "discount_pct": 275.7732958186868,
+        "store_mean_discount_pct": 260.69686712328195,
+        "store_std_discount_pct": 13.752304294686517,
+        "sample_size": 115,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-31",
+        "store": "L9 - Serra",
+        "total_revenue": 17944.04,
+        "total_discount": 48016.44801948052,
+        "discount_pct": 267.5899519811621,
+        "store_mean_discount_pct": 312.1254169286894,
+        "store_std_discount_pct": 31.612194972684506,
+        "sample_size": 79,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-23",
+        "store": "L7 - Oeste",
+        "total_revenue": 17199.35,
+        "total_discount": 45371.695480519484,
+        "discount_pct": 263.79889635666166,
+        "store_mean_discount_pct": 260.69686712328195,
+        "store_std_discount_pct": 13.752304294686517,
+        "sample_size": 103,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-25",
+        "store": "L7 - Oeste",
+        "total_revenue": 21520.02,
+        "total_discount": 52190.01016233766,
+        "discount_pct": 242.51840919449734,
+        "store_mean_discount_pct": 260.69686712328195,
+        "store_std_discount_pct": 13.752304294686517,
+        "sample_size": 121,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-21",
+        "store": "L6 - Leste",
+        "total_revenue": 6122.12,
+        "total_discount": 11604.874993506493,
+        "discount_pct": 189.5564770619735,
+        "store_mean_discount_pct": 145.03965488809612,
+        "store_std_discount_pct": 32.73228058229186,
+        "sample_size": 33,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-35",
+        "store": "L10 - Industrial",
+        "total_revenue": 894.0,
+        "total_discount": 1362.258,
+        "discount_pct": 152.37785234899331,
+        "store_mean_discount_pct": 101.39630889501835,
+        "store_std_discount_pct": 42.75257885480976,
+        "sample_size": 6,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-20",
+        "store": "L6 - Leste",
+        "total_revenue": 7364.67,
+        "total_discount": 9851.852863636364,
+        "discount_pct": 133.7718168449688,
+        "store_mean_discount_pct": 145.03965488809612,
+        "store_std_discount_pct": 32.73228058229186,
+        "sample_size": 32,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-32",
+        "store": "L10 - Industrial",
+        "total_revenue": 1511.15,
+        "total_discount": 1921.3925194805195,
+        "discount_pct": 127.14770337031527,
+        "store_mean_discount_pct": 101.39630889501835,
+        "store_std_discount_pct": 42.75257885480976,
+        "sample_size": 7,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-22",
+        "store": "L6 - Leste",
+        "total_revenue": 8057.68,
+        "total_discount": 9007.734519480518,
+        "discount_pct": 111.790670757346,
+        "store_mean_discount_pct": 145.03965488809612,
+        "store_std_discount_pct": 32.73228058229186,
+        "sample_size": 35,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-34",
+        "store": "L10 - Industrial",
+        "total_revenue": 1600.83,
+        "total_discount": 1385.265116883117,
+        "discount_pct": 86.53418019921648,
+        "store_mean_discount_pct": 101.39630889501835,
+        "store_std_discount_pct": 42.75257885480976,
+        "sample_size": 6,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-33",
+        "store": "L10 - Industrial",
+        "total_revenue": 2245.52,
+        "total_discount": 887.5529999999999,
+        "discount_pct": 39.525499661548324,
+        "store_mean_discount_pct": 101.39630889501835,
+        "store_std_discount_pct": 42.75257885480976,
+        "sample_size": 6,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-17",
+        "store": "L5 - Norte",
+        "total_revenue": 16040.6,
+        "total_discount": 5713.214636363636,
+        "discount_pct": 35.61721279979325,
+        "store_mean_discount_pct": 27.235295688365095,
+        "store_std_discount_pct": 8.829673995617867,
+        "sample_size": 37,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-16",
+        "store": "L4 - Zona Sul",
+        "total_revenue": 21029.88,
+        "total_discount": 7118.396753246754,
+        "discount_pct": 33.84896515456462,
+        "store_mean_discount_pct": 29.01375254561714,
+        "store_std_discount_pct": 4.0512933458760125,
+        "sample_size": 43,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-18",
+        "store": "L5 - Norte",
+        "total_revenue": 15791.630000000001,
+        "total_discount": 4904.894681818181,
+        "discount_pct": 31.060091211725332,
+        "store_mean_discount_pct": 27.235295688365095,
+        "store_std_discount_pct": 8.829673995617867,
+        "sample_size": 34,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-15",
+        "store": "L4 - Zona Sul",
+        "total_revenue": 14822.16,
+        "total_discount": 4336.65477922078,
+        "discount_pct": 29.257913686134682,
+        "store_mean_discount_pct": 29.01375254561714,
+        "store_std_discount_pct": 4.0512933458760125,
+        "sample_size": 30,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-14",
+        "store": "L4 - Zona Sul",
+        "total_revenue": 18991.27,
+        "total_discount": 4545.4425,
+        "discount_pct": 23.934378796152128,
+        "store_mean_discount_pct": 29.01375254561714,
+        "store_std_discount_pct": 4.0512933458760125,
+        "sample_size": 38,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-26",
+        "store": "L8 - Praia",
+        "total_revenue": 23793.6,
+        "total_discount": 5252.771987012987,
+        "discount_pct": 22.076407046487237,
+        "store_mean_discount_pct": 15.469280666093136,
+        "store_std_discount_pct": 4.997178627615733,
+        "sample_size": 51,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-19",
+        "store": "L5 - Norte",
+        "total_revenue": 20783.68,
+        "total_discount": 3123.4926103896105,
+        "discount_pct": 15.028583053576703,
+        "store_mean_discount_pct": 27.235295688365095,
+        "store_std_discount_pct": 8.829673995617867,
+        "sample_size": 33,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-27",
+        "store": "L8 - Praia",
+        "total_revenue": 22134.05,
+        "total_discount": 3173.4930000000018,
+        "discount_pct": 14.337606538342516,
+        "store_mean_discount_pct": 15.469280666093136,
+        "store_std_discount_pct": 4.997178627615733,
+        "sample_size": 42,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-28",
+        "store": "L8 - Praia",
+        "total_revenue": 29134.25,
+        "total_discount": 2911.6269545454556,
+        "discount_pct": 9.993828413449654,
+        "store_mean_discount_pct": 15.469280666093136,
+        "store_std_discount_pct": 4.997178627615733,
+        "sample_size": 51,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-07",
+        "store": "L2 - Shopping",
+        "total_revenue": 48562.44,
+        "total_discount": -10234.579363636363,
+        "discount_pct": -21.075092939391766,
+        "store_mean_discount_pct": -35.04081363230718,
+        "store_std_discount_pct": 8.137939103768941,
+        "sample_size": 96,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-11",
+        "store": "L3 - Bairro",
+        "total_revenue": 51351.61,
+        "total_discount": -13014.706818181818,
+        "discount_pct": -25.344301411741164,
+        "store_mean_discount_pct": -34.613337241507146,
+        "store_std_discount_pct": 5.42238149453023,
+        "sample_size": 98,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-10",
+        "store": "L3 - Bairro",
+        "total_revenue": 82343.42,
+        "total_discount": -30394.144136363637,
+        "discount_pct": -36.91144251278807,
+        "store_mean_discount_pct": -34.613337241507146,
+        "store_std_discount_pct": 5.42238149453023,
+        "sample_size": 128,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-12",
+        "store": "L3 - Bairro",
+        "total_revenue": 90150.79,
+        "total_discount": -33419.168318181815,
+        "discount_pct": -37.07030001421154,
+        "store_mean_discount_pct": -34.613337241507146,
+        "store_std_discount_pct": 5.42238149453023,
+        "sample_size": 139,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-05",
+        "store": "L2 - Shopping",
+        "total_revenue": 95692.88,
+        "total_discount": -36812.137,
+        "discount_pct": -38.4690449278985,
+        "store_mean_discount_pct": -35.04081363230718,
+        "store_std_discount_pct": 8.137939103768941,
+        "sample_size": 136,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-09",
+        "store": "L3 - Bairro",
+        "total_revenue": 85899.2,
+        "total_discount": -33610.042,
+        "discount_pct": -39.127305027287804,
+        "store_mean_discount_pct": -34.613337241507146,
+        "store_std_discount_pct": 5.42238149453023,
+        "sample_size": 123,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-08",
+        "store": "L2 - Shopping",
+        "total_revenue": 78637.93000000001,
+        "total_discount": -30803.589,
+        "discount_pct": -39.171413845710326,
+        "store_mean_discount_pct": -35.04081363230718,
+        "store_std_discount_pct": 8.137939103768941,
+        "sample_size": 119,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-06",
+        "store": "L2 - Shopping",
+        "total_revenue": 87900.97,
+        "total_discount": -36432.93281818182,
+        "discount_pct": -41.4477028162281,
+        "store_mean_discount_pct": -35.04081363230718,
+        "store_std_discount_pct": 8.137939103768941,
+        "sample_size": 120,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-01",
+        "store": "L1 - Centro",
+        "total_revenue": 78292.38,
+        "total_discount": -33082.4165,
+        "discount_pct": -42.25496338213246,
+        "store_mean_discount_pct": -45.791815410267326,
+        "store_std_discount_pct": 2.2057055486735058,
+        "sample_size": 109,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-03",
+        "store": "L1 - Centro",
+        "total_revenue": 127384.97,
+        "total_discount": -58594.3625,
+        "discount_pct": -45.9978618356624,
+        "store_mean_discount_pct": -45.791815410267326,
+        "store_std_discount_pct": 2.2057055486735058,
+        "sample_size": 179,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-04",
+        "store": "L1 - Centro",
+        "total_revenue": 103457.55,
+        "total_discount": -48244.429,
+        "discount_pct": -46.632100798830045,
+        "store_mean_discount_pct": -45.791815410267326,
+        "store_std_discount_pct": 2.2057055486735058,
+        "sample_size": 109,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-02",
+        "store": "L1 - Centro",
+        "total_revenue": 95921.56999999999,
+        "total_discount": -46313.17436363636,
+        "discount_pct": -48.28233562444439,
+        "store_mean_discount_pct": -45.791815410267326,
+        "store_std_discount_pct": 2.2057055486735058,
+        "sample_size": 120,
+        "is_corrosive": false
+      }
+    ],
+    "concentration_risk": [
+      {
+        "store": "L9 - Serra",
+        "salesperson": "V-31",
+        "vip_revenue": 10515.11,
+        "vip_total_store": 16832.41,
+        "concentration_pct": 62.46942654082214,
+        "is_high_risk": true
+      },
+      {
+        "store": "L5 - Norte",
+        "salesperson": "V-19",
+        "vip_revenue": 15567.13,
+        "vip_total_store": 30473.03,
+        "concentration_pct": 51.08494298072755,
+        "is_high_risk": true
+      },
+      {
+        "store": "L6 - Leste",
+        "salesperson": "V-20",
+        "vip_revenue": 5836.97,
+        "vip_total_store": 13027.3,
+        "concentration_pct": 44.80567730842155,
+        "is_high_risk": true
+      },
+      {
+        "store": "L10 - Industrial",
+        "salesperson": "V-34",
+        "vip_revenue": 941.08,
+        "vip_total_store": 2145.4700000000003,
+        "concentration_pct": 43.863582338601795,
+        "is_high_risk": true
+      },
+      {
+        "store": "L4 - Zona Sul",
+        "salesperson": "V-16",
+        "vip_revenue": 14204.76,
+        "vip_total_store": 35562.51,
+        "concentration_pct": 39.94307488419687,
+        "is_high_risk": false
+      },
+      {
+        "store": "L2 - Shopping",
+        "salesperson": "V-06",
+        "vip_revenue": 36213.52,
+        "vip_total_store": 94674.16,
+        "concentration_pct": 38.25069057914007,
+        "is_high_risk": false
+      },
+      {
+        "store": "L8 - Praia",
+        "salesperson": "V-28",
+        "vip_revenue": 16408.72,
+        "vip_total_store": 44442.98,
+        "concentration_pct": 36.92083654156404,
+        "is_high_risk": false
+      },
+      {
+        "store": "L8 - Praia",
+        "salesperson": "V-27",
+        "vip_revenue": 15833.18,
+        "vip_total_store": 44442.98,
+        "concentration_pct": 35.6258288710613,
+        "is_high_risk": false
+      },
+      {
+        "store": "L7 - Oeste",
+        "salesperson": "V-25",
+        "vip_revenue": 9277.72,
+        "vip_total_store": 26125.170000000002,
+        "concentration_pct": 35.51257274115345,
+        "is_high_risk": false
+      },
+      {
+        "store": "L7 - Oeste",
+        "salesperson": "V-23",
+        "vip_revenue": 9199.03,
+        "vip_total_store": 26125.170000000002,
+        "concentration_pct": 35.211368959512996,
+        "is_high_risk": false
+      },
+      {
+        "store": "L3 - Bairro",
+        "salesperson": "V-12",
+        "vip_revenue": 26477.97,
+        "vip_total_store": 85626.81,
+        "concentration_pct": 30.922522980828084,
+        "is_high_risk": false
+      },
+      {
+        "store": "L4 - Zona Sul",
+        "salesperson": "V-14",
+        "vip_revenue": 10941.03,
+        "vip_total_store": 35562.51,
+        "concentration_pct": 30.765629310192107,
+        "is_high_risk": false
+      },
+      {
+        "store": "L4 - Zona Sul",
+        "salesperson": "V-15",
+        "vip_revenue": 10416.72,
+        "vip_total_store": 35562.51,
+        "concentration_pct": 29.291295805611018,
+        "is_high_risk": false
+      },
+      {
+        "store": "L7 - Oeste",
+        "salesperson": "V-24",
+        "vip_revenue": 7648.42,
+        "vip_total_store": 26125.170000000002,
+        "concentration_pct": 29.276058299333553,
+        "is_high_risk": false
+      },
+      {
+        "store": "L5 - Norte",
+        "salesperson": "V-18",
+        "vip_revenue": 8915.37,
+        "vip_total_store": 30473.03,
+        "concentration_pct": 29.25659181249781,
+        "is_high_risk": false
+      },
+      {
+        "store": "L6 - Leste",
+        "salesperson": "V-21",
+        "vip_revenue": 3808.85,
+        "vip_total_store": 13027.3,
+        "concentration_pct": 29.237447514066616,
+        "is_high_risk": false
+      },
+      {
+        "store": "L2 - Shopping",
+        "salesperson": "V-05",
+        "vip_revenue": 27239.62,
+        "vip_total_store": 94674.16,
+        "concentration_pct": 28.771969035690415,
+        "is_high_risk": false
+      },
+      {
+        "store": "L3 - Bairro",
+        "salesperson": "V-09",
+        "vip_revenue": 24471.11,
+        "vip_total_store": 85626.81,
+        "concentration_pct": 28.578794421980685,
+        "is_high_risk": false
+      },
+      {
+        "store": "L3 - Bairro",
+        "salesperson": "V-10",
+        "vip_revenue": 23989.66,
+        "vip_total_store": 85626.81,
+        "concentration_pct": 28.01652893527156,
+        "is_high_risk": false
+      },
+      {
+        "store": "L8 - Praia",
+        "salesperson": "V-26",
+        "vip_revenue": 12201.08,
+        "vip_total_store": 44442.98,
+        "concentration_pct": 27.453334587374652,
+        "is_high_risk": false
+      },
+      {
+        "store": "L1 - Centro",
+        "salesperson": "V-02",
+        "vip_revenue": 32728.92,
+        "vip_total_store": 124287.75,
+        "concentration_pct": 26.333182473735345,
+        "is_high_risk": false
+      },
+      {
+        "store": "L6 - Leste",
+        "salesperson": "V-22",
+        "vip_revenue": 3381.48,
+        "vip_total_store": 13027.3,
+        "concentration_pct": 25.956875177511844,
+        "is_high_risk": false
+      },
+      {
+        "store": "L1 - Centro",
+        "salesperson": "V-03",
+        "vip_revenue": 32015.399999999998,
+        "vip_total_store": 124287.75,
+        "concentration_pct": 25.75909532516278,
+        "is_high_risk": false
+      },
+      {
+        "store": "L1 - Centro",
+        "salesperson": "V-01",
+        "vip_revenue": 29839.4,
+        "vip_total_store": 124287.75,
+        "concentration_pct": 24.008319403963785,
+        "is_high_risk": false
+      },
+      {
+        "store": "L1 - Centro",
+        "salesperson": "V-04",
+        "vip_revenue": 29704.03,
+        "vip_total_store": 124287.75,
+        "concentration_pct": 23.899402797138094,
+        "is_high_risk": false
+      },
+      {
+        "store": "L2 - Shopping",
+        "salesperson": "V-08",
+        "vip_revenue": 22145.08,
+        "vip_total_store": 94674.16,
+        "concentration_pct": 23.39083864065971,
+        "is_high_risk": false
+      },
+      {
+        "store": "L10 - Industrial",
+        "salesperson": "V-33",
+        "vip_revenue": 493.44,
+        "vip_total_store": 2145.4700000000003,
+        "concentration_pct": 22.999156362009256,
+        "is_high_risk": false
+      },
+      {
+        "store": "L9 - Serra",
+        "salesperson": "V-30",
+        "vip_revenue": 3513.64,
+        "vip_total_store": 16832.41,
+        "concentration_pct": 20.87425389471858,
+        "is_high_risk": false
+      },
+      {
+        "store": "L10 - Industrial",
+        "salesperson": "V-35",
+        "vip_revenue": 442.0,
+        "vip_total_store": 2145.4700000000003,
+        "concentration_pct": 20.60154651428358,
+        "is_high_risk": false
+      },
+      {
+        "store": "L5 - Norte",
+        "salesperson": "V-17",
+        "vip_revenue": 5990.53,
+        "vip_total_store": 30473.03,
+        "concentration_pct": 19.658465206774647,
+        "is_high_risk": false
+      },
+      {
+        "store": "L9 - Serra",
+        "salesperson": "V-29",
+        "vip_revenue": 2803.66,
+        "vip_total_store": 16832.41,
+        "concentration_pct": 16.656319564459277,
+        "is_high_risk": false
+      },
+      {
+        "store": "L10 - Industrial",
+        "salesperson": "V-32",
+        "vip_revenue": 268.95,
+        "vip_total_store": 2145.4700000000003,
+        "concentration_pct": 12.53571478510536,
+        "is_high_risk": false
+      },
+      {
+        "store": "L3 - Bairro",
+        "salesperson": "V-11",
+        "vip_revenue": 10688.07,
+        "vip_total_store": 85626.81,
+        "concentration_pct": 12.482153661919673,
+        "is_high_risk": false
+      },
+      {
+        "store": "L2 - Shopping",
+        "salesperson": "V-07",
+        "vip_revenue": 9075.94,
+        "vip_total_store": 94674.16,
+        "concentration_pct": 9.5865017445098,
+        "is_high_risk": false
+      }
+    ],
+    "follow_on_conversion": 0.5813953488372093
+  },
   "executive_summary": {
     "total_operational_loss": 197.60373263936356,
     "total_capital_frozen": 35040.0,
