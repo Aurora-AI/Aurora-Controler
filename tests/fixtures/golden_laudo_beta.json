@@ -1124,6 +1124,18 @@
         "SOL-031": [
           14
         ]
+      },
+      "sku_capital": {
+        "SOL-030": 2532.6,
+        "SOL-031": 2568.6400000000003
+      },
+      "sku_months_since": {
+        "SOL-030": 10,
+        "SOL-031": 9
+      },
+      "sku_descriptions": {
+        "SOL-030": "Óculos Solar Polarizado A",
+        "SOL-031": "Óculos Solar Polarizado B"
       }
     }
   ],
@@ -1642,6 +1654,7 @@
         {
           "id": "DTQ-0001",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1666,6 +1679,7 @@
         {
           "id": "DTQ-0002",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -1689,6 +1703,7 @@
         {
           "id": "DTQ-0003",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1714,6 +1729,7 @@
         {
           "id": "DTQ-0004",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -1738,6 +1754,7 @@
         {
           "id": "DTQ-0005",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1761,6 +1778,7 @@
         {
           "id": "DTQ-0006",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -1784,6 +1802,7 @@
         {
           "id": "DTQ-0007",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -1808,6 +1827,7 @@
         {
           "id": "DTQ-0008",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1831,6 +1851,7 @@
         {
           "id": "DTQ-0009",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1855,6 +1876,7 @@
         {
           "id": "DTQ-0010",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -1878,6 +1900,7 @@
         {
           "id": "DTQ-0011",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-05",
           "source_rows": [
@@ -1901,6 +1924,7 @@
         {
           "id": "DTQ-0012",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1925,6 +1949,7 @@
         {
           "id": "DTQ-0013",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -1949,6 +1974,7 @@
         {
           "id": "DTQ-0014",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -1972,6 +1998,7 @@
         {
           "id": "DTQ-0015",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1996,6 +2023,7 @@
         {
           "id": "DTQ-0016",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -2019,6 +2047,7 @@
         {
           "id": "DTQ-0017",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -2042,6 +2071,7 @@
         {
           "id": "DTQ-0018",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -2065,6 +2095,7 @@
         {
           "id": "DTQ-0019",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 02",
           "salesperson": "V-05",
           "source_rows": [
@@ -2089,6 +2120,7 @@
         {
           "id": "DTQ-0020",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -2113,6 +2145,7 @@
         {
           "id": "DTQ-0021",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -2136,6 +2169,7 @@
         {
           "id": "DTQ-0022",
           "sku": "LNT-900",
+          "sku_description": "Lente Progressiva Premium",
           "store": "Loja 02",
           "salesperson": "V-05",
           "source_rows": [
@@ -2164,6 +2198,7 @@
         {
           "id": "DTQ-0023",
           "sku": "LNT-900",
+          "sku_description": "Lente Progressiva Premium",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -2192,6 +2227,7 @@
         {
           "id": "DTQ-0024",
           "sku": "LNT-900",
+          "sku_description": "Lente Progressiva Premium",
           "store": "Loja 02",
           "salesperson": "_UNKNOWN_SALESPERSON",
           "source_rows": [
@@ -2218,6 +2254,7 @@
         {
           "id": "DTQ-0025",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -2241,6 +2278,7 @@
         {
           "id": "DTQ-0026",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -2264,6 +2302,7 @@
         {
           "id": "DTQ-0027",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -2288,6 +2327,7 @@
         {
           "id": "DTQ-0028",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -2312,6 +2352,7 @@
         {
           "id": "DTQ-0029",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -2337,6 +2378,7 @@
         {
           "id": "DTQ-0030",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -2360,6 +2402,7 @@
         {
           "id": "DTQ-0031",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -2383,6 +2426,7 @@
         {
           "id": "DTQ-0032",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -2406,6 +2450,7 @@
         {
           "id": "DTQ-0033",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -2429,6 +2474,7 @@
         {
           "id": "DTQ-0034",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -2452,6 +2498,7 @@
         {
           "id": "DTQ-0035",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -2475,6 +2522,7 @@
         {
           "id": "DTQ-0036",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -2498,6 +2546,7 @@
         {
           "id": "DTQ-0037",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -2521,6 +2570,7 @@
         {
           "id": "DTQ-0038",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [

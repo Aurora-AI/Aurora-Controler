@@ -45,6 +45,10 @@ _ESTOQUE_ROLE_KEYWORDS: dict[str, list[str]] = {
     # _ESTOQUE_REQUIRED_ROLES, então planilha sem esta coluna não quebra nenhum
     # detector de Estoque existente — só desativa o detector que depende dela.
     "list_price": ["preco_venda", "preco_tabela", "preco"],
+    # Fase D2 — nome legível do produto, pro Anexo Vivo nunca mostrar só o código
+    # cru do SKU. Papel opcional (fora de _ESTOQUE_REQUIRED_ROLES): sem a coluna, o
+    # anexo cai pro fallback honesto (só o código) — nunca inventa nome.
+    "description": ["descricao", "nome"],
 }
 _ESTOQUE_REQUIRED_ROLES = ("sku", "cost", "qty_on_hand", "last_movement")
 

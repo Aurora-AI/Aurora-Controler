@@ -961,10 +961,38 @@ def detect_dead_stock(
     for idx, sku in dead["sku"].items():
         sku_source_rows.setdefault(sku, []).append(int(idx) + 2)
 
+    # Fase D2 — capital preso por SKU (soma se o mesmo SKU aparece em >1 loja);
+    # Σ(sku_capital.values()) == capital_frozen por construção (mesma agregação).
+    sku_capital: dict[str, float] = (
+        dead.groupby("sku")["inventory_value"].sum().to_dict()
+    )
+    # Fase D2 — meses parado por SKU (pior caso — mais tempo sem giro — se o mesmo
+    # SKU aparece em >1 loja com datas de última movimentação diferentes).
+    sku_months_since: dict[str, int] = (
+        dead.groupby("sku")["months_since"].max().astype(int).to_dict()
+    )
+
+    # Fase D2 — nome legível, papel opcional `description`. Extraído FORA do
+    # `frame`/`.dropna()` acima de propósito: descrição ausente não pode derrubar um
+    # SKU do cálculo de estoque morto (o nome é decoração pro anexo, não um dado que
+    # o detector precisa pra funcionar).
+    sku_descriptions: dict[str, str] = {}
+    if "description" in roles:
+        desc_col = estoque_df[roles["description"]]
+        for idx, sku in dead["sku"].items():
+            if sku in sku_descriptions:
+                continue
+            raw = desc_col.get(idx)
+            if pd.notna(raw) and str(raw).strip():
+                sku_descriptions[sku] = str(raw).strip()
+
     return [DeadStockFinding(
         dead_stock_months=thresholds.dead_stock_months, sku_count=len(dead),
         capital_frozen=capital_frozen, total_inventory_value=total_inventory_value,
         dead_stock_pct=float(dead_stock_pct), skus=sorted(dead["sku"].tolist()),
+        sku_capital=sku_capital,
+        sku_months_since=sku_months_since,
+        sku_descriptions=sku_descriptions,
         sku_source_rows=sku_source_rows,
     )]
 
@@ -1486,6 +1514,31 @@ def _estoque_list_price_by_sku(estoque_df: pd.DataFrame | None) -> pd.Series | N
     return frame.groupby("sku")["list_price"].mean() if not frame.empty else None
 
 
+def _estoque_description_by_sku(estoque_df: pd.DataFrame | None) -> pd.Series | None:
+    """Fase D2 — nome legível por SKU (aba Estoque, papel opcional `description`).
+    Mesmo padrão de `_estoque_list_price_by_sku` — `None` quando a aba/coluna não
+    existe (o anexo cai pro fallback honesto: só o código do SKU)."""
+    if estoque_df is None or estoque_df.empty:
+        return None
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return None
+    if "description" not in roles:
+        return None
+    frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "description": estoque_df[roles["description"]],
+    }).dropna()
+    if frame.empty:
+        return None
+    # SKU pode aparecer em >1 linha (catálogo por loja) — primeira descrição não-nula
+    # vence; são o mesmo produto, o nome não deveria variar por loja.
+    return frame.groupby("sku")["description"].first()
+
+
 def _nf_cost_as_of_sale(sales: pd.DataFrame, compras_df: pd.DataFrame | None) -> pd.Series:
     """Custo real de aquisição (aba Compras, "NF de entrada") vigente na data de cada
     venda: a compra do MESMO SKU mais recente ANTERIOR à venda (`merge_asof`,
@@ -1669,6 +1722,10 @@ def detect_discrepancy_triage(
         source_rows=("source_row", list),
     )
 
+    # Fase D2 — nome legível por SKU (fallback honesto: None se Estoque não tem
+    # coluna de descrição, ou este SKU específico não está no catálogo).
+    description_by_sku = _estoque_description_by_sku(estoque_df)
+
     auto_classified: list[DiscrepancyTriageItem] = []
     manual_queue: list[DiscrepancyTriageItem] = []
     for i, ((sku, store, salesperson), row) in enumerate(
@@ -1681,8 +1738,13 @@ def detect_discrepancy_triage(
             store_systemic_pattern=bool(row["store_systemic_pattern"]),
         )
         verdict = _classify_discrepancy(evidence)
+        sku_description = (
+            description_by_sku.get(sku) if description_by_sku is not None else None
+        )
         item = DiscrepancyTriageItem(
-            id=f"DTQ-{i:04d}", sku=str(sku), store=str(store), salesperson=str(salesperson),
+            id=f"DTQ-{i:04d}", sku=str(sku),
+            sku_description=None if pd.isna(sku_description) else sku_description,
+            store=str(store), salesperson=str(salesperson),
             source_rows=sorted(int(r) for r in row["source_rows"]),
             practiced_price=float(row["practiced_price"]),
             list_price=None if pd.isna(row["list_price"]) else float(row["list_price"]),

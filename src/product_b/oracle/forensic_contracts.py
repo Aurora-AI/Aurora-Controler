@@ -302,6 +302,17 @@ class DeadStockFinding(BaseModel):
     # (lista porque o mesmo SKU pode aparecer 1x por loja no catálogo — nunca perde
     # ocorrência por sobrescrita de dict).
     sku_source_rows: dict[str, list[int]] = Field(default_factory=dict)
+    # Fase D2 — capital preso POR SKU (soma das ocorrências, se o mesmo SKU aparece
+    # parado em >1 loja) — sem isso, o Anexo Vivo não consegue montar a tabela por
+    # item sem reabrir a planilha (violaria "build_anexo lê só o congelado").
+    # Σ(sku_capital.values()) ≡ capital_frozen (identidade que o validador confere).
+    sku_capital: dict[str, float] = Field(default_factory=dict)
+    # Fase D2 — meses parado por SKU (pior caso, se em >1 loja com datas diferentes).
+    sku_months_since: dict[str, int] = Field(default_factory=dict)
+    # Fase D2 — nome legível ("Óculos Solar Polarizado A"), papel opcional
+    # `description` em Estoque. SKU sem descrição reconhecível fica de fora do
+    # dict (fallback honesto: o anexo mostra só o código) — nunca inventa nome.
+    sku_descriptions: dict[str, str] = Field(default_factory=dict)
 
 
 class GmroiEntry(BaseModel):
@@ -427,6 +438,10 @@ class DiscrepancyTriageItem(BaseModel):
     vai para veredito humano (ver `apply_manual_review_verdicts`)."""
     id: str
     sku: str
+    # Fase D2 — nome legível do SKU (papel opcional `description` em Estoque);
+    # None quando o catálogo não tem a coluna ou o SKU não está nele — fallback
+    # honesto, o anexo mostra só o código.
+    sku_description: str | None = None
     store: str
     salesperson: str
     source_rows: list[int] = Field(default_factory=list)  # procedência — linha de origem no arquivo

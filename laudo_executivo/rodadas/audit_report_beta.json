@@ -36,7 +36,10 @@
     "concentration_seller_vip_pct": 40.0,
     "vip_customer_top_pct": 20.0,
     "manual_review_discount_pct": 60.0,
-    "nf_cost_divergence_pct": 15.0
+    "nf_cost_divergence_pct": 15.0,
+    "seller_margin_gap_pct": 10.0,
+    "seller_margin_mix_min_sample": 10,
+    "provenance_sample_cap": 10
   },
   "revenue_leaks": [],
   "churn_findings": [
@@ -46,7 +49,16 @@
       "avg_cadence_days": 31.5,
       "last_purchase": "2026-01-18",
       "months_silent": 5,
-      "historical_annual_value": 1211.1399999999999
+      "historical_annual_value": 1211.1399999999999,
+      "source_rows": [
+        297,
+        514,
+        719,
+        760,
+        783
+      ],
+      "days_since_last": 163,
+      "silence_to_cycle_ratio": 5.174603174603175
     },
     {
       "customer_id": "Client_BR",
@@ -54,7 +66,17 @@
       "avg_cadence_days": 33.0,
       "last_purchase": "2026-02-06",
       "months_silent": 4,
-      "historical_annual_value": 2104.23
+      "historical_annual_value": 2104.23,
+      "source_rows": [
+        220,
+        381,
+        481,
+        509,
+        515,
+        858
+      ],
+      "days_since_last": 144,
+      "silence_to_cycle_ratio": 4.363636363636363
     },
     {
       "customer_id": "Client_HY",
@@ -62,7 +84,14 @@
       "avg_cadence_days": 58.5,
       "last_purchase": "2026-02-08",
       "months_silent": 4,
-      "historical_annual_value": 539.34
+      "historical_annual_value": 539.34,
+      "source_rows": [
+        417,
+        710,
+        871
+      ],
+      "days_since_last": 142,
+      "silence_to_cycle_ratio": 2.427350427350427
     },
     {
       "customer_id": "Client_I",
@@ -70,7 +99,21 @@
       "avg_cadence_days": 24.77777777777778,
       "last_purchase": "2026-02-15",
       "months_silent": 4,
-      "historical_annual_value": 4494.48
+      "historical_annual_value": 4494.48,
+      "source_rows": [
+        38,
+        67,
+        93,
+        110,
+        201,
+        250,
+        452,
+        466,
+        659,
+        902
+      ],
+      "days_since_last": 135,
+      "silence_to_cycle_ratio": 5.448430493273542
     },
     {
       "customer_id": "Client_IA",
@@ -78,7 +121,15 @@
       "avg_cadence_days": 39.333333333333336,
       "last_purchase": "2026-02-14",
       "months_silent": 4,
-      "historical_annual_value": 538.81
+      "historical_annual_value": 538.81,
+      "source_rows": [
+        447,
+        658,
+        723,
+        897
+      ],
+      "days_since_last": 136,
+      "silence_to_cycle_ratio": 3.4576271186440675
     },
     {
       "customer_id": "Client_CJ",
@@ -86,7 +137,16 @@
       "avg_cadence_days": 53.75,
       "last_purchase": "2026-02-09",
       "months_silent": 4,
-      "historical_annual_value": 1887.04
+      "historical_annual_value": 1887.04,
+      "source_rows": [
+        47,
+        180,
+        657,
+        674,
+        880
+      ],
+      "days_since_last": 141,
+      "silence_to_cycle_ratio": 2.6232558139534885
     },
     {
       "customer_id": "Client_AF",
@@ -94,7 +154,16 @@
       "avg_cadence_days": 47.0,
       "last_purchase": "2026-02-26",
       "months_silent": 4,
-      "historical_annual_value": 2856.88
+      "historical_annual_value": 2856.88,
+      "source_rows": [
+        195,
+        251,
+        754,
+        815,
+        961
+      ],
+      "days_since_last": 124,
+      "silence_to_cycle_ratio": 2.6382978723404253
     },
     {
       "customer_id": "Client_FI",
@@ -102,7 +171,14 @@
       "avg_cadence_days": 26.5,
       "last_purchase": "2026-03-30",
       "months_silent": 3,
-      "historical_annual_value": 1170.18
+      "historical_annual_value": 1170.18,
+      "source_rows": [
+        856,
+        955,
+        1070
+      ],
+      "days_since_last": 92,
+      "silence_to_cycle_ratio": 3.4716981132075473
     },
     {
       "customer_id": "Client_AB",
@@ -110,7 +186,19 @@
       "avg_cadence_days": 33.714285714285715,
       "last_purchase": "2026-02-28",
       "months_silent": 4,
-      "historical_annual_value": 2967.52
+      "historical_annual_value": 2967.52,
+      "source_rows": [
+        39,
+        44,
+        149,
+        309,
+        762,
+        766,
+        791,
+        969
+      ],
+      "days_since_last": 122,
+      "silence_to_cycle_ratio": 3.61864406779661
     },
     {
       "customer_id": "Client_HN",
@@ -118,7 +206,15 @@
       "avg_cadence_days": 45.333333333333336,
       "last_purchase": "2026-02-08",
       "months_silent": 4,
-      "historical_annual_value": 678.3800000000001
+      "historical_annual_value": 678.3800000000001,
+      "source_rows": [
+        338,
+        464,
+        837,
+        868
+      ],
+      "days_since_last": 142,
+      "silence_to_cycle_ratio": 3.1323529411764706
     },
     {
       "customer_id": "Client_AY",
@@ -126,7 +222,17 @@
       "avg_cadence_days": 35.8,
       "last_purchase": "2026-03-03",
       "months_silent": 3,
-      "historical_annual_value": 2413.6
+      "historical_annual_value": 2413.6,
+      "source_rows": [
+        264,
+        322,
+        364,
+        396,
+        954,
+        985
+      ],
+      "days_since_last": 119,
+      "silence_to_cycle_ratio": 3.3240223463687153
     },
     {
       "customer_id": "Client_CE",
@@ -134,7 +240,16 @@
       "avg_cadence_days": 42.0,
       "last_purchase": "2026-03-18",
       "months_silent": 3,
-      "historical_annual_value": 1925.82
+      "historical_annual_value": 1925.82,
+      "source_rows": [
+        374,
+        793,
+        883,
+        965,
+        1036
+      ],
+      "days_since_last": 104,
+      "silence_to_cycle_ratio": 2.4761904761904763
     },
     {
       "customer_id": "Client_U",
@@ -142,7 +257,19 @@
       "avg_cadence_days": 28.571428571428573,
       "last_purchase": "2026-03-19",
       "months_silent": 3,
-      "historical_annual_value": 3509.2
+      "historical_annual_value": 3509.2,
+      "source_rows": [
+        243,
+        484,
+        573,
+        634,
+        750,
+        832,
+        992,
+        1040
+      ],
+      "days_since_last": 103,
+      "silence_to_cycle_ratio": 3.605
     },
     {
       "customer_id": "Client_EZ",
@@ -150,7 +277,17 @@
       "avg_cadence_days": 46.2,
       "last_purchase": "2026-02-22",
       "months_silent": 4,
-      "historical_annual_value": 1224.03
+      "historical_annual_value": 1224.03,
+      "source_rows": [
+        35,
+        193,
+        596,
+        644,
+        927,
+        938
+      ],
+      "days_since_last": 128,
+      "silence_to_cycle_ratio": 2.7705627705627704
     },
     {
       "customer_id": "Client_BO",
@@ -158,7 +295,15 @@
       "avg_cadence_days": 43.666666666666664,
       "last_purchase": "2026-01-31",
       "months_silent": 5,
-      "historical_annual_value": 2161.6200000000003
+      "historical_annual_value": 2161.6200000000003,
+      "source_rows": [
+        328,
+        534,
+        709,
+        835
+      ],
+      "days_since_last": 150,
+      "silence_to_cycle_ratio": 3.435114503816794
     },
     {
       "customer_id": "Client_HP",
@@ -166,7 +311,16 @@
       "avg_cadence_days": 50.75,
       "last_purchase": "2026-02-19",
       "months_silent": 4,
-      "historical_annual_value": 639.75
+      "historical_annual_value": 639.75,
+      "source_rows": [
+        140,
+        197,
+        738,
+        799,
+        926
+      ],
+      "days_since_last": 131,
+      "silence_to_cycle_ratio": 2.58128078817734
     },
     {
       "customer_id": "Client_GU",
@@ -174,7 +328,15 @@
       "avg_cadence_days": 22.333333333333332,
       "last_purchase": "2025-10-31",
       "months_silent": 8,
-      "historical_annual_value": 837.3399999999999
+      "historical_annual_value": 837.3399999999999,
+      "source_rows": [
+        219,
+        367,
+        482,
+        492
+      ],
+      "days_since_last": 242,
+      "silence_to_cycle_ratio": 10.835820895522389
     },
     {
       "customer_id": "Client_CR",
@@ -182,7 +344,17 @@
       "avg_cadence_days": 41.6,
       "last_purchase": "2026-01-27",
       "months_silent": 5,
-      "historical_annual_value": 1790.9900000000002
+      "historical_annual_value": 1790.9900000000002,
+      "source_rows": [
+        15,
+        145,
+        377,
+        418,
+        758,
+        824
+      ],
+      "days_since_last": 154,
+      "silence_to_cycle_ratio": 3.7019230769230766
     },
     {
       "customer_id": "Client_HC",
@@ -190,7 +362,14 @@
       "avg_cadence_days": 63.5,
       "last_purchase": "2025-12-30",
       "months_silent": 6,
-      "historical_annual_value": 774.9200000000001
+      "historical_annual_value": 774.9200000000001,
+      "source_rows": [
+        215,
+        617,
+        715
+      ],
+      "days_since_last": 182,
+      "silence_to_cycle_ratio": 2.8661417322834644
     },
     {
       "customer_id": "Client_EA",
@@ -198,7 +377,16 @@
       "avg_cadence_days": 57.75,
       "last_purchase": "2026-02-18",
       "months_silent": 4,
-      "historical_annual_value": 1435.28
+      "historical_annual_value": 1435.28,
+      "source_rows": [
+        9,
+        334,
+        712,
+        877,
+        919
+      ],
+      "days_since_last": 132,
+      "silence_to_cycle_ratio": 2.2857142857142856
     },
     {
       "customer_id": "Client_DH",
@@ -206,7 +394,15 @@
       "avg_cadence_days": 28.333333333333332,
       "last_purchase": "2026-02-22",
       "months_silent": 4,
-      "historical_annual_value": 1614.0900000000001
+      "historical_annual_value": 1614.0900000000001,
+      "source_rows": [
+        595,
+        798,
+        823,
+        940
+      ],
+      "days_since_last": 128,
+      "silence_to_cycle_ratio": 4.517647058823529
     },
     {
       "customer_id": "Client_EX",
@@ -214,7 +410,16 @@
       "avg_cadence_days": 49.75,
       "last_purchase": "2026-03-21",
       "months_silent": 3,
-      "historical_annual_value": 1235.48
+      "historical_annual_value": 1235.48,
+      "source_rows": [
+        261,
+        471,
+        601,
+        931,
+        1044
+      ],
+      "days_since_last": 101,
+      "silence_to_cycle_ratio": 2.030150753768844
     },
     {
       "customer_id": "Client_GP",
@@ -222,7 +427,16 @@
       "avg_cadence_days": 22.75,
       "last_purchase": "2026-03-17",
       "months_silent": 3,
-      "historical_annual_value": 873.45
+      "historical_annual_value": 873.45,
+      "source_rows": [
+        663,
+        677,
+        718,
+        857,
+        1028
+      ],
+      "days_since_last": 105,
+      "silence_to_cycle_ratio": 4.615384615384615
     },
     {
       "customer_id": "Client_EK",
@@ -230,7 +444,16 @@
       "avg_cadence_days": 41.25,
       "last_purchase": "2025-12-26",
       "months_silent": 6,
-      "historical_annual_value": 1369.1200000000001
+      "historical_annual_value": 1369.1200000000001,
+      "source_rows": [
+        61,
+        202,
+        357,
+        502,
+        696
+      ],
+      "days_since_last": 186,
+      "silence_to_cycle_ratio": 4.509090909090909
     },
     {
       "customer_id": "Client_AJ",
@@ -238,7 +461,17 @@
       "avg_cadence_days": 31.2,
       "last_purchase": "2026-03-17",
       "months_silent": 3,
-      "historical_annual_value": 2793.4900000000002
+      "historical_annual_value": 2793.4900000000002,
+      "source_rows": [
+        406,
+        426,
+        804,
+        867,
+        1007,
+        1031
+      ],
+      "days_since_last": 105,
+      "silence_to_cycle_ratio": 3.3653846153846154
     },
     {
       "customer_id": "Client_IB",
@@ -246,7 +479,14 @@
       "avg_cadence_days": 66.5,
       "last_purchase": "2025-12-26",
       "months_silent": 6,
-      "historical_annual_value": 527.3599999999999
+      "historical_annual_value": 527.3599999999999,
+      "source_rows": [
+        183,
+        544,
+        697
+      ],
+      "days_since_last": 186,
+      "silence_to_cycle_ratio": 2.7969924812030076
     },
     {
       "customer_id": "Client_ID",
@@ -254,7 +494,14 @@
       "avg_cadence_days": 18.5,
       "last_purchase": "2025-10-31",
       "months_silent": 8,
-      "historical_annual_value": 510.82000000000005
+      "historical_annual_value": 510.82000000000005,
+      "source_rows": [
+        333,
+        441,
+        491
+      ],
+      "days_since_last": 242,
+      "silence_to_cycle_ratio": 13.08108108108108
     },
     {
       "customer_id": "Client_DY",
@@ -262,7 +509,14 @@
       "avg_cadence_days": 48.0,
       "last_purchase": "2026-03-01",
       "months_silent": 3,
-      "historical_annual_value": 1464.6799999999998
+      "historical_annual_value": 1464.6799999999998,
+      "source_rows": [
+        582,
+        624,
+        978
+      ],
+      "days_since_last": 121,
+      "silence_to_cycle_ratio": 2.5208333333333335
     },
     {
       "customer_id": "Client_X",
@@ -270,7 +524,17 @@
       "avg_cadence_days": 45.2,
       "last_purchase": "2026-02-20",
       "months_silent": 4,
-      "historical_annual_value": 3098.9100000000008
+      "historical_annual_value": 3098.9100000000008,
+      "source_rows": [
+        46,
+        125,
+        307,
+        588,
+        914,
+        928
+      ],
+      "days_since_last": 130,
+      "silence_to_cycle_ratio": 2.8761061946902653
     },
     {
       "customer_id": "Client_HO",
@@ -278,7 +542,15 @@
       "avg_cadence_days": 57.0,
       "last_purchase": "2026-01-04",
       "months_silent": 5,
-      "historical_annual_value": 665.75
+      "historical_annual_value": 665.75,
+      "source_rows": [
+        75,
+        113,
+        673,
+        737
+      ],
+      "days_since_last": 177,
+      "silence_to_cycle_ratio": 3.1052631578947367
     },
     {
       "customer_id": "Client_DZ",
@@ -286,7 +558,16 @@
       "avg_cadence_days": 34.5,
       "last_purchase": "2025-12-05",
       "months_silent": 6,
-      "historical_annual_value": 1446.9200000000003
+      "historical_annual_value": 1446.9200000000003,
+      "source_rows": [
+        87,
+        177,
+        206,
+        339,
+        621
+      ],
+      "days_since_last": 207,
+      "silence_to_cycle_ratio": 6.0
     },
     {
       "customer_id": "Client_EJ",
@@ -294,7 +575,16 @@
       "avg_cadence_days": 47.25,
       "last_purchase": "2026-02-18",
       "months_silent": 4,
-      "historical_annual_value": 1369.52
+      "historical_annual_value": 1369.52,
+      "source_rows": [
+        176,
+        210,
+        314,
+        752,
+        918
+      ],
+      "days_since_last": 132,
+      "silence_to_cycle_ratio": 2.7936507936507935
     },
     {
       "customer_id": "Client_DD",
@@ -302,7 +592,17 @@
       "avg_cadence_days": 48.2,
       "last_purchase": "2026-03-04",
       "months_silent": 3,
-      "historical_annual_value": 1703.43
+      "historical_annual_value": 1703.43,
+      "source_rows": [
+        32,
+        284,
+        363,
+        579,
+        948,
+        993
+      ],
+      "days_since_last": 118,
+      "silence_to_cycle_ratio": 2.4481327800829873
     },
     {
       "customer_id": "Client_DC",
@@ -310,7 +610,20 @@
       "avg_cadence_days": 28.125,
       "last_purchase": "2026-02-25",
       "months_silent": 4,
-      "historical_annual_value": 1717.12
+      "historical_annual_value": 1717.12,
+      "source_rows": [
+        70,
+        237,
+        300,
+        430,
+        448,
+        469,
+        495,
+        676,
+        960
+      ],
+      "days_since_last": 125,
+      "silence_to_cycle_ratio": 4.444444444444445
     },
     {
       "customer_id": "Client_AE",
@@ -318,7 +631,18 @@
       "avg_cadence_days": 30.5,
       "last_purchase": "2026-01-16",
       "months_silent": 5,
-      "historical_annual_value": 2904.21
+      "historical_annual_value": 2904.21,
+      "source_rows": [
+        73,
+        520,
+        578,
+        589,
+        668,
+        772,
+        776
+      ],
+      "days_since_last": 165,
+      "silence_to_cycle_ratio": 5.409836065573771
     },
     {
       "customer_id": "Client_R",
@@ -326,7 +650,21 @@
       "avg_cadence_days": 22.88888888888889,
       "last_purchase": "2026-01-24",
       "months_silent": 5,
-      "historical_annual_value": 3741.9100000000003
+      "historical_annual_value": 3741.9100000000003,
+      "source_rows": [
+        10,
+        173,
+        190,
+        349,
+        513,
+        580,
+        641,
+        735,
+        759,
+        810
+      ],
+      "days_since_last": 157,
+      "silence_to_cycle_ratio": 6.859223300970874
     },
     {
       "customer_id": "Client_FB",
@@ -334,7 +672,17 @@
       "avg_cadence_days": 46.8,
       "last_purchase": "2026-03-13",
       "months_silent": 3,
-      "historical_annual_value": 1217.63
+      "historical_annual_value": 1217.63,
+      "source_rows": [
+        101,
+        162,
+        167,
+        498,
+        552,
+        1020
+      ],
+      "days_since_last": 109,
+      "silence_to_cycle_ratio": 2.3290598290598292
     }
   ],
   "product_trends": [
@@ -768,7 +1116,27 @@
       "skus": [
         "SOL-030",
         "SOL-031"
-      ]
+      ],
+      "sku_source_rows": {
+        "SOL-030": [
+          13
+        ],
+        "SOL-031": [
+          14
+        ]
+      },
+      "sku_capital": {
+        "SOL-030": 2532.6,
+        "SOL-031": 2568.6400000000003
+      },
+      "sku_months_since": {
+        "SOL-030": 10,
+        "SOL-031": 9
+      },
+      "sku_descriptions": {
+        "SOL-030": "Óculos Solar Polarizado A",
+        "SOL-031": "Óculos Solar Polarizado B"
+      }
     }
   ],
   "gmroi": [],
@@ -988,7 +1356,13 @@
         "store_std_discount_pct": 119.05058596980778,
         "sample_size": 4,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          58,
+          474,
+          663,
+          724
+        ]
       },
       {
         "salesperson": "V-06",
@@ -1000,7 +1374,19 @@
         "store_std_discount_pct": 119.05058596980778,
         "sample_size": 160,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          9,
+          18,
+          31,
+          42,
+          43,
+          49,
+          69,
+          79,
+          101,
+          114
+        ]
       },
       {
         "salesperson": "V-05",
@@ -1012,7 +1398,19 @@
         "store_std_discount_pct": 119.05058596980778,
         "sample_size": 160,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          6,
+          19,
+          54,
+          63,
+          71,
+          73,
+          75,
+          81,
+          86,
+          92
+        ]
       },
       {
         "salesperson": "V-03",
@@ -1024,7 +1422,19 @@
         "store_std_discount_pct": 1.3664942209827327,
         "sample_size": 145,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          5,
+          12,
+          25,
+          34,
+          38,
+          39,
+          50,
+          72,
+          78,
+          80
+        ]
       },
       {
         "salesperson": "V-01",
@@ -1036,7 +1446,19 @@
         "store_std_discount_pct": 1.3664942209827327,
         "sample_size": 133,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          13,
+          20,
+          23,
+          29,
+          47,
+          68,
+          77,
+          104,
+          109,
+          143
+        ]
       },
       {
         "salesperson": "V-04",
@@ -1048,7 +1470,19 @@
         "store_std_discount_pct": 1.3664942209827327,
         "sample_size": 151,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          16,
+          30,
+          36,
+          51,
+          53,
+          82,
+          88,
+          93,
+          111,
+          135
+        ]
       },
       {
         "salesperson": "V-07",
@@ -1060,7 +1494,19 @@
         "store_std_discount_pct": 119.05058596980778,
         "sample_size": 141,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          8,
+          11,
+          17,
+          32,
+          35,
+          46,
+          64,
+          87,
+          89,
+          95
+        ]
       },
       {
         "salesperson": "V-08",
@@ -1072,7 +1518,19 @@
         "store_std_discount_pct": 119.05058596980778,
         "sample_size": 150,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          4,
+          10,
+          15,
+          37,
+          41,
+          56,
+          60,
+          61,
+          70,
+          84
+        ]
       },
       {
         "salesperson": "V-02",
@@ -1084,7 +1542,19 @@
         "store_std_discount_pct": 1.3664942209827327,
         "sample_size": 147,
         "is_corrosive": false,
-        "tainted_by_triage": true
+        "tainted_by_triage": true,
+        "sample_source_rows": [
+          2,
+          3,
+          21,
+          22,
+          26,
+          44,
+          57,
+          65,
+          66,
+          67
+        ]
       }
     ],
     "concentration_risk": [
@@ -1184,6 +1654,7 @@
         {
           "id": "DTQ-0001",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1208,6 +1679,7 @@
         {
           "id": "DTQ-0002",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -1231,6 +1703,7 @@
         {
           "id": "DTQ-0003",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1256,6 +1729,7 @@
         {
           "id": "DTQ-0004",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -1280,6 +1754,7 @@
         {
           "id": "DTQ-0005",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1303,6 +1778,7 @@
         {
           "id": "DTQ-0006",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -1326,6 +1802,7 @@
         {
           "id": "DTQ-0007",
           "sku": "ARP-013",
+          "sku_description": "Armação Grife Titânio Italiana",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -1350,6 +1827,7 @@
         {
           "id": "DTQ-0008",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1373,6 +1851,7 @@
         {
           "id": "DTQ-0009",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1397,6 +1876,7 @@
         {
           "id": "DTQ-0010",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -1420,6 +1900,7 @@
         {
           "id": "DTQ-0011",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-05",
           "source_rows": [
@@ -1443,6 +1924,7 @@
         {
           "id": "DTQ-0012",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1467,6 +1949,7 @@
         {
           "id": "DTQ-0013",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -1491,6 +1974,7 @@
         {
           "id": "DTQ-0014",
           "sku": "ARP-020",
+          "sku_description": "Armação Grife Acetato Edição Limitada",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -1514,6 +1998,7 @@
         {
           "id": "DTQ-0015",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1538,6 +2023,7 @@
         {
           "id": "DTQ-0016",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -1561,6 +2047,7 @@
         {
           "id": "DTQ-0017",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1584,6 +2071,7 @@
         {
           "id": "DTQ-0018",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -1607,6 +2095,7 @@
         {
           "id": "DTQ-0019",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 02",
           "salesperson": "V-05",
           "source_rows": [
@@ -1631,6 +2120,7 @@
         {
           "id": "DTQ-0020",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1655,6 +2145,7 @@
         {
           "id": "DTQ-0021",
           "sku": "ARP-021",
+          "sku_description": "Armação Grife Metal Dourado",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -1678,6 +2169,7 @@
         {
           "id": "DTQ-0022",
           "sku": "LNT-900",
+          "sku_description": "Lente Progressiva Premium",
           "store": "Loja 02",
           "salesperson": "V-05",
           "source_rows": [
@@ -1706,6 +2198,7 @@
         {
           "id": "DTQ-0023",
           "sku": "LNT-900",
+          "sku_description": "Lente Progressiva Premium",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1734,6 +2227,7 @@
         {
           "id": "DTQ-0024",
           "sku": "LNT-900",
+          "sku_description": "Lente Progressiva Premium",
           "store": "Loja 02",
           "salesperson": "_UNKNOWN_SALESPERSON",
           "source_rows": [
@@ -1760,6 +2254,7 @@
         {
           "id": "DTQ-0025",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1783,6 +2278,7 @@
         {
           "id": "DTQ-0026",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1806,6 +2302,7 @@
         {
           "id": "DTQ-0027",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -1830,6 +2327,7 @@
         {
           "id": "DTQ-0028",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1854,6 +2352,7 @@
         {
           "id": "DTQ-0029",
           "sku": "SOL-030",
+          "sku_description": "Óculos Solar Polarizado A",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -1879,6 +2378,7 @@
         {
           "id": "DTQ-0030",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -1902,6 +2402,7 @@
         {
           "id": "DTQ-0031",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -1925,6 +2426,7 @@
         {
           "id": "DTQ-0032",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 01",
           "salesperson": "V-03",
           "source_rows": [
@@ -1948,6 +2450,7 @@
         {
           "id": "DTQ-0033",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 02",
           "salesperson": "V-06",
           "source_rows": [
@@ -1971,6 +2474,7 @@
         {
           "id": "DTQ-0034",
           "sku": "SOL-031",
+          "sku_description": "Óculos Solar Polarizado B",
           "store": "Loja 02",
           "salesperson": "V-07",
           "source_rows": [
@@ -1994,6 +2498,7 @@
         {
           "id": "DTQ-0035",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 01",
           "salesperson": "V-01",
           "source_rows": [
@@ -2017,6 +2522,7 @@
         {
           "id": "DTQ-0036",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 01",
           "salesperson": "V-02",
           "source_rows": [
@@ -2040,6 +2546,7 @@
         {
           "id": "DTQ-0037",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 01",
           "salesperson": "V-04",
           "source_rows": [
@@ -2063,6 +2570,7 @@
         {
           "id": "DTQ-0038",
           "sku": "SOL-032",
+          "sku_description": "Óculos Solar Esportivo C",
           "store": "Loja 02",
           "salesperson": "V-08",
           "source_rows": [
@@ -2085,7 +2593,457 @@
         }
       ],
       "manual_queue": []
-    }
+    },
+    "seller_margin_mix": [
+      {
+        "salesperson": "V-06",
+        "store": "Loja 02",
+        "total_revenue": 46936.06,
+        "seller_margin_pct": 59.90894847160158,
+        "store_margin_pct": 62.826397836873035,
+        "margin_gap_pp": 2.9174493652714517,
+        "is_margin_destructive": false,
+        "sample_size": 160,
+        "mix": [
+          {
+            "category": "solar",
+            "seller_revenue": 8099.7,
+            "seller_mix_pct": 17.256880956773962,
+            "store_mix_pct": 14.161379820333721,
+            "mix_deviation_pp": 3.095501136440241,
+            "category_margin_pct": 66.17345049321617
+          },
+          {
+            "category": "lente",
+            "seller_revenue": 12272.75,
+            "seller_mix_pct": 26.14780618569177,
+            "store_mix_pct": 23.76613337577875,
+            "mix_deviation_pp": 2.38167280991302,
+            "category_margin_pct": 56.98586700697465
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 4962.8099999999995,
+            "seller_mix_pct": 10.573554746606339,
+            "store_mix_pct": 11.692154195056384,
+            "mix_deviation_pp": -1.1185994484500448,
+            "category_margin_pct": 66.38077758375869
+          },
+          {
+            "category": "armacao",
+            "seller_revenue": 21600.8,
+            "seller_mix_pct": 46.021758110927934,
+            "store_mix_pct": 50.38033260883115,
+            "mix_deviation_pp": -4.358574497903213,
+            "category_margin_pct": 63.81586321143211
+          }
+        ],
+        "sample_source_rows": [
+          9,
+          18,
+          31,
+          42,
+          43,
+          49,
+          69,
+          79,
+          101,
+          114
+        ]
+      },
+      {
+        "salesperson": "V-02",
+        "store": "Loja 01",
+        "total_revenue": 61220.26,
+        "seller_margin_pct": 63.775733719523565,
+        "store_margin_pct": 64.19822029415403,
+        "margin_gap_pp": 0.4224865746304616,
+        "is_margin_destructive": false,
+        "sample_size": 147,
+        "mix": [
+          {
+            "category": "lente",
+            "seller_revenue": 28942.25,
+            "seller_mix_pct": 47.27560778082288,
+            "store_mix_pct": 44.819865472386134,
+            "mix_deviation_pp": 2.455742308436747,
+            "category_margin_pct": 65.67673237562074
+          },
+          {
+            "category": "solar",
+            "seller_revenue": 9257.92,
+            "seller_mix_pct": 15.122314083605655,
+            "store_mix_pct": 13.962829160770088,
+            "mix_deviation_pp": 1.159484922835567,
+            "category_margin_pct": 66.76066355352836
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 4720.66,
+            "seller_mix_pct": 7.710944056755068,
+            "store_mix_pct": 7.28279492986363,
+            "mix_deviation_pp": 0.42814912689143814,
+            "category_margin_pct": 65.01049563794008
+          },
+          {
+            "category": "armacao",
+            "seller_revenue": 18299.43,
+            "seller_mix_pct": 29.89113407881639,
+            "store_mix_pct": 33.934510436980155,
+            "mix_deviation_pp": -4.043376358163766,
+            "category_margin_pct": 61.016759786234815
+          }
+        ],
+        "sample_source_rows": [
+          2,
+          3,
+          21,
+          22,
+          26,
+          44,
+          57,
+          65,
+          66,
+          67
+        ]
+      },
+      {
+        "salesperson": "V-03",
+        "store": "Loja 01",
+        "total_revenue": 55638.52,
+        "seller_margin_pct": 63.86352476665447,
+        "store_margin_pct": 64.19822029415403,
+        "margin_gap_pp": 0.3346955274995551,
+        "is_margin_destructive": false,
+        "sample_size": 145,
+        "mix": [
+          {
+            "category": "armacao",
+            "seller_revenue": 20239.94,
+            "seller_mix_pct": 36.3775671962518,
+            "store_mix_pct": 33.934510436980155,
+            "mix_deviation_pp": 2.4430567592716486,
+            "category_margin_pct": 61.016759786234815
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 4169.4,
+            "seller_mix_pct": 7.49372916461473,
+            "store_mix_pct": 7.28279492986363,
+            "mix_deviation_pp": 0.2109342347511003,
+            "category_margin_pct": 65.01049563794008
+          },
+          {
+            "category": "solar",
+            "seller_revenue": 7795.7,
+            "seller_mix_pct": 14.011336031224412,
+            "store_mix_pct": 13.962829160770088,
+            "mix_deviation_pp": 0.04850687045432345,
+            "category_margin_pct": 66.76066355352836
+          },
+          {
+            "category": "lente",
+            "seller_revenue": 23433.48,
+            "seller_mix_pct": 42.11736760790905,
+            "store_mix_pct": 44.819865472386134,
+            "mix_deviation_pp": -2.702497864477081,
+            "category_margin_pct": 65.67673237562074
+          }
+        ],
+        "sample_source_rows": [
+          5,
+          12,
+          25,
+          34,
+          38,
+          39,
+          50,
+          72,
+          78,
+          80
+        ]
+      },
+      {
+        "salesperson": "V-01",
+        "store": "Loja 01",
+        "total_revenue": 56382.71,
+        "seller_margin_pct": 64.08058427840734,
+        "store_margin_pct": 64.19822029415403,
+        "margin_gap_pp": 0.11763601574668314,
+        "is_margin_destructive": false,
+        "sample_size": 133,
+        "mix": [
+          {
+            "category": "armacao",
+            "seller_revenue": 23530.78,
+            "seller_mix_pct": 41.7340351324014,
+            "store_mix_pct": 33.934510436980155,
+            "mix_deviation_pp": 7.799524695421248,
+            "category_margin_pct": 61.016759786234815
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 3598.48,
+            "seller_mix_pct": 6.382240229318527,
+            "store_mix_pct": 7.28279492986363,
+            "mix_deviation_pp": -0.9005547005451024,
+            "category_margin_pct": 65.01049563794008
+          },
+          {
+            "category": "lente",
+            "seller_revenue": 24699.79,
+            "seller_mix_pct": 43.80738350462403,
+            "store_mix_pct": 44.819865472386134,
+            "mix_deviation_pp": -1.0124819677621062,
+            "category_margin_pct": 65.67673237562074
+          },
+          {
+            "category": "solar",
+            "seller_revenue": 4553.66,
+            "seller_mix_pct": 8.076341133656046,
+            "store_mix_pct": 13.962829160770088,
+            "mix_deviation_pp": -5.8864880271140425,
+            "category_margin_pct": 66.76066355352836
+          }
+        ],
+        "sample_source_rows": [
+          13,
+          20,
+          23,
+          29,
+          47,
+          68,
+          77,
+          104,
+          109,
+          143
+        ]
+      },
+      {
+        "salesperson": "V-04",
+        "store": "Loja 01",
+        "total_revenue": 61808.69,
+        "seller_margin_pct": 65.04598301630402,
+        "store_margin_pct": 64.19822029415403,
+        "margin_gap_pp": -0.8477627221499944,
+        "is_margin_destructive": false,
+        "sample_size": 151,
+        "mix": [
+          {
+            "category": "solar",
+            "seller_revenue": 10989.74,
+            "seller_mix_pct": 17.78025064113153,
+            "store_mix_pct": 13.962829160770088,
+            "mix_deviation_pp": 3.8174214803614426,
+            "category_margin_pct": 66.76066355352836
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 4818.650000000001,
+            "seller_mix_pct": 7.796072041002649,
+            "store_mix_pct": 7.28279492986363,
+            "mix_deviation_pp": 0.5132771111390193,
+            "category_margin_pct": 65.01049563794008
+          },
+          {
+            "category": "lente",
+            "seller_revenue": 27560.079999999998,
+            "seller_mix_pct": 44.589328782085495,
+            "store_mix_pct": 44.819865472386134,
+            "mix_deviation_pp": -0.23053669030063872,
+            "category_margin_pct": 65.67673237562074
+          },
+          {
+            "category": "armacao",
+            "seller_revenue": 18440.22,
+            "seller_mix_pct": 29.834348535780325,
+            "store_mix_pct": 33.934510436980155,
+            "mix_deviation_pp": -4.100161901199829,
+            "category_margin_pct": 61.016759786234815
+          }
+        ],
+        "sample_source_rows": [
+          16,
+          30,
+          36,
+          51,
+          53,
+          82,
+          88,
+          93,
+          111,
+          135
+        ]
+      },
+      {
+        "salesperson": "V-05",
+        "store": "Loja 02",
+        "total_revenue": 55684.26,
+        "seller_margin_pct": 63.914865708909474,
+        "store_margin_pct": 62.826397836873035,
+        "margin_gap_pp": -1.0884678720364391,
+        "is_margin_destructive": false,
+        "sample_size": 160,
+        "mix": [
+          {
+            "category": "lente",
+            "seller_revenue": 14355.06,
+            "seller_mix_pct": 25.779385413400483,
+            "store_mix_pct": 23.76613337577875,
+            "mix_deviation_pp": 2.013252037621733,
+            "category_margin_pct": 56.98586700697465
+          },
+          {
+            "category": "armacao",
+            "seller_revenue": 28755.29,
+            "seller_mix_pct": 51.6398889021781,
+            "store_mix_pct": 50.38033260883115,
+            "mix_deviation_pp": 1.2595562933469537,
+            "category_margin_pct": 63.81586321143211
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 6137.16,
+            "seller_mix_pct": 11.021355047189276,
+            "store_mix_pct": 11.692154195056384,
+            "mix_deviation_pp": -0.6707991478671076,
+            "category_margin_pct": 66.38077758375869
+          },
+          {
+            "category": "solar",
+            "seller_revenue": 6436.75,
+            "seller_mix_pct": 11.559370637232137,
+            "store_mix_pct": 14.161379820333721,
+            "mix_deviation_pp": -2.6020091831015844,
+            "category_margin_pct": 66.17345049321617
+          }
+        ],
+        "sample_source_rows": [
+          6,
+          19,
+          54,
+          63,
+          71,
+          73,
+          75,
+          81,
+          86,
+          92
+        ]
+      },
+      {
+        "salesperson": "V-08",
+        "store": "Loja 02",
+        "total_revenue": 49610.26,
+        "seller_margin_pct": 64.27644201018096,
+        "store_margin_pct": 62.826397836873035,
+        "margin_gap_pp": -1.4500441733079228,
+        "is_margin_destructive": false,
+        "sample_size": 150,
+        "mix": [
+          {
+            "category": "armacao",
+            "seller_revenue": 28424.83,
+            "seller_mix_pct": 57.29627298869226,
+            "store_mix_pct": 50.38033260883115,
+            "mix_deviation_pp": 6.915940379861112,
+            "category_margin_pct": 63.81586321143211
+          },
+          {
+            "category": "solar",
+            "seller_revenue": 7060.99,
+            "seller_mix_pct": 14.232922786536495,
+            "store_mix_pct": 14.161379820333721,
+            "mix_deviation_pp": 0.07154296620277378,
+            "category_margin_pct": 66.17345049321617
+          },
+          {
+            "category": "lente_contato",
+            "seller_revenue": 5601.09,
+            "seller_mix_pct": 11.290184731948592,
+            "store_mix_pct": 11.692154195056384,
+            "mix_deviation_pp": -0.40196946310779147,
+            "category_margin_pct": 66.38077758375869
+          },
+          {
+            "category": "lente",
+            "seller_revenue": 8523.35,
+            "seller_mix_pct": 17.180619492822654,
+            "store_mix_pct": 23.76613337577875,
+            "mix_deviation_pp": -6.585513882956096,
+            "category_margin_pct": 56.98586700697465
+          }
+        ],
+        "sample_source_rows": [
+          4,
+          10,
+          15,
+          37,
+          41,
+          56,
+          60,
+          61,
+          70,
+          84
+        ]
+      },
+      {
+        "salesperson": "V-07",
+        "store": "Loja 02",
+        "total_revenue": 46001.35,
+        "seller_margin_pct": 65.60942233217068,
+        "store_margin_pct": 62.826397836873035,
+        "margin_gap_pp": -2.7830244952976457,
+        "is_margin_destructive": false,
+        "sample_size": 141,
+        "mix": [
+          {
+            "category": "lente_contato",
+            "seller_revenue": 6475.53,
+            "seller_mix_pct": 14.076826006193297,
+            "store_mix_pct": 11.692154195056384,
+            "mix_deviation_pp": 2.384671811136913,
+            "category_margin_pct": 66.38077758375869
+          },
+          {
+            "category": "lente",
+            "seller_revenue": 11547.11,
+            "seller_mix_pct": 25.101676363845844,
+            "store_mix_pct": 23.76613337577875,
+            "mix_deviation_pp": 1.3355429880670933,
+            "category_margin_pct": 56.98586700697465
+          },
+          {
+            "category": "solar",
+            "seller_revenue": 6034.22,
+            "seller_mix_pct": 13.117484595560782,
+            "store_mix_pct": 14.161379820333721,
+            "mix_deviation_pp": -1.043895224772939,
+            "category_margin_pct": 66.17345049321617
+          },
+          {
+            "category": "armacao",
+            "seller_revenue": 21944.49,
+            "seller_mix_pct": 47.70401303440008,
+            "store_mix_pct": 50.38033260883115,
+            "mix_deviation_pp": -2.6763195744310693,
+            "category_margin_pct": 63.81586321143211
+          }
+        ],
+        "sample_source_rows": [
+          8,
+          11,
+          17,
+          32,
+          35,
+          46,
+          64,
+          87,
+          89,
+          95
+        ]
+      }
+    ]
   },
   "executive_summary": {
     "total_operational_loss": 61.034041666666695,
@@ -2122,5 +3080,5 @@
       }
     ]
   },
-  "generated_at": "2026-07-20T16:02:22.818730+00:00"
+  "generated_at": "2026-07-20T23:26:27.728525+00:00"
 }

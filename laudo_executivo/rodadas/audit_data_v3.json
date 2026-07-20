@@ -2,9 +2,10 @@
   "rodada": "v3",
   "cliente": "Rede de Óticas",
   "manchete": {
-    "total_risco_display": "R$ 131 mil",
+    "total_risco": 127117.99,
+    "total_risco_display": "R$ 127 mil",
     "frase": "escapando pelo ralo agora — e o pior vazamento está na sua melhor loja.",
-    "composicao": "R$ 92.078 em clientes que sumiram + R$ 35.040 parados em prateleira + prejuízo estrutural de margem nas lojas L7 e L9. Cenários projetados (ex.: R$ 4.531 de segunda venda) não entram nesta soma e aparecem sempre rotulados à parte."
+    "composicao": "R$ 92.077,99 em clientes que sumiram + R$ 35.040,00 parados em prateleira. Um achado à parte — não somado aqui, ver Ato 2 — mostra a L7-Oeste com prejuízo de produto mascarado pelo serviço, e a L9-Serra com prejuízo estrutural real de R$ 4.283,05. Cenários projetados (ex.: R$ 4.531 de segunda venda) também não entram nesta soma e aparecem sempre rotulados à parte."
   },
   "paradoxo": {
     "loja": "L7-Oeste",
@@ -22,6 +23,8 @@
     {
       "id": "cap-clientes",
       "titulo": "Clientes Evaporando",
+      "valor": 92077.99,
+      "anexo_ref": "fila_reativacao",
       "valor_display": "R$ 92.078",
       "soco": "47 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
       "serie_mensal": [
@@ -85,6 +88,8 @@
     {
       "id": "cap-caixa",
       "titulo": "Caixa Preso",
+      "valor": 35040.00,
+      "anexo_ref": "estoque_parado",
       "valor_display": "R$ 35.040",
       "soco": "Capital dormindo em 16 produtos que não giram há mais de um ano.",
       "treemap_itens": [
@@ -153,16 +158,18 @@
   "plano": [
     {
       "acao": "Reativar os clientes que sumiram",
-      "impacto": 92078,
+      "impacto": 92077.99,
       "impacto_display": "R$ 92.078",
       "cenario": false,
-      "como": "Fila pronta, ordenada por valor histórico e ciclo. Começar pelos 3 campeões em declínio — esses ainda respondem."
+      "sangramento_ref": "cap-clientes",
+      "como": "Fila pronta, ordenada por índice de aquecimento (ver anexo) — não por valor histórico puro. Começar pelos mais quentes: acabaram de estourar o próprio ciclo."
     },
     {
       "acao": "Liberar o caixa preso em prateleira",
-      "impacto": 35040,
+      "impacto": 35040.00,
       "impacto_display": "R$ 35.040",
       "cenario": false,
+      "sangramento_ref": "cap-caixa",
       "como": "Liquidação/devolução dos 16 produtos sem giro. Dinheiro de volta ao estoque que vende."
     },
     {

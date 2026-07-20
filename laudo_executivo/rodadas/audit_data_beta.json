@@ -2,6 +2,7 @@
   "rodada": "beta",
   "cliente": "Rede de Óticas Beta",
   "manchete": {
+    "total_risco": 69038.22,
     "total_risco_display": "R$ 69 mil",
     "frase": "escapando da sua rede agora — e parte do problema está escondida atrás de uma tabela de preço que não bate com o que você realmente paga.",
     "composicao": "R$ 63.414,44 em clientes que sumiram + R$ 5.101,24 parados em estoque + R$ 522,54 vendidos abaixo do custo (produtos ARP-020 e ARP-021, ambas as lojas). Um achado à parte — não somado aqui, ver capítulo seguinte — mostra a tabela de custo do ARP-013 desalinhada da nota fiscal de compra."
@@ -34,6 +35,8 @@
     {
       "id": "cap-clientes",
       "titulo": "Clientes Evaporando",
+      "valor": 63414.44,
+      "anexo_ref": "fila_reativacao",
       "valor_display": "R$ 63.414,44",
       "soco": "37 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
       "serie_mensal": null,
@@ -48,6 +51,8 @@
     {
       "id": "cap-caixa",
       "titulo": "Caixa Preso",
+      "valor": 5101.24,
+      "anexo_ref": "estoque_parado",
       "valor_display": "R$ 5.101,24",
       "soco": "2 modelos de óculos solares parados há 9-11 meses, sem nenhuma venda.",
       "treemap_itens": null,
@@ -63,6 +68,7 @@
     {
       "id": "cap-lucro",
       "titulo": "Lucro Fantasma",
+      "valor": 522.54,
       "valor_display": "R$ 522,54",
       "soco": "20 vendas de 2 modelos de armação (ARP-020, ARP-021) saíram abaixo do próprio custo.",
       "evidencias": [
@@ -90,7 +96,8 @@
       "impacto": 63414.44,
       "impacto_display": "R$ 63.414,44",
       "cenario": false,
-      "como": "Fila pronta, ordenada por valor histórico. Começar pelo maior caso (R$ 4.494,48) — ainda dá tempo."
+      "sangramento_ref": "cap-clientes",
+      "como": "Fila pronta, ordenada por índice de aquecimento (ver anexo) — não por valor histórico puro. Começar pelos mais quentes: acabaram de estourar o próprio ciclo."
     },
     {
       "acao": "Corrigir o cadastro de custo do ARP-013",
@@ -104,6 +111,7 @@
       "impacto": 5101.24,
       "impacto_display": "R$ 5.101,24",
       "cenario": false,
+      "sangramento_ref": "cap-caixa",
       "como": "2 modelos sem giro há 9-11 meses. Parte já está em liquidação — acelerar o restante."
     },
     {
@@ -111,6 +119,7 @@
       "impacto": 522.54,
       "impacto_display": "R$ 522,54",
       "cenario": false,
+      "sangramento_ref": "cap-lucro",
       "como": "Trava de preço mínimo no PDV, com aprovação obrigatória para vender abaixo do custo registrado."
     },
     {

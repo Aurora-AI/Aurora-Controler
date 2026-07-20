@@ -106,6 +106,35 @@
   .prov{font-size:11px;color:var(--ink-soft);letter-spacing:.04em;max-width:40em;line-height:1.6;}
   .cta{font-size:14px;white-space:nowrap;color:var(--ink);text-decoration:none;
     border:1px solid var(--ink);padding:12px 22px;letter-spacing:.04em;}
+
+  /* Ato 6 — Anexo de Evidências (Spec v4 §16). Neutro de propósito: o vermelho já
+     gritou no corpo (§4.2, moeda escassa) — aqui é prova, não drama. */
+  .anexo-link{display:inline-block;margin-top:10px;font-size:12px;color:var(--ink-soft);
+    text-decoration:underline;text-underline-offset:3px;}
+  .anexo-section{margin-top:20px;background:var(--card);border:1px solid var(--line);}
+  .anexo-section + .anexo-section{margin-top:14px;}
+  .anexo-section summary{padding:18px 22px;cursor:pointer;font-weight:600;font-size:15px;
+    display:flex;justify-content:space-between;align-items:center;list-style:none;gap:12px;}
+  .anexo-section summary::-webkit-details-marker{display:none;}
+  .anexo-section summary::after{content:'+ expandir';font-size:11px;font-weight:400;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .anexo-section[open] summary::after{content:'– recolher';}
+  .anexo-section summary .meta{font-size:12.5px;color:var(--ink-soft);font-weight:400;}
+  .anexo-table-wrap{overflow-x:auto;}
+  .anexo-table{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap;}
+  .anexo-table th{text-align:left;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);padding:8px 16px;border-top:1px solid var(--line);white-space:nowrap;}
+  .anexo-table td{padding:10px 16px;border-top:1px solid var(--line);vertical-align:top;
+    white-space:normal;}
+  .anexo-table td.src{font-family:'Courier New',monospace;font-size:10.5px;
+    color:var(--ink-soft);white-space:nowrap;}
+  .anexo-table td.neg{color:var(--red);}
+  .anexo-note{margin-top:2px;font-size:11px;color:var(--green);}
+  .anexo-meta-line{margin-top:2px;font-size:11px;color:var(--ink-soft);}
+  .anexo-legend{padding:14px 22px;font-size:11.5px;color:var(--ink-soft);border-top:1px solid var(--line);}
+  .anexo-flags{display:flex;gap:4px;flex-wrap:wrap;}
+  .anexo-flag{font-size:9.5px;padding:2px 7px;background:var(--red-soft);color:var(--red);
+    text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -236,6 +265,7 @@ app.insertAdjacentHTML('beforeend', `
         <p class="cause">${esc(s.soco)}</p>
         <div class="fact">Fato medido</div>
         <a href="#${esc(s.id)}">Capítulo: ${esc(s.titulo)}</a>
+        ${s.anexo_ref && D.anexo ? `<a class="anexo-link" href="#anexo-${esc(s.anexo_ref)}">ver evidências no anexo ↓</a>` : ''}
       </article>`).join('')}
   </div>
   ${foot()}
@@ -384,6 +414,7 @@ D.sangramentos.forEach((s, i) => {
   </div>
   <p class="cost-line"><b>Se nada mudar:</b> ${esc(s.custo_mensal)}</p>
   <div class="hookband sans">${esc(s.gancho)}</div>
+  ${s.anexo_ref && D.anexo ? `<p class="sans"><a class="anexo-link" href="#anexo-${esc(s.anexo_ref)}">ver evidências no anexo ↓</a></p>` : ''}
   ${foot()}
 </section>`);
 });
@@ -405,7 +436,7 @@ app.insertAdjacentHTML('beforeend', `
 /* ---------- ATO 5 — A SAÍDA (ordenado por impacto; cenário sempre por último entre iguais) ---------- */
 const plano = [...D.plano].sort((a,b) => (a.cenario - b.cenario) || (b.impacto - a.impacto));
 app.insertAdjacentHTML('beforeend', `
-<section class="act" id="plano" style="border-bottom:none;">
+<section class="act" id="plano"${D.anexo ? '' : ' style="border-bottom:none;"'}>
   ${mast('Ato 5 · O plano — ordenado pelo que mais custa')}
   <p class="kicker sans">A saída</p>
   <h2 class="headline">O diagnóstico está feito. A ordem abaixo é a ordem do dinheiro.</h2>
@@ -421,6 +452,119 @@ app.insertAdjacentHTML('beforeend', `
   </div>
   ${foot()}
 </section>`);
+
+/* ---------- ATO 6 — ANEXO DE EVIDÊNCIAS (Spec v4 §16) ----------
+   Só renderiza quando D.anexo existe — AUDIT_DATA sem anexo continua
+   idêntico a antes (retrocompatibilidade §16.7). Cada seção é <details>
+   recolhido; o dado já vem pronto do build_anexo (Zero Contradição já
+   conferiu as somas ANTES deste HTML existir) — aqui é só formatação,
+   zero cálculo. */
+if (D.anexo) {
+  const A = D.anexo;
+  const brlCents = n => (n == null) ? '—' :
+    'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const pct = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + '%';
+  const pp = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + 'pp';
+
+  const secEstoque = A.estoque_parado ? `
+    <details class="anexo-section" id="anexo-estoque_parado">
+      <summary><span>Estoque parado</span>
+        <span class="meta">${A.estoque_parado.itens.length} produtos · ${brlCents(A.estoque_parado.total)}</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Produto</th><th>Descrição</th><th>Capital preso</th><th>Meses parado</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.estoque_parado.itens.map(i => `<tr>
+          <td>${esc(i.sku)}</td><td>${esc(i.descricao || '—')}</td>
+          <td>${brlCents(i.capital_preso)}</td><td>${i.meses_parado ?? '—'}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secFila = A.fila_reativacao ? `
+    <details class="anexo-section" id="anexo-fila_reativacao">
+      <summary><span>Fila de reativação</span>
+        <span class="meta">${A.fila_reativacao.clientes} clientes · ${brlCents(A.fila_reativacao.total)}</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Cliente</th><th>Última compra</th><th>Ciclo próprio</th><th>Silêncio</th>
+        <th>Índice de aquecimento</th><th>R$ histórico</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.fila_reativacao.itens.map(i => `<tr>
+          <td>${esc(i.cliente)}</td><td>${esc(i.ultima_compra || '—')}</td>
+          <td>${i.ciclo_dias != null ? Math.round(i.ciclo_dias) + 'd' : '—'}</td>
+          <td>${i.silencio_dias ?? '—'}d</td>
+          <td>${i.indice_aquecimento != null ? Number(i.indice_aquecimento).toFixed(2).replace('.', ',') + '×' : '—'}</td>
+          <td>${brlCents(i.valor_historico)}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">Ordenado por índice de aquecimento (dias em silêncio ÷ ciclo próprio do
+        cliente) — 1,2× = acabou de estourar o ritmo, ligar primeiro; 4× = frio, não queimar energia
+        de balcão nele. Nunca por R$ histórico puro.</p>
+    </details>` : '';
+
+  const secVendedores = A.vendedores ? `
+    <details class="anexo-section" id="anexo-vendedores">
+      <summary><span>Vendedores</span><span class="meta">${A.vendedores.itens.length} avaliados</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Receita</th><th>Margem</th><th>Margem da loja</th>
+        <th>Gap</th><th>Captura</th><th>Sinais</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.vendedores.itens.map(v => `<tr>
+          <td>${esc(v.vendedor)}</td><td>${esc(v.loja)}</td><td>${brlCents(v.receita)}</td>
+          <td class="${v.margem_pct != null && v.margem_pct < 0 ? 'neg' : ''}">${pct(v.margem_pct)}</td>
+          <td>${pct(v.margem_loja_pct)}</td><td>${pp(v.gap_pp)}</td><td>${pct(v.captura_pct)}</td>
+          <td>
+            <div class="anexo-flags">${v.flags.map(f => `<span class="anexo-flag">${esc(f.replace(/_/g, ' '))}</span>`).join('')}</div>
+            ${v.notas.map(n => `<div class="anexo-note">${esc(n)}</div>`).join('')}
+            ${v.mix_top_desvio ? `<div class="anexo-meta-line">${esc(v.mix_top_desvio.categoria)}: +${pp(v.mix_top_desvio.desvio_pp)} vs. loja (categoria margeia ${pct(v.mix_top_desvio.margem_categoria_pct)})</div>` : ''}
+          </td>
+          <td class="src">${esc(v.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secTriagem = A.triagem_discrepancias ? `
+    <details class="anexo-section" id="anexo-triagem_discrepancias">
+      <summary><span>Triagem de discrepâncias</span>
+        <span class="meta">${A.triagem_discrepancias.disparos} casos · ${A.triagem_discrepancias.pendentes} pendentes</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Produto</th><th>Loja</th><th>Vendedor</th><th>Veredito</th><th>Evidências</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.triagem_discrepancias.itens.map(i => `<tr>
+          <td>${esc(i.sku)}${i.descricao ? `<div class="anexo-meta-line">${esc(i.descricao)}</div>` : ''}</td>
+          <td>${esc(i.loja)}</td><td>${esc(i.vendedor)}</td>
+          <td>${esc((i.veredito || 'em auditoria').replace(/_/g, ' '))}${i.veredito_origem === 'pending_manual_review' ? ' <span class="anexo-meta-line">(pendente)</span>' : ''}</td>
+          <td>${i.evidencias.map(e => `<div>${esc(e)}</div>`).join('')}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secMetodologia = A.metodologia ? `
+    <details class="anexo-section" id="anexo-metodologia">
+      <summary><span>Metodologia</span><span class="meta">como calculamos</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr><th>Limiar</th><th>Valor</th></tr></thead><tbody>
+        ${A.metodologia.limiares.map(l => `<tr><td>${esc(l.nome)}</td><td>${esc(String(l.valor))}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">${A.metodologia.limpeza.linhas_lidas ?? '—'} linhas lidas ·
+        ${A.metodologia.limpeza.aceitas ?? '—'} aceitas ·
+        ${A.metodologia.limpeza.podas_outlier ?? 0} podas de outlier.</p>
+    </details>` : '';
+
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="anexo" style="border-bottom:none;">
+  ${mast('Ato 6 · Anexo de evidências')}
+  <p class="kicker sans">A prova, linha a linha</p>
+  <h2 class="headline">Cada número deste laudo pode ser refeito à mão.</h2>
+  <p class="sub">O detalhamento que sustenta cada capítulo — nomes, valores e a linha exata
+    do seu arquivo de onde cada número saiu.</p>
+  <div class="sans" style="margin-top:32px;">
+    ${secEstoque}${secFila}${secVendedores}${secTriagem}${secMetodologia}
+  </div>
+  ${foot()}
+</section>`);
+}
 </script>
 </body>
 </html>
