@@ -1,0 +1,2125 @@
+{
+  "period_start": "2025-07",
+  "period_end": "2026-06",
+  "cleaning": {
+    "rows_read": 1426,
+    "rows_accepted": 1426,
+    "rows_discarded_by_reason": {},
+    "files_skipped": [],
+    "values_winsorized": []
+  },
+  "thresholds": {
+    "revenue_drop_sigma": 2.0,
+    "churn_cadence_multiplier": 2.0,
+    "churn_min_purchases": 3,
+    "trend_decoupling_pct": 20.0,
+    "seasonality_min_months": 12,
+    "materiality_revenue_pct": 1.0,
+    "rfm_bins": 5,
+    "variable_cost_pct": 15.0,
+    "promo_payment_label": "promocao",
+    "latent_revenue_anchor_category": "lente",
+    "latent_revenue_target_category": "solar",
+    "latent_revenue_conversion_pct": 20.0,
+    "dead_stock_months": 8,
+    "contingency_completeness_pct": 30.0,
+    "outlier_median_ratio": 20.0,
+    "cold_start_min_months": 4.0,
+    "sev_min_capture_pct": 60.0,
+    "sev_ramp_min_days": 180.0,
+    "concentration_risk_pct": 25.0,
+    "service_category_label": "servico",
+    "service_reconciliation_gap_tolerance": 1.0,
+    "gmroi_sku_high_margin_pct": 40.0,
+    "gmroi_sku_low_ratio": 1.0,
+    "seller_corrosion_std_multiplier": 2.0,
+    "concentration_seller_vip_pct": 40.0,
+    "vip_customer_top_pct": 20.0,
+    "manual_review_discount_pct": 60.0,
+    "nf_cost_divergence_pct": 15.0
+  },
+  "revenue_leaks": [],
+  "churn_findings": [
+    {
+      "customer_id": "Client_FD",
+      "purchase_count": 5,
+      "avg_cadence_days": 31.5,
+      "last_purchase": "2026-01-18",
+      "months_silent": 5,
+      "historical_annual_value": 1211.1399999999999
+    },
+    {
+      "customer_id": "Client_BR",
+      "purchase_count": 6,
+      "avg_cadence_days": 33.0,
+      "last_purchase": "2026-02-06",
+      "months_silent": 4,
+      "historical_annual_value": 2104.23
+    },
+    {
+      "customer_id": "Client_HY",
+      "purchase_count": 3,
+      "avg_cadence_days": 58.5,
+      "last_purchase": "2026-02-08",
+      "months_silent": 4,
+      "historical_annual_value": 539.34
+    },
+    {
+      "customer_id": "Client_I",
+      "purchase_count": 10,
+      "avg_cadence_days": 24.77777777777778,
+      "last_purchase": "2026-02-15",
+      "months_silent": 4,
+      "historical_annual_value": 4494.48
+    },
+    {
+      "customer_id": "Client_IA",
+      "purchase_count": 4,
+      "avg_cadence_days": 39.333333333333336,
+      "last_purchase": "2026-02-14",
+      "months_silent": 4,
+      "historical_annual_value": 538.81
+    },
+    {
+      "customer_id": "Client_CJ",
+      "purchase_count": 5,
+      "avg_cadence_days": 53.75,
+      "last_purchase": "2026-02-09",
+      "months_silent": 4,
+      "historical_annual_value": 1887.04
+    },
+    {
+      "customer_id": "Client_AF",
+      "purchase_count": 5,
+      "avg_cadence_days": 47.0,
+      "last_purchase": "2026-02-26",
+      "months_silent": 4,
+      "historical_annual_value": 2856.88
+    },
+    {
+      "customer_id": "Client_FI",
+      "purchase_count": 3,
+      "avg_cadence_days": 26.5,
+      "last_purchase": "2026-03-30",
+      "months_silent": 3,
+      "historical_annual_value": 1170.18
+    },
+    {
+      "customer_id": "Client_AB",
+      "purchase_count": 8,
+      "avg_cadence_days": 33.714285714285715,
+      "last_purchase": "2026-02-28",
+      "months_silent": 4,
+      "historical_annual_value": 2967.52
+    },
+    {
+      "customer_id": "Client_HN",
+      "purchase_count": 4,
+      "avg_cadence_days": 45.333333333333336,
+      "last_purchase": "2026-02-08",
+      "months_silent": 4,
+      "historical_annual_value": 678.3800000000001
+    },
+    {
+      "customer_id": "Client_AY",
+      "purchase_count": 6,
+      "avg_cadence_days": 35.8,
+      "last_purchase": "2026-03-03",
+      "months_silent": 3,
+      "historical_annual_value": 2413.6
+    },
+    {
+      "customer_id": "Client_CE",
+      "purchase_count": 5,
+      "avg_cadence_days": 42.0,
+      "last_purchase": "2026-03-18",
+      "months_silent": 3,
+      "historical_annual_value": 1925.82
+    },
+    {
+      "customer_id": "Client_U",
+      "purchase_count": 8,
+      "avg_cadence_days": 28.571428571428573,
+      "last_purchase": "2026-03-19",
+      "months_silent": 3,
+      "historical_annual_value": 3509.2
+    },
+    {
+      "customer_id": "Client_EZ",
+      "purchase_count": 6,
+      "avg_cadence_days": 46.2,
+      "last_purchase": "2026-02-22",
+      "months_silent": 4,
+      "historical_annual_value": 1224.03
+    },
+    {
+      "customer_id": "Client_BO",
+      "purchase_count": 4,
+      "avg_cadence_days": 43.666666666666664,
+      "last_purchase": "2026-01-31",
+      "months_silent": 5,
+      "historical_annual_value": 2161.6200000000003
+    },
+    {
+      "customer_id": "Client_HP",
+      "purchase_count": 5,
+      "avg_cadence_days": 50.75,
+      "last_purchase": "2026-02-19",
+      "months_silent": 4,
+      "historical_annual_value": 639.75
+    },
+    {
+      "customer_id": "Client_GU",
+      "purchase_count": 4,
+      "avg_cadence_days": 22.333333333333332,
+      "last_purchase": "2025-10-31",
+      "months_silent": 8,
+      "historical_annual_value": 837.3399999999999
+    },
+    {
+      "customer_id": "Client_CR",
+      "purchase_count": 6,
+      "avg_cadence_days": 41.6,
+      "last_purchase": "2026-01-27",
+      "months_silent": 5,
+      "historical_annual_value": 1790.9900000000002
+    },
+    {
+      "customer_id": "Client_HC",
+      "purchase_count": 3,
+      "avg_cadence_days": 63.5,
+      "last_purchase": "2025-12-30",
+      "months_silent": 6,
+      "historical_annual_value": 774.9200000000001
+    },
+    {
+      "customer_id": "Client_EA",
+      "purchase_count": 5,
+      "avg_cadence_days": 57.75,
+      "last_purchase": "2026-02-18",
+      "months_silent": 4,
+      "historical_annual_value": 1435.28
+    },
+    {
+      "customer_id": "Client_DH",
+      "purchase_count": 4,
+      "avg_cadence_days": 28.333333333333332,
+      "last_purchase": "2026-02-22",
+      "months_silent": 4,
+      "historical_annual_value": 1614.0900000000001
+    },
+    {
+      "customer_id": "Client_EX",
+      "purchase_count": 5,
+      "avg_cadence_days": 49.75,
+      "last_purchase": "2026-03-21",
+      "months_silent": 3,
+      "historical_annual_value": 1235.48
+    },
+    {
+      "customer_id": "Client_GP",
+      "purchase_count": 5,
+      "avg_cadence_days": 22.75,
+      "last_purchase": "2026-03-17",
+      "months_silent": 3,
+      "historical_annual_value": 873.45
+    },
+    {
+      "customer_id": "Client_EK",
+      "purchase_count": 5,
+      "avg_cadence_days": 41.25,
+      "last_purchase": "2025-12-26",
+      "months_silent": 6,
+      "historical_annual_value": 1369.1200000000001
+    },
+    {
+      "customer_id": "Client_AJ",
+      "purchase_count": 6,
+      "avg_cadence_days": 31.2,
+      "last_purchase": "2026-03-17",
+      "months_silent": 3,
+      "historical_annual_value": 2793.4900000000002
+    },
+    {
+      "customer_id": "Client_IB",
+      "purchase_count": 3,
+      "avg_cadence_days": 66.5,
+      "last_purchase": "2025-12-26",
+      "months_silent": 6,
+      "historical_annual_value": 527.3599999999999
+    },
+    {
+      "customer_id": "Client_ID",
+      "purchase_count": 3,
+      "avg_cadence_days": 18.5,
+      "last_purchase": "2025-10-31",
+      "months_silent": 8,
+      "historical_annual_value": 510.82000000000005
+    },
+    {
+      "customer_id": "Client_DY",
+      "purchase_count": 3,
+      "avg_cadence_days": 48.0,
+      "last_purchase": "2026-03-01",
+      "months_silent": 3,
+      "historical_annual_value": 1464.6799999999998
+    },
+    {
+      "customer_id": "Client_X",
+      "purchase_count": 6,
+      "avg_cadence_days": 45.2,
+      "last_purchase": "2026-02-20",
+      "months_silent": 4,
+      "historical_annual_value": 3098.9100000000008
+    },
+    {
+      "customer_id": "Client_HO",
+      "purchase_count": 4,
+      "avg_cadence_days": 57.0,
+      "last_purchase": "2026-01-04",
+      "months_silent": 5,
+      "historical_annual_value": 665.75
+    },
+    {
+      "customer_id": "Client_DZ",
+      "purchase_count": 5,
+      "avg_cadence_days": 34.5,
+      "last_purchase": "2025-12-05",
+      "months_silent": 6,
+      "historical_annual_value": 1446.9200000000003
+    },
+    {
+      "customer_id": "Client_EJ",
+      "purchase_count": 5,
+      "avg_cadence_days": 47.25,
+      "last_purchase": "2026-02-18",
+      "months_silent": 4,
+      "historical_annual_value": 1369.52
+    },
+    {
+      "customer_id": "Client_DD",
+      "purchase_count": 6,
+      "avg_cadence_days": 48.2,
+      "last_purchase": "2026-03-04",
+      "months_silent": 3,
+      "historical_annual_value": 1703.43
+    },
+    {
+      "customer_id": "Client_DC",
+      "purchase_count": 9,
+      "avg_cadence_days": 28.125,
+      "last_purchase": "2026-02-25",
+      "months_silent": 4,
+      "historical_annual_value": 1717.12
+    },
+    {
+      "customer_id": "Client_AE",
+      "purchase_count": 7,
+      "avg_cadence_days": 30.5,
+      "last_purchase": "2026-01-16",
+      "months_silent": 5,
+      "historical_annual_value": 2904.21
+    },
+    {
+      "customer_id": "Client_R",
+      "purchase_count": 10,
+      "avg_cadence_days": 22.88888888888889,
+      "last_purchase": "2026-01-24",
+      "months_silent": 5,
+      "historical_annual_value": 3741.9100000000003
+    },
+    {
+      "customer_id": "Client_FB",
+      "purchase_count": 6,
+      "avg_cadence_days": 46.8,
+      "last_purchase": "2026-03-13",
+      "months_silent": 3,
+      "historical_annual_value": 1217.63
+    }
+  ],
+  "product_trends": [
+    {
+      "product": "ARM-001",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": 5.113355951276856,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-002",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": 15.778889166805984,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARM-003",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": 34.42514265870044,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-013",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": 101.63938483878418,
+      "decoupled": false,
+      "last_sale_month": "2026-05"
+    },
+    {
+      "product": "ARP-020",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -1.4052942102701498,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "ARP-021",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -26.082745059177174,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-010",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -2.22831764590849,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LC-011",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -37.880440972825866,
+      "decoupled": true,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LNT-100",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -17.268373500394198,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LNT-500",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -9.812160713793634,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "LNT-900",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -25.91103509070904,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-030",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": 7.558032850035349,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-031",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -23.05789845025318,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SOL-032",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -17.07160152056065,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SVC-001",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": 3.824503656173809,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    },
+    {
+      "product": "SVC-002",
+      "company_growth_pct": -11.864073002392725,
+      "product_growth_pct": -6.7637624093528155,
+      "decoupled": false,
+      "last_sale_month": "2026-06"
+    }
+  ],
+  "seasonality": [
+    {
+      "scope": "total",
+      "entity": "total",
+      "monthly_index": {
+        "1": 1.1368208081466993,
+        "2": 1.0618832242138074,
+        "3": 0.7898992268827708,
+        "4": 0.9822844521357877,
+        "5": 0.8368823153479743,
+        "6": 0.8138629109560345,
+        "7": 1.2559860546941684,
+        "8": 1.0166311807664592,
+        "9": 1.0329712780700944,
+        "10": 0.9650793699148452,
+        "11": 0.9888261357692567,
+        "12": 1.1188730431021026
+      },
+      "insufficient_data": false,
+      "months_available": 12
+    }
+  ],
+  "rfm_champions": [
+    {
+      "customer_id": "Client_AN",
+      "recency_days": 24.0,
+      "frequency": 8,
+      "monetary": 2695.7,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_N",
+      "recency_days": 0.0,
+      "frequency": 7,
+      "monetary": 4095.51,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_K",
+      "recency_days": 7.0,
+      "frequency": 8,
+      "monetary": 4348.85,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AT",
+      "recency_days": 6.0,
+      "frequency": 7,
+      "monetary": 2510.86,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_Q",
+      "recency_days": 41.0,
+      "frequency": 8,
+      "monetary": 3849.1499999999996,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_B",
+      "recency_days": 6.0,
+      "frequency": 10,
+      "monetary": 6036.58,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AH",
+      "recency_days": 41.0,
+      "frequency": 8,
+      "monetary": 2778.66,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_H",
+      "recency_days": 31.0,
+      "frequency": 9,
+      "monetary": 4496.96,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AW",
+      "recency_days": 18.0,
+      "frequency": 9,
+      "monetary": 2421.3599999999997,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_P",
+      "recency_days": 56.0,
+      "frequency": 7,
+      "monetary": 3929.86,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_F",
+      "recency_days": 47.0,
+      "frequency": 7,
+      "monetary": 4645.9800000000005,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AR",
+      "recency_days": 54.0,
+      "frequency": 7,
+      "monetary": 2419.84,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_D",
+      "recency_days": 41.0,
+      "frequency": 13,
+      "monetary": 4897.5199999999995,
+      "recency_score": 4,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_G",
+      "recency_days": 74.0,
+      "frequency": 8,
+      "monetary": 4675.889999999999,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_V",
+      "recency_days": 55.0,
+      "frequency": 8,
+      "monetary": 3451.1800000000003,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_BC",
+      "recency_days": 82.0,
+      "frequency": 6,
+      "monetary": 2369.83,
+      "recency_score": 2,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AQ",
+      "recency_days": 12.0,
+      "frequency": 7,
+      "monetary": 2589.55,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_S",
+      "recency_days": 48.0,
+      "frequency": 9,
+      "monetary": 3579.67,
+      "recency_score": 3,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AA",
+      "recency_days": 18.0,
+      "frequency": 7,
+      "monetary": 2895.1,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    },
+    {
+      "customer_id": "Client_AP",
+      "recency_days": 8.0,
+      "frequency": 7,
+      "monetary": 2599.27,
+      "recency_score": 5,
+      "frequency_score": 5,
+      "monetary_score": 5
+    }
+  ],
+  "contribution_margin_alerts": [
+    {
+      "product": "ARP-013",
+      "avg_price": 304.6658333333333,
+      "avg_entry_cost": 320.0,
+      "variable_cost_pct": 15.0,
+      "contribution_margin": -61.034041666666695,
+      "sample_size": 12,
+      "promotional": false
+    }
+  ],
+  "latent_revenue": [
+    {
+      "anchor_category": "lente",
+      "target_category": "solar",
+      "eligible_customers": 165,
+      "non_buyers_count": 78,
+      "attach_rate_pct": 52.72727272727273,
+      "avg_ticket_target_category": 301.7125128205128,
+      "assumed_conversion_pct": 20.0,
+      "estimated_latent_revenue": 4706.7152,
+      "non_buyer_customers": [
+        "Client_FD",
+        "Client_BV",
+        "Client_HH",
+        "Client_CH",
+        "Client_N",
+        "Client_FM",
+        "Client_FV",
+        "Client_AL",
+        "Client_EN",
+        "Client_FW",
+        "Client_CP",
+        "Client_T",
+        "Client_CS",
+        "Client_Q",
+        "Client_M",
+        "Client_HT",
+        "Client_GM",
+        "Client_BJ",
+        "Client_BB",
+        "Client_B",
+        "Client_FX",
+        "Client_BN",
+        "Client_DI",
+        "Client_GJ",
+        "Client_AI",
+        "Client_DT",
+        "Client_AK",
+        "Client_EM",
+        "Client_BM",
+        "Client_AF",
+        "Client_HN",
+        "Client_FZ",
+        "Client_H",
+        "Client_CE",
+        "Client_ER",
+        "Client_CG",
+        "Client_BI",
+        "Client_O",
+        "Client_BE",
+        "Client_F",
+        "Client_FF",
+        "Client_GR",
+        "Client_EZ",
+        "Client_CF",
+        "Client_BO",
+        "Client_AZ",
+        "Client_HU",
+        "Client_HP",
+        "Client_EO",
+        "Client_GU",
+        "Client_GN",
+        "Client_GF",
+        "Client_HS",
+        "Client_BH",
+        "Client_BG",
+        "Client_GL",
+        "Client_EX",
+        "Client_BF",
+        "Client_GP",
+        "Client_IE",
+        "Client_GE",
+        "Client_FK",
+        "Client_FA",
+        "Client_DW",
+        "Client_HE",
+        "Client_DL",
+        "Client_HL",
+        "Client_EE",
+        "Client_Z",
+        "Client_IH",
+        "Client_CK",
+        "Client_GH",
+        "Client_DG",
+        "Client_CZ",
+        "Client_AE",
+        "Client_BZ",
+        "Client_BL",
+        "Client_FB"
+      ]
+    }
+  ],
+  "dead_stock": [
+    {
+      "dead_stock_months": 8,
+      "sku_count": 2,
+      "capital_frozen": 5101.24,
+      "total_inventory_value": 20366.300000000003,
+      "dead_stock_pct": 25.047455846177257,
+      "skus": [
+        "SOL-030",
+        "SOL-031"
+      ]
+    }
+  ],
+  "gmroi": [],
+  "data_completeness": [
+    {
+      "total_customers": 260,
+      "phone_filled_pct": 26.53846153846154,
+      "document_filled_pct": 23.076923076923077,
+      "completeness_pct": 24.807692307692307,
+      "contingency_triggered": true
+    }
+  ],
+  "store_performance": [
+    {
+      "store": "Loja 01",
+      "gross_revenue": 241406.93,
+      "revenue_sample_size": 692,
+      "avg_price": 348.8539450867052,
+      "avg_entry_cost": 123.41812138728324,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 173.1077319364162,
+      "contribution_margin_total": 119790.55050000001,
+      "margin_sample_size": 692,
+      "months_of_history": 11.957950065703022,
+      "has_sufficient_history": true
+    },
+    {
+      "store": "Loja 02",
+      "gross_revenue": 205028.6,
+      "revenue_sample_size": 734,
+      "avg_price": 279.33051771117164,
+      "avg_entry_cost": 102.35979564032696,
+      "variable_cost_pct": 15.0,
+      "contribution_margin_avg": 135.0711444141689,
+      "contribution_margin_total": 99142.21999999999,
+      "margin_sample_size": 734,
+      "months_of_history": 11.957950065703022,
+      "has_sufficient_history": true
+    }
+  ],
+  "store_macro_summary": {
+    "stores_with_negative_margin": [],
+    "masked_amount": 0.0,
+    "network_contribution_margin_total": 218932.77049999998,
+    "revenue_rank": [
+      "Loja 01",
+      "Loja 02"
+    ],
+    "margin_rank": [
+      "Loja 01",
+      "Loja 02"
+    ],
+    "rank_differs": false
+  },
+  "customer_concentration": [],
+  "service_decomposition": [
+    {
+      "store": "Loja 01",
+      "product_margin": 116917.05650000002,
+      "service_margin": 2873.4939999999997,
+      "total_margin": 119790.55050000003,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 30141.7
+    },
+    {
+      "store": "Loja 02",
+      "product_margin": 96301.63250000002,
+      "service_margin": 2840.5875,
+      "total_margin": 99142.22000000002,
+      "masks_negative_product_margin": false,
+      "follow_on_cac_effect": 25233.11
+    }
+  ],
+  "service_reconciliation": [],
+  "salesperson_performance": [
+    {
+      "salesperson": "V-01",
+      "total_revenue": 57015.85,
+      "sample_size": 153,
+      "capture_rate_pct": 98.69281045751634,
+      "low_capture_flag": false,
+      "days_since_first_sale": 363,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-02",
+      "total_revenue": 62468.04,
+      "sample_size": 179,
+      "capture_rate_pct": 95.53072625698324,
+      "low_capture_flag": false,
+      "days_since_first_sale": 364,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-03",
+      "total_revenue": 56556.27,
+      "sample_size": 173,
+      "capture_rate_pct": 98.84393063583815,
+      "low_capture_flag": false,
+      "days_since_first_sale": 364,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "V-04",
+      "total_revenue": 62772.06,
+      "sample_size": 181,
+      "capture_rate_pct": 98.34254143646409,
+      "low_capture_flag": false,
+      "days_since_first_sale": 362,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-05",
+      "total_revenue": 56717.69,
+      "sample_size": 192,
+      "capture_rate_pct": 94.79166666666667,
+      "low_capture_flag": false,
+      "days_since_first_sale": 364,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-06",
+      "total_revenue": 47693.05,
+      "sample_size": 183,
+      "capture_rate_pct": 96.17486338797814,
+      "low_capture_flag": false,
+      "days_since_first_sale": 363,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-07",
+      "total_revenue": 47153.84,
+      "sample_size": 175,
+      "capture_rate_pct": 95.42857142857143,
+      "low_capture_flag": false,
+      "days_since_first_sale": 364,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": false
+    },
+    {
+      "salesperson": "V-08",
+      "total_revenue": 50339.3,
+      "sample_size": 174,
+      "capture_rate_pct": 98.27586206896552,
+      "low_capture_flag": false,
+      "days_since_first_sale": 364,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "VENDEDOR_NAO_IDENTIFICADO",
+      "total_revenue": 4563.01,
+      "sample_size": 12,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 352,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    },
+    {
+      "salesperson": "_UNKNOWN_SALESPERSON",
+      "total_revenue": 1156.42,
+      "sample_size": 4,
+      "capture_rate_pct": 100.0,
+      "low_capture_flag": false,
+      "days_since_first_sale": 352,
+      "has_sufficient_tenure": true,
+      "low_volume_flag": true
+    }
+  ],
+  "advanced_metrics": {
+    "gmroi_alerts": [],
+    "attach_rate_opportunities": [
+      {
+        "anchor_category": "lente",
+        "target_category": "solar",
+        "eligible_customers": 165,
+        "attach_rate_pct": 52.72727272727273,
+        "cross_sell_gap": [
+          {
+            "customer_id": "Client_B",
+            "anchor_category_revenue": 4216.69
+          },
+          {
+            "customer_id": "Client_M",
+            "anchor_category_revenue": 3911.18
+          },
+          {
+            "customer_id": "Client_O",
+            "anchor_category_revenue": 3827.85
+          },
+          {
+            "customer_id": "Client_H",
+            "anchor_category_revenue": 3668.2000000000003
+          },
+          {
+            "customer_id": "Client_Q",
+            "anchor_category_revenue": 3352.7
+          }
+        ]
+      }
+    ],
+    "seller_margin_corrosion": [
+      {
+        "salesperson": "_UNKNOWN_SALESPERSON",
+        "store": "Loja 02",
+        "total_revenue": 1156.42,
+        "total_discount": 3643.58,
+        "discount_pct": 315.0741080230366,
+        "store_mean_discount_pct": 77.19410012348577,
+        "store_std_discount_pct": 119.05058596980778,
+        "sample_size": 4,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-06",
+        "store": "Loja 02",
+        "total_revenue": 46936.06,
+        "total_discount": 12278.94,
+        "discount_pct": 26.16099433995951,
+        "store_mean_discount_pct": 77.19410012348577,
+        "store_std_discount_pct": 119.05058596980778,
+        "sample_size": 160,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-05",
+        "store": "Loja 02",
+        "total_revenue": 55684.26,
+        "total_discount": 11050.74,
+        "discount_pct": 19.845356659134914,
+        "store_mean_discount_pct": 77.19410012348577,
+        "store_std_discount_pct": 119.05058596980778,
+        "sample_size": 160,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-03",
+        "store": "Loja 01",
+        "total_revenue": 55638.52,
+        "total_discount": 8066.48,
+        "discount_pct": 14.498013246937553,
+        "store_mean_discount_pct": 13.200812675899822,
+        "store_std_discount_pct": 1.3664942209827327,
+        "sample_size": 145,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-01",
+        "store": "Loja 01",
+        "total_revenue": 56382.71,
+        "total_discount": 8077.29,
+        "discount_pct": 14.32582790007788,
+        "store_mean_discount_pct": 13.200812675899822,
+        "store_std_discount_pct": 1.3664942209827327,
+        "sample_size": 133,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-04",
+        "store": "Loja 01",
+        "total_revenue": 61808.69,
+        "total_discount": 7961.31,
+        "discount_pct": 12.880567441244912,
+        "store_mean_discount_pct": 13.200812675899822,
+        "store_std_discount_pct": 1.3664942209827327,
+        "sample_size": 151,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-07",
+        "store": "Loja 02",
+        "total_revenue": 46001.35,
+        "total_discount": 5858.650000000001,
+        "discount_pct": 12.735821883488203,
+        "store_mean_discount_pct": 77.19410012348577,
+        "store_std_discount_pct": 119.05058596980778,
+        "sample_size": 141,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-08",
+        "store": "Loja 02",
+        "total_revenue": 49610.26,
+        "total_discount": 6029.740000000001,
+        "discount_pct": 12.154219711809615,
+        "store_mean_discount_pct": 77.19410012348577,
+        "store_std_discount_pct": 119.05058596980778,
+        "sample_size": 150,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      },
+      {
+        "salesperson": "V-02",
+        "store": "Loja 01",
+        "total_revenue": 61220.26,
+        "total_discount": 6794.74,
+        "discount_pct": 11.098842115338941,
+        "store_mean_discount_pct": 13.200812675899822,
+        "store_std_discount_pct": 1.3664942209827327,
+        "sample_size": 147,
+        "is_corrosive": false,
+        "tainted_by_triage": true
+      }
+    ],
+    "concentration_risk": [
+      {
+        "store": "Loja 02",
+        "salesperson": "V-05",
+        "vip_revenue": 21401.57,
+        "vip_total_store": 76095.84,
+        "concentration_pct": 28.124494059070773,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 01",
+        "salesperson": "V-03",
+        "vip_revenue": 27289.99,
+        "vip_total_store": 99205.81,
+        "concentration_pct": 27.508459433978715,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 01",
+        "salesperson": "V-02",
+        "vip_revenue": 26989.4,
+        "vip_total_store": 99205.81,
+        "concentration_pct": 27.205463067132865,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 02",
+        "salesperson": "V-08",
+        "vip_revenue": 19594.01,
+        "vip_total_store": 76095.84,
+        "concentration_pct": 25.74912110832865,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 02",
+        "salesperson": "V-07",
+        "vip_revenue": 18310.34,
+        "vip_total_store": 76095.84,
+        "concentration_pct": 24.06220891969916,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 01",
+        "salesperson": "V-04",
+        "vip_revenue": 22601.82,
+        "vip_total_store": 99205.81,
+        "concentration_pct": 22.782758388848396,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 01",
+        "salesperson": "V-01",
+        "vip_revenue": 20892.36,
+        "vip_total_store": 99205.81,
+        "concentration_pct": 21.059613343210444,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 02",
+        "salesperson": "V-06",
+        "vip_revenue": 15992.050000000001,
+        "vip_total_store": 76095.84,
+        "concentration_pct": 21.01566918769804,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 01",
+        "salesperson": "VENDEDOR_NAO_IDENTIFICADO",
+        "vip_revenue": 1432.2399999999998,
+        "vip_total_store": 99205.81,
+        "concentration_pct": 1.4437057668295836,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 02",
+        "salesperson": "VENDEDOR_NAO_IDENTIFICADO",
+        "vip_revenue": 504.99,
+        "vip_total_store": 76095.84,
+        "concentration_pct": 0.6636236619505087,
+        "is_high_risk": false
+      },
+      {
+        "store": "Loja 02",
+        "salesperson": "_UNKNOWN_SALESPERSON",
+        "vip_revenue": 292.88,
+        "vip_total_store": 76095.84,
+        "concentration_pct": 0.3848830632528664,
+        "is_high_risk": false
+      }
+    ],
+    "follow_on_conversion": 0.9487179487179487,
+    "discrepancy_triage": {
+      "triggered_count": 38,
+      "auto_classified": [
+        {
+          "id": "DTQ-0001",
+          "sku": "ARP-013",
+          "store": "Loja 01",
+          "salesperson": "V-01",
+          "source_rows": [
+            371,
+            732
+          ],
+          "practiced_price": 297.95500000000004,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 66.52191011235955,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0002",
+          "sku": "ARP-013",
+          "store": "Loja 01",
+          "salesperson": "V-02",
+          "source_rows": [
+            1073
+          ],
+          "practiced_price": 295.11,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 66.84157303370787,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0003",
+          "sku": "ARP-013",
+          "store": "Loja 01",
+          "salesperson": "V-03",
+          "source_rows": [
+            217,
+            323,
+            566
+          ],
+          "practiced_price": 303.9166666666667,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 65.85205992509363,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0004",
+          "sku": "ARP-013",
+          "store": "Loja 01",
+          "salesperson": "V-04",
+          "source_rows": [
+            815,
+            1309
+          ],
+          "practiced_price": 303.92499999999995,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 65.85112359550561,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0005",
+          "sku": "ARP-013",
+          "store": "Loja 02",
+          "salesperson": "V-06",
+          "source_rows": [
+            1104
+          ],
+          "practiced_price": 309.18,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 65.26067415730337,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0006",
+          "sku": "ARP-013",
+          "store": "Loja 02",
+          "salesperson": "V-07",
+          "source_rows": [
+            1082
+          ],
+          "practiced_price": 309.77,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 65.19438202247191,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0007",
+          "sku": "ARP-013",
+          "store": "Loja 02",
+          "salesperson": "V-08",
+          "source_rows": [
+            1164,
+            1191
+          ],
+          "practiced_price": 313.21000000000004,
+          "list_price": 890.0,
+          "entry_cost": 320.0,
+          "nf_cost": 150.0,
+          "discount_over_list_pct": 64.80786516853932,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": true,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0008",
+          "sku": "ARP-020",
+          "store": "Loja 01",
+          "salesperson": "V-01",
+          "source_rows": [
+            191
+          ],
+          "practiced_price": 253.82,
+          "list_price": 780.0,
+          "entry_cost": 275.5,
+          "nf_cost": null,
+          "discount_over_list_pct": 67.45897435897436,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0009",
+          "sku": "ARP-020",
+          "store": "Loja 01",
+          "salesperson": "V-03",
+          "source_rows": [
+            528,
+            1158
+          ],
+          "practiced_price": 250.005,
+          "list_price": 780.0,
+          "entry_cost": 277.21500000000003,
+          "nf_cost": 276.73,
+          "discount_over_list_pct": 67.94807692307691,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0010",
+          "sku": "ARP-020",
+          "store": "Loja 01",
+          "salesperson": "V-04",
+          "source_rows": [
+            899
+          ],
+          "practiced_price": 248.82,
+          "list_price": 780.0,
+          "entry_cost": 282.39,
+          "nf_cost": 276.73,
+          "discount_over_list_pct": 68.10000000000001,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0011",
+          "sku": "ARP-020",
+          "store": "Loja 02",
+          "salesperson": "V-05",
+          "source_rows": [
+            241
+          ],
+          "practiced_price": 256.86,
+          "list_price": 780.0,
+          "entry_cost": 280.69,
+          "nf_cost": null,
+          "discount_over_list_pct": 67.06923076923077,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0012",
+          "sku": "ARP-020",
+          "store": "Loja 02",
+          "salesperson": "V-06",
+          "source_rows": [
+            101,
+            246
+          ],
+          "practiced_price": 264.71000000000004,
+          "list_price": 780.0,
+          "entry_cost": 283.275,
+          "nf_cost": null,
+          "discount_over_list_pct": 66.06282051282051,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0013",
+          "sku": "ARP-020",
+          "store": "Loja 02",
+          "salesperson": "V-07",
+          "source_rows": [
+            745,
+            1422
+          ],
+          "practiced_price": 250.745,
+          "list_price": 780.0,
+          "entry_cost": 282.635,
+          "nf_cost": 291.16,
+          "discount_over_list_pct": 67.85320512820513,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0014",
+          "sku": "ARP-020",
+          "store": "Loja 02",
+          "salesperson": "V-08",
+          "source_rows": [
+            1290
+          ],
+          "practiced_price": 244.46,
+          "list_price": 780.0,
+          "entry_cost": 278.95,
+          "nf_cost": 288.55,
+          "discount_over_list_pct": 68.65897435897436,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0015",
+          "sku": "ARP-021",
+          "store": "Loja 01",
+          "salesperson": "V-01",
+          "source_rows": [
+            169,
+            340
+          ],
+          "practiced_price": 227.17000000000002,
+          "list_price": 720.0,
+          "entry_cost": 256.53999999999996,
+          "nf_cost": 258.04499999999996,
+          "discount_over_list_pct": 68.44861111111112,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0016",
+          "sku": "ARP-021",
+          "store": "Loja 01",
+          "salesperson": "V-02",
+          "source_rows": [
+            423
+          ],
+          "practiced_price": 243.62,
+          "list_price": 720.0,
+          "entry_cost": 258.41,
+          "nf_cost": 259.19,
+          "discount_over_list_pct": 66.16388888888889,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0017",
+          "sku": "ARP-021",
+          "store": "Loja 01",
+          "salesperson": "V-03",
+          "source_rows": [
+            868
+          ],
+          "practiced_price": 232.86,
+          "list_price": 720.0,
+          "entry_cost": 255.75,
+          "nf_cost": 253.4,
+          "discount_over_list_pct": 67.65833333333333,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0018",
+          "sku": "ARP-021",
+          "store": "Loja 01",
+          "salesperson": "V-04",
+          "source_rows": [
+            30
+          ],
+          "practiced_price": 221.41,
+          "list_price": 720.0,
+          "entry_cost": 260.16,
+          "nf_cost": null,
+          "discount_over_list_pct": 69.24861111111112,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0019",
+          "sku": "ARP-021",
+          "store": "Loja 02",
+          "salesperson": "V-05",
+          "source_rows": [
+            198,
+            482
+          ],
+          "practiced_price": 247.675,
+          "list_price": 720.0,
+          "entry_cost": 263.735,
+          "nf_cost": 264.02,
+          "discount_over_list_pct": 65.60069444444446,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0020",
+          "sku": "ARP-021",
+          "store": "Loja 02",
+          "salesperson": "V-06",
+          "source_rows": [
+            527,
+            1363
+          ],
+          "practiced_price": 229.15,
+          "list_price": 720.0,
+          "entry_cost": 264.16499999999996,
+          "nf_cost": 262.615,
+          "discount_over_list_pct": 68.17361111111111,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0021",
+          "sku": "ARP-021",
+          "store": "Loja 02",
+          "salesperson": "V-07",
+          "source_rows": [
+            617
+          ],
+          "practiced_price": 247.15,
+          "list_price": 720.0,
+          "entry_cost": 263.47,
+          "nf_cost": 253.4,
+          "discount_over_list_pct": 65.67361111111111,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "below_cost_sale",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0022",
+          "sku": "LNT-900",
+          "store": "Loja 02",
+          "salesperson": "V-05",
+          "source_rows": [
+            255,
+            776,
+            917,
+            1033,
+            1147,
+            1202
+          ],
+          "practiced_price": 301.555,
+          "list_price": 1200.0,
+          "entry_cost": 420.0,
+          "nf_cost": 433.28999999999996,
+          "discount_over_list_pct": 74.87041666666667,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0023",
+          "sku": "LNT-900",
+          "store": "Loja 02",
+          "salesperson": "V-06",
+          "source_rows": [
+            69,
+            253,
+            941,
+            1028,
+            1046,
+            1399
+          ],
+          "practiced_price": 299.255,
+          "list_price": 1200.0,
+          "entry_cost": 420.0,
+          "nf_cost": 432.1075,
+          "discount_over_list_pct": 75.06208333333333,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0024",
+          "sku": "LNT-900",
+          "store": "Loja 02",
+          "salesperson": "_UNKNOWN_SALESPERSON",
+          "source_rows": [
+            58,
+            474,
+            663,
+            724
+          ],
+          "practiced_price": 289.105,
+          "list_price": 1200.0,
+          "entry_cost": 420.0,
+          "nf_cost": 433.13,
+          "discount_over_list_pct": 75.90791666666667,
+          "evidence": {
+            "below_cost": true,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": false,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": true
+          },
+          "verdict": "suspected_cadastral_error",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0025",
+          "sku": "SOL-030",
+          "store": "Loja 01",
+          "salesperson": "V-01",
+          "source_rows": [
+            1275
+          ],
+          "practiced_price": 102.2,
+          "list_price": 320.0,
+          "entry_cost": 96.36,
+          "nf_cost": 93.98,
+          "discount_over_list_pct": 68.0625,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0026",
+          "sku": "SOL-030",
+          "store": "Loja 01",
+          "salesperson": "V-03",
+          "source_rows": [
+            1089
+          ],
+          "practiced_price": 105.39,
+          "list_price": 320.0,
+          "entry_cost": 93.11,
+          "nf_cost": 99.46,
+          "discount_over_list_pct": 67.06562500000001,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0027",
+          "sku": "SOL-030",
+          "store": "Loja 01",
+          "salesperson": "V-04",
+          "source_rows": [
+            1207,
+            1402
+          ],
+          "practiced_price": 101.535,
+          "list_price": 320.0,
+          "entry_cost": 93.195,
+          "nf_cost": 93.98,
+          "discount_over_list_pct": 68.27031249999999,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0028",
+          "sku": "SOL-030",
+          "store": "Loja 02",
+          "salesperson": "V-06",
+          "source_rows": [
+            1398,
+            1401
+          ],
+          "practiced_price": 103.315,
+          "list_price": 320.0,
+          "entry_cost": 94.885,
+          "nf_cost": 93.98,
+          "discount_over_list_pct": 67.7140625,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0029",
+          "sku": "SOL-030",
+          "store": "Loja 02",
+          "salesperson": "V-08",
+          "source_rows": [
+            1220,
+            1279,
+            1361
+          ],
+          "practiced_price": 106.00333333333333,
+          "list_price": 320.0,
+          "entry_cost": 96.08,
+          "nf_cost": 93.98,
+          "discount_over_list_pct": 66.87395833333333,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0030",
+          "sku": "SOL-031",
+          "store": "Loja 01",
+          "salesperson": "V-01",
+          "source_rows": [
+            1120
+          ],
+          "practiced_price": 122.65,
+          "list_price": 350.0,
+          "entry_cost": 110.45,
+          "nf_cost": 110.4,
+          "discount_over_list_pct": 64.95714285714286,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0031",
+          "sku": "SOL-031",
+          "store": "Loja 01",
+          "salesperson": "V-02",
+          "source_rows": [
+            1301
+          ],
+          "practiced_price": 118.84,
+          "list_price": 350.0,
+          "entry_cost": 107.35,
+          "nf_cost": 110.4,
+          "discount_over_list_pct": 66.04571428571428,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0032",
+          "sku": "SOL-031",
+          "store": "Loja 01",
+          "salesperson": "V-03",
+          "source_rows": [
+            1087
+          ],
+          "practiced_price": 117.46,
+          "list_price": 350.0,
+          "entry_cost": 107.75,
+          "nf_cost": 110.4,
+          "discount_over_list_pct": 66.44000000000001,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0033",
+          "sku": "SOL-031",
+          "store": "Loja 02",
+          "salesperson": "V-06",
+          "source_rows": [
+            1355
+          ],
+          "practiced_price": 120.82,
+          "list_price": 350.0,
+          "entry_cost": 107.01,
+          "nf_cost": 114.68,
+          "discount_over_list_pct": 65.48,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0034",
+          "sku": "SOL-031",
+          "store": "Loja 02",
+          "salesperson": "V-07",
+          "source_rows": [
+            1300
+          ],
+          "practiced_price": 120.73,
+          "list_price": 350.0,
+          "entry_cost": 108.09,
+          "nf_cost": 110.4,
+          "discount_over_list_pct": 65.50571428571428,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": true,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0035",
+          "sku": "SOL-032",
+          "store": "Loja 01",
+          "salesperson": "V-01",
+          "source_rows": [
+            1103
+          ],
+          "practiced_price": 114.34,
+          "list_price": 310.0,
+          "entry_cost": 102.69,
+          "nf_cost": 104.65,
+          "discount_over_list_pct": 63.11612903225806,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0036",
+          "sku": "SOL-032",
+          "store": "Loja 01",
+          "salesperson": "V-02",
+          "source_rows": [
+            1287
+          ],
+          "practiced_price": 111.68,
+          "list_price": 310.0,
+          "entry_cost": 97.95,
+          "nf_cost": 103.6,
+          "discount_over_list_pct": 63.97419354838709,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0037",
+          "sku": "SOL-032",
+          "store": "Loja 01",
+          "salesperson": "V-04",
+          "source_rows": [
+            1118
+          ],
+          "practiced_price": 107.44,
+          "list_price": 310.0,
+          "entry_cost": 101.67,
+          "nf_cost": 104.65,
+          "discount_over_list_pct": 65.34193548387097,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        },
+        {
+          "id": "DTQ-0038",
+          "sku": "SOL-032",
+          "store": "Loja 02",
+          "salesperson": "V-08",
+          "source_rows": [
+            1418
+          ],
+          "practiced_price": 110.31,
+          "list_price": 310.0,
+          "entry_cost": 99.17,
+          "nf_cost": 103.6,
+          "discount_over_list_pct": 64.41612903225806,
+          "evidence": {
+            "below_cost": false,
+            "sku_in_dead_stock": false,
+            "is_promo_flagged": true,
+            "cost_diverges_from_nf": false,
+            "store_systemic_pattern": false
+          },
+          "verdict": "deliberate_liquidation",
+          "status": "auto_classified"
+        }
+      ],
+      "manual_queue": []
+    }
+  },
+  "executive_summary": {
+    "total_operational_loss": 61.034041666666695,
+    "total_capital_frozen": 5101.24,
+    "total_ltv_risk": 63414.44,
+    "discarded_alarms": [],
+    "action_plan": [
+      {
+        "id": "act-operational",
+        "category": "margem_produto",
+        "title": "Estancar Sangria Operacional",
+        "description": "SKUs vendendo abaixo da margem de contribuição — ajustar precificação ou descontinuar. Pode incluir promoção intencional, a confirmar.",
+        "impact_brl": 61.034041666666695,
+        "nature": "operational",
+        "tier": 1
+      },
+      {
+        "id": "act-capital",
+        "category": "estoque",
+        "title": "Liquidar Dinheiro Parado",
+        "description": "Capital travado em estoque sem movimento — requer outlet ou transferência entre lojas.",
+        "impact_brl": 5101.24,
+        "nature": "capital",
+        "tier": 2
+      },
+      {
+        "id": "act-ltv",
+        "category": "churn",
+        "title": "Mitigar Evasão Silenciosa (Churn)",
+        "description": "Clientes recorrentes que sumiram além do ciclo de compra esperado — ativação via CRM prioritária.",
+        "impact_brl": 63414.44,
+        "nature": "ltv_risk",
+        "tier": 3
+      }
+    ]
+  }
+}

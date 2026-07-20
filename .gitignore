@@ -5,6 +5,11 @@ __pycache__/
 # Fixture real (dado sintético de consultoria, não PII) — NÃO regenerável por script,
 # precisa estar versionada para os testes de regressão da série B baterem em qualquer clone.
 !tests/fixtures/consultoria_real_test.xlsx
+# Fixture real #2 (Rede Ótica Beta — dado sintético com aba Gabarito de 7 "pegadinhas"
+# adversariais desenhadas contra o motor: sangria, tabela desalinhada, vendedor
+# fantasma/E5, promoção legítima, divergência de custo NF/E4, estoque morto,
+# completude baixa). Mesma razão da acima: não regenerável, precisa estar versionada.
+!tests/fixtures/rede_oticas_beta_test.xlsx
 .env
 *.egg-info/
 dist/

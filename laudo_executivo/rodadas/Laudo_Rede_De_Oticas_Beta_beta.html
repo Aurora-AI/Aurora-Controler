@@ -119,189 +119,130 @@
      ============================================================ -->
 <script id="AUDIT_DATA" type="application/json">
 {
-  "rodada": "v3",
-  "cliente": "Rede de Óticas",
+  "rodada": "beta",
+  "cliente": "Rede de Óticas Beta",
   "manchete": {
-    "total_risco_display": "R$ 131 mil",
-    "frase": "escapando pelo ralo agora — e o pior vazamento está na sua melhor loja.",
-    "composicao": "R$ 92.078 em clientes que sumiram + R$ 35.040 parados em prateleira + prejuízo estrutural de margem nas lojas L7 e L9. Cenários projetados (ex.: R$ 4.531 de segunda venda) não entram nesta soma e aparecem sempre rotulados à parte."
+    "total_risco_display": "R$ 69 mil",
+    "frase": "escapando da sua rede agora — e parte do problema está escondida atrás de uma tabela de preço que não bate com o que você realmente paga.",
+    "composicao": "R$ 63.414,44 em clientes que sumiram + R$ 5.101,24 parados em estoque + R$ 522,54 vendidos abaixo do custo (produtos ARP-020 e ARP-021, ambas as lojas). Um achado à parte — não somado aqui, ver capítulo seguinte — mostra a tabela de custo do ARP-013 desalinhada da nota fiscal de compra."
   },
   "paradoxo": {
-    "loja": "L7-Oeste",
-    "produto": -3346.09,
-    "servico": 13840.12,
-    "total": 10494.03,
-    "contexto": "~235 serviços de conserto",
+    "loja": "Toda a rede (Loja 01 + Loja 02)",
+    "produto": -184.01,
+    "servico": 2040.0,
+    "total": 1855.99,
+    "contexto": "12 vendas da armação ARP-013, nas duas lojas",
+    "col1_label": "O que o relatório mostra",
+    "col1_context": "calculado com o custo hoje cadastrado (R$ 320,00/un.)",
+    "col2_label": "A correção do cadastro",
+    "col2_context": "custo cadastrado vs. custo real da NF: R$ 320,00 → R$ 150,00",
+    "col3_label": "O resultado real",
+    "col3_context": "com o custo que você de fato pagou",
+    "col3_style": "true",
+    "headline_html": "Sua tabela de custo <span class=\"bleed\">está mentindo sobre o que você paga.</span>",
+    "sub_html": "A armação ARP-013 parece dar prejuízo — o sistema hoje calcula a margem com um custo cadastrado de R$ 320,00 por unidade. Mas a nota fiscal de compra (aba Compras) mostra o custo real: R$ 150,00. A “perda” nunca existiu — o número que engana não é a venda, é o cadastro.",
+    "axis_note_html": "Aqui a barra final não esconde nada — ela é a verdade que o cadastro errado escondia: R$ 1.855,99 de margem real, nas mesmas 12 vendas que o relatório de hoje mostra como prejuízo.",
+    "recommendation_html": "Corrigir o custo cadastrado do ARP-013 (e verificar o LNT-900, mesmo padrão ao lado) é a implantação — sem isso, toda margem calculada sobre esses produtos continua errada.",
     "controle": {
-      "loja": "L9-Serra",
-      "produto": -4702,
-      "frase": "vende os mesmos produtos, sem balcão de conserto — e aparece no vermelho. Ela é a L7 sem a máscara: mesma doença, sem o curativo."
+      "loja": "LNT-900, mesma rede",
+      "frase": "mostra o mesmo padrão: 3 vendedores diferentes (incluindo um não identificado) praticam ~75% de desconto sobre a tabela de R$ 1.200, de forma consistente — não é 1 vendedor isolado, é a tabela",
+      "produto": 14438.72,
+      "value_label": "desconto acumulado sobre a tabela"
     }
   },
   "sangramentos": [
     {
       "id": "cap-clientes",
       "titulo": "Clientes Evaporando",
-      "valor_display": "R$ 92.078",
-      "soco": "47 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
-      "serie_mensal": [
-        {
-          "mes": "mar/25",
-          "valor": 1174.55
-        },
-        {
-          "mes": "jun/25",
-          "valor": 12923.91
-        },
-        {
-          "mes": "jul/25",
-          "valor": 8428.46
-        },
-        {
-          "mes": "ago/25",
-          "valor": 34220.2
-        },
-        {
-          "mes": "set/25",
-          "valor": 5109.12
-        },
-        {
-          "mes": "out/25",
-          "valor": 3480.65
-        },
-        {
-          "mes": "nov/25",
-          "valor": 2353.43
-        },
-        {
-          "mes": "dez/25",
-          "valor": 1647.28
-        },
-        {
-          "mes": "jan/26",
-          "valor": 6964.01
-        },
-        {
-          "mes": "fev/26",
-          "valor": 8385.07
-        },
-        {
-          "mes": "mar/26",
-          "valor": 6492.56
-        },
-        {
-          "mes": "abr/26",
-          "valor": 898.75
-        }
-      ],
+      "valor_display": "R$ 63.414,44",
+      "soco": "37 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
+      "serie_mensal": null,
       "evidencias": [
-        "A detecção respeita o ciclo de compra de cada cliente — ninguém de ciclo anual foi contado como perdido.",
-        "3 dos seus melhores clientes estão em declínio claro de frequência — ainda dá tempo.",
-        "A fila de reativação sai pronta, ordenada por valor histórico, loja a loja."
+        "A detecção respeita o ciclo de compra de cada cliente — ninguém que compra 1x por ano foi contado como perdido.",
+        "O maior caso sozinho já vale R$ 4.494,48 em receita histórica.",
+        "A fila de reativação sai pronta, ordenada por valor histórico."
       ],
-      "custo_mensal": "Cada mês sem uma rotina de reativação, parte desses R$ 92.078 vira perda definitiva — cliente de ótica que troca de casa raramente volta sozinho.",
+      "custo_mensal": "Cada mês sem uma rotina de reativação, parte desses R$ 63.414,44 vira perda definitiva.",
       "gancho": "A campanha de reativação segmentada por ciclo é a consultoria rodando."
     },
     {
       "id": "cap-caixa",
       "titulo": "Caixa Preso",
-      "valor_display": "R$ 35.040",
-      "soco": "Capital dormindo em 16 produtos que não giram há mais de um ano.",
-      "treemap_itens": [
-        {
-          "nome": "12× Armacao encalhada — L1 - Centro",
-          "valor": 28800.0
-        },
-        {
-          "nome": "1× DEADX-001 — L6 - Leste",
-          "valor": 1560.0
-        },
-        {
-          "nome": "1× DEADX-002 — L6 - Leste",
-          "valor": 1560.0
-        },
-        {
-          "nome": "1× DEADX-003 — L6 - Leste",
-          "valor": 1560.0
-        },
-        {
-          "nome": "1× DEADX-004 — L6 - Leste",
-          "valor": 1560.0
-        }
-      ],
-      "treemap_total_itens": 16,
+      "valor_display": "R$ 5.101,24",
+      "soco": "2 modelos de óculos solares parados há 9-11 meses, sem nenhuma venda.",
+      "treemap_itens": null,
+      "treemap_total_itens": 2,
       "evidencias": [
-        "Nenhum item sazonal foi contado — solares em baixa de inverno ficaram fora da lista.",
         "É caixa imobilizado: dinheiro que poderia estar em produto que gira ou no seu bolso.",
-        "A lista completa, com dias parados e valor por item, está no anexo — pronta para liquidação."
+        "Representa 25% do valor total do seu estoque atual — um quarto do capital parado.",
+        "Parte desse mesmo estoque já está sendo liquidado deliberadamente — ver o que NÃO é problema, abaixo."
       ],
-      "custo_mensal": "R$ 35.040 parados são R$ 35.040 que não financiam estoque que vende — e a prateleira ocupada bloqueia o produto certo.",
-      "gancho": "Liberar esse caixa (liquidação/devolução assistida) é execução — nossa entrega."
+      "custo_mensal": "R$ 5.101,24 parados não financiam produto que vende — e ocupam prateleira que poderia ter giro.",
+      "gancho": "Liberar esse caixa (liquidação assistida) é execução — nossa entrega."
     },
     {
       "id": "cap-lucro",
       "titulo": "Lucro Fantasma",
-      "valor_display": "2 lojas",
-      "soco": "vendem produto no vermelho — e uma delas parece campeã nos seus relatórios.",
+      "valor_display": "R$ 522,54",
+      "soco": "20 vendas de 2 modelos de armação (ARP-020, ARP-021) saíram abaixo do próprio custo.",
       "evidencias": [
-        "L7-Oeste: prejuízo de produto mascarado pelo balcão de conserto (ver O Paradoxo).",
-        "L9-Serra: mesmo prejuízo, sem máscara — a única loja no vermelho total da rede.",
-        "Há produtos em que você paga R$ 190 para vender a R$ 200: depois do custo de operar, você paga para vender."
+        "Confirmado linha a linha: preço praticado menor que o custo registrado na venda.",
+        "Espalhado entre 8 vendedores diferentes nas duas lojas — não é 1 pessoa, é um padrão.",
+        "Diferente do ARP-013 (capítulo anterior): aqui o cadastro bate, a venda é que saiu abaixo do custo de verdade."
       ],
-      "custo_mensal": "Enquanto o ranking for por faturamento, a doença fica invisível: o ranking por margem real conta outra história — e é ele que paga as suas contas.",
-      "gancho": "Repricing com trava no caixa e leitura mensal por margem real é parte da implantação."
+      "custo_mensal": "Cada venda abaixo do custo é prejuízo real, não contábil — sai do caixa a cada unidade vendida.",
+      "gancho": "Trava de preço mínimo no balcão, com aprovação para exceção, é parte da implantação."
     }
   ],
   "honestidade": [
     {
-      "alarme": "Queda de solares no inverno",
-      "motivo": "sazonalidade — não é estoque morto; o giro volta no verão."
+      "alarme": "Descontos de até 70% em óculos solares (SOL-030/031/032)",
+      "motivo": "promoção deliberada em produto parado — decisão de caixa da gerência, não erro. Custo sempre coberto."
     },
     {
-      "alarme": "Clientes de ciclo anual sem compra recente",
-      "motivo": "estão dentro do próprio ciclo — não é abandono."
-    },
-    {
-      "alarme": "Produto vendido com desconto agressivo",
-      "motivo": "promoção deliberada com margem bruta positiva — não é prejuízo estrutural."
-    },
-    {
-      "alarme": "Vendedores com números baixos",
-      "motivo": "estão em início de rampa (menos de 6 meses) — cedo demais para julgar."
+      "alarme": "Nenhuma das duas lojas aparece no vermelho",
+      "motivo": "produto e serviço saudáveis nas duas — o problema real desta rede está em cadastro e balcão, não em loja mascarada."
     }
   ],
   "plano": [
     {
       "acao": "Reativar os clientes que sumiram",
-      "impacto": 92078,
-      "impacto_display": "R$ 92.078",
+      "impacto": 63414.44,
+      "impacto_display": "R$ 63.414,44",
       "cenario": false,
-      "como": "Fila pronta, ordenada por valor histórico e ciclo. Começar pelos 3 campeões em declínio — esses ainda respondem."
+      "como": "Fila pronta, ordenada por valor histórico. Começar pelo maior caso (R$ 4.494,48) — ainda dá tempo."
     },
     {
-      "acao": "Liberar o caixa preso em prateleira",
-      "impacto": 35040,
-      "impacto_display": "R$ 35.040",
+      "acao": "Corrigir o cadastro de custo do ARP-013",
+      "impacto": 2040.0,
+      "impacto_display": "R$ 2.040,00",
       "cenario": false,
-      "como": "Liquidação/devolução dos 16 produtos sem giro. Dinheiro de volta ao estoque que vende."
+      "como": "Custo cadastrado (R$ 320,00) não bate com a nota fiscal de compra (R$ 150,00) — margem real escondida, comprovada nas 12 vendas do período. Verificar também o LNT-900, mesmo padrão."
     },
     {
-      "acao": "Estancar o prejuízo estrutural de produto (L7 e L9)",
-      "impacto": 8048,
-      "impacto_display": "−R$ 8.048/período",
+      "acao": "Liberar o caixa preso em estoque parado",
+      "impacto": 5101.24,
+      "impacto_display": "R$ 5.101,24",
       "cenario": false,
-      "como": "Recompor mix e preço sem enfraquecer o serviço que sustenta a L7. Corrigir os produtos vendidos abaixo do custo."
+      "como": "2 modelos sem giro há 9-11 meses. Parte já está em liquidação — acelerar o restante."
     },
     {
-      "acao": "Capturar a segunda venda",
-      "impacto": 4531,
-      "impacto_display": "R$ 4.531",
+      "acao": "Estancar as vendas abaixo do custo (ARP-020, ARP-021)",
+      "impacto": 522.54,
+      "impacto_display": "R$ 522,54",
+      "cenario": false,
+      "como": "Trava de preço mínimo no PDV, com aprovação obrigatória para vender abaixo do custo registrado."
+    },
+    {
+      "acao": "Capturar a segunda venda (lente → solar)",
+      "impacto": 4706.72,
+      "impacto_display": "R$ 4.706,72",
       "cenario": true,
-      "como": "4 em cada 10 clientes saem sem a segunda venda. Valor dimensionado como cenário — rotina de oferta no balcão."
+      "como": "78 clientes compraram lente e nunca compraram solar — 47% de gap. Valor dimensionado como cenário."
     }
   ],
   "cta": "Falar sobre a implantação",
-  "procedencia": "Todos os valores extraídos do audit_report congelado da rodada, com procedência linha a linha · Fato medido ≠ cenário projetado, sempre rotulado · Como calculamos → anexo de metodologia."
+  "procedencia": "Todos os valores extraídos do audit_report congelado da rodada beta (gerado em 20/07/2026), com procedência linha a linha · Fato medido ≠ cenário projetado, sempre rotulado · Como calculamos → anexo de metodologia."
 }
 </script>
 

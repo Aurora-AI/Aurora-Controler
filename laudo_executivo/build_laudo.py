@@ -33,6 +33,11 @@ VOCAB_PROIBIDO = [
 CAMPOS_NARRATIVOS = (
     "frase", "composicao", "soco", "custo_mensal", "gancho", "contexto",
     "titulo", "valor_display", "alarme", "motivo", "acao", "como", "cta",
+    # Spec v4 §13.6 — rótulos parametrizáveis do Ato 2 (identidade aditiva genérica):
+    # texto de cliente tanto quanto os campos acima, precisa da mesma varredura.
+    "col1_label", "col1_context", "col2_label", "col2_context",
+    "col3_label", "col3_context", "headline_html", "sub_html",
+    "axis_note_html", "recommendation_html", "value_label",
 )
 
 ERROS = []
