@@ -64,6 +64,19 @@ _FINANCEIRO_ROLE_KEYWORDS: dict[str, list[str]] = {
 }
 _FINANCEIRO_REQUIRED_ROLES = ("period", "store", "service_revenue")
 
+# Fase C — vocabulário da aba Compras (a "NF de entrada"): custo REAL de aquisição do
+# SKU, por data de compra — usado pra checar se o `entry_cost` registrado na venda
+# (aba Vendas) bate com o que a empresa de fato pagou pelo produto. Dict separado dos
+# demais pela mesma razão de sempre ("custo"/"sku" mudam de sentido por aba).
+_COMPRAS_ROLE_KEYWORDS: dict[str, list[str]] = {
+    "purchase_id": ["compra_id", "id"],
+    "date": ["data", "emissao"],
+    "sku": ["sku", "produto", "item", "codigo"],
+    "qty": ["qtd", "quantidade"],
+    "cost": ["custo"],
+}
+_COMPRAS_REQUIRED_ROLES = ("date", "sku", "cost")
+
 
 def infer_column_roles(
     df: pd.DataFrame, override: dict[str, str] | None = None,

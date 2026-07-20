@@ -7,6 +7,7 @@ pseudo-anonimização de identidades de cliente antes de montar o artefato final
 LLM aqui — toda decisão é determinística e reproduzível (thresholds registrados no
 report).
 """
+import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,16 +19,17 @@ from kernel.robustness import benchmark_population as _benchmark_population_gene
 from kernel.robustness import dedup_by_key
 from kernel.tabular import records_to_frame as _records_to_frame_generic
 from product_b.oracle.column_mapper import (
-    _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES,
-    _ESTOQUE_ROLE_KEYWORDS, _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS,
-    ColumnMappingError, DateAmbiguityError, coerce_currency_series, coerce_date_series,
-    infer_column_roles,
+    _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _COMPRAS_REQUIRED_ROLES,
+    _COMPRAS_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES, _ESTOQUE_ROLE_KEYWORDS,
+    _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS, ColumnMappingError,
+    DateAmbiguityError, coerce_currency_series, coerce_date_series, infer_column_roles,
 )
 from product_b.oracle.forensic_contracts import (
     ActionPlanItem, AdvancedMetrics, AttachRateOpportunity, AuditThresholdsConfig,
     ChurnFinding, CleaningSummary, ConcentrationRiskAlert, ContributionMarginAlert,
     CrossSellGapCustomer, CustomerConcentrationFinding, DataCompletenessFinding,
-    DeadStockFinding, DiscardedAlarm, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
+    DeadStockFinding, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
+    DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
     GmroiSkuAlert, LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly,
     RFMChampion, SalesRecord, SalespersonPerformance, SellerMarginCorrosionAlert,
     ServiceDecomposition, ServiceReconciliation, SeasonalityCurve, StoreMacroSummary,
@@ -97,14 +99,15 @@ def _read_raw(path: Path) -> pd.DataFrame:
     return pd.read_excel(path, dtype=str, engine="openpyxl")
 
 
-_SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro")
+_SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro", "Compras")
 
 
 def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
-    """Lê as abas nomeadas da série B (Estoque, Clientes) quando existem — Vendas
-    continua vindo de `load_sales_records`. Arquivo sem essas abas (CSV, pasta, ou
-    .xlsx de aba única) simplesmente não alimenta os detectores de estoque/completude
-    — nunca inventa dado ausente, nunca derruba a auditoria."""
+    """Lê as abas nomeadas da série B (Estoque, Clientes, Financeiro) e da Fase C
+    (Compras — a "NF de entrada", ver `detect_discrepancy_triage`) quando existem —
+    Vendas continua vindo de `load_sales_records`. Arquivo sem essas abas (CSV, pasta,
+    ou .xlsx de aba única) simplesmente não alimenta os detectores que dependem
+    delas — nunca inventa dado ausente, nunca derruba a auditoria."""
     path = Path(path)
     if path.is_dir() or path.suffix.lower() != ".xlsx":
         return {}
@@ -279,7 +282,7 @@ _SALES_FRAME_SCHEMA: dict[str, str] = {
     "date": "datetime64[ns]", "product": "object", "customer": "object",
     "value": "float64", "entry_cost": "float64", "category": "object",
     "store": "object", "salesperson": "object", "payment_method": "object",
-    "quantity": "float64",
+    "quantity": "float64", "source_row": "int64",
 }
 
 
@@ -289,6 +292,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
         "payment_method": r.payment_method, "quantity": r.quantity,
+        "source_row": r.source_row,
     } for r in records], _SALES_FRAME_SCHEMA)
 
 
@@ -1318,6 +1322,236 @@ def detect_follow_on_conversion(df: pd.DataFrame, thresholds: AuditThresholdsCon
     return float(follow_on.sum()) / float(len(starters))
 
 
+# ---------------------------------------------------------------------------------
+# Fase C — Triagem de discrepâncias e fila de auditoria manual
+# (SPEC_Fase_C_Fila_Auditoria_Manual.md). Distorção severa de preço não é erro para
+# descartar nem fato para exibir cru: o motor pré-classifica com as evidências que já
+# tem (custo da linha, NF de Compras, estoque morto, promoção C3, padrão sistêmico da
+# loja); só o resíduo inclassificável vai para veredito humano.
+# ---------------------------------------------------------------------------------
+
+
+def _estoque_list_price_by_sku(estoque_df: pd.DataFrame | None) -> pd.Series | None:
+    """Preço de tabela por SKU (aba Estoque, papel opcional `list_price`) — mesmo
+    padrão de `detect_seller_margin_corrosion` (Fase B), reimplementado aqui de forma
+    isolada para não acoplar as duas fases num helper compartilhado prematuro. `None`
+    quando a aba/coluna não existe (nunca inventa preço de tabela)."""
+    if estoque_df is None or estoque_df.empty:
+        return None
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return None
+    if "list_price" not in roles:
+        return None
+    frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "list_price": coerce_currency_series(estoque_df[roles["list_price"]]),
+    }).dropna()
+    return frame.groupby("sku")["list_price"].mean() if not frame.empty else None
+
+
+def _nf_cost_as_of_sale(sales: pd.DataFrame, compras_df: pd.DataFrame | None) -> pd.Series:
+    """Custo real de aquisição (aba Compras, "NF de entrada") vigente na data de cada
+    venda: a compra do MESMO SKU mais recente ANTERIOR à venda (`merge_asof`,
+    vetorizado — nunca um laço por linha). SKU sem compra anterior conhecida, ou sem
+    aba Compras/coluna reconhecível, fica `NaN` (indeterminado — E4 nunca dispara sem
+    base, nunca inventa custo de NF)."""
+    nan_result = pd.Series(np.nan, index=sales.index, dtype="float64")
+    if compras_df is None or compras_df.empty:
+        return nan_result
+    try:
+        roles = infer_column_roles(
+            compras_df, role_keywords=_COMPRAS_ROLE_KEYWORDS, required_roles=_COMPRAS_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return nan_result
+
+    purchases = pd.DataFrame({
+        "sku": compras_df[roles["sku"]].astype(str),
+        "date": coerce_date_series(compras_df[roles["date"]]),
+        "nf_cost": coerce_currency_series(compras_df[roles["cost"]]),
+    }).dropna()
+    if purchases.empty:
+        return nan_result
+    purchases = purchases.sort_values("date")
+
+    left = sales[["product", "date"]].rename(columns={"product": "sku"})
+    left = left.reset_index().rename(columns={"index": "_orig_idx"}).sort_values("date")
+    merged = pd.merge_asof(left, purchases, on="date", by="sku", direction="backward")
+    return merged.set_index("_orig_idx")["nf_cost"].reindex(sales.index)
+
+
+def _classify_discrepancy(evidence: DiscrepancyEvidence) -> str | None:
+    """Árvore de decisão determinística (Spec Fase C §3.2), precedência fixa de cima
+    pra baixo. `None` = evidências ausentes/contraditórias => fila manual."""
+    if evidence.store_systemic_pattern or evidence.cost_diverges_from_nf:
+        # o preço/custo de referência da REDE não descreve a operação — nunca culpa
+        # de quem vendeu, é o cadastro que está errado.
+        return "suspected_cadastral_error"
+    if evidence.is_promo_flagged or (evidence.sku_in_dead_stock and not evidence.below_cost):
+        # desconto explicado por decisão comercial deliberada (promoção C3, ou giro
+        # de capital parado) — desde que não esteja, ADEMAIS, vendendo abaixo do custo.
+        return "deliberate_liquidation"
+    if evidence.below_cost:
+        return "below_cost_sale"
+    return None
+
+
+def detect_discrepancy_triage(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, compras_df: pd.DataFrame | None,
+    dead_stock: list[DeadStockFinding], thresholds: AuditThresholdsConfig,
+) -> DiscrepancyTriage | None:
+    """Fase C — dois triggers POR TRANSAÇÃO (nunca o agregado sem teto por vendedor da
+    Fase B): (A) desconto sobre o preço de tabela além de `manual_review_discount_pct`
+    — pra qualquer lado (venda muito abaixo OU muito acima da tabela); (B) venda
+    abaixo do próprio custo de entrada da linha — independente de A, severidade
+    própria.
+
+    Cada trigger é avaliado com a evidência que estiver disponível: Trigger B só
+    precisa de `entry_cost` (sempre presente na ingestão de Vendas), Trigger A precisa
+    de preço de tabela (Estoque, opcional). Sem Estoque, Trigger A simplesmente nunca
+    dispara — o motor não para de caçar venda abaixo do custo só porque falta
+    catálogo (refinamento sobre o desenho binário da OS original: aqui é resiliência
+    por evidência, não tudo-ou-nada).
+
+    Retorna `None` só quando falta a ESTRUTURA mínima pra agrupar (sem coluna de loja
+    OU de vendedor identificável) — universo vazio depois disso é
+    `DiscrepancyTriage(triggered_count=0)`, um resultado válido ("rodou, não achou
+    nada implausível"), não `None` ("não deu pra rodar")."""
+    if "store" not in vendas_df.columns or vendas_df["store"].isna().all():
+        return None
+    if "salesperson" not in vendas_df.columns or vendas_df["salesperson"].isna().all():
+        return None
+
+    sales = vendas_df.copy()
+    sales = sales[sales["value"] > 0]  # devolução/estorno fora, mesmo critério da Fase B
+    if "category" in sales.columns and not sales["category"].isna().all():
+        sales = sales[sales["category"] != thresholds.service_category_label]
+    if sales.empty:
+        return DiscrepancyTriage(triggered_count=0)
+
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+    sales["salesperson"] = sales["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    # Coerção defensiva: se TODA a coluna entry_cost do arquivo vier vazia (nenhuma
+    # linha com custo), a construção do frame deixa a coluna em dtype `object` cheia
+    # de `None` em vez de `float64`/NaN — comparação `<` direta nesse dtype misto
+    # levanta TypeError em vez de simplesmente reprovar o Trigger B. `to_numeric`
+    # normaliza pra NaN sempre, tornando toda comparação a jusante segura.
+    sales["entry_cost"] = pd.to_numeric(sales["entry_cost"], errors="coerce")
+
+    qty = sales["quantity"] if "quantity" in sales.columns else pd.Series(1.0, index=sales.index)
+    qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
+    sales["unit_price"] = sales["value"] / qty_safe
+
+    # Trigger B — abaixo do custo da PRÓPRIA linha (independente de Estoque)
+    sales["below_cost"] = sales["entry_cost"].notna() & (sales["unit_price"] < sales["entry_cost"])
+
+    # Trigger A — desconto sobre a tabela (só onde há preço de tabela do SKU)
+    list_price_by_sku = _estoque_list_price_by_sku(estoque_df)
+    sales["list_price"] = (
+        sales["product"].map(list_price_by_sku) if list_price_by_sku is not None
+        else np.nan
+    )
+    has_list_price = sales["list_price"].notna() & (sales["list_price"] > 0)
+    sales["discount_over_list_pct"] = np.where(
+        has_list_price,
+        (sales["list_price"] - sales["unit_price"]) / sales["list_price"] * 100.0,
+        np.nan,
+    )
+    trigger_a = sales["discount_over_list_pct"].abs() > thresholds.manual_review_discount_pct
+
+    candidates = sales[trigger_a | sales["below_cost"]].copy()
+    if candidates.empty:
+        return DiscrepancyTriage(triggered_count=0)
+
+    # E4 — custo da venda vs custo real da NF (Compras) mais recente anterior à data
+    candidates["nf_cost"] = _nf_cost_as_of_sale(candidates, compras_df)
+    candidates["cost_diverges_from_nf"] = (
+        candidates["nf_cost"].notna() & candidates["entry_cost"].notna()
+        & ((candidates["entry_cost"] - candidates["nf_cost"]).abs() / candidates["nf_cost"] * 100.0
+           > thresholds.nf_cost_divergence_pct)
+    )
+
+    # E2 — SKU em estoque morto
+    dead_skus = set(dead_stock[0].skus) if dead_stock else set()
+    candidates["sku_in_dead_stock"] = candidates["product"].isin(dead_skus)
+
+    # E3 — promoção (C3): TODA venda triada do grupo é forma_pagto=promoção — mesma
+    # régua conservadora de `detect_contribution_margin` (1 venda normal já reverte)
+    if "payment_method" in candidates.columns:
+        promo_label = thresholds.promo_payment_label.strip().lower()
+        candidates["_is_promo_row"] = (
+            candidates["payment_method"].notna()
+            & candidates["payment_method"].astype(str).str.strip().str.lower().eq(promo_label)
+        )
+    else:
+        candidates["_is_promo_row"] = False
+
+    # E5 — a MEDIANA de desconto do (loja, SKU) inteiro (todos os vendedores daquela
+    # combinação, não só quem disparou) também é implausível — sinal de que o desvio
+    # é da tabela/loja, não de um vendedor isolado. Exige >=2 vendedores DISTINTOS:
+    # com um só vendedor, a "mediana da loja" degenera pro próprio valor individual
+    # que já disparou o Trigger A — isso não é padrão sistêmico, é a mesma transação
+    # se auto-confirmando. "Sistêmico" só existe quando mais de uma pessoa mostra o
+    # mesmo desvio (o denominador comum vira a tabela/loja, não o indivíduo).
+    store_sku_stats = sales.groupby(["store", "product"]).agg(
+        store_median_discount_pct=("discount_over_list_pct", "median"),
+        distinct_sellers=("salesperson", "nunique"),
+    ).reset_index()
+    candidates = candidates.merge(store_sku_stats, on=["store", "product"], how="left")
+    candidates["store_systemic_pattern"] = (
+        (candidates["store_median_discount_pct"].abs() > thresholds.manual_review_discount_pct)
+        & (candidates["distinct_sellers"] >= 2)
+    )
+
+    group_keys = ["product", "store", "salesperson"]
+    agg = candidates.groupby(group_keys).agg(
+        practiced_price=("unit_price", "mean"), list_price=("list_price", "mean"),
+        entry_cost=("entry_cost", "mean"), nf_cost=("nf_cost", "mean"),
+        discount_over_list_pct=("discount_over_list_pct", "mean"),
+        below_cost=("below_cost", "any"), sku_in_dead_stock=("sku_in_dead_stock", "any"),
+        cost_diverges_from_nf=("cost_diverges_from_nf", "any"),
+        store_systemic_pattern=("store_systemic_pattern", "any"),
+        is_promo_flagged=("_is_promo_row", "all"),
+        source_rows=("source_row", list),
+    )
+
+    auto_classified: list[DiscrepancyTriageItem] = []
+    manual_queue: list[DiscrepancyTriageItem] = []
+    for i, ((sku, store, salesperson), row) in enumerate(
+        agg.sort_index().iterrows(), start=1,
+    ):
+        evidence = DiscrepancyEvidence(
+            below_cost=bool(row["below_cost"]), sku_in_dead_stock=bool(row["sku_in_dead_stock"]),
+            is_promo_flagged=bool(row["is_promo_flagged"]),
+            cost_diverges_from_nf=bool(row["cost_diverges_from_nf"]),
+            store_systemic_pattern=bool(row["store_systemic_pattern"]),
+        )
+        verdict = _classify_discrepancy(evidence)
+        item = DiscrepancyTriageItem(
+            id=f"DTQ-{i:04d}", sku=str(sku), store=str(store), salesperson=str(salesperson),
+            source_rows=sorted(int(r) for r in row["source_rows"]),
+            practiced_price=float(row["practiced_price"]),
+            list_price=None if pd.isna(row["list_price"]) else float(row["list_price"]),
+            entry_cost=None if pd.isna(row["entry_cost"]) else float(row["entry_cost"]),
+            nf_cost=None if pd.isna(row["nf_cost"]) else float(row["nf_cost"]),
+            discount_over_list_pct=(
+                None if pd.isna(row["discount_over_list_pct"]) else float(row["discount_over_list_pct"])
+            ),
+            evidence=evidence, verdict=verdict,
+            status="auto_classified" if verdict else "pending_manual_review",
+        )
+        (auto_classified if verdict else manual_queue).append(item)
+
+    return DiscrepancyTriage(
+        triggered_count=len(auto_classified) + len(manual_queue),
+        auto_classified=auto_classified, manual_queue=manual_queue,
+    )
+
+
 def build_cpf_canonical_map(clientes_df: pd.DataFrame | None) -> dict[str, str]:
     """D2 — Dedupe por CPF: dois cadastros `cliente_id` DIFERENTES (possivelmente em
     lojas diferentes) que compartilham o MESMO CPF na aba Clientes são a MESMA pessoa
@@ -1739,12 +1973,32 @@ def run_audit(
     service_decomposition = detect_service_decomposition(df, thresholds)
     service_reconciliation = detect_service_reconciliation(df, named_sheets.get("Financeiro"), thresholds)
 
+    seller_margin_corrosion = detect_seller_margin_corrosion(df, named_sheets.get("Estoque"), thresholds)
+    discrepancy_triage = detect_discrepancy_triage(
+        df, named_sheets.get("Estoque"), named_sheets.get("Compras"), dead_stock, thresholds,
+    )
+
+    # Fase C, culpa exige referência confiável (Spec de Laudo Executivo v4 §15.5):
+    # vendedor cujo desconto vem de tabela cadastralmente errada nunca é apresentado
+    # como corrosivo, mesmo que o desvio estatístico bruto (2σ) apontasse outlier.
+    if discrepancy_triage:
+        tainted_pairs = {
+            (item.store, item.salesperson)
+            for item in discrepancy_triage.auto_classified
+            if item.verdict == "suspected_cadastral_error"
+        }
+        for alert in seller_margin_corrosion:
+            if (alert.store, alert.salesperson) in tainted_pairs:
+                alert.tainted_by_triage = True
+                alert.is_corrosive = False
+
     advanced_metrics = AdvancedMetrics(
         gmroi_alerts=detect_gmroi_by_sku(df, named_sheets.get("Estoque"), thresholds),
         attach_rate_opportunities=detect_attach_rate_opportunities(df, thresholds),
-        seller_margin_corrosion=detect_seller_margin_corrosion(df, named_sheets.get("Estoque"), thresholds),
+        seller_margin_corrosion=seller_margin_corrosion,
         concentration_risk=detect_vip_concentration_risk(df, thresholds),
         follow_on_conversion=detect_follow_on_conversion(df, thresholds),
+        discrepancy_triage=discrepancy_triage,
     )
 
     executive_summary = build_executive_summary(
@@ -1796,3 +2050,43 @@ def run_audit(
     if return_identity_map:
         return report, identity_map
     return report
+
+
+def apply_manual_review_verdicts(
+    report: ExecutiveAuditReport, manual_review_path: Path,
+) -> ExecutiveAuditReport:
+    """Fase C §3.4 — funde vereditos humanos no relatório JÁ CONGELADO. O
+    `audit_report.json` original NUNCA é reescrito (Spec de Laudo Executivo v4 §1);
+    esta função devolve uma CÓPIA do `report` com os itens revisados promovidos de
+    `manual_queue` para `auto_classified` (status `manually_reviewed`, mesma taxonomia
+    de veredito da árvore automática — humano e máquina falam a mesma língua).
+
+    Arquivo ausente, sem triagem no report, ou sem item da fila = devolve o `report`
+    inalterado (todo item da fila permanece `pending_manual_review` — estado válido e
+    renderizável, nunca um erro)."""
+    triage = report.advanced_metrics.discrepancy_triage
+    if triage is None or not triage.manual_queue or not manual_review_path.exists():
+        return report
+
+    payload = json.loads(manual_review_path.read_text(encoding="utf-8"))
+    verdict_by_id = {r["queue_item_id"]: r["verdict"] for r in payload.get("reviews", [])}
+    if not verdict_by_id:
+        return report
+
+    still_pending: list[DiscrepancyTriageItem] = []
+    newly_classified: list[DiscrepancyTriageItem] = []
+    for item in triage.manual_queue:
+        verdict = verdict_by_id.get(item.id)
+        if verdict is None:
+            still_pending.append(item)
+        else:
+            newly_classified.append(
+                item.model_copy(update={"verdict": verdict, "status": "manually_reviewed"})
+            )
+
+    new_triage = triage.model_copy(update={
+        "auto_classified": [*triage.auto_classified, *newly_classified],
+        "manual_queue": still_pending,
+    })
+    new_advanced_metrics = report.advanced_metrics.model_copy(update={"discrepancy_triage": new_triage})
+    return report.model_copy(update={"advanced_metrics": new_advanced_metrics})

@@ -1,6 +1,6 @@
 # ENGENHARIA DE BACKEND: EXRS Data Oracle — Fase C: Triagem de Discrepâncias e Fila de Auditoria Manual
 
-> **Status:** OS aprovada, pronta para execução. Nenhum código desta fase foi implementado ainda.
+> **Status:** EXECUTADA (20/07/2026). Motor implementado, testado (TDD, 19 testes) e validado contra dado real — ver §7 (fora de escopo desta fase: fila só existe no motor/JSON, sem UI de painel/frontend ainda).
 > **Origem:** achado de QA da Fase B — `discount_pct` de 337,78% (V-30/L9-Serra) na fórmula do Algoritmo 3, mais o padrão sistêmico L6/L7/L9 vendendo a ~1/4 do preço de tabela enquanto L1/L2 vendem acima. Decisão de produto registrada em 20/07/2026: distorção severa não é erro para descartar nem fato para exibir cru — é caso para triagem.
 > **Subordinada a:** `laudo_executivo/EXRS_Spec_Laudo_Executivo_v4.md` §15 (a lei do fluxo) e §1 (audit_report congelado, procedência).
 
@@ -198,7 +198,7 @@ nf_cost_divergence_pct: float = 15.0       # E4, custo da venda vs NF de compra
 
 1. **Dimensionamento:** rodando contra `consultoria_real_test.xlsx`, a `manual_queue` final contém MENOS de 10% dos itens disparados — o resto sai pré-classificado. Se a fila sair maior, a árvore de decisão está errada, não o critério de aceite.
 2. **Caso ARP-013/L9:** classificado automaticamente como `suspected_cadastral_error` (E4 + E5 verdadeiros). V-30 com `tainted_by_triage=true` e `is_corrosive=false`.
-3. **PROMO-001:** se disparar trigger, sai como `deliberate_liquidation` via E3 — nunca na fila manual.
+3. **PROMO-001:** ~~se disparar trigger, sai como `deliberate_liquidation` via E3~~ — **corrigido pós-execução (20/07/2026):** no dado real (`consultoria_real_test.xlsx`), PROMO-001 pratica R$ 112 contra custo de R$ 100 (12% de markup) — não dispara NEM o Trigger A (desconto <60%) NEM o B (não é abaixo do custo). O item corretamente NUNCA entra na triagem, porque não é uma discrepância implausível — é uma promoção legítima e discreta. O comportamento do E3 (promoção extrema → `deliberate_liquidation`) está coberto por teste sintético dedicado (`test_deliberate_liquidation_via_promo_flag`), já que o dado real não produz esse cenário. Critério de aceite revisado: **nenhum item PROMO aparece na triagem do dado real** (verificado: `[]`).
 4. Graceful degradation: sem aba Compras, sem coluna `preco_venda`, sem `forma_pagto` — a triagem roda com as evidências disponíveis e nunca quebra o motor.
 5. Vetorizado — nenhum laço sobre linha de venda (merge_asof para E4, groupby/transform para E5).
 6. Golden master regenerado com diff auditado (processo padrão das fases anteriores).
