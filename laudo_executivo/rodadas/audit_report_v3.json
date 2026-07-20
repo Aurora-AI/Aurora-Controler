@@ -35,7 +35,6 @@
     "materiality_revenue_pct": 1.0,
     "rfm_bins": 5,
     "variable_cost_pct": 15.0,
-    "promo_payment_label": "promocao",
     "latent_revenue_anchor_category": "lente",
     "latent_revenue_target_category": "solar",
     "latent_revenue_conversion_pct": 20.0,
@@ -2918,8 +2917,7 @@
       "avg_entry_cost": 120.36428571428571,
       "variable_cost_pct": 15.0,
       "contribution_margin": -29.323214285714283,
-      "sample_size": 7,
-      "promotional": false
+      "sample_size": 7
     },
     {
       "product": "AGX-003",
@@ -2927,8 +2925,7 @@
       "avg_entry_cost": 120.22583333333334,
       "variable_cost_pct": 15.0,
       "contribution_margin": -29.785125000000015,
-      "sample_size": 12,
-      "promotional": false
+      "sample_size": 12
     },
     {
       "product": "AGX-005",
@@ -2936,8 +2933,7 @@
       "avg_entry_cost": 117.33599999999998,
       "variable_cost_pct": 15.0,
       "contribution_margin": -11.734549999999977,
-      "sample_size": 10,
-      "promotional": false
+      "sample_size": 10
     },
     {
       "product": "AGX-008",
@@ -2945,8 +2941,7 @@
       "avg_entry_cost": 121.07777777777778,
       "variable_cost_pct": 15.0,
       "contribution_margin": -0.7857777777777741,
-      "sample_size": 9,
-      "promotional": false
+      "sample_size": 9
     },
     {
       "product": "AGX-010",
@@ -2954,8 +2949,7 @@
       "avg_entry_cost": 118.87125,
       "variable_cost_pct": 15.0,
       "contribution_margin": -26.891687499999996,
-      "sample_size": 8,
-      "promotional": false
+      "sample_size": 8
     },
     {
       "product": "AGX-012",
@@ -2963,8 +2957,7 @@
       "avg_entry_cost": 121.61818181818181,
       "variable_cost_pct": 15.0,
       "contribution_margin": -13.225409090909086,
-      "sample_size": 11,
-      "promotional": false
+      "sample_size": 11
     },
     {
       "product": "AGX-014",
@@ -2972,8 +2965,7 @@
       "avg_entry_cost": 122.11714285714285,
       "variable_cost_pct": 15.0,
       "contribution_margin": -14.482857142857146,
-      "sample_size": 7,
-      "promotional": false
+      "sample_size": 7
     },
     {
       "product": "AGX-017",
@@ -2981,8 +2973,7 @@
       "avg_entry_cost": 120.8225,
       "variable_cost_pct": 15.0,
       "contribution_margin": -7.668375000000005,
-      "sample_size": 8,
-      "promotional": false
+      "sample_size": 8
     },
     {
       "product": "NEG-001",
@@ -2990,8 +2981,7 @@
       "avg_entry_cost": 190.0,
       "variable_cost_pct": 15.0,
       "contribution_margin": -20.0,
-      "sample_size": 8,
-      "promotional": false
+      "sample_size": 8
     },
     {
       "product": "NEG-002",
@@ -2999,8 +2989,7 @@
       "avg_entry_cost": 190.0,
       "variable_cost_pct": 15.0,
       "contribution_margin": -20.0,
-      "sample_size": 8,
-      "promotional": false
+      "sample_size": 8
     },
     {
       "product": "NEG-003",
@@ -3008,8 +2997,7 @@
       "avg_entry_cost": 190.0,
       "variable_cost_pct": 15.0,
       "contribution_margin": -20.0,
-      "sample_size": 8,
-      "promotional": false
+      "sample_size": 8
     },
     {
       "product": "PROMO-001",
@@ -3017,8 +3005,7 @@
       "avg_entry_cost": 100.0,
       "variable_cost_pct": 15.0,
       "contribution_margin": -4.800000000000001,
-      "sample_size": 12,
-      "promotional": true
+      "sample_size": 12
     },
     {
       "product": "SOL-005",
@@ -3026,8 +3013,7 @@
       "avg_entry_cost": 114.37315789473685,
       "variable_cost_pct": 15.0,
       "contribution_margin": -3.7067368421052898,
-      "sample_size": 19,
-      "promotional": false
+      "sample_size": 19
     }
   ],
   "latent_revenue": [
@@ -5952,34 +5938,34 @@
     }
   ],
   "executive_summary": {
-    "total_operational_loss": 197.60373263936356,
+    "total_operational_loss": 202.40373263936357,
     "total_capital_frozen": 35040.0,
     "total_ltv_risk": 92077.99,
     "discarded_alarms": [
       {
         "category": "salesperson_ramp",
         "entity_id": "V-32",
-        "reason": "Vendedor em rampa há 101 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 101 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
       },
       {
         "category": "salesperson_ramp",
         "entity_id": "V-33",
-        "reason": "Vendedor em rampa há 91 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 91 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
       },
       {
         "category": "salesperson_ramp",
         "entity_id": "V-34",
-        "reason": "Vendedor em rampa há 48 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 48 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
       },
       {
         "category": "salesperson_ramp",
         "entity_id": "V-35",
-        "reason": "Vendedor em rampa há 39 dias (mínimo de maturidade: 180.0 dias) — volume baixo não é penalizado."
+        "reason": "Vendedor em rampa há 39 dias (mínimo de maturidade: 180 dias) — volume baixo não é penalizado."
       },
       {
         "category": "store_cold_start",
         "entity_id": "L10 - Industrial",
-        "reason": "Loja com 3.3 meses de histórico (mínimo: 4.0 meses) — dado insuficiente para tratar suas métricas com a mesma confiança de uma loja madura."
+        "reason": "Loja com 3.3 meses de histórico (mínimo: 4 meses) — dado insuficiente para tratar suas métricas com a mesma confiança de uma loja madura."
       }
     ],
     "action_plan": [
@@ -5988,7 +5974,7 @@
         "category": "margem_produto",
         "title": "Estancar Sangria Operacional",
         "description": "SKUs vendendo abaixo da margem de contribuição — ajustar precificação ou descontinuar. Pode incluir promoção intencional, a confirmar.",
-        "impact_brl": 197.60373263936356,
+        "impact_brl": 202.40373263936357,
         "nature": "operational",
         "tier": 1
       },
@@ -6011,5 +5997,6 @@
         "tier": 3
       }
     ]
-  }
+  },
+  "generated_at": "2026-07-19T14:33:33.612948+00:00"
 }

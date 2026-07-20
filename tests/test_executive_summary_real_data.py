@@ -18,8 +18,10 @@ def test_executive_summary_totals_recompute_from_the_report_itself():
     report = run_audit(FIXTURE)
     summary = report.executive_summary
 
+    # C3: alerta promocional (forma_pagto=promocao) fica fora do prejuízo estrutural
     expected_operational_loss = sum(
-        abs(a.contribution_margin) for a in report.contribution_margin_alerts
+        abs(a.contribution_margin)
+        for a in report.contribution_margin_alerts if not a.promotional
     )
     assert abs(summary.total_operational_loss - expected_operational_loss) < 0.01
 

@@ -146,7 +146,7 @@ Formato **jornal**, nunca dashboard:
 
 ## 9. FALSOS-POSITIVOS E CONFERÊNCIA HUMANA (estado v3)
 
-- SEAS-001..005 não é churn (ciclo anual) · SOL-001..005 não é estoque morto (sazonal) · **PROMO-001 não é prejuízo** (promoção intencional — conferência humana obrigatória até o motor ler `forma_pagto`) · SOLAR-SEASONAL não é leak · V-35 (rampa <180d) não penalizado.
+- SEAS-001..005 não é churn (ciclo anual) · SOL-001..005 não é estoque morto (sazonal) · **PROMO-001 não é prejuízo** (promoção intencional — o motor lê `forma_pagto` e marca `promotional=true`; alerta promocional fica fora de `total_operational_loss` automaticamente, sem conferência humana) · SOLAR-SEASONAL não é leak · V-35 (rampa <180d) não penalizado.
 - Achado auto-marcado como incerto pelo motor (ex.: C4) **nunca** entra na visão executiva como fato.
 
 ---

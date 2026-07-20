@@ -20,6 +20,9 @@ class AuditThresholdsConfig(BaseModel):
     materiality_revenue_pct: float = 1.0
     rfm_bins: int = 5
     variable_cost_pct: float = 15.0
+    # C3 — forma de pagamento que marca promoção deliberada: produto cuja margem
+    # negativa vem 100% de vendas com este rótulo é `promotional`, não estrutural.
+    promo_payment_label: str = "promocao"
     latent_revenue_anchor_category: str = "lente"
     latent_revenue_target_category: str = "solar"
     latent_revenue_conversion_pct: float = 20.0
@@ -96,6 +99,7 @@ class SalesRecord(BaseModel):
     category: str | None = None
     store: str | None = None
     salesperson: str | None = None
+    payment_method: str | None = None
     source_file: str
     source_row: int
 
@@ -168,13 +172,19 @@ class RFMChampion(BaseModel):
 
 class ContributionMarginAlert(BaseModel):
     """Produto cuja margem de contribuição média (preço − custo de entrada − variáveis)
-    é negativa — cada venda dá prejuízo antes mesmo de despesa fixa."""
+    é negativa — cada venda dá prejuízo antes mesmo de despesa fixa.
+
+    `promotional=True` (C3): TODAS as vendas do produto têm forma de pagamento igual a
+    `promo_payment_label` — margem negativa é decisão comercial deliberada, não
+    prejuízo estrutural. Fica fora de `total_operational_loss`; basta UMA venda
+    não-promocional para voltar a ser estrutural (conservador por construção)."""
     product: str
     avg_price: float
     avg_entry_cost: float
     variable_cost_pct: float
     contribution_margin: float
     sample_size: int
+    promotional: bool = False
 
 
 class LatentRevenueFinding(BaseModel):
