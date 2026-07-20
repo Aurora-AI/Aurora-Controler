@@ -22,9 +22,11 @@ THRESHOLDS = AuditThresholdsConfig()
 
 
 def _sales(rows):
+    # source_row sempre presente no pipeline real (schema fixo desde a Fase C) —
+    # aqui, default sequencial pra quem não passar explicitamente.
     return pd.DataFrame([{
-        "date": pd.Timestamp(datetime(2026, 1, 1)), "quantity": 1.0, **r,
-    } for r in rows])
+        "date": pd.Timestamp(datetime(2026, 1, 1)), "quantity": 1.0, "source_row": i + 2, **r,
+    } for i, r in enumerate(rows)])
 
 
 def _estoque(rows):

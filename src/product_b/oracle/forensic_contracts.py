@@ -130,6 +130,22 @@ class AuditThresholdsConfig(BaseModel):
     # sem tolerar cadastro parado (ex.: caso real ARP-013: custo na venda ~R$700-850
     # vs NF ~R$309 — divergência de ~130%, muito acima deste corte).
     nf_cost_divergence_pct: float = 15.0
+    # Fase D, Pilar 1 (mix de margem por vendedor) — gap, em PONTOS PERCENTUAIS, entre
+    # a margem blendada da loja e a margem blendada do vendedor, acima do qual o
+    # vendedor é `is_margin_destructive`. 10pp é uma corrosão substancial (ex.: loja
+    # margeia 40%, vendedor margeia 30% ou menos) — não confunde com a variação
+    # normal de mix entre vendedores maduros, que costuma ficar num vão mais estreito.
+    seller_margin_gap_pct: float = 10.0
+    # Amostra mínima de vendas do vendedor (na loja, período todo) para a acusação de
+    # "destruidor de margem" ter base estatística — mesmo espírito de
+    # `sev_ramp_min_days`/`benchmark_population`: nunca aponta padrão em ruído de
+    # amostra pequena.
+    seller_margin_mix_min_sample: int = 10
+    # Fase D, Pilar 2 — teto de linhas de origem exibidas por achado agregado
+    # (corrosão de desconto, mix de margem). Amostra representativa, não lista
+    # exaustiva — `sample_size` do achado é sempre o total real; o teto existe só
+    # pra o JSON/anexo não explodir em achados com centenas de vendas.
+    provenance_sample_cap: int = 10
 
 
 class SalesRecord(BaseModel):
@@ -190,6 +206,21 @@ class ChurnFinding(BaseModel):
     last_purchase: str  # "YYYY-MM-DD"
     months_silent: int
     historical_annual_value: float
+    # Fase D, Pilar 2 — Chave de Rastreabilidade: toda linha de Vendas deste
+    # cliente, referenciável de volta ao arquivo original do cliente ("Vendas #189").
+    source_rows: list[int] = Field(default_factory=list)
+    # Fase D, Pilar 3 — Índice de Recuperabilidade: dias em silêncio ÷ cadência
+    # PRÓPRIA do cliente (não um piso fixo de dias). Um cliente de ciclo curto que
+    # acabou de estourar o próprio ritmo (ratio perto de 1.0-1.5, ex.: ciclo 30d
+    # silente há 35d) é lead MUITO mais quente que um cliente de ciclo longo silente
+    # há muito mais tempo em absoluto mas ainda dentro de múltiplos moderados do
+    # PRÓPRIO ciclo (ex.: ciclo 90d silente há 120d, ratio 1.33) — ordenar a fila só
+    # por R$ histórico queima energia de balcão em CPF frio. `days_since_last` é a
+    # métrica em dias (mais fina que `months_silent`, que é bucket mensal) usada no
+    # denominador da razão. NUNCA rotulado como probabilidade/score preditivo — é
+    # razão de dois fatos medidos (dias ÷ cadência), não uma projeção.
+    days_since_last: int = 0
+    silence_to_cycle_ratio: float = 0.0
 
 
 class ProductTrendEntry(BaseModel):
@@ -267,6 +298,10 @@ class DeadStockFinding(BaseModel):
     total_inventory_value: float  # Σ(qtd_atual × custo) de todo o estoque válido
     dead_stock_pct: float  # capital_frozen / total_inventory_value × 100
     skus: list[str] = Field(default_factory=list)
+    # Fase D, Pilar 2 — Chave de Rastreabilidade: linha(s) do SKU na aba Estoque
+    # (lista porque o mesmo SKU pode aparecer 1x por loja no catálogo — nunca perde
+    # ocorrência por sobrescrita de dict).
+    sku_source_rows: dict[str, list[int]] = Field(default_factory=dict)
 
 
 class GmroiEntry(BaseModel):
@@ -350,6 +385,11 @@ class SellerMarginCorrosionAlert(BaseModel):
     # `tainted_by_triage=True`, mesmo que o desvio estatístico bruto (2σ) apontasse
     # outlier.
     tainted_by_triage: bool = False
+    # Fase D, Pilar 2 — Chave de Rastreabilidade: amostra (teto `provenance_sample_
+    # cap`, nunca todas as N vendas do grupo — evitaria o JSON explodir) das linhas
+    # de Vendas que compõem este alerta. Amostra, não lista exaustiva — `sample_size`
+    # acima é o total real.
+    sample_source_rows: list[int] = Field(default_factory=list)
 
 
 class ConcentrationRiskAlert(BaseModel):
@@ -413,11 +453,12 @@ class DiscrepancyTriage(BaseModel):
 
 
 class AdvancedMetrics(BaseModel):
-    """Fase B — bloco de teses analíticas avançadas (5 algoritmos), cada um com seu
-    próprio graceful degradation: dado insuficiente para um algoritmo (sem aba
+    """Namespace comum das teses analíticas pós-Fase A (Fase B: os 5 algoritmos
+    originais; Fase C: `discrepancy_triage`; Fase D: `seller_margin_mix`) — cada uma
+    com seu próprio graceful degradation: dado insuficiente para UMA tese (sem aba
     Estoque, sem coluna de categoria/vendedor/pagamento, etc.) => lista vazia (ou
-    `None` para `follow_on_conversion_rate`, que é escalar), NUNCA quebra o motor
-    nem os outros 4 algoritmos."""
+    `None` quando o resultado é escalar/objeto único), NUNCA quebra o motor nem as
+    outras teses."""
     gmroi_alerts: list[GmroiSkuAlert] = Field(default_factory=list)
     attach_rate_opportunities: list[AttachRateOpportunity] = Field(default_factory=list)
     seller_margin_corrosion: list[SellerMarginCorrosionAlert] = Field(default_factory=list)
@@ -434,6 +475,11 @@ class AdvancedMetrics(BaseModel):
     # `DiscrepancyTriage(triggered_count=0, ...)` (não-None) é o estado "rodou, não
     # achou nada implausível" — distinto de "não rodou".
     discrepancy_triage: DiscrepancyTriage | None = None
+    # Fase D, Pilar 1 — mix de venda por categoria de margem, um item por (loja,
+    # vendedor) com amostra suficiente. Lista vazia quando faltar coluna de
+    # categoria/vendedor/custo, ou quando ninguém bater `seller_margin_mix_min_sample`
+    # — nunca aponta "destruidor de margem" sem base estatística.
+    seller_margin_mix: list[SellerMarginMixProfile] = Field(default_factory=list)
 
 
 class StorePerformance(BaseModel):
@@ -565,6 +611,51 @@ class SalespersonPerformance(BaseModel):
     days_since_first_sale: int  # tenure: primeira venda DELE -> data mais recente da rede
     has_sufficient_tenure: bool  # days_since_first_sale >= sev_ramp_min_days
     low_volume_flag: bool  # só pode ser True quando has_sufficient_tenure=True
+
+
+class SellerCategoryMixEntry(BaseModel):
+    """Fase D, Pilar 1 — uma categoria dentro do mix de UM vendedor: quanto ela pesa
+    na receita dele vs. quanto pesa na receita da PRÓPRIA loja (todos os vendedores).
+    `mix_deviation_pp` positivo = o vendedor empurra essa categoria MAIS que os pares
+    da mesma loja — é essa lista, ordenada pelo desvio, que explica O PORQUÊ de
+    `SellerMarginMixProfile.is_margin_destructive`, nunca só o rótulo."""
+    category: str
+    seller_revenue: float
+    seller_mix_pct: float  # % da receita do vendedor nesta categoria
+    store_mix_pct: float  # % da receita da loja (todos os vendedores) nesta categoria
+    mix_deviation_pp: float  # seller_mix_pct - store_mix_pct, em pontos percentuais
+    category_margin_pct: float  # margem% desta categoria NESTA loja — referência de "é margem baixa?"
+
+
+class SellerMarginMixProfile(BaseModel):
+    """Fase D, Pilar 1 — Mix de Venda por Categoria de Margem: distingue vendedor
+    IMPRODUTIVO (vende pouco) de vendedor DESTRUIDOR DE MARGEM (vende normal/muito,
+    mas concentrado em categoria de margem baixa acima do padrão da própria loja —
+    mesmo mecanismo estrutural do caso L7/L9: o volume esconde a corrosão).
+
+    `seller_margin_pct`/`store_margin_pct` são margem BLENDADA (Σmargem/Σreceita,
+    não média de margem% por venda — receita maior pesa mais, correto para "quanto
+    dinheiro de fato sobra"). `store_margin_pct` inclui TODOS os vendedores da loja
+    (mesmo vendedor sob avaliação incluso) — mesmo critério de benchmark local já
+    usado em `detect_seller_margin_corrosion` (nunca a rede inteira; lojas têm mix de
+    catálogo/política diferentes). `margin_gap_pp = store_margin_pct -
+    seller_margin_pct`: positivo = vendedor abaixo da própria loja.
+
+    `is_margin_destructive` exige DUAS coisas ao mesmo tempo: gap acima do limiar E
+    amostra mínima (`seller_margin_mix_min_sample`) — vendedor com poucas vendas não
+    tem base estatística pra acusação de "destruidor de margem" (ruído, não padrão)."""
+    salesperson: str
+    store: str
+    total_revenue: float
+    seller_margin_pct: float
+    store_margin_pct: float
+    margin_gap_pp: float
+    is_margin_destructive: bool
+    sample_size: int
+    mix: list[SellerCategoryMixEntry] = Field(default_factory=list)
+    # Fase D, Pilar 2 — mesma amostra (teto `provenance_sample_cap`) de
+    # `SellerMarginCorrosionAlert.sample_source_rows`.
+    sample_source_rows: list[int] = Field(default_factory=list)
 
 
 class DataCompletenessFinding(BaseModel):

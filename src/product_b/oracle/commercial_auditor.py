@@ -31,9 +31,10 @@ from product_b.oracle.forensic_contracts import (
     DeadStockFinding, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
     DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
     GmroiSkuAlert, LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly,
-    RFMChampion, SalesRecord, SalespersonPerformance, SellerMarginCorrosionAlert,
-    ServiceDecomposition, ServiceReconciliation, SeasonalityCurve, StoreMacroSummary,
-    StorePerformance, WinsorizedValue,
+    RFMChampion, SalesRecord, SalespersonPerformance, SellerCategoryMixEntry,
+    SellerMarginCorrosionAlert, SellerMarginMixProfile, ServiceDecomposition,
+    ServiceReconciliation, SeasonalityCurve, StoreMacroSummary, StorePerformance,
+    WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -417,6 +418,9 @@ def detect_churn(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[Ch
                 last_purchase=last_purchase.strftime("%Y-%m-%d"),
                 months_silent=int(months_silent),
                 historical_annual_value=float(group["value"].sum()),
+                source_rows=sorted(int(r) for r in group["source_row"]),
+                days_since_last=int(days_since_last),
+                silence_to_cycle_ratio=float(days_since_last / avg_cadence_days),
             ))
 
     return findings
@@ -949,10 +953,19 @@ def detect_dead_stock(
     capital_frozen = float(dead["inventory_value"].sum())
     dead_stock_pct = capital_frozen / total_inventory_value * 100.0 if total_inventory_value else 0.0
 
+    # Fase D, Pilar 2 — linha(s) de origem na aba Estoque, por SKU. `frame`/`dead`
+    # preservam o índice posicional original de `estoque_df` (dict de Series
+    # fatiadas da MESMA fonte, nunca resetado) — +2 é o mesmo ajuste header+1-index
+    # usado na ingestão de Vendas.
+    sku_source_rows: dict[str, list[int]] = {}
+    for idx, sku in dead["sku"].items():
+        sku_source_rows.setdefault(sku, []).append(int(idx) + 2)
+
     return [DeadStockFinding(
         dead_stock_months=thresholds.dead_stock_months, sku_count=len(dead),
         capital_frozen=capital_frozen, total_inventory_value=total_inventory_value,
         dead_stock_pct=float(dead_stock_pct), skus=sorted(dead["sku"].tolist()),
+        sku_source_rows=sku_source_rows,
     )]
 
 
@@ -1214,6 +1227,11 @@ def detect_seller_margin_corrosion(
     is_corrosive = grouped["discount_pct"] > (
         store_mean + thresholds.seller_corrosion_std_multiplier * store_std
     )
+    # Fase D, Pilar 2 — amostra (teto declarado) de linhas de origem por grupo.
+    cap = thresholds.provenance_sample_cap
+    sample_rows = sales.groupby(["store", "salesperson"])["source_row"].apply(
+        lambda s: sorted(int(r) for r in s)[:cap]
+    )
 
     alerts = [
         SellerMarginCorrosionAlert(
@@ -1223,10 +1241,125 @@ def detect_seller_margin_corrosion(
             store_mean_discount_pct=float(store_mean.loc[(store, salesperson)]),
             store_std_discount_pct=float(store_std.loc[(store, salesperson)]),
             sample_size=int(row["sample_size"]), is_corrosive=bool(is_corrosive.loc[(store, salesperson)]),
+            sample_source_rows=sample_rows.loc[(store, salesperson)],
         )
         for (store, salesperson), row in grouped.iterrows()
     ]
     return sorted(alerts, key=lambda a: -a.discount_pct)
+
+
+def detect_seller_margin_mix(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[SellerMarginMixProfile]:
+    """Fase D, Pilar 1 — Mix de Venda por Categoria de Margem: separa vendedor
+    IMPRODUTIVO (vende pouco) de vendedor DESTRUIDOR DE MARGEM (volume normal/alto,
+    mas concentrado numa categoria de margem baixa acima do padrão da própria loja —
+    mesmo mecanismo estrutural do caso L7/L9: o volume esconde a corrosão).
+
+    Margem blendada (Σmargem/Σreceita) por vendedor vs. pela PRÓPRIA loja (todos os
+    vendedores, mesmo critério de benchmark local de `detect_seller_margin_corrosion`
+    — nunca a rede inteira). `mix` (por categoria, ordenado pelo desvio) é o "porquê"
+    — nunca só o rótulo `is_margin_destructive`.
+
+    Devolução/estorno fora (mesmo critério da Fase B/C). Serviço fora (estrutura de
+    custo diferente, mesma exclusão de `detect_contribution_margin`/`detect_gmroi`).
+    Pseudo-vendedor fora (não é uma pessoa pra acusar). Vendedor com amostra abaixo
+    de `seller_margin_mix_min_sample` fica de fora — sem base estatística pra padrão.
+    Sem coluna de loja/vendedor/categoria/custo, retorna vazio."""
+    for col in ("store", "salesperson", "category", "entry_cost"):
+        if col not in df.columns or df[col].isna().all():
+            return []
+
+    sales = df.dropna(subset=["entry_cost"])
+    sales = sales[sales["value"] > 0]
+    sales = sales[sales["category"] != thresholds.service_category_label]
+    if sales.empty:
+        return []
+    sales = sales.copy()
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+    sales["margin"] = sales["value"] - sales["entry_cost"]
+
+    # Benchmark da loja: TODA venda da loja, inclusive sem vendedor identificado —
+    # fato bruto, mesmo critério de `detect_customer_concentration` (`store_revenue`
+    # é a soma de TODA venda da loja). Excluir aqui subestimaria a margem real da
+    # loja e distorceria o benchmark contra o qual cada vendedor é comparado.
+    store_stats = sales.groupby("store").agg(
+        store_revenue=("value", "sum"), store_margin_sum=("margin", "sum"),
+    ).reset_index()
+    store_stats["store_margin_pct"] = 100.0 * store_stats["store_margin_sum"] / store_stats["store_revenue"]
+
+    store_cat = sales.groupby(["store", "category"]).agg(
+        cat_revenue=("value", "sum"), cat_margin=("margin", "sum"),
+    ).reset_index()
+    store_cat = store_cat.merge(store_stats[["store", "store_revenue"]], on="store")
+    store_cat["store_mix_pct"] = 100.0 * store_cat["cat_revenue"] / store_cat["store_revenue"]
+    store_cat["category_margin_pct"] = 100.0 * store_cat["cat_margin"] / store_cat["cat_revenue"]
+
+    # Avaliação POR VENDEDOR exclui pseudo-entidade — não é uma pessoa pra acusar de
+    # "destruidor de margem". QA (achado): vendedor sem cadastro chega cru como
+    # None/NaN (diferente de `customer`, já resolvido pra `_ANONYMOUS_CUSTOMER` na
+    # ingestão) — filtrar com `.isin(_PSEUDO_ENTITY_IDS)` ANTES do fillna é código
+    # morto pro caso None (NaN nunca é isin de nada). fillna primeiro, filtro
+    # explícito depois: cobre tanto o walk-in real (vira _UNKNOWN_SALESPERSON)
+    # quanto a string literal decoy que coincide por acaso com o placeholder (mesma
+    # trava da Pegadinha 3/Beta) — nesta cópia isolada, nunca no benchmark da loja.
+    identified = sales.copy()
+    identified["salesperson"] = identified["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    identified = identified[~identified["salesperson"].isin(_PSEUDO_ENTITY_IDS)]
+    if identified.empty:
+        return []
+
+    seller_stats = identified.groupby(["store", "salesperson"]).agg(
+        total_revenue=("value", "sum"), seller_margin_sum=("margin", "sum"), sample_size=("value", "count"),
+    ).reset_index()
+    seller_stats = seller_stats[seller_stats["sample_size"] >= thresholds.seller_margin_mix_min_sample]
+    if seller_stats.empty:
+        return []
+    seller_stats["seller_margin_pct"] = 100.0 * seller_stats["seller_margin_sum"] / seller_stats["total_revenue"]
+    seller_stats = seller_stats.merge(store_stats[["store", "store_margin_pct"]], on="store")
+    seller_stats["margin_gap_pp"] = seller_stats["store_margin_pct"] - seller_stats["seller_margin_pct"]
+    seller_stats["is_margin_destructive"] = seller_stats["margin_gap_pp"] > thresholds.seller_margin_gap_pct
+
+    seller_cat = identified.groupby(["store", "salesperson", "category"]).agg(
+        seller_cat_revenue=("value", "sum"),
+    ).reset_index()
+    seller_cat = seller_cat.merge(
+        seller_stats[["store", "salesperson", "total_revenue"]], on=["store", "salesperson"],
+    )
+    seller_cat["seller_mix_pct"] = 100.0 * seller_cat["seller_cat_revenue"] / seller_cat["total_revenue"]
+    seller_cat = seller_cat.merge(
+        store_cat[["store", "category", "store_mix_pct", "category_margin_pct"]], on=["store", "category"],
+    )
+    seller_cat["mix_deviation_pp"] = seller_cat["seller_mix_pct"] - seller_cat["store_mix_pct"]
+
+    # Fase D, Pilar 2 — amostra (teto declarado) de linhas de origem por (loja, vendedor).
+    cap = thresholds.provenance_sample_cap
+    sample_rows = identified.groupby(["store", "salesperson"])["source_row"].apply(
+        lambda s: sorted(int(r) for r in s)[:cap]
+    )
+
+    profiles: list[SellerMarginMixProfile] = []
+    for _, srow in seller_stats.sort_values(["store", "salesperson"]).iterrows():
+        cat_rows = seller_cat[
+            (seller_cat["store"] == srow["store"]) & (seller_cat["salesperson"] == srow["salesperson"])
+        ].sort_values("mix_deviation_pp", ascending=False)
+        mix = [
+            SellerCategoryMixEntry(
+                category=str(c["category"]), seller_revenue=float(c["seller_cat_revenue"]),
+                seller_mix_pct=float(c["seller_mix_pct"]), store_mix_pct=float(c["store_mix_pct"]),
+                mix_deviation_pp=float(c["mix_deviation_pp"]), category_margin_pct=float(c["category_margin_pct"]),
+            )
+            for _, c in cat_rows.iterrows()
+        ]
+        profiles.append(SellerMarginMixProfile(
+            salesperson=str(srow["salesperson"]), store=str(srow["store"]),
+            total_revenue=float(srow["total_revenue"]), seller_margin_pct=float(srow["seller_margin_pct"]),
+            store_margin_pct=float(srow["store_margin_pct"]), margin_gap_pp=float(srow["margin_gap_pp"]),
+            is_margin_destructive=bool(srow["is_margin_destructive"]), sample_size=int(srow["sample_size"]),
+            sample_source_rows=sample_rows.loc[(srow["store"], srow["salesperson"])],
+            mix=mix,
+        ))
+    return sorted(profiles, key=lambda p: -p.margin_gap_pp)
 
 
 def detect_vip_concentration_risk(
@@ -2016,6 +2149,7 @@ def run_audit(
         concentration_risk=detect_vip_concentration_risk(df, thresholds),
         follow_on_conversion=detect_follow_on_conversion(df, thresholds),
         discrepancy_triage=discrepancy_triage,
+        seller_margin_mix=detect_seller_margin_mix(df, thresholds),
     )
 
     executive_summary = build_executive_summary(
