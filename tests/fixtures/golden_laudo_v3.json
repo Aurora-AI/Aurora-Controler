@@ -8237,17 +8237,6 @@
         "is_corrosive": false
       },
       {
-        "salesperson": "V-21",
-        "store": "L6 - Leste",
-        "total_revenue": 6122.12,
-        "total_discount": 11604.874993506493,
-        "discount_pct": 189.5564770619735,
-        "store_mean_discount_pct": 145.03965488809612,
-        "store_std_discount_pct": 32.73228058229186,
-        "sample_size": 33,
-        "is_corrosive": false
-      },
-      {
         "salesperson": "V-35",
         "store": "L10 - Industrial",
         "total_revenue": 894.0,
@@ -8256,17 +8245,6 @@
         "store_mean_discount_pct": 101.39630889501835,
         "store_std_discount_pct": 42.75257885480976,
         "sample_size": 6,
-        "is_corrosive": false
-      },
-      {
-        "salesperson": "V-20",
-        "store": "L6 - Leste",
-        "total_revenue": 7364.67,
-        "total_discount": 9851.852863636364,
-        "discount_pct": 133.7718168449688,
-        "store_mean_discount_pct": 145.03965488809612,
-        "store_std_discount_pct": 32.73228058229186,
-        "sample_size": 32,
         "is_corrosive": false
       },
       {
@@ -8281,14 +8259,14 @@
         "is_corrosive": false
       },
       {
-        "salesperson": "V-22",
+        "salesperson": "V-21",
         "store": "L6 - Leste",
-        "total_revenue": 8057.68,
-        "total_discount": 9007.734519480518,
-        "discount_pct": 111.790670757346,
-        "store_mean_discount_pct": 145.03965488809612,
-        "store_std_discount_pct": 32.73228058229186,
-        "sample_size": 35,
+        "total_revenue": 8282.12,
+        "total_discount": 7372.646993506493,
+        "discount_pct": 89.01883809346512,
+        "store_mean_discount_pct": 64.91908261183555,
+        "store_std_discount_pct": 17.7612737049277,
+        "sample_size": 31,
         "is_corrosive": false
       },
       {
@@ -8300,6 +8278,28 @@
         "store_mean_discount_pct": 101.39630889501835,
         "store_std_discount_pct": 42.75257885480976,
         "sample_size": 6,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-20",
+        "store": "L6 - Leste",
+        "total_revenue": 9524.67,
+        "total_discount": 5619.624863636363,
+        "discount_pct": 59.000730352194495,
+        "store_mean_discount_pct": 64.91908261183555,
+        "store_std_discount_pct": 17.7612737049277,
+        "sample_size": 30,
+        "is_corrosive": false
+      },
+      {
+        "salesperson": "V-22",
+        "store": "L6 - Leste",
+        "total_revenue": 10217.68,
+        "total_discount": 4775.506519480519,
+        "discount_pct": 46.737679389847,
+        "store_mean_discount_pct": 64.91908261183555,
+        "store_std_discount_pct": 17.7612737049277,
+        "sample_size": 33,
         "is_corrosive": false
       },
       {

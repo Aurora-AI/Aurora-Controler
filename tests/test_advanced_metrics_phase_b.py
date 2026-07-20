@@ -157,6 +157,28 @@ def test_seller_corrosion_no_salesperson_column_degrades_gracefully():
     assert detect_seller_margin_corrosion(vendas, estoque, THRESHOLDS) == []
 
 
+def test_seller_corrosion_excludes_returns_from_discount_calc():
+    """QA (achado crítico): devolução (value<0, quantity<0) não pode inverter o sinal
+    do preço praticado e inflar o desconto do vendedor. Reprodução minimizada do bug
+    real encontrado em `consultoria_real_test.xlsx` (SKU ARP-006, value=-1080.0,
+    quantity=-1.0) — sem o filtro `value > 0`, `unit_price` vira negativo e
+    `discount = list_price - unit_price` soma em vez de subtrair."""
+    vendas = _sales([
+        {"product": "SKU-A", "customer": "C1", "value": 100.0, "salesperson": "V-01", "store": "L1"},
+        {"product": "SKU-A", "customer": "C2", "value": 100.0, "salesperson": "V-01", "store": "L1"},
+        # devolução do próprio V-01: NUNCA deve inflar o desconto dele
+        {"product": "SKU-A", "customer": "C1", "value": -100.0, "salesperson": "V-01",
+         "store": "L1", "quantity": -1.0},
+    ])
+    estoque = _estoque([{"sku": "SKU-A", "custo_unit": 30.0, "qtd_atual": 10.0, "preco_venda": 100.0}])
+    alerts = detect_seller_margin_corrosion(vendas, estoque, THRESHOLDS)
+    assert len(alerts) == 1
+    v01 = alerts[0]
+    # sem desconto real: vendeu exatamente ao preço de tabela nas duas vendas válidas
+    assert v01.discount_pct == pytest.approx(0.0)
+    assert v01.total_revenue == pytest.approx(200.0)  # devolução não conta como receita
+
+
 # ---------------------------------------------------------------------- Algoritmo 4
 
 

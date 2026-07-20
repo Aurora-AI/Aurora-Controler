@@ -1145,7 +1145,17 @@ def detect_seller_margin_corrosion(
 
     Requer a coluna opcional `list_price` em Estoque e a coluna `salesperson` em
     Vendas — sem qualquer uma delas, ou sem SKU em comum entre as duas abas, retorna
-    vazio (nunca inventa preço de tabela nem vendedor)."""
+    vazio (nunca inventa preço de tabela nem vendedor).
+
+    QA (achado crítico, corrigido): devolução/estorno (`value <= 0`, tipicamente
+    `quantity < 0`) NUNCA entra na reconstrução de `unit_price` — mesmo filtro que
+    `detect_contribution_margin` já aplica e pela MESMA razão. Sem o filtro,
+    `quantity < 0` reprova o guard `qty > 0` e cai no piso `qty_safe = 1.0`, e
+    `unit_price = value / 1.0` fica NEGATIVO — vira `discount = list_price -
+    (-|value|) = list_price + |value|`, uma SOMA em vez de subtração, inflando o
+    desconto do vendedor pelo dobro do valor da devolução. Bug real, reproduzido
+    contra `tests/fixtures/consultoria_real_test.xlsx` (SKU `ARP-006`, `value=
+    -1080.0`, `quantity=-1.0`) antes desta correção."""
     if estoque_df is None or estoque_df.empty:
         return []
     if "salesperson" not in vendas_df.columns or vendas_df["salesperson"].isna().all():
@@ -1171,6 +1181,8 @@ def detect_seller_margin_corrosion(
     list_price_by_sku = list_price_frame.groupby("sku")["list_price"].mean()
 
     sales = vendas_df.dropna(subset=["salesperson", "value"]).copy()
+    sales = sales[sales["value"] > 0]  # devolução/estorno fora — mesmo critério de
+    # `detect_contribution_margin` (não é "preço praticado", é reversão de caixa)
     sales = sales[sales["product"].isin(list_price_by_sku.index)]
     if sales.empty:
         return []
