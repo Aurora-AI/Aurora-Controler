@@ -236,4 +236,24 @@ Decisão de produto (20/07/2026), motivada pelo caso real de desconto agregado d
 
 ---
 
+## 16. O ANEXO VIVO E O ZERO CONTRADIÇÃO [INEGOCIÁVEL]
+
+Decisão de produto (20/07/2026), motivada pela pergunta do usuário diante do laudo Beta ("quais são os 2 modelos parados? quem são os vendedores? que números provam?"): o corpo do laudo prometia anexo em ≥4 pontos e o anexo não existia. OS executável: `SPEC_Fase_D2_Anexo_Vivo_e_Zero_Contradicao.md` (raiz do repo). Pré-requisito de motor JÁ EXECUTADO (Pilares 1–3, commit `b0eb74c`: mix de margem por vendedor, chaves de rastreabilidade, índice de recuperabilidade). O que é LEI para o laudo:
+
+16.1. **Promessa de anexo sem anexo = laudo reprovado.** Toda menção a "anexo" no corpo, e todo `anexo_ref` de sangramento, deve resolver para uma seção real do Ato 6. O inverso também: seção de anexo cujo total participa de um card deve estar vinculada por `anexo_ref` — evidência órfã é dessincronia, reprovada.
+
+16.2. **O corpo É a soma do anexo (Zero Contradição).** Card monetário carrega `valor` numérico; o validador confere, com tolerância de R$ 0,01 (mesma régua da soma do paradoxo, §1.3), as igualdades card ↔ Σ(itens do anexo) ↔ relatório congelado (as três pernas, quando `--report` presente). A manchete carrega `total_risco` numérico ≡ Σ dos sangramentos monetários; o display é arredondamento declarado desse número e **nunca excede o fato**. Plano com `sangramento_ref` deve bater o `valor` do card. Divergiu → `exit 1`, nada é gerado.
+
+16.3. **O anexo é derivado, nunca editado.** `build_anexo` lê somente o `audit_report_<rodada>.json` congelado (com vereditos manuais fundidos antes, §15.6). Número que falta no congelado se corrige no MOTOR, nunca se calcula na apresentação. Mesma trava anti-fusão-errada do §15.6: `audit_report_generated_at` divergente = rejeição alta.
+
+16.4. **Todo item de anexo tem procedência visível** (`src`: aba + linha do arquivo original do cliente), com corte de amostra sempre declarado ("+N", "amostra de N") — nunca truncamento silencioso.
+
+16.5. **A fila de reativação ordena por índice de aquecimento (silêncio ÷ ciclo próprio), R$ como desempate** — nunca por R$ puro. O índice é razão de fatos medidos; rotulá-lo como probabilidade/previsão viola a régua fato≠cenário.
+
+16.6. **Duas verdades convivem:** vendedor pode aparecer com gap de margem E com a nota de absolvição do desconto (`tainted`, §15.5) simultaneamente — o anexo nunca esconde uma para simplificar a outra. Flag sem a evidência numérica ao lado é adjetivo, e adjetivo sem número é proibido no anexo.
+
+16.7. **Teto de 5 não se aplica ao Ato 6** (ele é o destino do "excedente → anexo" do §6); acima de 50 linhas, colapsa em top-50 + total do restante, com corte declarado. Pseudonimização preservada sempre. Vocabulário do §3.4 vale no anexo; código de SKU é permitido (vocabulário do próprio cliente), acompanhado de descrição quando disponível.
+
+---
+
 *Fim da lei. Qualquer laudo do EXRS Data Oracle gerado após esta data obedece a este documento na íntegra.*
