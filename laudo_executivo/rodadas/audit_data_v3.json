@@ -1,0 +1,185 @@
+{
+  "rodada": "v3",
+  "cliente": "Rede de Óticas",
+  "manchete": {
+    "total_risco_display": "R$ 131 mil",
+    "frase": "escapando pelo ralo agora — e o pior vazamento está na sua melhor loja.",
+    "composicao": "R$ 92.078 em clientes que sumiram + R$ 35.040 parados em prateleira + prejuízo estrutural de margem nas lojas L7 e L9. Cenários projetados (ex.: R$ 4.531 de segunda venda) não entram nesta soma e aparecem sempre rotulados à parte."
+  },
+  "paradoxo": {
+    "loja": "L7-Oeste",
+    "produto": -3346.09,
+    "servico": 13840.12,
+    "total": 10494.03,
+    "contexto": "~235 serviços de conserto",
+    "controle": {
+      "loja": "L9-Serra",
+      "produto": -4702,
+      "frase": "vende os mesmos produtos, sem balcão de conserto — e aparece no vermelho. Ela é a L7 sem a máscara: mesma doença, sem o curativo."
+    }
+  },
+  "sangramentos": [
+    {
+      "id": "cap-clientes",
+      "titulo": "Clientes Evaporando",
+      "valor_display": "R$ 92.078",
+      "soco": "47 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
+      "serie_mensal": [
+        {
+          "mes": "mar/25",
+          "valor": 1174.55
+        },
+        {
+          "mes": "jun/25",
+          "valor": 12923.91
+        },
+        {
+          "mes": "jul/25",
+          "valor": 8428.46
+        },
+        {
+          "mes": "ago/25",
+          "valor": 34220.2
+        },
+        {
+          "mes": "set/25",
+          "valor": 5109.12
+        },
+        {
+          "mes": "out/25",
+          "valor": 3480.65
+        },
+        {
+          "mes": "nov/25",
+          "valor": 2353.43
+        },
+        {
+          "mes": "dez/25",
+          "valor": 1647.28
+        },
+        {
+          "mes": "jan/26",
+          "valor": 6964.01
+        },
+        {
+          "mes": "fev/26",
+          "valor": 8385.07
+        },
+        {
+          "mes": "mar/26",
+          "valor": 6492.56
+        },
+        {
+          "mes": "abr/26",
+          "valor": 898.75
+        }
+      ],
+      "evidencias": [
+        "A detecção respeita o ciclo de compra de cada cliente — ninguém de ciclo anual foi contado como perdido.",
+        "3 dos seus melhores clientes estão em declínio claro de frequência — ainda dá tempo.",
+        "A fila de reativação sai pronta, ordenada por valor histórico, loja a loja."
+      ],
+      "custo_mensal": "Cada mês sem uma rotina de reativação, parte desses R$ 92.078 vira perda definitiva — cliente de ótica que troca de casa raramente volta sozinho.",
+      "gancho": "A campanha de reativação segmentada por ciclo é a consultoria rodando."
+    },
+    {
+      "id": "cap-caixa",
+      "titulo": "Caixa Preso",
+      "valor_display": "R$ 35.040",
+      "soco": "Capital dormindo em 16 produtos que não giram há mais de um ano.",
+      "treemap_itens": [
+        {
+          "nome": "12× Armacao encalhada — L1 - Centro",
+          "valor": 28800.0
+        },
+        {
+          "nome": "1× DEADX-001 — L6 - Leste",
+          "valor": 1560.0
+        },
+        {
+          "nome": "1× DEADX-002 — L6 - Leste",
+          "valor": 1560.0
+        },
+        {
+          "nome": "1× DEADX-003 — L6 - Leste",
+          "valor": 1560.0
+        },
+        {
+          "nome": "1× DEADX-004 — L6 - Leste",
+          "valor": 1560.0
+        }
+      ],
+      "treemap_total_itens": 16,
+      "evidencias": [
+        "Nenhum item sazonal foi contado — solares em baixa de inverno ficaram fora da lista.",
+        "É caixa imobilizado: dinheiro que poderia estar em produto que gira ou no seu bolso.",
+        "A lista completa, com dias parados e valor por item, está no anexo — pronta para liquidação."
+      ],
+      "custo_mensal": "R$ 35.040 parados são R$ 35.040 que não financiam estoque que vende — e a prateleira ocupada bloqueia o produto certo.",
+      "gancho": "Liberar esse caixa (liquidação/devolução assistida) é execução — nossa entrega."
+    },
+    {
+      "id": "cap-lucro",
+      "titulo": "Lucro Fantasma",
+      "valor_display": "2 lojas",
+      "soco": "vendem produto no vermelho — e uma delas parece campeã nos seus relatórios.",
+      "evidencias": [
+        "L7-Oeste: prejuízo de produto mascarado pelo balcão de conserto (ver O Paradoxo).",
+        "L9-Serra: mesmo prejuízo, sem máscara — a única loja no vermelho total da rede.",
+        "Há produtos em que você paga R$ 190 para vender a R$ 200: depois do custo de operar, você paga para vender."
+      ],
+      "custo_mensal": "Enquanto o ranking for por faturamento, a doença fica invisível: o ranking por margem real conta outra história — e é ele que paga as suas contas.",
+      "gancho": "Repricing com trava no caixa e leitura mensal por margem real é parte da implantação."
+    }
+  ],
+  "honestidade": [
+    {
+      "alarme": "Queda de solares no inverno",
+      "motivo": "sazonalidade — não é estoque morto; o giro volta no verão."
+    },
+    {
+      "alarme": "Clientes de ciclo anual sem compra recente",
+      "motivo": "estão dentro do próprio ciclo — não é abandono."
+    },
+    {
+      "alarme": "Produto vendido com desconto agressivo",
+      "motivo": "promoção deliberada com margem bruta positiva — não é prejuízo estrutural."
+    },
+    {
+      "alarme": "Vendedores com números baixos",
+      "motivo": "estão em início de rampa (menos de 6 meses) — cedo demais para julgar."
+    }
+  ],
+  "plano": [
+    {
+      "acao": "Reativar os clientes que sumiram",
+      "impacto": 92078,
+      "impacto_display": "R$ 92.078",
+      "cenario": false,
+      "como": "Fila pronta, ordenada por valor histórico e ciclo. Começar pelos 3 campeões em declínio — esses ainda respondem."
+    },
+    {
+      "acao": "Liberar o caixa preso em prateleira",
+      "impacto": 35040,
+      "impacto_display": "R$ 35.040",
+      "cenario": false,
+      "como": "Liquidação/devolução dos 16 produtos sem giro. Dinheiro de volta ao estoque que vende."
+    },
+    {
+      "acao": "Estancar o prejuízo estrutural de produto (L7 e L9)",
+      "impacto": 8048,
+      "impacto_display": "−R$ 8.048/período",
+      "cenario": false,
+      "como": "Recompor mix e preço sem enfraquecer o serviço que sustenta a L7. Corrigir os produtos vendidos abaixo do custo."
+    },
+    {
+      "acao": "Capturar a segunda venda",
+      "impacto": 4531,
+      "impacto_display": "R$ 4.531",
+      "cenario": true,
+      "como": "4 em cada 10 clientes saem sem a segunda venda. Valor dimensionado como cenário — rotina de oferta no balcão."
+    }
+  ],
+  "cta": "Falar sobre a implantação",
+  "procedencia": "Todos os valores extraídos do audit_report congelado da rodada, com procedência linha a linha · Fato medido ≠ cenário projetado, sempre rotulado · Como calculamos → anexo de metodologia."
+}

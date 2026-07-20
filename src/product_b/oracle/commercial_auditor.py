@@ -154,6 +154,9 @@ def load_sales_records(
             salespersons = (
                 raw[roles["salesperson"]] if "salesperson" in roles else pd.Series([None] * len(raw))
             )
+            payments = (
+                raw[roles["payment"]] if "payment" in roles else pd.Series([None] * len(raw))
+            )
         except (ColumnMappingError, DateAmbiguityError) as e:
             # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
             # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
@@ -198,6 +201,10 @@ def load_sales_records(
                 category=None if cat is None or pd.isna(cat) else str(cat),
                 store=None if store is None or pd.isna(store) else str(store),
                 salesperson=None if salesperson is None or pd.isna(salesperson) else str(salesperson),
+                payment_method=(
+                    None if payments.iloc[i] is None or pd.isna(payments.iloc[i])
+                    else str(payments.iloc[i])
+                ),
                 source_file=file_path.name,
                 source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
             ))
@@ -268,7 +275,7 @@ def winsorize_outliers(
 _SALES_FRAME_SCHEMA: dict[str, str] = {
     "date": "datetime64[ns]", "product": "object", "customer": "object",
     "value": "float64", "entry_cost": "float64", "category": "object",
-    "store": "object", "salesperson": "object",
+    "store": "object", "salesperson": "object", "payment_method": "object",
 }
 
 
@@ -277,6 +284,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
+        "payment_method": r.payment_method,
     } for r in records], _SALES_FRAME_SCHEMA)
 
 
@@ -575,6 +583,22 @@ def detect_contribution_margin(
         grouped["avg_price"] - grouped["avg_entry_cost"] - grouped["variable_cost"]
     )
     negative = grouped[grouped["contribution_margin"] < 0]
+
+    # C3 — promoção deliberada não é prejuízo estrutural: produto cuja TOTALIDADE
+    # das vendas válidas tem `payment_method == promo_payment_label` é marcado
+    # `promotional=True` (decisão comercial). Uma única venda não-promocional já
+    # devolve o produto ao regime estrutural — promoção nunca vira tapete para
+    # prejuízo real. Sem coluna de pagamento no arquivo, nada é promocional (não
+    # se infere intenção sem sinal no dado).
+    if "payment_method" in valid.columns:
+        pay = valid["payment_method"].astype(str).str.strip().str.lower()
+        promo_label = thresholds.promo_payment_label.strip().lower()
+        all_promo = (
+            pay.eq(promo_label).groupby(valid["product"]).all()
+            & valid["payment_method"].notna().groupby(valid["product"]).all()
+        )
+    else:
+        all_promo = pd.Series(dtype=bool)
     return [
         ContributionMarginAlert(
             product=str(product), avg_price=float(row["avg_price"]),
@@ -582,6 +606,7 @@ def detect_contribution_margin(
             variable_cost_pct=float(thresholds.variable_cost_pct),
             contribution_margin=float(row["contribution_margin"]),
             sample_size=int(row["sample_size"]),
+            promotional=bool(all_promo.get(product, False)),
         )
         for product, row in negative.iterrows()
     ]
@@ -1251,11 +1276,12 @@ def build_executive_summary(
     recombina o que os detectores já retornaram, mesma filosofia de
     `build_store_macro_summary`.
 
-    `total_operational_loss`: soma de |contribution_margin| de todo item em
+    `total_operational_loss`: soma de |contribution_margin| dos itens ESTRUTURAIS em
     `contribution_margin_alerts` (a lista já só contém margem < 0, ver
     `detect_contribution_margin`). Não soma com `service_decomposition` (evitaria
-    dupla contagem). Não exclui promoção (sem sinal no dado) — rotular como "a
-    confirmar" é responsabilidade de quem exibe este campo, não deste cálculo.
+    dupla contagem). Alerta `promotional=True` (C3: promoção deliberada, sinal
+    `forma_pagto`) fica FORA da soma — continua visível na lista, mas não é
+    prejuízo estrutural.
 
     `total_capital_frozen`: `dead_stock[0].capital_frozen` se houver achado —
     `detect_dead_stock` estruturalmente nunca retorna mais que 1 item (sempre soma a
@@ -1276,7 +1302,7 @@ def build_executive_summary(
     dentro do tier. Receita latente nunca entra aqui (é cenário, não fato) — por
     isso esta função nem recebe `latent_revenue` como parâmetro."""
     total_operational_loss = float(
-        sum(abs(a.contribution_margin) for a in contribution_margin_alerts)
+        sum(abs(a.contribution_margin) for a in contribution_margin_alerts if not a.promotional)
     )
     total_capital_frozen = float(dead_stock[0].capital_frozen) if dead_stock else 0.0
     # Piso em 0 por cliente antes de somar: um cliente com valor histórico líquido
