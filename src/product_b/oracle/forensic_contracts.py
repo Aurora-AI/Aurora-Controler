@@ -116,6 +116,20 @@ class AuditThresholdsConfig(BaseModel):
     # verificada empiricamente contra 80% de receita neste dado; é a definição
     # operacional do algoritmo, não uma medição).
     vip_customer_top_pct: float = 20.0
+    # Fase C — Triggers de triagem, POR TRANSAÇÃO (nunca o agregado sem teto por
+    # vendedor da Fase B). Trigger A: |desconto sobre a tabela|% acima disto dispara
+    # (positivo = vendeu bem abaixo da tabela; negativo = vendeu acima — os dois lados
+    # são discrepância). 60% é o corte: uma promoção legítima raramente passa disso
+    # sem virar liquidação de fato; abaixo disso é agressividade comercial normal, não
+    # matéria de triagem.
+    manual_review_discount_pct: float = 60.0
+    # Fase C, evidência E4 — % de divergência entre o custo registrado na PRÓPRIA
+    # linha de venda (`entry_cost`) e o custo da Compra (NF) mais recente anterior à
+    # venda, acima do qual o cadastro é considerado desalinhado da aquisição real.
+    # Calibrado para tolerar oscilação normal de reposição (fretes/negociação pontual)
+    # sem tolerar cadastro parado (ex.: caso real ARP-013: custo na venda ~R$700-850
+    # vs NF ~R$309 — divergência de ~130%, muito acima deste corte).
+    nf_cost_divergence_pct: float = 15.0
 
 
 class SalesRecord(BaseModel):
@@ -328,6 +342,14 @@ class SellerMarginCorrosionAlert(BaseModel):
     store_std_discount_pct: float
     sample_size: int
     is_corrosive: bool
+    # Fase C — True quando este vendedor tem item em `discrepancy_triage.
+    # auto_classified` com `verdict="suspected_cadastral_error"` cobrindo o mesmo
+    # (loja, vendedor). Vendedor cujo desconto vem de tabela cadastralmente errada
+    # NUNCA pode ser apresentado como corrosivo (culpa exige referência confiável —
+    # Spec de Laudo Executivo v4 §15.5) — `is_corrosive` é forçado a False quando
+    # `tainted_by_triage=True`, mesmo que o desvio estatístico bruto (2σ) apontasse
+    # outlier.
+    tainted_by_triage: bool = False
 
 
 class ConcentrationRiskAlert(BaseModel):
@@ -342,6 +364,52 @@ class ConcentrationRiskAlert(BaseModel):
     vip_total_store: float  # receita VIP total da loja (denominador)
     concentration_pct: float
     is_high_risk: bool  # concentration_pct > thresholds.concentration_seller_vip_pct
+
+
+class DiscrepancyEvidence(BaseModel):
+    """Fase C — os 5 sinais que o motor já tem no próprio dado para pré-classificar
+    uma discrepância de preço sem depender de investigação humana. Cada campo é um
+    FATO checável, nunca uma opinião — o veredito (ver `DiscrepancyTriageItem`) é uma
+    função determinística deste vetor (árvore de decisão fixa, ver
+    SPEC_Fase_C_Fila_Auditoria_Manual.md §3.2)."""
+    below_cost: bool  # E1 — alguma venda do grupo abaixo do custo da própria linha
+    sku_in_dead_stock: bool  # E2 — SKU está em `dead_stock[0].skus`
+    is_promo_flagged: bool  # E3 — TODAS as vendas triadas do grupo são forma_pagto=promoção
+    cost_diverges_from_nf: bool  # E4 — custo_entrada da venda diverge do custo da Compra (NF) mais recente
+    store_systemic_pattern: bool  # E5 — a MEDIANA de desconto do (loja, SKU) inteiro também é implausível
+
+
+class DiscrepancyTriageItem(BaseModel):
+    """Fase C — um item por (SKU, loja, vendedor) cujo desconto sobre a tabela ou
+    venda abaixo do custo passou de `manual_review_discount_pct`/`nf_cost_
+    divergence_pct`. `verdict=None` só quando `status="pending_manual_review"` — as
+    evidências não bastaram para a árvore de decisão classificar sozinha, e o item
+    vai para veredito humano (ver `apply_manual_review_verdicts`)."""
+    id: str
+    sku: str
+    store: str
+    salesperson: str
+    source_rows: list[int] = Field(default_factory=list)  # procedência — linha de origem no arquivo
+    practiced_price: float  # preço unitário médio praticado nas vendas do grupo
+    list_price: float | None = None  # preço de tabela (Estoque) — None se SKU sem catálogo
+    # custo médio de entrada nas próprias linhas de venda — None quando o grupo
+    # disparou só pelo Trigger A (desconto sobre tabela) e a linha nunca teve
+    # `entry_cost` capturado (Trigger A não depende de custo, só de preço de tabela)
+    entry_cost: float | None = None
+    nf_cost: float | None = None  # custo na Compra (NF) mais recente anterior à venda — None se indeterminável
+    discount_over_list_pct: float | None = None  # (list_price - practiced)/list_price × 100; None sem list_price
+    evidence: DiscrepancyEvidence
+    verdict: str | None = None  # "suspected_cadastral_error"|"below_cost_sale"|"deliberate_liquidation"|None
+    status: str  # "auto_classified" | "pending_manual_review"
+
+
+class DiscrepancyTriage(BaseModel):
+    """Fase C — resultado da triagem: `manual_queue` deve ser o RESÍDUO, não o
+    atacado (critério de aceite: <10% dos itens disparados na fila — fila inundada é
+    árvore de decisão errada, não "trabalho para depois", ver Spec §15.2)."""
+    triggered_count: int
+    auto_classified: list[DiscrepancyTriageItem] = Field(default_factory=list)
+    manual_queue: list[DiscrepancyTriageItem] = Field(default_factory=list)
 
 
 class AdvancedMetrics(BaseModel):
@@ -361,6 +429,11 @@ class AdvancedMetrics(BaseModel):
     # 0.0 fingido. Nome do campo (`follow_on_conversion`, sem sufixo `_rate`) segue o
     # schema literal da OS (SPEC_Fase_B_Formulas_Avancadas.md, seção 4).
     follow_on_conversion: float | None = None
+    # Fase C — None quando não dá pra rodar NENHUM dos dois triggers (ex.: sem coluna
+    # `entry_cost` E sem `list_price` disponível); ver `detect_discrepancy_triage`.
+    # `DiscrepancyTriage(triggered_count=0, ...)` (não-None) é o estado "rodou, não
+    # achou nada implausível" — distinto de "não rodou".
+    discrepancy_triage: DiscrepancyTriage | None = None
 
 
 class StorePerformance(BaseModel):

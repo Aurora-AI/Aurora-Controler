@@ -215,7 +215,7 @@ O arquivo `EXRS_Template_Laudo_Executivo_v4.html` é a **implementação canôni
 
 ## 15. TRIAGEM DE DISCREPÂNCIAS E FILA DE AUDITORIA MANUAL [INEGOCIÁVEL]
 
-Decisão de produto (20/07/2026), motivada pelo caso real de desconto agregado de 337% (V-30/L9): distorção numérica severa não é erro para descartar nem fato para exibir cru. OS executável completa: `SPEC_Fase_C_Fila_Auditoria_Manual.md` (raiz do repo). O que é LEI para o laudo:
+Decisão de produto (20/07/2026), motivada pelo caso real de desconto agregado de 337% (V-30/L9): distorção numérica severa não é erro para descartar nem fato para exibir cru. OS executável: `SPEC_Fase_C_Fila_Auditoria_Manual.md` (raiz do repo) — **EXECUTADA** no motor (`detect_discrepancy_triage`, `apply_manual_review_verdicts`; 19 testes). Validado contra dado real: fila manual = 4,4% dos disparos (critério de aceite <10%); ARP-013/L9 classificado automaticamente como `suspected_cadastral_error`. Pendente: wiring no `build_laudo.py`/template (a triagem ainda não é renderizada — motor apenas). O que é LEI para o laudo:
 
 15.1. **Número implausível nunca aparece cru na visão executiva.** Transação/agregado que dispare os guard-rails de plausibilidade (desconto sobre tabela além do limiar, venda abaixo do custo) entra em TRIAGEM antes de qualquer renderização.
 
