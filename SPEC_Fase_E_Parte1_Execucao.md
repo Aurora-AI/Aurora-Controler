@@ -1,17 +1,21 @@
 # ENGENHARIA: EXRS Data Oracle — Fase E (parte 1): Fechamento de QA + MVP da Física da Equipe (E1/E2/E3-v1)
 
-> **Status:** PARTE A EXECUTADA (20/07/2026) · Parte B pendente. Esta é a
+> **Status:** EXECUTADA (21/07/2026) — Parte A e Parte B. Esta é a
 > primeira OS executável derivada da planta-mãe `SPEC_Fase_E_Fisica_da_Equipe.md`. Cobre
 > DUAS frentes que compartilham o mesmo validador (D3/Zero Contradição) e por isso nascem
-> juntas: **(A) EXECUTADA** — Z3 (`below_cost_loss_brl`/`below_cost_total_brl` no motor,
+> juntas: **(A)** Z3 (`below_cost_loss_brl`/`below_cost_total_brl` no motor,
 > filtrando por `verdict=="below_cost_sale"` — achado de execução, ver §1.1; validado contra
 > Beta real: R$522,54 batendo exatamente com `cap-lucro.valor`) + guarda de `anexo_ref`
-> duplicado. 15 testes novos, suíte completa verde, goldens regenerados com diff auditado
-> (v3 ganhou `below_cost_total_brl=4661.13`, não previsto na SPEC original mas correto — a
-> triagem já detectava essas vendas, só não viravam sangramento na narrativa). **(B)
-> PENDENTE** — o MVP da Fase E — os três pilares que NÃO exigem dado novo de planilha (E1
-> Evasão, E2 Comissionamento, E3-v1 Habilidade proxy), com o novo bloco `team_diagnostics`,
-> o Ato 7 no template e a extensão do validador Zero Contradição.
+> duplicado. Goldens regenerados com diff auditado (v3 ganhou `below_cost_total_brl=4661.13`,
+> não previsto na SPEC original mas correto — a triagem já detectava essas vendas, só não
+> viravam sangramento na narrativa). **(B)** o MVP da Fase E — E1 `detect_seller_flight_risk`
+> (agregação mensal própria, gatilho em σ, ver §3.1), E2 `detect_incentive_misalignment`
+> (chamado pós-taint, ver §3.2), E3-v1 `detect_skill_gaps` (corte por margem blendada da
+> loja, decidido em revisão — ver §3.3), bloco `team_diagnostics` (paralelo a
+> `executive_summary`, nunca somado), Ato 7 no template, `build_team`/Z7/Z8 no validador.
+> Lei: `EXRS_Spec_Laudo_Executivo_v4.md` §17. 54 testes novos entre as duas partes (17 + 37),
+> suíte completa verde, validado contra v3/Beta reais (E2 já detecta V-29/V-30 quando
+> `commission_basis="gross_revenue"` é declarado).
 > **Fora desta OS (viram OS próprias quando autorizadas):** E4 (aba Escalas) e E5 (aba
 > Escalas + Tráfego/hora) — dependem de ingestão nova; ficam na planta-mãe §5/§6.
 > **Pré-requisitos CONCLUÍDOS:** Fase D parte 1 (`b0eb74c`) e parte 2 (`755e68e` + QA

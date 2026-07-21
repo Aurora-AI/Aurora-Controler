@@ -243,6 +243,12 @@
 const D = JSON.parse(document.getElementById('AUDIT_DATA').textContent);
 const app = document.getElementById('app');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Compartilhados por Ato 6 (anexo) e Ato 7 (team) — ambos são formatação pura de
+// dado já conferido a montante (Zero Contradição), nunca cálculo aqui.
+const brlCents = n => (n == null) ? '—' :
+  'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const pct = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + '%';
+const pp = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + 'pp';
 const mast = sub => `<header class="masthead sans"><h1>EXRS Data Oracle · Executive Audit Report</h1>
   <div class="meta">${esc(D.cliente)} — Rodada ${esc(D.rodada)} · ${esc(sub)}</div></header>`;
 const foot = () => `<footer class="footerband sans"><p class="prov">${esc(D.procedencia)}</p>
@@ -461,10 +467,6 @@ app.insertAdjacentHTML('beforeend', `
    zero cálculo. */
 if (D.anexo) {
   const A = D.anexo;
-  const brlCents = n => (n == null) ? '—' :
-    'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  const pct = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + '%';
-  const pp = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + 'pp';
 
   const secEstoque = A.estoque_parado ? `
     <details class="anexo-section" id="anexo-estoque_parado">
@@ -538,7 +540,7 @@ if (D.anexo) {
           <td>${esc(i.sku)}${i.descricao ? `<div class="anexo-meta-line">${esc(i.descricao)}</div>` : ''}</td>
           <td>${esc(i.loja)}</td><td>${esc(i.vendedor)}</td>
           <td>${esc((i.veredito || 'em auditoria').replace(/_/g, ' '))}${i.veredito_origem === 'pending_manual_review' ? ' <span class="anexo-meta-line">(pendente)</span>' : ''}</td>
-          <td>${i.veredito === 'below_cost_sale' ? brlCents(i.perda_abaixo_custo) : '—'}</td>
+          <td>${i.perda_confirmada ? brlCents(i.perda_abaixo_custo) : '—'}</td>
           <td>${i.evidencias.map(e => `<div>${esc(e)}</div>`).join('')}</td>
           <td class="src">${esc(i.src)}</td>
         </tr>`).join('')}
@@ -556,8 +558,11 @@ if (D.anexo) {
         ${A.metodologia.limpeza.podas_outlier ?? 0} podas de outlier.</p>
     </details>` : '';
 
+  // Ato 6 só fecha a borda (é o último) quando o Ato 7 (team) não for renderizar
+  // logo em seguida — mesmo padrão condicional já usado no Ato 5 para o Ato 6.
+  const temTeam = !!(D.team && (D.team.evasao || D.team.comissionamento || D.team.habilidade));
   app.insertAdjacentHTML('beforeend', `
-<section class="act" id="anexo" style="border-bottom:none;">
+<section class="act" id="anexo"${temTeam ? '' : ' style="border-bottom:none;"'}>
   ${mast('Ato 6 · Anexo de evidências')}
   <p class="kicker sans">A prova, linha a linha</p>
   <h2 class="headline">Cada número deste laudo pode ser refeito à mão.</h2>
@@ -565,6 +570,86 @@ if (D.anexo) {
     do seu arquivo de onde cada número saiu.</p>
   <div class="sans" style="margin-top:32px;">
     ${secEstoque}${secFila}${secVendedores}${secTriagem}${secMetodologia}
+  </div>
+  ${foot()}
+</section>`);
+}
+
+/* Ato 7 · A Física da Equipe (Fase E parte 1) — só renderiza quando D.team tem
+   pelo menos uma seção; AUDIT_DATA sem team continua idêntico a antes
+   (retrocompatibilidade). Mesmo padrão de <details> recolhido do Ato 6; o dado já
+   vem pronto do build_team (Zero Contradição/Z7/Z8 já conferiram a montante) —
+   aqui é só formatação, zero cálculo. */
+if (D.team && (D.team.evasao || D.team.comissionamento || D.team.habilidade)) {
+  const T = D.team;
+
+  const secEvasao = T.evasao ? `
+    <details class="anexo-section" id="team-evasao">
+      <summary><span>Evasão de talentos</span>
+        <span class="meta">${T.evasao.itens.length} em risco</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Meses avaliados</th><th>Captura</th>
+        <th>Desconto</th><th>Ticket</th><th>Sinais</th><th>Carteira em risco</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${T.evasao.itens.map(e => `<tr>
+          <td>${esc(e.vendedor)}</td><td>${esc(e.loja)}</td><td>${e.meses_avaliados ?? '—'}</td>
+          <td>${e.captura_trend_pp != null ? '↓ ' + pp(e.captura_trend_pp) : '—'}</td>
+          <td>${e.desconto_trend_pp != null ? '↑ ' + pp(e.desconto_trend_pp) : '—'}</td>
+          <td>${e.ticket_trend_pct != null ? '↓ ' + pct(e.ticket_trend_pct) : '—'}</td>
+          <td><div class="anexo-flags">${e.sinais.map(s => `<span class="anexo-flag">${esc(s.replace(/_/g, ' '))}</span>`).join('')}</div></td>
+          <td>${brlCents(e.carteira_em_risco)}</td>
+          <td class="src">${esc(e.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">Carteira em risco = receita bruta do vendedor no período (inclui venda
+        anônima e estorno) — é o que evapora SE o vendedor sair, não uma perda já ocorrida. Nunca somado
+        aos sangramentos do corpo do laudo (naturezas diferentes).</p>
+    </details>` : '';
+
+  const secComissionamento = T.comissionamento ? `
+    <details class="anexo-section" id="team-comissionamento">
+      <summary><span>Conflito de comissionamento</span>
+        <span class="meta">${T.comissionamento.itens.length} vendedores</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Base de comissão</th><th>Achado</th><th>Recomendação</th>
+      </tr></thead><tbody>
+        ${T.comissionamento.itens.map(c => `<tr>
+          <td>${esc(c.vendedor)}</td><td>${esc(c.loja)}</td>
+          <td>${esc((c.base_comissao || '').replace(/_/g, ' '))}</td>
+          <td>${esc(c.resumo_achado)}</td>
+          <td>${esc(c.recomendacao)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secHabilidade = T.habilidade ? `
+    <details class="anexo-section" id="team-habilidade">
+      <summary><span>Matriz de habilidade</span>
+        <span class="meta">${T.habilidade.itens.length} hipóteses</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Categoria</th><th>Desvio de mix</th>
+        <th>Margem da categoria</th><th>Hipótese</th>
+      </tr></thead><tbody>
+        ${T.habilidade.itens.map(h => `<tr>
+          <td>${esc(h.vendedor)}</td><td>${esc(h.loja)}</td><td>${esc(h.categoria)}</td>
+          <td>${pp(h.desvio_mix_pp)}</td><td>${pct(h.margem_categoria_pct)}</td>
+          <td>${esc(h.hipotese)}
+            <div class="anexo-meta-line">hipótese derivada de padrão de mix, não diagnóstico confirmado —
+              conversão real exigiria dado de tentativas (aba Orçamentos, fora desta rodada)</div>
+          </td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="team" style="border-bottom:none;">
+  ${mast('Ato 7 · A Física da Equipe')}
+  <p class="kicker sans">O sistema em volta do vendedor</p>
+  <h2 class="headline">Nem todo resultado ruim é falta de esforço.</h2>
+  <p class="sub">Incentivo, habilidade e evasão — o que o sistema permite ou impede, não só o
+    resultado que ele produz.</p>
+  <div class="sans" style="margin-top:32px;">
+    ${secEvasao}${secComissionamento}${secHabilidade}
   </div>
   ${foot()}
 </section>`);

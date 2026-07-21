@@ -146,6 +146,37 @@ class AuditThresholdsConfig(BaseModel):
     # exaustiva — `sample_size` do achado é sempre o total real; o teto existe só
     # pra o JSON/anexo não explodir em achados com centenas de vendas.
     provenance_sample_cap: int = 10
+    # Fase E, E1 (evasão de vendedor) — largura da janela "recente" (em meses) que
+    # cada perna (captura/desconto/ticket) compara contra o histórico do PRÓPRIO
+    # vendedor (nunca a rede). Mesmo espírito de `flight_risk_trend_window_months`
+    # ser pequeno o bastante pra pegar uma virada real sem exigir anos de dado.
+    flight_risk_trend_window_months: int = 3
+    # Fase E, E1 — desvios-padrão da variabilidade histórica da PRÓPRIA série (nunca
+    # um ponto-percentual fixo) que a queda/alta recente precisa exceder pra a perna
+    # disparar — mesmo idioma estatístico de `revenue_drop_sigma`/
+    # `seller_corrosion_std_multiplier` (2.0), aqui um pouco mais sensível (1.5)
+    # porque a janela de comparação já é curta (poucos meses) e um corte igual a 2.0
+    # deixaria passar viradas reais antes que a carteira evapore de vez.
+    flight_risk_trend_sigma: float = 1.5
+    # Fase E, E1 — de 3 pernas possíveis (captura/desconto/ticket), quantas precisam
+    # disparar pra virar achado. 2 exige convergência de pelo menos duas dimensões
+    # independentes — mesmo espírito de exigir 2 evidências simultâneas do Mix de
+    # Margem (Fase D, Pilar 1) — nunca acusa por uma métrica isolada que pode ser
+    # ruído sazonal de um mês.
+    flight_risk_min_flags: int = 2
+    # Fase E, E3 (habilidade proxy) — piso de quanto o vendedor precisa VENDER MENOS
+    # que o padrão da própria loja (mix_deviation_pp negativo, em pontos percentuais)
+    # numa categoria de margem alta pra virar hipótese de déficit de treinamento.
+    # Mesma unidade/ordem de grandeza de `seller_margin_gap_pct` (10pp) — desvio de
+    # mix pequeno é variação normal de atendimento, não padrão de evitação.
+    skill_gap_avoidance_pp: float = 10.0
+    # Fase E, E2 (conflito de comissionamento) — fato de negócio declarado pelo
+    # consultor na configuração da rodada (não inferido da planilha, não há como
+    # inferir % de comissão a partir de receita e custo sozinhos). "unknown"
+    # (default) é o ponto cego honesto: o detector não avalia nada e emite
+    # DiscardedAlarm em vez de adivinhar. Mesmo espírito de `service_category_label`/
+    # `promo_payment_label` (vocabulário de negócio como campo, não string cravada).
+    commission_basis: str = "unknown"  # "gross_revenue" | "contribution_margin" | "mixed"
 
 
 class SalesRecord(BaseModel):
@@ -458,6 +489,13 @@ class DiscrepancyTriageItem(BaseModel):
     # pode ter linhas acima e abaixo do custo misturadas). None quando o grupo não
     # disparou por `below_cost` (fallback honesto, nunca 0.0 fingido).
     below_cost_loss_brl: float | None = None
+    # Fase E parte 1 (QA, achado de revisão) — flag EXPLÍCITA: este item sobreviveu à
+    # reclassificação e é sangria genuína (`verdict == "below_cost_sale"`), não
+    # artefato de cadastro errado. Fonte única da verdade sobre "conta no total
+    # agregado" — motor, validador (Z3) e template leem esta flag, nenhum deles
+    # re-deriva a regra comparando `verdict` de novo (mesmo padrão de
+    # `tainted_by_triage`: decisão calculada uma vez, propagada, nunca repetida).
+    below_cost_confirmed: bool = False
     evidence: DiscrepancyEvidence
     verdict: str | None = None  # "suspected_cadastral_error"|"below_cost_sale"|"deliberate_liquidation"|None
     status: str  # "auto_classified" | "pending_manual_review"
@@ -687,6 +725,92 @@ class SellerMarginMixProfile(BaseModel):
     sample_source_rows: list[int] = Field(default_factory=list)
 
 
+class FlightRiskAlert(BaseModel):
+    """Fase E, E1 — Risco de Evasão de Talentos: 3 pernas independentes (captura em
+    queda, desconto em alta, ticket em queda), cada uma calculada como série mensal
+    do PRÓPRIO vendedor (nunca contra a rede) e disparada por desvio em σ sobre a
+    variabilidade histórica dele mesmo — mesmo idioma estatístico de
+    `detect_revenue_leaks`, nunca um ponto-percentual fixo.
+
+    `risk_flags` lista só as pernas que dispararam (nunca um score opaco único —
+    mesma filosofia de "o mix, nunca só o rótulo" do `SellerMarginMixProfile`); cada
+    flag vem com o número que a sustenta nos campos `*_trend_*` correspondentes
+    (`None` quando aquela perna não foi avaliada — dado insuficiente ou sem
+    variabilidade, nunca "não disparou" fingido).
+
+    `carteira_em_risco_brl` = `SalespersonPerformance.total_revenue` do vendedor no
+    período — número já existente, reusado, nunca inventado. É receita BRUTA (inclui
+    venda anônima e estorno negativo, mesma construção de `SalespersonPerformance`,
+    ver docstring acima) — é o que evapora SE o vendedor sair, não uma perda já
+    ocorrida; por isso NÃO entra em `ExecutiveSummary.total_ltv_risk` (que já é só
+    churn de cliente — somar as duas naturezas sob um único total mascararia qual
+    risco é qual, veja `SPEC_Fase_E_Parte1_Execucao.md` §3.1)."""
+    salesperson: str
+    store: str
+    months_evaluated: int
+    capture_trend_pct: float | None = None  # queda de capture_rate_pct, recente vs. histórico
+    discount_trend_pp: float | None = None  # alta de discount_pct, recente vs. histórico
+    ticket_trend_pct: float | None = None  # queda de ticket médio, recente vs. histórico
+    risk_flags: list[str] = Field(default_factory=list)  # "captura_em_queda"|"desconto_em_alta"|"ticket_em_queda"
+    carteira_em_risco_brl: float
+    sample_source_rows: list[int] = Field(default_factory=list)
+
+
+class IncentiveMisalignmentAlert(BaseModel):
+    """Fase E, E2 — Conflito de Comissionamento: NÃO recalcula margem, ANOTA um
+    achado que já existe (`SellerMarginMixProfile.is_margin_destructive` ou
+    `SellerMarginCorrosionAlert.is_corrosive`) quando a estrutura de comissão
+    declarada (`AuditThresholdsConfig.commission_basis`) explica estruturalmente por
+    que o incentivo do vendedor não está alinhado com proteger margem.
+
+    Consome os achados JÁ pós-taint (`tainted_by_triage`/absolvição de §15.5) — um
+    vendedor absolvido por cadastro errado nunca aparece aqui (ver ordem de execução
+    em `run_audit`, `SPEC_Fase_E_Parte1_Execucao.md` §3.2). Sem R$ próprio — achado
+    estrutural/qualitativo, não entra em nenhum total monetário."""
+    salesperson: str
+    store: str
+    commission_basis: str  # "gross_revenue" (único caso que gera alerta hoje)
+    linked_finding_type: str  # "margin_mix" | "margin_corrosion"
+    linked_finding_summary: str
+    recommended_fix: str
+
+
+class SkillGapDiagnosis(BaseModel):
+    """Fase E, E3-v1 — Matriz de Habilidade vs. Viés (proxy): leitura sobre
+    `SellerCategoryMixEntry` já existente (Fase D, Pilar 1) — quando um vendedor
+    vende MENOS que o padrão da própria loja numa categoria cuja margem já é maior
+    que a margem blendada da loja (`SellerMarginMixProfile.store_margin_pct`), o
+    padrão sugere possível evitação por insegurança técnica, não preguiça.
+
+    `is_proxy=True` sempre e `hypothesis` é sempre rotulada como hipótese — nunca
+    "diagnóstico confirmado" (vocabulário obrigatório, mesma disciplina de
+    `latent_revenue`). `data_gap` declara a limitação de dado desta v1 (conversão
+    REAL exigiria saber tentativas/orçamentos recusados, não só vendas concluídas —
+    v2 fica registrada na planta-mãe, não bloqueia esta). Sem R$ — achado
+    estrutural, não entra em nenhum total monetário."""
+    salesperson: str
+    store: str
+    category: str
+    mix_deviation_pp: float  # negativo: vendedor vende menos que o padrão da loja nesta categoria
+    category_margin_pct: float
+    hypothesis: str
+    is_proxy: bool = True
+    data_gap: str | None = "conversao_real_requer_aba_orcamentos"
+
+
+class TeamDiagnostics(BaseModel):
+    """Fase E parte 1 — Física da Equipe: diagnósticos estruturais/organizacionais
+    sobre o SISTEMA em volta do vendedor (incentivo, habilidade), não o resultado
+    dele. Nenhum campo aqui entra em `ExecutiveSummary` (nenhum total monetário
+    existente é tocado) — ver `SPEC_Fase_E_Parte1_Execucao.md` §0/§3.1. Mesmo
+    graceful degradation de `AdvancedMetrics`: lista vazia quando o dado de origem
+    não sustenta o achado, nunca populada com caso artificial."""
+    flight_risk: list[FlightRiskAlert] = Field(default_factory=list)
+    incentive_misalignment: list[IncentiveMisalignmentAlert] = Field(default_factory=list)
+    skill_gaps: list[SkillGapDiagnosis] = Field(default_factory=list)
+    # occupancy_profiles / scheduling_mismatches — Fase E parte 2 (E4/E5), fora desta OS.
+
+
 class DataCompletenessFinding(BaseModel):
     """A1 — Completude de cadastro (telefone + CPF), aba Clientes. Métrica de
     completude POR CAMPO (não por cliente): telefone e CPF podem faltar
@@ -728,9 +852,10 @@ class ServiceReconciliation(BaseModel):
 class DiscardedAlarm(BaseModel):
     """ES — Sumário executivo: um candidato que o motor avaliou e decidiu NÃO
     reportar como achado, com o motivo. Cobre só categorias que o motor genuinamente
-    checa hoje (rampa de vendedor, cold-start de loja) — nunca populado com um caso
-    artificial só para não ficar vazio."""
-    category: str  # "salesperson_ramp" | "store_cold_start"
+    checa hoje (rampa de vendedor, cold-start de loja, Fase E: estrutura de
+    comissão não informada) — nunca populado com um caso artificial só para não
+    ficar vazio."""
+    category: str  # "salesperson_ramp" | "store_cold_start" | "commission_basis_unknown"
     entity_id: str
     reason: str
 
@@ -789,4 +914,7 @@ class ExecutiveAuditReport(BaseModel):
     salesperson_performance: list[SalespersonPerformance] = Field(default_factory=list)
     advanced_metrics: AdvancedMetrics = Field(default_factory=AdvancedMetrics)
     executive_summary: ExecutiveSummary
+    # Fase E parte 1 — Física da Equipe: diagnósticos estruturais (evasão, incentivo,
+    # habilidade), paralelo a advanced_metrics, nunca somado a executive_summary.
+    team_diagnostics: TeamDiagnostics = Field(default_factory=TeamDiagnostics)
     generated_at: str

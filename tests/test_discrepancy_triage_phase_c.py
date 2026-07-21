@@ -339,7 +339,9 @@ def test_below_cost_total_brl_exclui_itens_reclassificados_para_cadastral():
     real = next(i for i in triage.auto_classified if i.sku == "SKU-REAL")
     assert cadastral.verdict == "suspected_cadastral_error"
     assert cadastral.below_cost_loss_brl == pytest.approx(70.0)  # continua honesto no item
+    assert cadastral.below_cost_confirmed is False  # flag explícita: NÃO conta no total
     assert real.verdict == "below_cost_sale"
+    assert real.below_cost_confirmed is True  # flag explícita: conta no total
     # só a perda GENUÍNA (SKU-REAL, 30.0) entra no total — não 70+30=100
     assert triage.below_cost_total_brl == pytest.approx(30.0)
 

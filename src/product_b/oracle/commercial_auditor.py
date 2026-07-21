@@ -29,12 +29,13 @@ from product_b.oracle.forensic_contracts import (
     ChurnFinding, CleaningSummary, ConcentrationRiskAlert, ContributionMarginAlert,
     CrossSellGapCustomer, CustomerConcentrationFinding, DataCompletenessFinding,
     DeadStockFinding, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
-    DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
-    GmroiSkuAlert, LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly,
-    RFMChampion, SalesRecord, SalespersonPerformance, SellerCategoryMixEntry,
-    SellerMarginCorrosionAlert, SellerMarginMixProfile, ServiceDecomposition,
-    ServiceReconciliation, SeasonalityCurve, StoreMacroSummary, StorePerformance,
-    WinsorizedValue,
+    DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, FlightRiskAlert,
+    GmroiEntry, GmroiSkuAlert, IncentiveMisalignmentAlert, LatentRevenueFinding,
+    ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
+    SalespersonPerformance, SellerCategoryMixEntry, SellerMarginCorrosionAlert,
+    SellerMarginMixProfile, ServiceDecomposition, ServiceReconciliation,
+    SeasonalityCurve, SkillGapDiagnosis, StoreMacroSummary, StorePerformance,
+    TeamDiagnostics, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
@@ -1390,6 +1391,245 @@ def detect_seller_margin_mix(
     return sorted(profiles, key=lambda p: -p.margin_gap_pp)
 
 
+def _flight_risk_leg_trend(series: pd.Series, window_months: int, sigma_threshold: float, direction: str):
+    """Fase E, E1 — um perna (captura/desconto/ticket) do risco de evasão: desvio em
+    σ do valor RECENTE (últimos `window_months`) contra a variabilidade histórica da
+    PRÓPRIA série (mesmo idioma de `detect_revenue_leaks`), nunca um ponto-percentual
+    fixo. `direction="drop"` (captura/ticket: queda é o sinal ruim) inverte o sinal
+    de `direction="rise"` (desconto: alta é o sinal ruim) — ambos viram `delta`
+    positivo quando o movimento é na direção de risco.
+
+    Retorna `(delta, disparou)`. `delta=None` quando a perna não tem base
+    estatística pra avaliar (menos de 3 meses de histórico ANTES da janela recente,
+    ou histórico sem variabilidade — série constante não sustenta um σ) — nunca
+    "não disparou" fingido; é uma distinção diferente (sem dado ≠ dado que não
+    mostra risco)."""
+    series = series.sort_index()
+    if len(series) <= window_months:
+        return None, False
+    historico, recente = series.iloc[:-window_months], series.iloc[-window_months:]
+    if len(historico) < 3:
+        return None, False
+    std = historico.std()
+    if not std or pd.isna(std):
+        return None, False
+    delta = (historico.mean() - recente.mean()) if direction == "drop" else (recente.mean() - historico.mean())
+    sigma = delta / std
+    return float(delta), bool(sigma >= sigma_threshold)
+
+
+def detect_seller_flight_risk(
+    df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[FlightRiskAlert]:
+    """Fase E, E1 — Risco de Evasão de Talentos: 3 pernas independentes calculadas
+    como série MENSAL própria de (loja, vendedor) — nunca reusa
+    `detect_salesperson_performance`/`detect_seller_margin_corrosion` diretamente
+    (ambas têm grão incompatível: escalar único e agregado sem mês,
+    respectivamente); reaplica a MESMA fórmula de cada uma por mês.
+
+    Agrupado por (loja, vendedor) — mesmo critério de benchmark local de
+    `detect_seller_margin_corrosion`/`detect_seller_margin_mix` — porque
+    `SalespersonPerformance` (rede inteira, sem loja) não tem o grão que este
+    achado precisa expor.
+
+    Pernas: (1) captura em queda — capturado/total por mês (fórmula do SEV); (2)
+    desconto em alta — (list_price - unit_price)/list_price por mês (reconstrução
+    de `detect_seller_margin_corrosion`), requer `list_price` em Estoque, sem ela
+    esta perna simplesmente não é avaliada para NINGUÉM (nunca inventa preço de
+    tabela); (3) ticket médio em queda — receita média por venda, por mês.
+
+    Gate de tenure: mesmo `sev_ramp_min_days` do SEV, por DIAS desde a primeira
+    venda do (loja, vendedor) até a data mais recente conhecida na rede — vendedor
+    em rampa nunca entra, mesmo se as 3 pernas tecnicamente disparassem. Guarda
+    independente por MESES: `_flight_risk_leg_trend` já exige >=3 meses de
+    histórico antes da janela recente — tenure suficiente em dias não garante
+    meses suficientes COM VENDA (ex.: vendedor sazonal).
+
+    QA (achado de revisão) — "data mais recente conhecida na rede" aqui NÃO é
+    idêntica à do SEV: `global_max_date` é calculada sobre `sales`, já filtrada
+    (sem devolução/estorno, sem vendedor pseudo), enquanto o SEV calcula sobre o
+    `df` bruto. Só diverge no caso estreito em que a última transação cronológica
+    da rede é uma devolução ou de vendedor não identificado — aceitável (o gate
+    de tenure é uma referência, não uma igualdade que Zero Contradição precise
+    proteger), mas documentado aqui para não confundir com o SEV."""
+    if "salesperson" not in df.columns or df["salesperson"].isna().all():
+        return []
+    sales = df[df["value"] > 0].copy()  # devolução/estorno fora, mesmo critério do resto do motor
+    if sales.empty:
+        return []
+    sales["salesperson"] = sales["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    sales = sales[~sales["salesperson"].isin(_PSEUDO_ENTITY_IDS)]
+    if sales.empty:
+        return []
+    if "store" not in sales.columns or sales["store"].isna().all():
+        return []
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+    sales["period"] = sales["date"].dt.to_period("M")
+    global_max_date = sales["date"].max()
+
+    # Perna 1 — captura: capturado (cliente identificado) / total, por (loja, vendedor, mês).
+    sales["_captured"] = ~sales["customer"].isin(_PSEUDO_ENTITY_IDS)
+    capture_month = sales.groupby(["store", "salesperson", "period"]).agg(
+        total=("value", "count"), captured=("_captured", "sum"),
+    ).reset_index()
+    capture_month["capture_rate_pct"] = 100.0 * capture_month["captured"] / capture_month["total"]
+
+    # Perna 3 — ticket médio por (loja, vendedor, mês).
+    ticket_month = sales.groupby(["store", "salesperson", "period"])["value"].mean().rename("ticket_medio")
+
+    # Perna 2 — desconto, só se Estoque tiver preço de tabela (gate global, mesma
+    # exigência de `detect_seller_margin_corrosion`).
+    discount_month = None
+    list_price_by_sku = _estoque_list_price_by_sku(estoque_df)
+    if list_price_by_sku is not None:
+        disc = sales[sales["product"].isin(list_price_by_sku.index)].copy()
+        if not disc.empty:
+            qty = disc["quantity"] if "quantity" in disc.columns else pd.Series(1.0, index=disc.index)
+            qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
+            unit_price = disc["value"] / qty_safe
+            list_price = disc["product"].map(list_price_by_sku)
+            disc["discount_amt"] = (list_price - unit_price) * qty_safe
+            grouped = disc.groupby(["store", "salesperson", "period"]).agg(
+                total_discount=("discount_amt", "sum"), total_revenue=("value", "sum"),
+            )
+            discount_month = (100.0 * grouped["total_discount"] / grouped["total_revenue"]).rename("discount_pct")
+
+    cap = thresholds.provenance_sample_cap
+    sample_rows = sales.groupby(["store", "salesperson"])["source_row"].apply(
+        lambda s: sorted(int(r) for r in s)[:cap]
+    )
+    revenue_by_group = sales.groupby(["store", "salesperson"])["value"].sum()
+    first_sale_by_group = sales.groupby(["store", "salesperson"])["date"].min()
+    ticket_by_group = {
+        key: g.droplevel(["store", "salesperson"]) for key, g in ticket_month.groupby(level=["store", "salesperson"])
+    }
+    discount_by_group = {} if discount_month is None else {
+        key: g.droplevel(["store", "salesperson"])
+        for key, g in discount_month.groupby(level=["store", "salesperson"])
+    }
+
+    alerts: list[FlightRiskAlert] = []
+    for (store, salesperson), g in capture_month.groupby(["store", "salesperson"]):
+        days_since_first_sale = (global_max_date - first_sale_by_group[(store, salesperson)]).days
+        if days_since_first_sale < thresholds.sev_ramp_min_days:
+            continue  # em rampa: nunca entra, mesmo que as pernas tecnicamente disparassem
+
+        capture_series = g.set_index("period")["capture_rate_pct"]
+        capture_trend, capture_fired = _flight_risk_leg_trend(
+            capture_series, thresholds.flight_risk_trend_window_months,
+            thresholds.flight_risk_trend_sigma, "drop",
+        )
+        ticket_series = ticket_by_group.get((store, salesperson))
+        ticket_trend, ticket_fired = (None, False) if ticket_series is None else _flight_risk_leg_trend(
+            ticket_series, thresholds.flight_risk_trend_window_months,
+            thresholds.flight_risk_trend_sigma, "drop",
+        )
+        discount_series = discount_by_group.get((store, salesperson))
+        discount_trend, discount_fired = (None, False) if discount_series is None else _flight_risk_leg_trend(
+            discount_series, thresholds.flight_risk_trend_window_months,
+            thresholds.flight_risk_trend_sigma, "rise",
+        )
+
+        risk_flags = []
+        if capture_fired:
+            risk_flags.append("captura_em_queda")
+        if discount_fired:
+            risk_flags.append("desconto_em_alta")
+        if ticket_fired:
+            risk_flags.append("ticket_em_queda")
+        if len(risk_flags) < thresholds.flight_risk_min_flags:
+            continue
+
+        alerts.append(FlightRiskAlert(
+            salesperson=str(salesperson), store=str(store), months_evaluated=len(capture_series),
+            capture_trend_pct=capture_trend, discount_trend_pp=discount_trend, ticket_trend_pct=ticket_trend,
+            risk_flags=risk_flags, carteira_em_risco_brl=float(revenue_by_group[(store, salesperson)]),
+            sample_source_rows=sample_rows.loc[(store, salesperson)],
+        ))
+    return sorted(alerts, key=lambda a: -len(a.risk_flags))
+
+
+_INCENTIVE_FIX_GROSS_REVENUE = (
+    "Revisar a base de comissionamento para incluir margem/contribuição, não só "
+    "receita bruta — hoje vender com desconto ou empurrar produto de entrada não "
+    "reduz o contracheque do vendedor, mesmo destruindo a margem da loja."
+)
+
+
+def detect_incentive_misalignment(
+    mix_profiles: list[SellerMarginMixProfile], corrosion_alerts: list[SellerMarginCorrosionAlert],
+    thresholds: AuditThresholdsConfig,
+) -> list[IncentiveMisalignmentAlert]:
+    """Fase E, E2 — Conflito de Comissionamento: NÃO recalcula margem, ANOTA achados
+    que já existem. `commission_basis` é fato de negócio declarado na configuração
+    (nunca inferido — não há como derivar % de comissão de receita e custo
+    sozinhos); `"unknown"` (default) retorna vazio (o `DiscardedAlarm` correspondente
+    é emitido em `build_executive_summary`, não aqui — mesma centralização que já
+    existe para rampa de vendedor/cold-start de loja).
+
+    IMPORTANTE — ordem de chamada: `corrosion_alerts` deve ser a lista JÁ MUTADA
+    pelo bloco de absolvição por triagem em `run_audit` (`is_corrosive=False`/
+    `tainted_by_triage=True` para pares cuja discrepância veio de erro cadastral,
+    Spec de Laudo Executivo v4 §15.5). Esta função só LÊ `is_corrosive` — nunca
+    reavalia a evidência — então chamá-la ANTES do taint acusaria de incentivo mal
+    desenhado um vendedor que o motor já absolveu por cadastro errado."""
+    if thresholds.commission_basis != "gross_revenue":
+        return []
+    alerts: list[IncentiveMisalignmentAlert] = []
+    for p in sorted(mix_profiles, key=lambda p: (p.store, p.salesperson)):
+        if p.is_margin_destructive:
+            alerts.append(IncentiveMisalignmentAlert(
+                salesperson=p.salesperson, store=p.store, commission_basis=thresholds.commission_basis,
+                linked_finding_type="margin_mix",
+                linked_finding_summary=(
+                    f"gap de margem de {p.margin_gap_pp:.1f}pp abaixo da loja "
+                    f"({p.seller_margin_pct:.1f}% vs. {p.store_margin_pct:.1f}%)"
+                ),
+                recommended_fix=_INCENTIVE_FIX_GROSS_REVENUE,
+            ))
+    for c in sorted(corrosion_alerts, key=lambda c: (c.store, c.salesperson)):
+        if c.is_corrosive:
+            alerts.append(IncentiveMisalignmentAlert(
+                salesperson=c.salesperson, store=c.store, commission_basis=thresholds.commission_basis,
+                linked_finding_type="margin_corrosion",
+                linked_finding_summary=(
+                    f"desconto de {c.discount_pct:.1f}% vs. média da loja "
+                    f"{c.store_mean_discount_pct:.1f}%"
+                ),
+                recommended_fix=_INCENTIVE_FIX_GROSS_REVENUE,
+            ))
+    return alerts
+
+
+def detect_skill_gaps(
+    mix_profiles: list[SellerMarginMixProfile], thresholds: AuditThresholdsConfig,
+) -> list[SkillGapDiagnosis]:
+    """Fase E, E3-v1 — Matriz de Habilidade vs. Viés (proxy): leitura sobre
+    `SellerMarginMixProfile.mix` (Fase D, Pilar 1) já calculado — não roda novo
+    agrupamento sobre `df`. Para cada categoria onde o vendedor vende MENOS que o
+    padrão da própria loja (`mix_deviation_pp < -skill_gap_avoidance_pp`) E aquela
+    categoria tem margem MAIOR que a margem blendada da loja
+    (`category_margin_pct > store_margin_pct` — reusa um número que já existe no
+    relatório, decisão fechada em `SPEC_Fase_E_Parte1_Execucao.md` §3.3 em vez de
+    um corte posicional tipo "top-1"/"top-quartil"), o padrão sugere possível
+    evitação por insegurança técnica — SEMPRE rotulado como hipótese, nunca
+    diagnóstico confirmado (vocabulário obrigatório, mesma disciplina de
+    `latent_revenue`)."""
+    diagnoses: list[SkillGapDiagnosis] = []
+    for p in sorted(mix_profiles, key=lambda p: (p.store, p.salesperson)):
+        for entry in sorted(p.mix, key=lambda e: e.mix_deviation_pp):
+            if (
+                entry.mix_deviation_pp < -thresholds.skill_gap_avoidance_pp
+                and entry.category_margin_pct > p.store_margin_pct
+            ):
+                diagnoses.append(SkillGapDiagnosis(
+                    salesperson=p.salesperson, store=p.store, category=entry.category,
+                    mix_deviation_pp=entry.mix_deviation_pp, category_margin_pct=entry.category_margin_pct,
+                    hypothesis=f"possível déficit de treinamento/segurança técnica em {entry.category}",
+                ))
+    return diagnoses
+
+
 def detect_vip_concentration_risk(
     df: pd.DataFrame, thresholds: AuditThresholdsConfig,
 ) -> list[ConcentrationRiskAlert]:
@@ -1769,22 +2009,24 @@ def detect_discrepancy_triage(
             # gate real é a evidência below_cost, não o valor bruto da soma (que é
             # 0.0, não NaN, quando o grupo não tem nenhuma linha below_cost)
             below_cost_loss_brl=float(row["below_cost_loss_brl"]) if evidence.below_cost else None,
+            # QA (achado de revisão) — flag calculada AQUI, uma vez só: `below_cost`
+            # é a EVIDÊNCIA, não o veredito final (um item pode disparar below_cost e
+            # ser reclassificado para suspected_cadastral_error — custo cadastrado
+            # errado, não sangria real, mesmo princípio de §15.5). Validador e
+            # template leem esta flag; nenhum dos dois volta a comparar `verdict`.
+            below_cost_confirmed=(verdict == "below_cost_sale"),
             evidence=evidence, verdict=verdict,
             status="auto_classified" if verdict else "pending_manual_review",
         )
         (auto_classified if verdict else manual_queue).append(item)
 
-    # `below_cost` é a EVIDÊNCIA, não o veredito final: um item pode disparar
-    # below_cost e ainda ser reclassificado para suspected_cadastral_error (custo
-    # cadastrado errado, não sangria real — mesmo princípio de "culpa exige
-    # referência confiável" de §15.5, já aplicado à corrosão de margem). O total
-    # soma só o veredito genuíno `below_cost_sale` — nunca mistura perda real com
-    # artefato de cadastro errado (mesmo padrão de `total_operational_loss`
-    # excluir alertas `promotional=True`). `below_cost_loss_brl` continua
-    # preenchido no item cadastral (fato honesto por linha), só não entra aqui.
+    # O total soma só os itens com below_cost_confirmed=True — nunca mistura perda
+    # real com artefato de cadastro errado (mesmo padrão de `total_operational_loss`
+    # excluir alertas `promotional=True`). `below_cost_loss_brl` continua preenchido
+    # no item cadastral (fato honesto por linha), só não entra aqui.
     below_cost_losses = [
         item.below_cost_loss_brl for item in auto_classified + manual_queue
-        if item.verdict == "below_cost_sale"
+        if item.below_cost_confirmed
     ]
     below_cost_total_brl = float(sum(below_cost_losses)) if below_cost_losses else None
 
@@ -2121,6 +2363,15 @@ def build_executive_summary(
                     "uma loja madura."
                 ),
             ))
+    # Fase E, E2 — estrutura de comissão não informada é um ponto cego HONESTO
+    # (nunca inferido de receita/custo), mesma centralização de DiscardedAlarm que
+    # rampa de vendedor/cold-start de loja já usam. `entity_id="rede"` porque é uma
+    # decisão de configuração da rodada inteira, não de uma entidade específica.
+    if thresholds.commission_basis == "unknown":
+        discarded_alarms.append(DiscardedAlarm(
+            category="commission_basis_unknown", entity_id="rede",
+            reason="estrutura de comissão não informada — ponto cego não avaliado.",
+        ))
 
     action_plan: list[ActionPlanItem] = []
     if total_operational_loss > 0:
@@ -2217,6 +2468,7 @@ def run_audit(
     service_reconciliation = detect_service_reconciliation(df, named_sheets.get("Financeiro"), thresholds)
 
     seller_margin_corrosion = detect_seller_margin_corrosion(df, named_sheets.get("Estoque"), thresholds)
+    seller_margin_mix = detect_seller_margin_mix(df, thresholds)
     discrepancy_triage = detect_discrepancy_triage(
         df, named_sheets.get("Estoque"), named_sheets.get("Compras"), dead_stock, thresholds,
     )
@@ -2242,7 +2494,16 @@ def run_audit(
         concentration_risk=detect_vip_concentration_risk(df, thresholds),
         follow_on_conversion=detect_follow_on_conversion(df, thresholds),
         discrepancy_triage=discrepancy_triage,
-        seller_margin_mix=detect_seller_margin_mix(df, thresholds),
+        seller_margin_mix=seller_margin_mix,
+    )
+
+    # Fase E parte 1 — Física da Equipe. E2 (detect_incentive_misalignment) DEPOIS
+    # do bloco de taint acima — consome seller_margin_corrosion JÁ absolvido, nunca
+    # uma cópia pré-taint (mesmo §15.5, ver docstring do detector).
+    team_diagnostics = TeamDiagnostics(
+        flight_risk=detect_seller_flight_risk(df, named_sheets.get("Estoque"), thresholds),
+        incentive_misalignment=detect_incentive_misalignment(seller_margin_mix, seller_margin_corrosion, thresholds),
+        skill_gaps=detect_skill_gaps(seller_margin_mix, thresholds),
     )
 
     executive_summary = build_executive_summary(
@@ -2288,6 +2549,7 @@ def run_audit(
         service_decomposition=service_decomposition, service_reconciliation=service_reconciliation,
         advanced_metrics=advanced_metrics,
         executive_summary=executive_summary,
+        team_diagnostics=team_diagnostics,
         generated_at=datetime.now(timezone.utc).isoformat()
     )
 

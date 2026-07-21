@@ -381,7 +381,7 @@ def test_z3_triagem_diverge_entre_card_e_anexo_reprova():
     build_laudo.ERROS.clear()
     dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 999.0, "titulo": "X"}]}
     anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
-        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 500.0},
+        {"sku": "X", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 500.0},
     ]}}
     build_laudo.valida_zero_contradicao(dados, anexo, report=None)
     assert any("Z3" in e for e in build_laudo.ERROS)
@@ -390,8 +390,8 @@ def test_z3_triagem_diverge_entre_card_e_anexo_reprova():
 def test_z3_itens_nao_somam_o_total_declarado_reprova():
     build_laudo.ERROS.clear()
     anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
-        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
-        {"sku": "Y", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
+        {"sku": "X", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 100.0},
+        {"sku": "Y", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 100.0},
     ]}}  # soma 200, total declarado 500
     build_laudo.valida_zero_contradicao({}, anexo, report=None)
     assert any("Z3" in e for e in build_laudo.ERROS)
@@ -401,8 +401,8 @@ def test_z3_consistente_nao_reprova():
     build_laudo.ERROS.clear()
     dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 200.0, "titulo": "X"}]}
     anexo = {"triagem_discrepancias": {"total_abaixo_custo": 200.0, "itens": [
-        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
-        {"sku": "Y", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
+        {"sku": "X", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 100.0},
+        {"sku": "Y", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 100.0},
     ]}}
     build_laudo.valida_zero_contradicao(dados, anexo, report=None)
     assert build_laudo.ERROS == []
@@ -417,8 +417,8 @@ def test_z3_exclui_itens_reclassificados_para_cadastral_da_soma():
     build_laudo.ERROS.clear()
     dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 30.0, "titulo": "X"}]}
     anexo = {"triagem_discrepancias": {"total_abaixo_custo": 30.0, "itens": [
-        {"sku": "SKU-CAD", "veredito": "suspected_cadastral_error", "perda_abaixo_custo": 70.0},
-        {"sku": "SKU-REAL", "veredito": "below_cost_sale", "perda_abaixo_custo": 30.0},
+        {"sku": "SKU-CAD", "veredito": "suspected_cadastral_error", "perda_confirmada": False, "perda_abaixo_custo": 70.0},
+        {"sku": "SKU-REAL", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 30.0},
     ]}}
     build_laudo.valida_zero_contradicao(dados, anexo, report=None)
     assert build_laudo.ERROS == []
@@ -437,7 +437,7 @@ def test_z3_cruza_com_audit_report_quando_presente_reprova():
     build_laudo.ERROS.clear()
     dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 500.0, "titulo": "X"}]}
     anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
-        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 500.0},
+        {"sku": "X", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 500.0},
     ]}}
     report = {"advanced_metrics": {"discrepancy_triage": {"below_cost_total_brl": 999.0}}}
     build_laudo.valida_zero_contradicao(dados, anexo, report)
@@ -448,7 +448,7 @@ def test_z3_consistente_com_audit_report_nao_reprova():
     build_laudo.ERROS.clear()
     dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 500.0, "titulo": "X"}]}
     anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
-        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 500.0},
+        {"sku": "X", "veredito": "below_cost_sale", "perda_confirmada": True, "perda_abaixo_custo": 500.0},
     ]}}
     report = {"advanced_metrics": {"discrepancy_triage": {"below_cost_total_brl": 500.0}}}
     build_laudo.valida_zero_contradicao(dados, anexo, report)

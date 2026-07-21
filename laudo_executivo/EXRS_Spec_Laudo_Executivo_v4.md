@@ -258,4 +258,22 @@ Decisão de produto (20/07/2026), motivada pela pergunta do usuário diante do l
 
 ---
 
+## 17. A FÍSICA DA EQUIPE (Ato 7) [INEGOCIÁVEL]
+
+Decisão de produto (21/07/2026), motivada pelo diagnóstico do usuário: o motor julga o RESULTADO do funcionário (captura, corrosão de margem, rampa, Mix de Margem) mas ignora a FÍSICA da operação por trás — o que o sistema em volta do vendedor permite, premia ou impede. OS executável: `SPEC_Fase_E_Parte1_Execucao.md` (raiz do repo, Parte B) — **EXECUTADA** (21/07/2026): `team_diagnostics` no motor (E1 `detect_seller_flight_risk`, E2 `detect_incentive_misalignment`, E3-v1 `detect_skill_gaps`), Ato 7 no template, `build_team`/`Z7`/`Z8` em `build_laudo.py`. Planta-mãe: `SPEC_Fase_E_Fisica_da_Equipe.md` (5 pilares completos; esta rodada cobre os 3 que não exigem dado novo de planilha — E4/E5 ficam para a parte 2, fora desta lei por ora).
+
+17.1. **`team_diagnostics` nunca soma a `executive_summary`.** Os três totais existentes (`total_operational_loss`/`_capital_frozen`/`_ltv_risk`) e `action_plan` do relatório congelado não são tocados por E1/E2/E3 — mesmo `carteira_em_risco_brl` (E1), que reusa um número que já existe (`SalespersonPerformance.total_revenue`), fica de fora: somar risco de evasão de vendedor com risco de churn de cliente sob um único total mascararia qual risco é qual. `team_diagnostics` é um bloco paralelo, com seção narrativa própria (Ato 7) — vínculo com o corpo por `team_ref` (§17.2 Z7), nunca por `nature` (esse campo já existe, mas dentro de `ActionPlanItem`/`executive_summary`, mecanismo fechado e não relacionado).
+
+17.2. **O corpo É a soma do Ato 7, quando referenciado (Zero Contradição estendido).** `plano[]` ganha o campo opcional `team_ref` — espelha `sangramento_ref` (§16.2), mas resolve contra `team.evasao` (Ato 7) em vez de `anexo`/`sangramentos` (Ato 6). Quando presente, `plano[].impacto` deve bater `team.evasao[chave].carteira_em_risco` com a mesma tolerância de R$ 0,01 (**Z7**). `chave` de cada item de evasão é `"<vendedor>@<loja>"`. Só evasão (E1) tem valor monetário referenciável — comissionamento/habilidade (E2/E3) não têm R$, nunca precisam de `team_ref`.
+
+17.3. **Promessa de Ato 7 sem Ato 7 = laudo reprovado (Z8).** Toda menção no corpo a "evasão"/"incentivo"/"hipótese" resolve para o Ato 7 ter sido gerado (`--report` presente) — mesmo espírito de §16.1, escopo restrito ao vocabulário de E1/E2/E3 nesta rodada. "Capacidade"/"escalonamento" (E4/E5) **não são varridos ainda** — nenhum item de ocupação/escala existe em `team`, e variá-los reprovaria por engano qualquer menção antes de E4/E5 serem implementados; a varredura se estende quando a parte 2 da Fase E for executada.
+
+17.4. **`below_cost` é evidência, não veredito — mesma disciplina se aplica a qualquer achado com duas camadas de decisão.** Precedente fixado em Z3 (§16.2bis) e reforçado aqui: nenhum total agregado nesta lei pode somar um sinal bruto sem checar se ele sobreviveu à reclassificação/absolvição (cadastro errado, taint, etc.) — sempre o veredito final, nunca a evidência isolada.
+
+17.5. **Habilidade é sempre hipótese.** `SkillGapDiagnosis.hypothesis` nunca é apresentada como fato medido — vocabulário obrigatório "hipótese"/"possível", nunca "diagnóstico confirmado" (mesma disciplina de `latent_revenue`, §1.4). `is_proxy=True` e `data_gap` sempre visíveis quando existirem — a v1 desta OS é proxy (mix), a conversão real (aba Orçamentos) é extensão futura registrada na planta-mãe, não bloqueia esta rodada.
+
+17.6. **Comissionamento é fato de negócio declarado, nunca inferido.** `commission_basis` (`AuditThresholdsConfig`) vem da configuração da rodada — sem ele (`"unknown"`, default), `incentive_misalignment` fica vazio e `DiscardedAlarm(category="commission_basis_unknown")` documenta o ponto cego. Nenhum detector infere a base de comissão a partir de receita/custo.
+
+---
+
 *Fim da lei. Qualquer laudo do EXRS Data Oracle gerado após esta data obedece a este documento na íntegra.*
