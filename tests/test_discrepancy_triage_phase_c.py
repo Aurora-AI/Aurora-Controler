@@ -290,7 +290,10 @@ def test_below_cost_loss_brl_e_none_quando_nao_dispara_por_custo():
     assert item.below_cost_loss_brl is None
 
 
-def test_below_cost_total_brl_soma_todos_os_itens_abaixo_do_custo():
+def test_below_cost_total_brl_soma_multiplos_itens_below_cost_sale():
+    # nomeado com cuidado: soma multiplos itens, mas só os de veredito genuíno —
+    # ver test_below_cost_total_brl_exclui_itens_reclassificados_para_cadastral
+    # para o caso que prova a exclusão dos itens cadastrais.
     vendas = _sales([
         {"product": "SKU-A", "customer": "C1", "value": 30.0, "entry_cost": 100.0,
          "salesperson": "V-01", "store": "L1"},  # perda 70

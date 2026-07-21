@@ -130,8 +130,16 @@ do seu campo (retrocompatível: rodada sem sangria abaixo do custo não aciona n
 2. **Beta materializa o total:** `cap-lucro.valor` deixa de ser autoral e passa a espelhar
    `below_cost_total_brl` derivado do motor; o Ato 6/triagem exibe `perda_abaixo_custo` por
    item abaixo-do-custo (ARP-020/ARP-021) e o `total_abaixo_custo` da seção.
-3. **v3 intacto:** v3 não tem sangria abaixo do custo → `below_cost_total_brl=None`, Z3 não
-   aciona, `cap-lucro` da v3 (que é qualitativo, "2 lojas") continua sem `valor`/`anexo_ref`.
+3. **v3 intacto (corrigido — achado de QA):** a premissa original ("v3 não tem sangria abaixo
+   do custo") era falsa — verificado após regenerar: v3 tem 56 itens com veredito
+   `below_cost_sale`, `below_cost_total_brl=4661.13`. O anexo da v3 passa a exibir esse total
+   na seção `triagem_discrepancias` (Z3 aciona parcialmente: as pernas "itens≡total" e
+   "anexo≡motor" rodam e passam; a perna "card≡total" não roda porque nenhum sangramento
+   referencia essa seção). O que PERMANECE verdadeiro e é o que este critério realmente
+   protege: `cap-lucro` da v3 (qualitativo, "2 lojas") continua sem `valor`/`anexo_ref` — a
+   narrativa não promove essa cifra a sangramento, e isso não é um erro, é uma decisão
+   editorial válida (nem todo total do anexo precisa virar card, mesmo padrão de
+   `vendedores`/`metodologia`).
 4. **`anexo_ref` duplicado reprova** com mensagem clara; refs únicos passam.
 5. Golden masters com diff auditado; suíte completa verde; regressões novas por caso.
 

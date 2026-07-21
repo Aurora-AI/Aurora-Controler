@@ -470,9 +470,14 @@ class DiscrepancyTriage(BaseModel):
     triggered_count: int
     auto_classified: list[DiscrepancyTriageItem] = Field(default_factory=list)
     manual_queue: list[DiscrepancyTriageItem] = Field(default_factory=list)
-    # Fase E parte 1 (Z3) — Σ de below_cost_loss_brl não-nulos, em TODOS os itens
-    # (auto_classified + manual_queue — o anexo exibe os dois juntos). None quando
-    # nenhum item disparou por below_cost (não há total a cruzar, Z3 não aciona).
+    # Fase E parte 1 (Z3) — Σ de below_cost_loss_brl SÓ dos itens com
+    # verdict=="below_cost_sale" (auto_classified + manual_queue, embora este
+    # último nunca tenha esse veredito por construção — status=pending_manual_review
+    # implica verdict=None). `below_cost=True` é a EVIDÊNCIA da linha, não o
+    # veredito final: item reclassificado para suspected_cadastral_error tem
+    # below_cost_loss_brl preenchido (fato honesto) mas NÃO entra aqui — é artefato
+    # de cadastro errado, não sangria real (§15.5). None quando nenhum item tem
+    # veredito below_cost_sale (não há total a cruzar, Z3 não aciona).
     below_cost_total_brl: float | None = None
 
 
