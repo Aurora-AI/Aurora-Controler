@@ -527,14 +527,18 @@ if (D.anexo) {
   const secTriagem = A.triagem_discrepancias ? `
     <details class="anexo-section" id="anexo-triagem_discrepancias">
       <summary><span>Triagem de discrepâncias</span>
-        <span class="meta">${A.triagem_discrepancias.disparos} casos · ${A.triagem_discrepancias.pendentes} pendentes</span></summary>
+        <span class="meta">${A.triagem_discrepancias.disparos} casos · ${A.triagem_discrepancias.pendentes} pendentes${
+          A.triagem_discrepancias.total_abaixo_custo != null
+            ? ` · ${brlCents(A.triagem_discrepancias.total_abaixo_custo)} abaixo do custo` : ''
+        }</span></summary>
       <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
-        <th>Produto</th><th>Loja</th><th>Vendedor</th><th>Veredito</th><th>Evidências</th><th>Origem</th>
+        <th>Produto</th><th>Loja</th><th>Vendedor</th><th>Veredito</th><th>Perda</th><th>Evidências</th><th>Origem</th>
       </tr></thead><tbody>
         ${A.triagem_discrepancias.itens.map(i => `<tr>
           <td>${esc(i.sku)}${i.descricao ? `<div class="anexo-meta-line">${esc(i.descricao)}</div>` : ''}</td>
           <td>${esc(i.loja)}</td><td>${esc(i.vendedor)}</td>
           <td>${esc((i.veredito || 'em auditoria').replace(/_/g, ' '))}${i.veredito_origem === 'pending_manual_review' ? ' <span class="anexo-meta-line">(pendente)</span>' : ''}</td>
+          <td>${i.veredito === 'below_cost_sale' ? brlCents(i.perda_abaixo_custo) : '—'}</td>
           <td>${i.evidencias.map(e => `<div>${esc(e)}</div>`).join('')}</td>
           <td class="src">${esc(i.src)}</td>
         </tr>`).join('')}

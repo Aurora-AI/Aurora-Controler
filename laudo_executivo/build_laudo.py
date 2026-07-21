@@ -98,6 +98,18 @@ def valida(d):
                 if not isinstance(it.get("valor"), (int, float)) or it["valor"] <= 0:
                     erro(f"§4.3 treemap_itens[{j}] de sangramento[{i}] sem 'valor' numérico > 0")
 
+    # §16.2 (QA Fase D2) — anexo_ref duplicado entre sangramentos faria o 2º card
+    # escapar em silêncio de Z1/Z2/Z3, que resolvem só o PRIMEIRO match do ref
+    # (`_sangramento_por_ref`).
+    refs_vistos: set[str] = set()
+    for i, s in enumerate(d["sangramentos"]):
+        ref = s.get("anexo_ref")
+        if ref:
+            if ref in refs_vistos:
+                erro(f"§16.1 sangramento[{i}].anexo_ref '{ref}' duplicado — cada seção do "
+                     f"anexo só pode ser referenciada por 1 card")
+            refs_vistos.add(ref)
+
     # §2 Ato 4 — a absolvição nunca é vazia
     if not d["honestidade"]:
         erro("§2/§11 seção 'O que NÃO é problema' ausente ou vazia")
@@ -279,6 +291,9 @@ def build_anexo(report, cap=10):
                 "loja": i["store"], "vendedor": i["salesperson"], "veredito": i.get("verdict"),
                 "veredito_origem": i.get("status"), "evidencias": _traduz_evidencias(i.get("evidence", {})),
                 "src": _fmt_src("Vendas", i.get("source_rows", []), cap),
+                # §16.2 Z3 — perda real da linha (None quando o item não disparou por
+                # below_cost; fallback honesto, nunca 0.0 fingido).
+                "perda_abaixo_custo": i.get("below_cost_loss_brl"),
             }
         todos = list(dt.get("auto_classified") or []) + list(dt.get("manual_queue") or [])
         anexo["triagem_discrepancias"] = {
@@ -286,6 +301,11 @@ def build_anexo(report, cap=10):
             "pendentes": len(dt.get("manual_queue") or []),
             "itens": [_item_triagem(i) for i in todos],
         }
+        # §16.2 Z3 — total omitido (não None) quando nenhum item disparou por custo:
+        # não há total a cruzar, e a checagem Z3 nem aciona (retrocompatível).
+        below_cost_total = dt.get("below_cost_total_brl")
+        if below_cost_total is not None:
+            anexo["triagem_discrepancias"]["total_abaixo_custo"] = below_cost_total
 
     # --- metodologia ---
     thresholds = report.get("thresholds") or {}
@@ -424,6 +444,36 @@ def valida_zero_contradicao(dados, anexo, report):
             if abs(motor_total - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
                 erro(f"§16.2 Z2: soma de audit_report.churn_findings.historical_annual_value "
                      f"({motor_total:.2f}) != anexo.fila_reativacao.total ({total_anexo:.2f})")
+
+    # Z3 — sangramento vindo da triagem (venda abaixo do custo): itens ≡ total ≡ card ≡ motor
+    # Soma só itens com veredito "below_cost_sale" — below_cost é a EVIDÊNCIA, não o
+    # veredito final; item reclassificado para suspected_cadastral_error tem
+    # perda_abaixo_custo preenchida (fato honesto por linha) mas é artefato de
+    # cadastro errado, não sangria real, e não entra no total (mesmo princípio de
+    # §15.5, já aplicado à corrosão de margem).
+    triagem = (anexo or {}).get("triagem_discrepancias") or {}
+    total_abaixo_custo = triagem.get("total_abaixo_custo")
+    if total_abaixo_custo is not None:
+        soma = sum(
+            i["perda_abaixo_custo"] for i in triagem.get("itens", [])
+            if i.get("veredito") == "below_cost_sale" and i.get("perda_abaixo_custo") is not None
+        )
+        if abs(soma - total_abaixo_custo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z3: soma de perda_abaixo_custo nos itens ({soma:.2f}) != "
+                 f"anexo.triagem_discrepancias.total_abaixo_custo ({total_abaixo_custo:.2f})")
+        card = _sangramento_por_ref(dados, "triagem_discrepancias")
+        if card and "valor" in card and abs(card["valor"] - total_abaixo_custo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z3: card '{card.get('titulo', card.get('id'))}'.valor "
+                 f"({card['valor']:.2f}) != anexo.triagem_discrepancias.total_abaixo_custo "
+                 f"({total_abaixo_custo:.2f})")
+        if report is not None:
+            motor_total = ((report.get("advanced_metrics") or {}).get("discrepancy_triage") or {}).get(
+                "below_cost_total_brl"
+            )
+            if motor_total is not None and abs(motor_total - total_abaixo_custo) > TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z3: audit_report...discrepancy_triage.below_cost_total_brl "
+                     f"({motor_total:.2f}) != anexo.triagem_discrepancias.total_abaixo_custo "
+                     f"({total_abaixo_custo:.2f})")
 
     # Z4 — a manchete é a soma dos sangramentos; o display nunca infla o fato
     manchete = dados.get("manchete", {})

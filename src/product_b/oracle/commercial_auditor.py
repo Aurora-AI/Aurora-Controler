@@ -1636,9 +1636,17 @@ def detect_discrepancy_triage(
     qty = sales["quantity"] if "quantity" in sales.columns else pd.Series(1.0, index=sales.index)
     qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
     sales["unit_price"] = sales["value"] / qty_safe
+    sales["_qty_safe"] = qty_safe
 
     # Trigger B — abaixo do custo da PRÓPRIA linha (independente de Estoque)
     sales["below_cost"] = sales["entry_cost"].notna() & (sales["unit_price"] < sales["entry_cost"])
+    # Fase E parte 1 (Z3) — perda REAL da linha, só onde ela dispara below_cost:
+    # qty x entry_cost - value (equivalente a qty x (entry_cost - unit_price), mas usa
+    # `value` direto em vez de reconstruir unit_price x qty). NaN nas demais linhas —
+    # somada no agg abaixo, nunca reconstruída a partir de médias do grupo.
+    sales["_below_cost_loss"] = np.where(
+        sales["below_cost"], sales["_qty_safe"] * sales["entry_cost"] - sales["value"], np.nan,
+    )
 
     # Trigger A — desconto sobre a tabela (só onde há preço de tabela do SKU)
     list_price_by_sku = _estoque_list_price_by_sku(estoque_df)
@@ -1720,6 +1728,11 @@ def detect_discrepancy_triage(
         store_systemic_pattern=("store_systemic_pattern", "any"),
         is_promo_flagged=("_is_promo_row", "all"),
         source_rows=("source_row", list),
+        # Fase E parte 1 (Z3) — soma das perdas por linha (NaN nas linhas não
+        # below_cost, ignoradas pelo sum). Gate real é `below_cost` (any) na
+        # construção do item abaixo, não este valor bruto: um grupo sem NENHUMA
+        # linha below_cost soma 0.0 aqui (soma de puro NaN), não None.
+        below_cost_loss_brl=("_below_cost_loss", "sum"),
     )
 
     # Fase D2 — nome legível por SKU (fallback honesto: None se Estoque não tem
@@ -1753,14 +1766,32 @@ def detect_discrepancy_triage(
             discount_over_list_pct=(
                 None if pd.isna(row["discount_over_list_pct"]) else float(row["discount_over_list_pct"])
             ),
+            # gate real é a evidência below_cost, não o valor bruto da soma (que é
+            # 0.0, não NaN, quando o grupo não tem nenhuma linha below_cost)
+            below_cost_loss_brl=float(row["below_cost_loss_brl"]) if evidence.below_cost else None,
             evidence=evidence, verdict=verdict,
             status="auto_classified" if verdict else "pending_manual_review",
         )
         (auto_classified if verdict else manual_queue).append(item)
 
+    # `below_cost` é a EVIDÊNCIA, não o veredito final: um item pode disparar
+    # below_cost e ainda ser reclassificado para suspected_cadastral_error (custo
+    # cadastrado errado, não sangria real — mesmo princípio de "culpa exige
+    # referência confiável" de §15.5, já aplicado à corrosão de margem). O total
+    # soma só o veredito genuíno `below_cost_sale` — nunca mistura perda real com
+    # artefato de cadastro errado (mesmo padrão de `total_operational_loss`
+    # excluir alertas `promotional=True`). `below_cost_loss_brl` continua
+    # preenchido no item cadastral (fato honesto por linha), só não entra aqui.
+    below_cost_losses = [
+        item.below_cost_loss_brl for item in auto_classified + manual_queue
+        if item.verdict == "below_cost_sale"
+    ]
+    below_cost_total_brl = float(sum(below_cost_losses)) if below_cost_losses else None
+
     return DiscrepancyTriage(
         triggered_count=len(auto_classified) + len(manual_queue),
         auto_classified=auto_classified, manual_queue=manual_queue,
+        below_cost_total_brl=below_cost_total_brl,
     )
 
 

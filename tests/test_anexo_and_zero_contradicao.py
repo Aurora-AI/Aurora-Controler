@@ -140,6 +140,22 @@ def test_build_anexo_triagem_translates_evidence_to_sentences():
     assert "189" in item["src"] and "526" in item["src"]
 
 
+def test_build_anexo_triagem_expoe_perda_abaixo_custo():
+    report = _report()
+    report["advanced_metrics"]["discrepancy_triage"]["auto_classified"][0]["below_cost_loss_brl"] = 522.54
+    report["advanced_metrics"]["discrepancy_triage"]["below_cost_total_brl"] = 522.54
+    anexo = build_laudo.build_anexo(report)
+    item = anexo["triagem_discrepancias"]["itens"][0]
+    assert item["perda_abaixo_custo"] == pytest.approx(522.54)
+    assert anexo["triagem_discrepancias"]["total_abaixo_custo"] == pytest.approx(522.54)
+
+
+def test_build_anexo_triagem_omite_total_abaixo_custo_quando_ausente():
+    anexo = build_laudo.build_anexo(_report())  # fixture base não disparou below_cost
+    assert "total_abaixo_custo" not in anexo["triagem_discrepancias"]
+    assert anexo["triagem_discrepancias"]["itens"][0]["perda_abaixo_custo"] is None
+
+
 def test_build_anexo_missing_dead_stock_omits_section():
     anexo = build_laudo.build_anexo(_report(dead_stock=[]))
     assert "estoque_parado" not in anexo
@@ -206,6 +222,27 @@ def test_valida_reprova_anexo_ref_orfao():
     build_laudo.valida(dados)
     build_laudo.valida_anexo_sintatico(dados, anexo_gerado=anexo)
     assert any("16.1" in e for e in build_laudo.ERROS)
+
+
+def test_valida_reprova_anexo_ref_duplicado():
+    # Fase E parte 1 (achado de QA da Fase D2): dois sangramentos com o mesmo
+    # anexo_ref fariam o 2º escapar em silêncio de Z1/Z2/Z3 (_sangramento_por_ref
+    # resolve só o primeiro match).
+    build_laudo.ERROS.clear()
+    dados = _audit_data_base()
+    dados["sangramentos"][0]["anexo_ref"] = "estoque_parado"
+    dados["sangramentos"][1]["anexo_ref"] = "estoque_parado"
+    build_laudo.valida(dados)
+    assert any("anexo_ref" in e and "duplicado" in e for e in build_laudo.ERROS)
+
+
+def test_valida_aceita_anexo_ref_unicos_entre_sangramentos():
+    build_laudo.ERROS.clear()
+    dados = _audit_data_base()
+    dados["sangramentos"][0]["anexo_ref"] = "estoque_parado"
+    dados["sangramentos"][1]["anexo_ref"] = "fila_reativacao"
+    build_laudo.valida(dados)
+    assert not any("duplicado" in e for e in build_laudo.ERROS)
 
 
 def test_valida_sem_mencao_a_anexo_nao_exige_nada():
@@ -336,6 +373,84 @@ def test_z2_consistente_com_audit_report_nao_reprova():
     anexo = {"fila_reativacao": {"total": 500.0, "clientes": 1,
                                   "itens": [{"cliente": "A", "valor_historico": 500.0}]}}
     report = {"churn_findings": [{"historical_annual_value": 300.0}, {"historical_annual_value": 200.0}]}
+    build_laudo.valida_zero_contradicao(dados, anexo, report)
+    assert build_laudo.ERROS == []
+
+
+def test_z3_triagem_diverge_entre_card_e_anexo_reprova():
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 999.0, "titulo": "X"}]}
+    anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
+        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 500.0},
+    ]}}
+    build_laudo.valida_zero_contradicao(dados, anexo, report=None)
+    assert any("Z3" in e for e in build_laudo.ERROS)
+
+
+def test_z3_itens_nao_somam_o_total_declarado_reprova():
+    build_laudo.ERROS.clear()
+    anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
+        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
+        {"sku": "Y", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
+    ]}}  # soma 200, total declarado 500
+    build_laudo.valida_zero_contradicao({}, anexo, report=None)
+    assert any("Z3" in e for e in build_laudo.ERROS)
+
+
+def test_z3_consistente_nao_reprova():
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 200.0, "titulo": "X"}]}
+    anexo = {"triagem_discrepancias": {"total_abaixo_custo": 200.0, "itens": [
+        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
+        {"sku": "Y", "veredito": "below_cost_sale", "perda_abaixo_custo": 100.0},
+    ]}}
+    build_laudo.valida_zero_contradicao(dados, anexo, report=None)
+    assert build_laudo.ERROS == []
+
+
+def test_z3_exclui_itens_reclassificados_para_cadastral_da_soma():
+    # QA (achado ao rodar contra a fixture Beta real): below_cost é a EVIDÊNCIA, não
+    # o veredito final. Item com perda_abaixo_custo preenchida mas veredito
+    # suspected_cadastral_error é artefato de cadastro errado, não sangria real —
+    # não pode entrar na soma que Z3 confere, senão o total correto (que já exclui
+    # esse item na origem, motor) seria erroneamente reprovado.
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 30.0, "titulo": "X"}]}
+    anexo = {"triagem_discrepancias": {"total_abaixo_custo": 30.0, "itens": [
+        {"sku": "SKU-CAD", "veredito": "suspected_cadastral_error", "perda_abaixo_custo": 70.0},
+        {"sku": "SKU-REAL", "veredito": "below_cost_sale", "perda_abaixo_custo": 30.0},
+    ]}}
+    build_laudo.valida_zero_contradicao(dados, anexo, report=None)
+    assert build_laudo.ERROS == []
+
+
+def test_z3_nao_aciona_quando_total_abaixo_custo_ausente():
+    # retrocompatível: rodada sem nenhuma sangria abaixo do custo não tem
+    # total_abaixo_custo no anexo (build_anexo omite) — Z3 nem avalia.
+    build_laudo.ERROS.clear()
+    anexo = {"triagem_discrepancias": {"itens": [{"sku": "X", "perda_abaixo_custo": None}]}}
+    build_laudo.valida_zero_contradicao({}, anexo, report=None)
+    assert build_laudo.ERROS == []
+
+
+def test_z3_cruza_com_audit_report_quando_presente_reprova():
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 500.0, "titulo": "X"}]}
+    anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
+        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 500.0},
+    ]}}
+    report = {"advanced_metrics": {"discrepancy_triage": {"below_cost_total_brl": 999.0}}}
+    build_laudo.valida_zero_contradicao(dados, anexo, report)
+    assert any("Z3" in e and "discrepancy_triage" in e for e in build_laudo.ERROS)
+
+
+def test_z3_consistente_com_audit_report_nao_reprova():
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "triagem_discrepancias", "valor": 500.0, "titulo": "X"}]}
+    anexo = {"triagem_discrepancias": {"total_abaixo_custo": 500.0, "itens": [
+        {"sku": "X", "veredito": "below_cost_sale", "perda_abaixo_custo": 500.0},
+    ]}}
+    report = {"advanced_metrics": {"discrepancy_triage": {"below_cost_total_brl": 500.0}}}
     build_laudo.valida_zero_contradicao(dados, anexo, report)
     assert build_laudo.ERROS == []
 

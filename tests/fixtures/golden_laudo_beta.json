@@ -1666,6 +1666,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 66.52191011235955,
+          "below_cost_loss_brl": 44.089999999999975,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1690,6 +1691,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 66.84157303370787,
+          "below_cost_loss_brl": 24.889999999999986,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1716,6 +1718,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 65.85205992509363,
+          "below_cost_loss_brl": 48.25,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1741,6 +1744,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 65.85112359550561,
+          "below_cost_loss_brl": 32.150000000000034,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1765,6 +1769,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 65.26067415730337,
+          "below_cost_loss_brl": 10.819999999999993,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1789,6 +1794,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 65.19438202247191,
+          "below_cost_loss_brl": 10.230000000000018,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1814,6 +1820,7 @@
           "entry_cost": 320.0,
           "nf_cost": 150.0,
           "discount_over_list_pct": 64.80786516853932,
+          "below_cost_loss_brl": 13.579999999999984,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1838,6 +1845,7 @@
           "entry_cost": 275.5,
           "nf_cost": null,
           "discount_over_list_pct": 67.45897435897436,
+          "below_cost_loss_brl": 21.680000000000007,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1863,6 +1871,7 @@
           "entry_cost": 277.21500000000003,
           "nf_cost": 276.73,
           "discount_over_list_pct": 67.94807692307691,
+          "below_cost_loss_brl": 54.420000000000016,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1887,6 +1896,7 @@
           "entry_cost": 282.39,
           "nf_cost": 276.73,
           "discount_over_list_pct": 68.10000000000001,
+          "below_cost_loss_brl": 33.56999999999999,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1911,6 +1921,7 @@
           "entry_cost": 280.69,
           "nf_cost": null,
           "discount_over_list_pct": 67.06923076923077,
+          "below_cost_loss_brl": 23.829999999999984,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1936,6 +1947,7 @@
           "entry_cost": 283.275,
           "nf_cost": null,
           "discount_over_list_pct": 66.06282051282051,
+          "below_cost_loss_brl": 37.129999999999995,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1961,6 +1973,7 @@
           "entry_cost": 282.635,
           "nf_cost": 291.16,
           "discount_over_list_pct": 67.85320512820513,
+          "below_cost_loss_brl": 63.78000000000006,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -1985,6 +1998,7 @@
           "entry_cost": 278.95,
           "nf_cost": 288.55,
           "discount_over_list_pct": 68.65897435897436,
+          "below_cost_loss_brl": 34.48999999999998,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2010,6 +2024,7 @@
           "entry_cost": 256.53999999999996,
           "nf_cost": 258.04499999999996,
           "discount_over_list_pct": 68.44861111111112,
+          "below_cost_loss_brl": 58.73999999999998,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2034,6 +2049,7 @@
           "entry_cost": 258.41,
           "nf_cost": 259.19,
           "discount_over_list_pct": 66.16388888888889,
+          "below_cost_loss_brl": 14.79000000000002,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2058,6 +2074,7 @@
           "entry_cost": 255.75,
           "nf_cost": 253.4,
           "discount_over_list_pct": 67.65833333333333,
+          "below_cost_loss_brl": 22.889999999999986,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2082,6 +2099,7 @@
           "entry_cost": 260.16,
           "nf_cost": null,
           "discount_over_list_pct": 69.24861111111112,
+          "below_cost_loss_brl": 38.75000000000003,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2107,6 +2125,7 @@
           "entry_cost": 263.735,
           "nf_cost": 264.02,
           "discount_over_list_pct": 65.60069444444446,
+          "below_cost_loss_brl": 32.119999999999976,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2132,6 +2151,7 @@
           "entry_cost": 264.16499999999996,
           "nf_cost": 262.615,
           "discount_over_list_pct": 68.17361111111111,
+          "below_cost_loss_brl": 70.02999999999997,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2156,6 +2176,7 @@
           "entry_cost": 263.47,
           "nf_cost": 253.4,
           "discount_over_list_pct": 65.67361111111111,
+          "below_cost_loss_brl": 16.32000000000002,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2185,6 +2206,7 @@
           "entry_cost": 420.0,
           "nf_cost": 433.28999999999996,
           "discount_over_list_pct": 74.87041666666667,
+          "below_cost_loss_brl": 710.6700000000001,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2214,6 +2236,7 @@
           "entry_cost": 420.0,
           "nf_cost": 432.1075,
           "discount_over_list_pct": 75.06208333333333,
+          "below_cost_loss_brl": 724.47,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2241,6 +2264,7 @@
           "entry_cost": 420.0,
           "nf_cost": 433.13,
           "discount_over_list_pct": 75.90791666666667,
+          "below_cost_loss_brl": 523.58,
           "evidence": {
             "below_cost": true,
             "sku_in_dead_stock": false,
@@ -2265,6 +2289,7 @@
           "entry_cost": 96.36,
           "nf_cost": 93.98,
           "discount_over_list_pct": 68.0625,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2289,6 +2314,7 @@
           "entry_cost": 93.11,
           "nf_cost": 99.46,
           "discount_over_list_pct": 67.06562500000001,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2314,6 +2340,7 @@
           "entry_cost": 93.195,
           "nf_cost": 93.98,
           "discount_over_list_pct": 68.27031249999999,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2339,6 +2366,7 @@
           "entry_cost": 94.885,
           "nf_cost": 93.98,
           "discount_over_list_pct": 67.7140625,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2365,6 +2393,7 @@
           "entry_cost": 96.08,
           "nf_cost": 93.98,
           "discount_over_list_pct": 66.87395833333333,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2389,6 +2418,7 @@
           "entry_cost": 110.45,
           "nf_cost": 110.4,
           "discount_over_list_pct": 64.95714285714286,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2413,6 +2443,7 @@
           "entry_cost": 107.35,
           "nf_cost": 110.4,
           "discount_over_list_pct": 66.04571428571428,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2437,6 +2468,7 @@
           "entry_cost": 107.75,
           "nf_cost": 110.4,
           "discount_over_list_pct": 66.44000000000001,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2461,6 +2493,7 @@
           "entry_cost": 107.01,
           "nf_cost": 114.68,
           "discount_over_list_pct": 65.48,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2485,6 +2518,7 @@
           "entry_cost": 108.09,
           "nf_cost": 110.4,
           "discount_over_list_pct": 65.50571428571428,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": true,
@@ -2509,6 +2543,7 @@
           "entry_cost": 102.69,
           "nf_cost": 104.65,
           "discount_over_list_pct": 63.11612903225806,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": false,
@@ -2533,6 +2568,7 @@
           "entry_cost": 97.95,
           "nf_cost": 103.6,
           "discount_over_list_pct": 63.97419354838709,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": false,
@@ -2557,6 +2593,7 @@
           "entry_cost": 101.67,
           "nf_cost": 104.65,
           "discount_over_list_pct": 65.34193548387097,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": false,
@@ -2581,6 +2618,7 @@
           "entry_cost": 99.17,
           "nf_cost": 103.6,
           "discount_over_list_pct": 64.41612903225806,
+          "below_cost_loss_brl": null,
           "evidence": {
             "below_cost": false,
             "sku_in_dead_stock": false,
@@ -2592,7 +2630,8 @@
           "status": "auto_classified"
         }
       ],
-      "manual_queue": []
+      "manual_queue": [],
+      "below_cost_total_brl": 522.54
     },
     "seller_margin_mix": [
       {

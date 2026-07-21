@@ -453,6 +453,11 @@ class DiscrepancyTriageItem(BaseModel):
     entry_cost: float | None = None
     nf_cost: float | None = None  # custo na Compra (NF) mais recente anterior à venda — None se indeterminável
     discount_over_list_pct: float | None = None  # (list_price - practiced)/list_price × 100; None sem list_price
+    # Fase E parte 1 (Z3) — perda monetária REAL do grupo, somada LINHA A LINHA só nas
+    # vendas que dispararam `below_cost` (nunca a média do grupo × qtd total — o grupo
+    # pode ter linhas acima e abaixo do custo misturadas). None quando o grupo não
+    # disparou por `below_cost` (fallback honesto, nunca 0.0 fingido).
+    below_cost_loss_brl: float | None = None
     evidence: DiscrepancyEvidence
     verdict: str | None = None  # "suspected_cadastral_error"|"below_cost_sale"|"deliberate_liquidation"|None
     status: str  # "auto_classified" | "pending_manual_review"
@@ -465,6 +470,10 @@ class DiscrepancyTriage(BaseModel):
     triggered_count: int
     auto_classified: list[DiscrepancyTriageItem] = Field(default_factory=list)
     manual_queue: list[DiscrepancyTriageItem] = Field(default_factory=list)
+    # Fase E parte 1 (Z3) — Σ de below_cost_loss_brl não-nulos, em TODOS os itens
+    # (auto_classified + manual_queue — o anexo exibe os dois juntos). None quando
+    # nenhum item disparou por below_cost (não há total a cruzar, Z3 não aciona).
+    below_cost_total_brl: float | None = None
 
 
 class AdvancedMetrics(BaseModel):

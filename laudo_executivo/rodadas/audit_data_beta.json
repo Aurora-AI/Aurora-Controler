@@ -69,6 +69,7 @@
       "id": "cap-lucro",
       "titulo": "Lucro Fantasma",
       "valor": 522.54,
+      "anexo_ref": "triagem_discrepancias",
       "valor_display": "R$ 522,54",
       "soco": "20 vendas de 2 modelos de armação (ARP-020, ARP-021) saíram abaixo do próprio custo.",
       "evidencias": [

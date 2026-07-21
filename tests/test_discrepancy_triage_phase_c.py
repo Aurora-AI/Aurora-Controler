@@ -240,6 +240,116 @@ def test_no_trigger_below_threshold_returns_clean_result():
     assert triage.auto_classified == [] and triage.manual_queue == []
 
 
+# --------------------------------------------------------------- Fase E, Z3: below_cost_loss_brl
+
+
+def test_below_cost_loss_brl_e_soma_por_linha_nao_media_do_grupo():
+    """QA (achado de revisão da Spec Fase E parte 1): a perda NÃO pode ser
+    (entry_cost - practiced_price)_médio do grupo x qtd total — practiced_price e
+    entry_cost no agg do grupo são médias (.mean()), e below_cost é agregado com
+    .any(). Um grupo (sku, loja, vendedor) pode ter só ALGUMAS linhas abaixo do
+    custo; a perda tem que somar só essas linhas, calculada linha a linha, antes do
+    groupby — nunca reconstruída a partir das médias do grupo."""
+    vendas = _sales([
+        # abaixo do custo: perda = 1 x (100 - 30) = 70
+        {"product": "SKU-M", "customer": "C1", "value": 30.0, "entry_cost": 100.0,
+         "quantity": 1.0, "salesperson": "V-01", "store": "L1"},
+        # acima do custo: perda 0 (não entra na soma)
+        {"product": "SKU-M", "customer": "C2", "value": 150.0, "entry_cost": 100.0,
+         "quantity": 1.0, "salesperson": "V-01", "store": "L1"},
+    ])
+    triage = detect_discrepancy_triage(vendas, None, None, [], THRESHOLDS)
+    item = triage.auto_classified[0]
+    assert item.evidence.below_cost is True
+    # fórmula errada (média do grupo x qtd total) daria (100 - 90) x 2 = 20 — a
+    # correta soma só a linha abaixo do custo: 70.
+    assert item.below_cost_loss_brl == pytest.approx(70.0)
+
+
+def test_below_cost_loss_brl_respeita_quantidade_por_linha():
+    vendas = _sales([
+        {"product": "SKU-Q", "customer": "C1", "value": 60.0, "entry_cost": 50.0,
+         "quantity": 3.0, "salesperson": "V-02", "store": "L1"},  # unit_price=20 < 50
+    ])
+    triage = detect_discrepancy_triage(vendas, None, None, [], THRESHOLDS)
+    item = triage.auto_classified[0]
+    # perda = qty x entry_cost - value = 3 x 50 - 60 = 90
+    assert item.below_cost_loss_brl == pytest.approx(90.0)
+
+
+def test_below_cost_loss_brl_e_none_quando_nao_dispara_por_custo():
+    vendas = _sales([
+        {"product": "SKU-W", "customer": "C1", "value": 100.0, "entry_cost": 50.0,
+         "salesperson": "V-05", "store": "L2"},
+    ])
+    estoque = _estoque([{"sku": "SKU-W", "custo_unit": 50.0, "qtd_atual": 5.0, "preco_venda": 400.0}])
+    compras = _compras([{"data": D0 - timedelta(days=10), "sku": "SKU-W", "custo_unit": 50.0, "qtd": 3}])
+    triage = detect_discrepancy_triage(vendas, estoque, compras, [], THRESHOLDS)
+    item = triage.manual_queue[0]
+    assert item.evidence.below_cost is False
+    assert item.below_cost_loss_brl is None
+
+
+def test_below_cost_total_brl_soma_todos_os_itens_abaixo_do_custo():
+    vendas = _sales([
+        {"product": "SKU-A", "customer": "C1", "value": 30.0, "entry_cost": 100.0,
+         "salesperson": "V-01", "store": "L1"},  # perda 70
+        {"product": "SKU-B", "customer": "C2", "value": 10.0, "entry_cost": 40.0,
+         "salesperson": "V-02", "store": "L1"},  # perda 30
+    ])
+    triage = detect_discrepancy_triage(vendas, None, None, [], THRESHOLDS)
+    assert triage.below_cost_total_brl == pytest.approx(100.0)
+
+
+def test_below_cost_total_brl_e_none_quando_nenhum_item_dispara_por_custo():
+    vendas = _sales([
+        {"product": "SKU-W", "customer": "C1", "value": 100.0, "entry_cost": 50.0,
+         "salesperson": "V-05", "store": "L2"},
+    ])
+    estoque = _estoque([{"sku": "SKU-W", "custo_unit": 50.0, "qtd_atual": 5.0, "preco_venda": 400.0}])
+    compras = _compras([{"data": D0 - timedelta(days=10), "sku": "SKU-W", "custo_unit": 50.0, "qtd": 3}])
+    triage = detect_discrepancy_triage(vendas, estoque, compras, [], THRESHOLDS)
+    assert triage.below_cost_total_brl is None
+
+
+def test_below_cost_total_brl_exclui_itens_reclassificados_para_cadastral():
+    """Achado ao rodar contra a fixture Beta real: below_cost é uma EVIDÊNCIA, não o
+    veredito final — um item pode ter below_cost=True e ainda ser reclassificado para
+    suspected_cadastral_error (custo cadastrado errado, não sangria real; mesmo
+    princípio de 'culpa exige referência confiável' já aplicado à corrosão de margem,
+    §15.5). below_cost_total_brl (o número que vira o total do card no laudo) tem que
+    somar SÓ os itens com veredito below_cost_sale — nunca misturar perda real com
+    artefato de cadastro (mesmo padrão de total_operational_loss excluir promotional).
+    below_cost_loss_brl PERMANECE preenchido no item cadastral (fato honesto: 'esta
+    venda, ao custo CADASTRADO, ficou abaixo dele') — só não entra no total agregado."""
+    vendas = _sales([
+        # abaixo do custo E custo diverge da NF -> suspected_cadastral_error (não conta)
+        {"product": "SKU-CAD", "customer": "C1", "value": 30.0, "entry_cost": 100.0,
+         "salesperson": "V-01", "store": "L1"},
+        # abaixo do custo, sem outra evidência -> below_cost_sale (conta)
+        {"product": "SKU-REAL", "customer": "C2", "value": 10.0, "entry_cost": 40.0,
+         "salesperson": "V-02", "store": "L1"},
+    ])
+    compras = _compras([{"data": D0 - timedelta(days=5), "sku": "SKU-CAD", "custo_unit": 20.0, "qtd": 3}])
+    triage = detect_discrepancy_triage(vendas, None, compras, [], THRESHOLDS)
+    cadastral = next(i for i in triage.auto_classified if i.sku == "SKU-CAD")
+    real = next(i for i in triage.auto_classified if i.sku == "SKU-REAL")
+    assert cadastral.verdict == "suspected_cadastral_error"
+    assert cadastral.below_cost_loss_brl == pytest.approx(70.0)  # continua honesto no item
+    assert real.verdict == "below_cost_sale"
+    # só a perda GENUÍNA (SKU-REAL, 30.0) entra no total — não 70+30=100
+    assert triage.below_cost_total_brl == pytest.approx(30.0)
+
+
+def test_below_cost_total_brl_none_quando_sem_trigger_nenhum():
+    triage = detect_discrepancy_triage(_sales([
+        {"product": "SKU-OK", "customer": "C1", "value": 95.0, "entry_cost": 60.0,
+         "salesperson": "V-01", "store": "L1"},
+    ]), None, None, [], THRESHOLDS)
+    assert triage.triggered_count == 0
+    assert triage.below_cost_total_brl is None
+
+
 # --------------------------------------------------------------- graceful degradation
 
 
