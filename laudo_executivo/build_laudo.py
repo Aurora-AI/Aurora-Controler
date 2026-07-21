@@ -419,6 +419,11 @@ def valida_zero_contradicao(dados, anexo, report):
         if card and "valor" in card and abs(card["valor"] - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
             erro(f"§16.2 Z2: card '{card.get('titulo', card.get('id'))}'.valor "
                  f"({card['valor']:.2f}) != anexo.fila_reativacao.total ({total_anexo:.2f})")
+        if report is not None:
+            motor_total = sum(c.get("historical_annual_value", 0.0) for c in (report.get("churn_findings") or []))
+            if abs(motor_total - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z2: soma de audit_report.churn_findings.historical_annual_value "
+                     f"({motor_total:.2f}) != anexo.fila_reativacao.total ({total_anexo:.2f})")
 
     # Z4 — a manchete é a soma dos sangramentos; o display nunca infla o fato
     manchete = dados.get("manchete", {})
@@ -443,8 +448,11 @@ def valida_zero_contradicao(dados, anexo, report):
         if not ref:
             continue
         card = _sangramento_por_ref(dados, ref)
-        if card and "valor" in card and abs(p.get("impacto", 0.0) - card["valor"]) > TOLERANCIA_ZERO_CONTRADICAO:
-            erro(f"§16.2 Z5: plano[{i}].impacto ({p.get('impacto'):.2f}) != "
+        impacto = p.get("impacto")
+        if not isinstance(impacto, (int, float)):
+            continue  # já reprovado por valida() (§11); Z5 não avalia tipo inválido
+        if card and "valor" in card and abs(impacto - card["valor"]) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z5: plano[{i}].impacto ({impacto:.2f}) != "
                  f"sangramento '{ref}'.valor ({card['valor']:.2f})")
 
     # Z6 — contagem exibida nunca diverge do detalhamento
@@ -483,6 +491,7 @@ def main():
                           "se existir")
     args = ap.parse_args()
 
+    ERROS.clear()  # defesa contra reentrância (main() chamado 2x no mesmo processo)
     caminho_dados = Path(args.dados)
     template = Path(args.template) if args.template else \
         Path(__file__).parent / "EXRS_Template_Laudo_Executivo_v4.html"

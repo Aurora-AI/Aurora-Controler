@@ -316,3 +316,38 @@ def test_zero_contradicao_cruza_com_audit_report_quando_presente():
     report = {"dead_stock": [{"capital_frozen": 999.0}]}  # motor diz outra coisa
     build_laudo.valida_zero_contradicao(dados, anexo, report)
     assert any("Z1" in e and "motor" in e.lower() or "dead_stock" in e for e in build_laudo.ERROS)
+
+
+def test_z2_cruza_com_audit_report_quando_presente_reprova():
+    # QA (achado real): Z2 (fila_reativacao) não tinha a perna de checagem
+    # contra audit_report.churn_findings, assimétrico em relação a Z1.
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "fila_reativacao", "valor": 500.0, "titulo": "X"}]}
+    anexo = {"fila_reativacao": {"total": 500.0, "clientes": 1,
+                                  "itens": [{"cliente": "A", "valor_historico": 500.0}]}}
+    report = {"churn_findings": [{"historical_annual_value": 999.0}]}  # motor diz outra coisa
+    build_laudo.valida_zero_contradicao(dados, anexo, report)
+    assert any("Z2" in e and "churn_findings" in e for e in build_laudo.ERROS)
+
+
+def test_z2_consistente_com_audit_report_nao_reprova():
+    build_laudo.ERROS.clear()
+    dados = {"sangramentos": [{"anexo_ref": "fila_reativacao", "valor": 500.0, "titulo": "X"}]}
+    anexo = {"fila_reativacao": {"total": 500.0, "clientes": 1,
+                                  "itens": [{"cliente": "A", "valor_historico": 500.0}]}}
+    report = {"churn_findings": [{"historical_annual_value": 300.0}, {"historical_annual_value": 200.0}]}
+    build_laudo.valida_zero_contradicao(dados, anexo, report)
+    assert build_laudo.ERROS == []
+
+
+def test_z5_impacto_nulo_nao_crasha_reprova_graciosamente():
+    # QA (achado real): plano[i].impacto=None (JSON null) crashava com
+    # TypeError não tratado em vez de reprovar. valida() já cobre o tipo
+    # inválido (§11); Z5 só não pode explodir o processo por causa disso.
+    build_laudo.ERROS.clear()
+    dados = {
+        "sangramentos": [{"anexo_ref": "estoque_parado", "valor": 500.0, "titulo": "X"}],
+        "plano": [{"impacto": None, "sangramento_ref": "estoque_parado"}],
+    }
+    build_laudo.valida_zero_contradicao(dados, anexo=None, report=None)  # não deve lançar
+    assert not any("Z5" in e for e in build_laudo.ERROS)
