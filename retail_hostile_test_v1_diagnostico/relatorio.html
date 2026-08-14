@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>EXRS — Diagnóstico de retail_hostile_test_v1.xlsx</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background:#0F172A; color:#E2E8F0; margin:0; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    h1 { color:#F8FAFC; }
+    .sub { color:#94A3B8; font-size:13px; margin-bottom:24px; }
+    .graph-frame { border:1px solid #334155; border-radius:8px; overflow:hidden; margin-bottom:24px; }
+    table.risks { width:100%; border-collapse:collapse; margin-top:12px; }
+    table.risks th, table.risks td { text-align:left; padding:8px 12px; border-bottom:1px solid #334155; font-size:13px; }
+    table.risks th { color:#94A3B8; font-weight:600; }
+    .badge { color:#fff; padding:2px 8px; border-radius:4px; font-size:11px; }
+    .clean { color:#4ADE80; }
+    </style>
+</head>
+<body>
+<div class="page">
+  <h1>🔍 Diagnóstico DAG — retail_hostile_test_v1.xlsx</h1>
+  <div class="sub">Gerado em 30/07/2026 22:24 · 33 risco(s) detectado(s)</div>
+  <div class="graph-frame"><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EXRS B2 — retail_hostile_test_v1</title>
+  <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/vis-network.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F1F5F9;color:#1E293B;display:flex;height:100vh;overflow:hidden}
+    #sidebar{width:300px;min-width:220px;background:#1E293B;color:#F8FAFC;padding:24px 18px;overflow-y:auto;flex-shrink:0}
+    #sidebar h1{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:4px;color:#F8FAFC}
+    #sidebar .sub{font-size:11px;color:#94A3B8;margin-bottom:16px}
+    #sidebar h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#94A3B8;margin:16px 0 6px}
+    #sidebar .goal{font-size:13px;color:#CBD5E1;line-height:1.5;background:#0F172A;padding:10px;border-radius:6px}
+    #sidebar ul{list-style:none;padding:0}
+    #sidebar ul li{font-size:12px;color:#CBD5E1;padding:4px 0;border-bottom:1px solid #334155}
+    #sidebar ul li code{background:#334155;padding:1px 4px;border-radius:3px;font-size:11px;color:#93C5FD}
+    .range{color:#FCD34D;font-size:11px}
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    #toolbar{background:#fff;border-bottom:1px solid #E2E8F0;padding:10px 16px;display:flex;align-items:center;gap:16px;font-size:12px;color:#64748B}
+    .leg-item{display:inline-flex;align-items:center;gap:5px}
+    .leg-dot{width:14px;height:14px;border-radius:3px;display:inline-block}
+    .stats{margin-left:auto;color:#94A3B8}
+    #network{flex:1}
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h1>📊 retail_hostile_test_v1</h1>
+    <div class="sub">Phase B2 — Visual Assembly</div>
+    <h2>Intenção</h2>
+    <div class="goal"></div>
+    <h2>Entradas</h2>
+    <ul><li><em>Nenhum selecionado</em></li></ul>
+    <h2>Saídas</h2>
+    <ul><li><em>Nenhum selecionado</em></li></ul>
+    
+  </div>
+  <div id="main">
+    <div id="toolbar">
+      <span class="leg-item"><span class="leg-dot" style="background:#FEF3C7;border:2px solid #D97706"></span>Entrada</span><span class="leg-item"><span class="leg-dot" style="background:#D1FAE5;border:2px solid #059669"></span>Saída</span><span class="leg-item"><span class="leg-dot" style="background:#DBEAFE;border:2px solid #2563EB"></span>Intermediário</span><span class="leg-item"><span class="leg-dot" style="background:#F3F4F6;border:2px solid #9CA3AF"></span>Estático</span>
+      <span class="stats">39 nós · 48 arestas</span>
+    </div>
+    <div id="network"></div>
+  </div>
+  <script>
+    const nodes = new vis.DataSet([
+  {
+    "id": "Vendas_Oficial_v4_final!G7",
+    "label": "G7",
+    "title": "<b>Vendas_Oficial_v4_final!G7</b><br/>Fórmula: <code>=D7*0.05</code><br/>Valor: =D7*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G8",
+    "label": "G8",
+    "title": "<b>Vendas_Oficial_v4_final!G8</b><br/>Fórmula: <code>=D8*0.05</code><br/>Valor: =D8*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G9",
+    "label": "G9",
+    "title": "<b>Vendas_Oficial_v4_final!G9</b><br/>Fórmula: <code>=D9*0.05</code><br/>Valor: =D9*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G10",
+    "label": "G10",
+    "title": "<b>Vendas_Oficial_v4_final!G10</b><br/>Fórmula: <code>=G10/0</code><br/>Valor: =G10/0",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!F11",
+    "label": "F11",
+    "title": "<b>Vendas_Oficial_v4_final!F11</b><br/>Fórmula: <code>='[Estoque_2025.xlsx]Geral'!$B$4</code><br/>Valor: ='[Estoque_2025.xlsx]Geral'!$B$4",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G11",
+    "label": "G11",
+    "title": "<b>Vendas_Oficial_v4_final!G11</b><br/>Fórmula: <code>=D11*0.05</code><br/>Valor: =D11*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G12",
+    "label": "G12",
+    "title": "<b>Vendas_Oficial_v4_final!G12</b><br/>Fórmula: <code>=D12*0.05</code><br/>Valor: =D12*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G13",
+    "label": "G13",
+    "title": "<b>Vendas_Oficial_v4_final!G13</b><br/>Fórmula: <code>=D13*0.05</code><br/>Valor: =D13*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G14",
+    "label": "G14",
+    "title": "<b>Vendas_Oficial_v4_final!G14</b><br/>Fórmula: <code>=D14*0.05</code><br/>Valor: =D14*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G15",
+    "label": "G15",
+    "title": "<b>Vendas_Oficial_v4_final!G15</b><br/>Fórmula: <code>=D15*0.05</code><br/>Valor: =D15*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G16",
+    "label": "G16",
+    "title": "<b>Vendas_Oficial_v4_final!G16</b><br/>Fórmula: <code>=D16*0.05</code><br/>Valor: =D16*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G17",
+    "label": "G17",
+    "title": "<b>Vendas_Oficial_v4_final!G17</b><br/>Fórmula: <code>=D17*0.05</code><br/>Valor: =D17*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G18",
+    "label": "G18",
+    "title": "<b>Vendas_Oficial_v4_final!G18</b><br/>Fórmula: <code>=D18*0.05</code><br/>Valor: =D18*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G19",
+    "label": "G19",
+    "title": "<b>Vendas_Oficial_v4_final!G19</b><br/>Fórmula: <code>=D19*0.05</code><br/>Valor: =D19*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G20",
+    "label": "G20",
+    "title": "<b>Vendas_Oficial_v4_final!G20</b><br/>Fórmula: <code>=D20*0.05</code><br/>Valor: =D20*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G21",
+    "label": "G21",
+    "title": "<b>Vendas_Oficial_v4_final!G21</b><br/>Fórmula: <code>=D21*0.05</code><br/>Valor: =D21*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!D22",
+    "label": "D22",
+    "title": "<b>Vendas_Oficial_v4_final!D22</b><br/>Fórmula: <code>=SUM(D7:D21)</code><br/>Valor: =SUM(D7:D21)",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!F22",
+    "label": "F22",
+    "title": "<b>Vendas_Oficial_v4_final!F22</b><br/>Fórmula: <code>=SUM(F7:F21)</code><br/>Valor: =SUM(F7:F21)",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G22",
+    "label": "G22",
+    "title": "<b>Vendas_Oficial_v4_final!G22</b><br/>Fórmula: <code>=SUM(G7:G21)</code><br/>Valor: =SUM(G7:G21)",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G23",
+    "label": "G23",
+    "title": "<b>Vendas_Oficial_v4_final!G23</b><br/>Fórmula: <code>=D23*0.05</code><br/>Valor: =D23*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G24",
+    "label": "G24",
+    "title": "<b>Vendas_Oficial_v4_final!G24</b><br/>Fórmula: <code>=D24*0.05</code><br/>Valor: =D24*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G25",
+    "label": "G25",
+    "title": "<b>Vendas_Oficial_v4_final!G25</b><br/>Fórmula: <code>=D25*0.05</code><br/>Valor: =D25*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G26",
+    "label": "G26",
+    "title": "<b>Vendas_Oficial_v4_final!G26</b><br/>Fórmula: <code>=D26*0.05</code><br/>Valor: =D26*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G27",
+    "label": "G27",
+    "title": "<b>Vendas_Oficial_v4_final!G27</b><br/>Fórmula: <code>=D27*0.05</code><br/>Valor: =D27*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G28",
+    "label": "G28",
+    "title": "<b>Vendas_Oficial_v4_final!G28</b><br/>Fórmula: <code>=D28*0.05</code><br/>Valor: =D28*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G29",
+    "label": "G29",
+    "title": "<b>Vendas_Oficial_v4_final!G29</b><br/>Fórmula: <code>=D29*0.05</code><br/>Valor: =D29*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G30",
+    "label": "G30",
+    "title": "<b>Vendas_Oficial_v4_final!G30</b><br/>Fórmula: <code>=D30*0.05</code><br/>Valor: =D30*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G31",
+    "label": "G31",
+    "title": "<b>Vendas_Oficial_v4_final!G31</b><br/>Fórmula: <code>=D31*0.05</code><br/>Valor: =D31*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G32",
+    "label": "G32",
+    "title": "<b>Vendas_Oficial_v4_final!G32</b><br/>Fórmula: <code>=D32*0.05</code><br/>Valor: =D32*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G33",
+    "label": "G33",
+    "title": "<b>Vendas_Oficial_v4_final!G33</b><br/>Fórmula: <code>=D33*0.05</code><br/>Valor: =D33*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G34",
+    "label": "G34",
+    "title": "<b>Vendas_Oficial_v4_final!G34</b><br/>Fórmula: <code>=D34*0.05</code><br/>Valor: =D34*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G35",
+    "label": "G35",
+    "title": "<b>Vendas_Oficial_v4_final!G35</b><br/>Fórmula: <code>=D35*0.05</code><br/>Valor: =D35*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G36",
+    "label": "G36",
+    "title": "<b>Vendas_Oficial_v4_final!G36</b><br/>Fórmula: <code>=D36*0.05</code><br/>Valor: =D36*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G37",
+    "label": "G37",
+    "title": "<b>Vendas_Oficial_v4_final!G37</b><br/>Fórmula: <code>=D37*0.05</code><br/>Valor: =D37*0.05",
+    "color": {
+      "background": "#DBEAFE",
+      "border": "#2563EB",
+      "highlight": {
+        "background": "#BFDBFE",
+        "border": "#1D4ED8"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!D40",
+    "label": "D40",
+    "title": "<b>Vendas_Oficial_v4_final!D40</b><br/>Fórmula: <code>=SUM(D7:D21)+SUM(D23:D37)+1500</code><br/>Valor: =SUM(D7:D21)+SUM(D23:D37)+1500",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!F40",
+    "label": "F40",
+    "title": "<b>Vendas_Oficial_v4_final!F40</b><br/>Fórmula: <code>=SUM(F7:F21)+SUM(F23:F37)</code><br/>Valor: =SUM(F7:F21)+SUM(F23:F37)",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Vendas_Oficial_v4_final!G40",
+    "label": "G40",
+    "title": "<b>Vendas_Oficial_v4_final!G40</b><br/>Fórmula: <code>=SUM(G7:G21)+SUM(G23:G37)</code><br/>Valor: =SUM(G7:G21)+SUM(G23:G37)",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Planilha2!C7",
+    "label": "C7",
+    "title": "<b>Planilha2!C7</b><br/>Fórmula: <code>=C5+C6</code><br/>Valor: =C5+C6",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  },
+  {
+    "id": "Cópia de Vendas (1)!B5",
+    "label": "B5",
+    "title": "<b>Cópia de Vendas (1)!B5</b><br/>Fórmula: <code>=SUM(B4:B4)*1.1</code><br/>Valor: =SUM(B4:B4)*1.1",
+    "color": {
+      "background": "#D1FAE5",
+      "border": "#059669",
+      "highlight": {
+        "background": "#A7F3D0",
+        "border": "#047857"
+      }
+    },
+    "font": {
+      "size": 13,
+      "face": "monospace"
+    },
+    "borderWidth": 1,
+    "shadow": false
+  }
+]);
+    const edges = new vis.DataSet([
+  {
+    "from": "Vendas_Oficial_v4_final!G10",
+    "to": "Vendas_Oficial_v4_final!G10",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!F11",
+    "to": "Vendas_Oficial_v4_final!F22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G10",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G11",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G12",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G13",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G14",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G15",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G16",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G17",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G18",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G19",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G20",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G21",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G7",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G8",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G9",
+    "to": "Vendas_Oficial_v4_final!G22",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!F11",
+    "to": "Vendas_Oficial_v4_final!F40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G10",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G11",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G12",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G13",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G14",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G15",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G16",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G17",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G18",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G19",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G20",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G21",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G23",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G24",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G25",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G26",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G27",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G28",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G29",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G30",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G31",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G32",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G33",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G34",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G35",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G36",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G37",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G7",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G8",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  },
+  {
+    "from": "Vendas_Oficial_v4_final!G9",
+    "to": "Vendas_Oficial_v4_final!G40",
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 0.7
+      }
+    },
+    "color": {
+      "color": "#CBD5E1",
+      "highlight": "#94A3B8"
+    },
+    "smooth": {
+      "type": "cubicBezier"
+    }
+  }
+]);
+    const container = document.getElementById('network');
+    const options = {
+      layout: {
+        hierarchical: {
+          enabled: true,
+          direction: 'LR',
+          sortMethod: 'directed',
+          levelSeparation: 180,
+          nodeSpacing: 120,
+          treeSpacing: 200,
+        }
+      },
+      nodes: {shape: 'box', margin: 8, widthConstraint: {maximum: 160}},
+      edges: {smooth: {type: 'cubicBezier', forceDirection: 'horizontal'}},
+      physics: {enabled: false},
+      interaction: {hover: true, tooltipDelay: 100, navigationButtons: true, keyboard: true},
+    };
+    new vis.Network(container, {nodes, edges}, options);
+  </script>
+</body>
+</html></div>
+  <h2>Riscos Detectados</h2>
+  
+    <table class="risks">
+      <thead><tr><th>Célula</th><th>Categoria</th><th>Descrição</th></tr></thead>
+      <tbody><tr><td>Vendas_Oficial_v4_final!F11</td><td><span class='badge' style='background:#DC2626'>Referência externa</span></td><td>Referência externa a outro arquivo: ='[Estoque_2025.xlsx]Geral'!$B$4</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G7</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G8</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G9</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G10</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G11</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G12</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G13</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G14</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G15</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G16</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G17</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G18</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G19</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G20</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G21</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G23</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G24</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G25</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G26</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G27</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G28</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G29</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G30</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G31</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G32</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G33</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G34</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G35</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G36</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!G37</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 0.05</td></tr>
+<tr><td>Vendas_Oficial_v4_final!D40</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 1500</td></tr>
+<tr><td>Cópia de Vendas (1)!B5</td><td><span class='badge' style='background:#2563EB'>Valor hardcoded</span></td><td>Valor numérico fixo embutido na fórmula: 1.1</td></tr></tbody>
+    </table>
+    
+</div>
+</body>
+</html>

@@ -3,11 +3,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src", REPO_ROOT / "src" / "product_a" / "trustware"):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     DAGEdge, DAGNode, ExecutionDAG, FormulaPattern, FormulaRegistryMap,
     NormalizedCell, NormalizedSheet, NormalizedWorkbookIR, PatternClass,
 )
@@ -103,9 +100,8 @@ def test_render_executes_and_computes_correct_result():
     import types
     fake_engine = types.ModuleType("_exrs_formula_engine")
     fake_range = types.ModuleType("_exrs_range_utils")
-    sys.path.insert(0, str(REPO_ROOT / "src"))
-    from formula_evaluator import evaluate_formula as real_evaluate_formula
-    from normalizer import expand_range as real_expand_range
+    from product_a.phase_a4.formula_evaluator import evaluate_formula as real_evaluate_formula
+    from kernel.phase_a1_5.normalizer import expand_range as real_expand_range
     fake_engine.evaluate_formula = real_evaluate_formula
     fake_range.expand_range = real_expand_range
     sys.modules["_exrs_formula_engine"] = fake_engine

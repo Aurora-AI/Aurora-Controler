@@ -5,11 +5,11 @@ A C4 nunca precisa abrir o C2.
 """
 from __future__ import annotations
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     DashboardComponent, DashboardSpec, DataView, Layout, MetricsReport,
     Resolution, SemanticModel,
 )
-from recommend import recommend
+from phase_c3.recommend import recommend
 
 
 def _build_layout(components: list[DashboardComponent]) -> Layout:

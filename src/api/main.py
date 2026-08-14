@@ -10,18 +10,6 @@ _PROJECT_ROOT = _HERE.parents[1]
 # phase_c0-c3 = Track C (Dashboard Engine) — pipeline independente do Produto B,
 # fora do escopo kernel/product_a/product_b; ver docs/ARCHITECTURE.md.
 # Add trustware and phase folders to sys.path
-for _p in [
-    _PROJECT_ROOT / "src" / "product_a" / "trustware",
-    _PROJECT_ROOT / "src" / "phase_c0",
-    _PROJECT_ROOT / "src" / "phase_c1",
-    _PROJECT_ROOT / "src" / "phase_c2",
-    _PROJECT_ROOT / "src" / "phase_c3",
-    _PROJECT_ROOT / "src" / "orchestrator",
-    _PROJECT_ROOT / "src" / "worker",
-    _HERE,
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 import uuid
 
@@ -29,18 +17,18 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from dashboard_contracts import DashboardSpec, C0Dataset
+from libs.trustware.dashboard_contracts import DashboardSpec, C0Dataset
 from phase_c0.unpivot import build_c0_dataset
-from semantic import build_semantic_model
-from metrics import build_metrics_report
-from spec_builder import build_dashboard_spec, validate_spec_self_contained
-from narrative import generate_narrative
+from phase_c1.semantic import build_semantic_model
+from phase_c2.metrics import build_metrics_report
+from phase_c3.spec_builder import build_dashboard_spec, validate_spec_self_contained
+from phase_c3.narrative import generate_narrative
 
-from storage_manager import StorageManager
-from jobs import JobStore
-from upload_guard import validate_upload, UploadValidationError
-from celery_app import compile_job
-from factory_events import factory_tool_unavailable
+from orchestrator.storage_manager import StorageManager
+from api.jobs import JobStore
+from api.upload_guard import validate_upload, UploadValidationError
+from worker.celery_app import compile_job
+from libs.trustware.factory_events import factory_tool_unavailable
 
 job_store = JobStore()
 

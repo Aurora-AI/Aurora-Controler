@@ -9,10 +9,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from formula_evaluator import evaluate_formula
-from normalizer import expand_range
+from product_a.phase_a4.formula_evaluator import evaluate_formula
+from kernel.phase_a1_5.normalizer import expand_range
 
 
 # ── Fixtures ────────────────────────────────────────────────────────────────
@@ -443,12 +442,12 @@ class TestEndToEnd:
 
 def test_sdiv_string_zero_returns_div0():
     """_sdiv com denominador string '0' deve retornar #DIV/0!, não #VALUE!"""
-    from formula_evaluator import _sdiv, _DIV0
+    from product_a.phase_a4.formula_evaluator import _sdiv, _DIV0
     result = _sdiv(10, "0")
     assert result == _DIV0, f"Esperado #DIV/0!, obtido {result!r}"
 
 def test_sdiv_string_nonzero_divides():
     """_sdiv com denominador string '5' deve dividir normalmente."""
-    from formula_evaluator import _sdiv
+    from product_a.phase_a4.formula_evaluator import _sdiv
     result = _sdiv(10, "5")
     assert result == 2.0, f"Esperado 2.0, obtido {result!r}"

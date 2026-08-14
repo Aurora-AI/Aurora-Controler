@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 
-from dashboard_contracts import DashboardSpec
+from libs.trustware.dashboard_contracts import DashboardSpec
 
 _ECHARTS_CDN = "https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"
 

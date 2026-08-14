@@ -98,3 +98,16 @@ def infer_column_roles(
     return _infer_column_roles_generic(
         df, override=override, role_keywords=role_keywords, required_roles=required_roles,
     )
+
+
+from kernel.tabular import read_dataframe_robust as _read_dataframe_robust_generic
+
+def read_dataframe(
+    path: str, sheet_name: str | None = None, role_keywords: dict[str, list[str]] | None = None
+) -> pd.DataFrame:
+    """Wrapper de domínio sobre `kernel.tabular.read_dataframe_robust`. Usa o vocabulário de
+    Vendas se `role_keywords` não for fornecido."""
+    role_keywords = role_keywords if role_keywords is not None else _ROLE_KEYWORDS
+    return _read_dataframe_robust_generic(
+        path=path, sheet_name=sheet_name, role_keywords=role_keywords
+    )

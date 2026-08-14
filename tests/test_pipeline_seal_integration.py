@@ -13,15 +13,6 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (
-    REPO_ROOT / "src" / "product_a" / "trustware", REPO_ROOT / "src" / "orchestrator",
-    REPO_ROOT / "src" / "kernel" / "phase_a0", REPO_ROOT / "src" / "kernel" / "phase_a1",
-    REPO_ROOT / "src" / "kernel" / "phase_a1_5", REPO_ROOT / "src" / "product_a" / "phase_a2",
-    REPO_ROOT / "src" / "product_a" / "phase_a2_5", REPO_ROOT / "src" / "product_a" / "phase_a3",
-    REPO_ROOT / "src" / "product_a" / "phase_a4",
-):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 
 def _read_jsonl(path: Path) -> list[dict]:
@@ -31,8 +22,8 @@ def _read_jsonl(path: Path) -> list[dict]:
 def test_unexpected_sealing_error_does_not_crash_job(tmp_path, monkeypatch):
     """seal_module levanta erro genérico (não SigningKeyUnavailable) → job completa sem selo,
     evento FACTORY_TOOL_UNAVAILABLE gravado, artefato final NÃO tem selo forjado."""
-    import pipeline_orchestrator
-    from storage_manager import StorageManager
+    from orchestrator import pipeline_orchestrator
+    from orchestrator.storage_manager import StorageManager
 
     def _boom(*_a, **_k):
         raise RuntimeError("falha simulada de hardware criptográfico")

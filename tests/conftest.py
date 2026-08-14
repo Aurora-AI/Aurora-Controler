@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from pathlib import Path
 
@@ -29,4 +30,6 @@ def pytest_configure(config):
         script_path = fixtures_dir / script_name
         if script_path.exists():
             print(f"\n[conftest] Gerando fixture binária: {script_path.name}...")
-            subprocess.run(["python", str(script_path)], check=True)
+            env = os.environ.copy()
+            env["PYTHONIOENCODING"] = "utf-8"
+            subprocess.run([sys.executable, str(script_path)], check=True, env=env)

@@ -21,9 +21,6 @@ logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(mes
 
 _HERE = Path(__file__).resolve().parent
 _REPO = _HERE.parents[1]
-for _p in [str(_HERE), str(_REPO / "src" / "product_a" / "trustware")]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
 from graph_assembler import load_graph_from_prefix
 from html_visualizer import save_html

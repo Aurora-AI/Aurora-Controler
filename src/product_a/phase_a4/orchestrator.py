@@ -9,12 +9,11 @@ from datetime import datetime
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from gabarito_extractor import extract_gabarito
-from runner import validate_workbook
-from repair_orchestrator import identify_repair_candidates
-from product_a.trustware.pipeline_contracts import (
+from product_a.phase_a4.gabarito_extractor import extract_gabarito
+from product_a.phase_a4.runner import validate_workbook
+from product_a.phase_a4.repair_orchestrator import identify_repair_candidates
+from libs.trustware.pipeline_contracts import (
     ExecutionDAG, DomainModule, FormulaRegistryMap, NormalizedWorkbookIR,
     CertifiedModule, ValidationResult
 )
@@ -45,8 +44,8 @@ def run_phase_a4(
     
     # 4. Analisar Resultados
     passed_count = len([r for r in results if r.passed])
-    failed_count = len([r for r in results if not r.passed and r.status != "SKIPPED_NO_CACHE"])
-    skipped_count = len([r for r in results if r.status == "SKIPPED_NO_CACHE"])
+    failed_count = len([r for r in results if not r.passed and r.status not in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP")])
+    skipped_count = len([r for r in results if r.status in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP")])
     
     mismatches = identify_repair_candidates(results, fmap)
     parity_score = (passed_count / (len(results) - skipped_count)) if (len(results) - skipped_count) > 0 else 1.0

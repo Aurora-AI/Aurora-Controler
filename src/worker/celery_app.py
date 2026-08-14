@@ -18,21 +18,12 @@ from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
 _ROOT = _HERE.parents[1]
-for _p in [
-    _ROOT / "src" / "product_a" / "trustware",
-    _ROOT / "src" / "orchestrator",
-    _ROOT / "src" / "api",
-    *[_ROOT / "src" / f"phase_{x}" for x in
-      ("a0", "a1", "a1_5", "a2", "a2_5", "a3", "a4", "c0", "c1", "c2", "c3")],
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 from celery import Celery
 
-from jobs import JobStore
-from storage_manager import StorageManager
-from pipeline_orchestrator import orchestrate_pipeline
+from api.jobs import JobStore
+from orchestrator.storage_manager import StorageManager
+from orchestrator.pipeline_orchestrator import orchestrate_pipeline
 
 REDIS_URL = os.getenv("EXRS_REDIS_URL", "redis://localhost:6399/0")
 
@@ -55,7 +46,7 @@ def run_compile(job_id: str, file_path: str) -> str:
     Corpo do processamento de um job. Independente de Celery — reaproveitável.
     Transiciona o job no store: RUNNING → status terminal do orquestrador.
     """
-    from factory_events import emit_event, trace, set_job
+    from libs.trustware.factory_events import emit_event, trace, set_job
     set_job(job_id)  # correlaciona eventos emitidos lá no fundo (ex.: sandbox sem Docker)
     store = JobStore()
     store.update_status(job_id, "RUNNING")

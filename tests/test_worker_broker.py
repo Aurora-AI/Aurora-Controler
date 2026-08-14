@@ -17,9 +17,6 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src" / "product_a" / "trustware", REPO_ROOT / "src" / "api", REPO_ROOT / "src" / "worker"):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 pytestmark = pytest.mark.skipif(
     os.getenv("EXRS_BROKER_E2E") != "1",

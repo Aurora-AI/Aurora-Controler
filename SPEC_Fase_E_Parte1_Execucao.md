@@ -317,11 +317,15 @@ Threshold: `skill_gap_avoidance_pp: float`.
 ### 3.5. TDD do MVP — correção de provisionamento (achado desta revisão)
 
 Verificado no repo: `rede_oticas_beta_test.xlsx` (a fixture com o Gabarito oculto) **não tem
-gerador versionado** — é um binário `.gitignore`d sem script de reconstrução rastreável no
-projeto; e o script `create_otica_test_workbook.py` gera `otica_test_bom/ruim.xlsx`, um par
-de fixtures não relacionado (usado em testes de robustez/completude, não no golden Beta).
-Editar qualquer um dos dois para "plantar um vendedor em evasão" seria ou impossível
-(Beta) ou contaminaria testes de outra tese (otica_test_bom/ruim).
+gerador versionado** — não há script de reconstrução rastreável no projeto. (Correção de
+30/07/2026: a versão anterior deste parágrafo dizia que o arquivo era "um binário
+`.gitignore`d". **Errado** — o `.gitignore` tem `!tests/fixtures/rede_oticas_beta_test.xlsx`,
+negação que o mantém versionado; confirmado por `git ls-files`. A fixture é *reproduzível*
+em qualquer clone, só não é *regenerável* por script.) E o `create_otica_test_workbook.py`
+gera `otica_test_bom/ruim.xlsx`, um par de fixtures não relacionado (usado em testes de
+robustez/completude, não no golden Beta). Editar qualquer um dos dois para "plantar um
+vendedor em evasão" seria ou inviável (Beta, sem gerador) ou contaminaria testes de outra
+tese (otica_test_bom/ruim).
 
 **Correção:** E1/E2/E3 seguem o padrão real de TDD por detector já em uso nesta casa (ver
 `tests/test_seller_margin_mix_phase_d.py`) — DataFrame sintético construído inline no teste
@@ -374,14 +378,20 @@ sem erro pelo pipeline real (Acceptance Criteria §5.5) — nunca para plantar o
 6. **Suíte completa verde**; goldens novos (`team_diagnostics`) das duas rodadas com diff
    auditado; regressões por caso (uma asserção por perna Z, um teste por gate).
 
-**Risco declarado (achado de revisão, não bloqueia, mas precisa de decisão consciente):** a
-regeneração de `golden_laudo_beta.json`/`audit_report_beta.json` (critério 5-6) depende de
-`tests/fixtures/rede_oticas_beta_test.xlsx`, um binário gitignored sem gerador versionado no
-repo (§3.5). Num clone limpo ou CI sem esse arquivo local, `test_golden_laudo_beta.py` e a
-regeneração desta OS não são reproduzíveis. Esta OS aceita a regeneração do golden Beta como
-tarefa que só roda na máquina que já tem o xlsx (mesma situação de hoje, não piora nem
-resolve) — criar um gerador versionado para `rede_oticas_beta_test.xlsx` fica registrado como
-débito técnico separado, fora do escopo desta OS.
+**Risco declarado — CORRIGIDO em 30/07/2026 (a versão anterior deste parágrafo estava
+ERRADA):** o texto original afirmava que `tests/fixtures/rede_oticas_beta_test.xlsx` era "um
+binário gitignored" e que "num clone limpo ou CI sem esse arquivo local a regeneração não é
+reproduzível". **Isso é falso.** O `.gitignore` tem `!tests/fixtures/rede_oticas_beta_test.xlsx`
+— uma NEGAÇÃO, que exclui o arquivo da regra `*.xlsx`. Verificado por `git ls-files` e
+`git check-ignore`: a fixture **está versionada no git** e vem em qualquer clone. A leitura
+errada nasceu de um `grep` que achou o nome do arquivo no `.gitignore` e concluiu "ignorado"
+sem ler o `!` na frente.
+
+O que **permanece** verdadeiro: não existe script gerador versionado para essa fixture (não
+há `create_rede_oticas_beta_workbook.py`), então ela não é *regenerável* — só *reproduzível*.
+Isso limita a manutenção (não dá para ajustar uma pegadinha por script), mas **não** afeta
+reprodutibilidade de clone nem de CI. Débito de manutenção real, de severidade bem menor que
+a registrada antes; fora do escopo desta OS.
 
 ---
 

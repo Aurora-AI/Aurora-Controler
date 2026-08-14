@@ -1,0 +1,5 @@
+ParserError: 
+Line |
+  44 |  foreach ( in ) {
+     |           ~
+     | Missing variable name after foreach. The correct form is: foreach ($a in $b) {...}

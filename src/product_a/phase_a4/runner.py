@@ -9,9 +9,8 @@ from typing import Any, Callable
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     ExecutionDAG, DomainModule, ValidationResult, PatternClass,
     FormulaRegistryMap, NormalizedWorkbookIR
 )
@@ -59,8 +58,8 @@ class SafeArithmeticEvaluator(ast.NodeVisitor):
             if not isinstance(operand, (int, float)):
                 raise TypeError(f"Operação unária requer número, obtido: {type(operand).__name__}")
             return self.operators[type(node.op)](operand)
-        elif isinstance(node, (ast.Num, ast.Constant)):
-            return node.n if isinstance(node, ast.Num) else node.value
+        elif isinstance(node, ast.Constant):
+            return node.value
         elif isinstance(node, ast.Name):
             if node.id in self.variables:
                 return self.variables[node.id]
@@ -160,7 +159,7 @@ def execute_in_sandbox(func_code: str, func_name: str, inputs: dict, timeout_sec
     if not _docker_available():
         # Falha explícita — NUNCA cair para exec local (reintroduziria o vetor de RCE).
         # Observabilidade: emite evento de fábrica (proibida falha silenciosa de ferramenta).
-        from factory_events import factory_tool_unavailable
+        from libs.trustware.factory_events import factory_tool_unavailable
         factory_tool_unavailable(
             tool="docker-sandbox",
             detail="docker engine não acessível ao executar código traduzido (A4)",

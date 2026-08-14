@@ -6,11 +6,8 @@ from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
 _REPO = _HERE.parents[1]
-for _p in [str(_HERE), str(_REPO / "libs" / "trustware")]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
-from unpivot import build_c0_dataset
+from phase_c0.unpivot import build_c0_dataset
 
 
 def main() -> None:

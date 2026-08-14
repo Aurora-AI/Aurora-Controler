@@ -12,9 +12,6 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src",):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 from product_b.oracle.column_mapper import (
     ColumnMappingError, DateAmbiguityError, coerce_currency_series,

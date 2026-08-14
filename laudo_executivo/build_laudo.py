@@ -384,8 +384,7 @@ def carregar_relatorio(caminho_report, caminho_manual_review=None):
     --report é usado) — o caminho comum sem anexo não precisa de pandas/pydantic no
     processo."""
     src_path = Path(__file__).resolve().parent.parent / "src"
-    if str(src_path) not in sys.path:
-        sys.path.insert(0, str(src_path))
+    # sys.path removed
     from product_b.oracle.commercial_auditor import apply_manual_review_verdicts
     from product_b.oracle.forensic_contracts import ExecutiveAuditReport
 

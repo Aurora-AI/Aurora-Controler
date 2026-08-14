@@ -2,14 +2,11 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT / "src") not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT / "src"))
-if str(REPO_ROOT / "src" / "orchestrator") not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT / "src" / "orchestrator"))
+# sys.path if statements removed
 
 import pytest
 from pydantic import BaseModel
-from storage_manager import StorageManager
+from orchestrator.storage_manager import StorageManager
 
 class DummyModel(BaseModel):
     val: str

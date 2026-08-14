@@ -10,6 +10,12 @@ __pycache__/
 # fantasma/E5, promoção legítima, divergência de custo NF/E4, estoque morto,
 # completude baixa). Mesma razão da acima: não regenerável, precisa estar versionada.
 !tests/fixtures/rede_oticas_beta_test.xlsx
+# Fixture hostil #3 (retail_hostile_test_v1 — planilha "caótica" de mundo real:
+# cabeçalho duplicado + coluna fantasma, referência externa a workbook inexistente,
+# referência circular =G10/0, linha de subtotal mesclada no meio do grid e fudge
+# factor +1500 somado ao TOTAL). Gabarito selado e verificado em
+# tests/fixtures/GABARITO_retail_hostile_test_v1.md. Mesma razão das acima.
+!tests/fixtures/retail_hostile_test_v1.xlsx
 .env
 *.egg-info/
 dist/

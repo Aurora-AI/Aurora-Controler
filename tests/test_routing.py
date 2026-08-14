@@ -5,7 +5,7 @@ import sys
 # Ensure src/product_a/trustware is in path
 
 
-from product_a.trustware.pipeline_contracts import WorkbookClass, CompileDecision
+from libs.trustware.pipeline_contracts import WorkbookClass, CompileDecision
 from src.orchestrator.pipeline_orchestrator import route
 
 def test_route_escalate():

@@ -6,10 +6,6 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src" / "product_a" / "trustware", REPO_ROOT / "src" / "orchestrator",
-           REPO_ROOT / "src" / "api", REPO_ROOT / "src" / "product_a" / "phase_a4", REPO_ROOT / "src" / "worker"):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 
 def _read_jsonl(path: Path) -> list[dict]:
@@ -19,7 +15,7 @@ def _read_jsonl(path: Path) -> list[dict]:
 def test_sandbox_unavailable_emits_factory_event(tmp_path, monkeypatch):
     """Docker indisponível → FACTORY_TOOL_UNAVAILABLE (proibida falha silenciosa)."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
-    import runner
+    from product_a.phase_a4 import runner
     monkeypatch.setattr(runner, "_docker_available", lambda: False)
 
     result = runner.execute_in_sandbox("def f():\n    return 1\n", "f", {})
@@ -36,8 +32,8 @@ def test_sandbox_unavailable_emits_factory_event(tmp_path, monkeypatch):
 def test_orchestrate_emits_per_phase_trace(tmp_path, monkeypatch):
     """O pipeline registra trace por micro-etapa em {job_id}/trace.jsonl."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
-    from storage_manager import StorageManager
-    from pipeline_orchestrator import orchestrate_pipeline
+    from orchestrator.storage_manager import StorageManager
+    from orchestrator.pipeline_orchestrator import orchestrate_pipeline
 
     job_id = uuid.uuid4().hex
     storage = StorageManager(job_id)  # usa EXRS_DATA_DIR
@@ -54,14 +50,14 @@ def test_orchestrate_emits_per_phase_trace(tmp_path, monkeypatch):
 def test_worker_exception_is_not_silent(tmp_path, monkeypatch):
     """Se um passo do pipeline LEVANTAR, o worker emite evento + trace terminal (não mudo)."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
-    import celery_app
+    from worker import celery_app
 
     def _boom(*a, **k):
         raise RuntimeError("docker socket explodiu")
     monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
 
     job_id = uuid.uuid4().hex
-    from jobs import JobStore
+    from api.jobs import JobStore
     JobStore().create(job_id, "x.xlsx")
     status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
     assert status == "ERROR"
@@ -75,19 +71,19 @@ def test_worker_exception_is_not_silent(tmp_path, monkeypatch):
 def test_observability_failure_never_orphans_job(tmp_path, monkeypatch):
     """Se a própria escrita de evento falhar, o job ainda é persistido ERROR (nunca RUNNING)."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
-    import celery_app
+    from worker import celery_app
 
     def _boom(*a, **k):
         raise RuntimeError("pipeline quebrou")
     monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
     # observabilidade indisponível (ex.: disco cheio) — run_compile importa emit_event de
     # factory_events em tempo de chamada, então o patch é no módulo de origem.
-    import factory_events
+    from libs.trustware import factory_events
     monkeypatch.setattr(factory_events, "emit_event",
                         lambda *a, **k: (_ for _ in ()).throw(OSError("disk full")))
 
     job_id = uuid.uuid4().hex
-    from jobs import JobStore
+    from api.jobs import JobStore
     store = JobStore()
     store.create(job_id, "x.xlsx")
     status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
@@ -99,8 +95,8 @@ def test_observability_failure_never_orphans_job(tmp_path, monkeypatch):
 def test_sandbox_event_correlates_job_id_via_context(tmp_path, monkeypatch):
     """O evento de sandbox herda o job_id corrente (contextvar), não None."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
-    import runner
-    from factory_events import set_job
+    from product_a.phase_a4 import runner
+    from libs.trustware.factory_events import set_job
     monkeypatch.setattr(runner, "_docker_available", lambda: False)
 
     set_job("job-corr-123")
@@ -116,7 +112,7 @@ def test_compile_broker_failure_emits_event_and_503(tmp_path, monkeypatch):
     """Enqueue falho (broker down) → evento + HTTP 503, nunca silencioso."""
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
     from fastapi.testclient import TestClient
-    import main
+    from api import main
 
     def _boom(*a, **k):
         raise ConnectionError("redis down")

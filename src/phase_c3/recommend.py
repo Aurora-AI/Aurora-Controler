@@ -5,10 +5,10 @@ e materializa o data_view de cada componente escolhido.
 """
 from __future__ import annotations
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     ChartRule, DashboardComponent, DashboardComponentSpec, MetricsReport, SemanticModel,
 )
-from catalog import CHART_RULES, DATA_VIEW_BUILDER_REGISTRY, PREDICATE_REGISTRY
+from phase_c3.catalog import CHART_RULES, DATA_VIEW_BUILDER_REGISTRY, PREDICATE_REGISTRY
 
 
 def recommend(

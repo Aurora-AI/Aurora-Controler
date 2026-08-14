@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     Aggregation, ChartRule, DataView, MetricsReport, SemanticModel,
 )
 

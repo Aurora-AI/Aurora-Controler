@@ -1,0 +1,152 @@
+{
+  "period_start": "2026-03",
+  "period_end": "2026-04",
+  "cleaning": {
+    "rows_read": 34,
+    "rows_accepted": 26,
+    "rows_discarded_by_reason": {
+      "valor_nao_numerico": 1,
+      "data_invalida": 7
+    },
+    "files_skipped": [],
+    "values_winsorized": [],
+    "raw_declared_revenue": 35353.5,
+    "reconciliation_gap": 850.5
+  },
+  "thresholds": {
+    "revenue_drop_sigma": 2.0,
+    "churn_cadence_multiplier": 2.0,
+    "churn_min_purchases": 3,
+    "trend_decoupling_pct": 20.0,
+    "seasonality_min_months": 12,
+    "materiality_revenue_pct": 1.0,
+    "rfm_bins": 5,
+    "variable_cost_pct": 15.0,
+    "promo_payment_label": "promocao",
+    "latent_revenue_anchor_category": "lente",
+    "latent_revenue_target_category": "solar",
+    "latent_revenue_conversion_pct": 20.0,
+    "dead_stock_months": 8,
+    "contingency_completeness_pct": 30.0,
+    "outlier_median_ratio": 20.0,
+    "cold_start_min_months": 4.0,
+    "sev_min_capture_pct": 60.0,
+    "sev_ramp_min_days": 180.0,
+    "concentration_risk_pct": 25.0,
+    "service_category_label": "servico",
+    "service_reconciliation_gap_tolerance": 1.0,
+    "gmroi_sku_high_margin_pct": 40.0,
+    "gmroi_sku_low_ratio": 1.0,
+    "seller_corrosion_std_multiplier": 2.0,
+    "concentration_seller_vip_pct": 40.0,
+    "vip_customer_top_pct": 20.0,
+    "manual_review_discount_pct": 60.0,
+    "nf_cost_divergence_pct": 15.0,
+    "seller_margin_gap_pct": 10.0,
+    "seller_margin_mix_min_sample": 10,
+    "provenance_sample_cap": 10,
+    "flight_risk_trend_window_months": 3,
+    "flight_risk_trend_sigma": 1.5,
+    "flight_risk_min_flags": 2,
+    "skill_gap_avoidance_pp": 10.0,
+    "commission_basis": "unknown"
+  },
+  "revenue_leaks": [],
+  "churn_findings": [],
+  "product_trends": [
+    {
+      "product": "SKU-1044",
+      "company_growth_pct": 0.3484017071683651,
+      "product_growth_pct": -33.33333333333333,
+      "decoupled": true,
+      "last_sale_month": "2026-04",
+      "short_term_margin": 38.775510204081634,
+      "has_formula_errors": false
+    },
+    {
+      "product": "SKU-3321",
+      "company_growth_pct": 0.3484017071683651,
+      "product_growth_pct": 0.0,
+      "decoupled": false,
+      "last_sale_month": "2026-04",
+      "short_term_margin": null,
+      "has_formula_errors": false
+    },
+    {
+      "product": "SKU-5541",
+      "company_growth_pct": 0.3484017071683651,
+      "product_growth_pct": 100.0,
+      "decoupled": false,
+      "last_sale_month": "2026-04",
+      "short_term_margin": null,
+      "has_formula_errors": false
+    },
+    {
+      "product": "SKU-8832",
+      "company_growth_pct": 0.3484017071683651,
+      "product_growth_pct": -31.987205117952822,
+      "decoupled": true,
+      "last_sale_month": "2026-04",
+      "short_term_margin": 29.453262786596117,
+      "has_formula_errors": false
+    },
+    {
+      "product": "SKU-9921",
+      "company_growth_pct": 0.3484017071683651,
+      "product_growth_pct": -25.0,
+      "decoupled": true,
+      "last_sale_month": "2026-04",
+      "short_term_margin": 24.137931034482758,
+      "has_formula_errors": false
+    }
+  ],
+  "seasonality": [
+    {
+      "scope": "total",
+      "entity": "total",
+      "monthly_index": null,
+      "insufficient_data": true,
+      "months_available": 2
+    }
+  ],
+  "rfm_champions": [],
+  "contribution_margin_alerts": [],
+  "latent_revenue": [],
+  "dead_stock": [],
+  "gmroi": [],
+  "data_completeness": [],
+  "store_performance": [],
+  "store_macro_summary": null,
+  "customer_concentration": [],
+  "service_decomposition": [],
+  "service_reconciliation": [],
+  "salesperson_performance": [],
+  "advanced_metrics": {
+    "gmroi_alerts": [],
+    "attach_rate_opportunities": [],
+    "seller_margin_corrosion": [],
+    "concentration_risk": [],
+    "follow_on_conversion": null,
+    "discrepancy_triage": null,
+    "seller_margin_mix": []
+  },
+  "executive_summary": {
+    "total_operational_loss": 0.0,
+    "total_capital_frozen": 0.0,
+    "total_ltv_risk": 0.0,
+    "discarded_alarms": [
+      {
+        "category": "commission_basis_unknown",
+        "entity_id": "rede",
+        "reason": "estrutura de comissão não informada — ponto cego não avaliado."
+      }
+    ],
+    "action_plan": []
+  },
+  "team_diagnostics": {
+    "flight_risk": [],
+    "incentive_misalignment": [],
+    "skill_gaps": []
+  },
+  "generated_at": "2026-07-30T17:23:24.756438+00:00"
+}

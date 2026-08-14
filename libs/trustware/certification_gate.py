@@ -11,7 +11,7 @@ dos `validation_report.results` e rejeita selos inconsistentes. Isso impede que 
 """
 import math
 
-from pipeline_contracts import CertifiedModule
+from libs.trustware.pipeline_contracts import CertifiedModule
 
 # Sentinelas de erro que JAMAIS podem aparecer em um nó marcado como passed=True.
 _ERROR_MARKERS = ("RUNTIME_ERROR", "#ERROR!", "#EXT!", "SANDBOX_UNAVAILABLE", "ERROR:")
@@ -59,7 +59,7 @@ def verify_certification(certified: CertifiedModule) -> None:
     results = certified.validation_report.results
 
     # Nós efetivamente avaliados (cache ausente não conta para paridade).
-    evaluated = [r for r in results if r.status != "SKIPPED_NO_CACHE"]
+    evaluated = [r for r in results if r.status not in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP")]
     passed = [r for r in evaluated if r.passed]
     failed = [r for r in evaluated if not r.passed]
     parity = (len(passed) / len(evaluated)) if evaluated else 1.0

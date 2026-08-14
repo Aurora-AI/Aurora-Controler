@@ -8,18 +8,13 @@ from pathlib import Path
 from datetime import datetime
 
 REPO_ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(REPO_ROOT / "src"))
-sys.path.insert(0, str(REPO_ROOT / "src" / "orchestrator"))
 
-from storage_manager import StorageManager
-from pipeline_orchestrator import orchestrate_pipeline
+from orchestrator.storage_manager import StorageManager
+from orchestrator.pipeline_orchestrator import orchestrate_pipeline
 
 def _setup_b_paths():
-    """Adiciona módulos das fases B ao sys.path."""
-    for phase in ["phase_b1", "phase_b2", "phase_b3"]:
-        p = str(REPO_ROOT / "src" / phase)
-        if p not in sys.path:
-            sys.path.insert(0, p)
+    """Adiciona módulos das fases B ao sys.path (Removido)."""
+    pass
 
 def run(xlsx_path: Path, skip_llm: bool = True, run_hitl_flag: bool = False, job_id: str = None):
     stem = xlsx_path.stem
@@ -44,8 +39,8 @@ def run(xlsx_path: Path, skip_llm: bool = True, run_hitl_flag: bool = False, job
     if not skip_llm:
         print("\n[B1] Capturando intenção do usuário via chat...")
         _setup_b_paths()
-        from context_builder import load_summary_from_prefix
-        from chat_loop import run_chat
+        from product_a.phase_b1.context_builder import load_summary_from_prefix
+        from product_a.phase_b1.chat_loop import run_chat
         summary = load_summary_from_prefix(str(out_dir / f"{stem}"))
         intent = run_chat(summary)
         storage.write_artifact(stem, "b1_intent", intent)
@@ -53,8 +48,8 @@ def run(xlsx_path: Path, skip_llm: bool = True, run_hitl_flag: bool = False, job
 
         # ── B2: Visual Assembly ───────────────────────────────
         print("\n[B2] Montando grafo visual...")
-        from graph_assembler import load_graph_from_prefix
-        from html_visualizer import save_html
+        from product_a.phase_b2.graph_assembler import load_graph_from_prefix
+        from product_a.phase_b2.html_visualizer import save_html
         graph, _, _ = load_graph_from_prefix(str(out_dir / f"{stem}"))
         storage.write_artifact(stem, "b2_graph", graph)
         save_html(graph, out_dir / f"{stem}_b2_graph.html")
@@ -63,7 +58,7 @@ def run(xlsx_path: Path, skip_llm: bool = True, run_hitl_flag: bool = False, job
         # ── B3: Simulation + HITL ─────────────────────────────
         if run_hitl_flag:
             print("\n[B3] Iniciando simulação HITL interativa...")
-            from hitl_loop import run_hitl
+            from product_a.phase_b3.hitl_loop import run_hitl
             audit = run_hitl(graph)
             storage.write_artifact(stem, "b3_audit", audit)
             print(f"     Rodadas: {len(audit.steps)} | Intervenções: {len(audit.hitl_interventions)}")

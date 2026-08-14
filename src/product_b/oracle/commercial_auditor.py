@@ -18,11 +18,13 @@ import pandas as pd
 from kernel.robustness import benchmark_population as _benchmark_population_generic
 from kernel.robustness import dedup_by_key
 from kernel.tabular import records_to_frame as _records_to_frame_generic
+from kernel.tabular import _clean_currency_value
 from product_b.oracle.column_mapper import (
     _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _COMPRAS_REQUIRED_ROLES,
     _COMPRAS_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES, _ESTOQUE_ROLE_KEYWORDS,
     _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS, ColumnMappingError,
     DateAmbiguityError, coerce_currency_series, coerce_date_series, infer_column_roles,
+    read_dataframe,
 )
 from product_b.oracle.forensic_contracts import (
     ActionPlanItem, AdvancedMetrics, AttachRateOpportunity, AuditThresholdsConfig,
@@ -95,10 +97,7 @@ def benchmark_population(entity_stats: dict[str, dict], predicate=lambda stats: 
 _AVG_DAYS_PER_MONTH = 30.44
 
 
-def _read_raw(path: Path) -> pd.DataFrame:
-    if path.suffix.lower() == ".csv":
-        return pd.read_csv(path, dtype=str)
-    return pd.read_excel(path, dtype=str, engine="openpyxl")
+# Função _read_raw removida: substituída por read_dataframe (busca heurística de cabeçalho).
 
 
 _SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro", "Compras")
@@ -114,8 +113,14 @@ def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
     if path.is_dir() or path.suffix.lower() != ".xlsx":
         return {}
     workbook = pd.ExcelFile(path, engine="openpyxl")
+    sheet_roles = {
+        "Estoque": _ESTOQUE_ROLE_KEYWORDS,
+        "Clientes": _CLIENTES_ROLE_KEYWORDS,
+        "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
+        "Compras": _COMPRAS_ROLE_KEYWORDS,
+    }
     return {
-        name: pd.read_excel(path, sheet_name=name, dtype=str, engine="openpyxl")
+        name: read_dataframe(str(path), sheet_name=name, role_keywords=sheet_roles[name])
         for name in _SERIES_B_SHEETS if name in workbook.sheet_names
     }
 
@@ -136,14 +141,30 @@ def load_sales_records(
     rows_read = 0
     discarded_by_reason: dict[str, int] = {}
     files_skipped: list[dict] = []
+    raw_declared_revenue = 0.0
 
     for file_path in files:
-        raw = _read_raw(file_path)
+        raw = read_dataframe(str(file_path))
         rows_read += len(raw)
         try:
             roles = infer_column_roles(raw, override=mapping_override)
-            dates = coerce_date_series(raw[roles["date"]])
-            values = coerce_currency_series(raw[roles["value"]])
+            
+            raw_costs = raw[roles["cost"]] if "cost" in roles else pd.Series([None] * len(raw))
+            is_formula_error = raw_costs.astype(str).str.contains(r'#DIV/0!|#REF!|#VALUE!|#N/A', na=False)
+            
+            raw_values = raw[roles["value"]]
+            # `coerce_currency_series` em vez de `.apply(_clean_currency_value)` cru:
+            # `read_dataframe` devolve colunas com StringDtype, e `.apply()` sobre uma
+            # série VAZIA preserva o dtype string (não há elemento para inferir float).
+            # `.sum()` de série string vazia devolve '' (identidade de concatenação),
+            # não 0 — e o `float('')` estourava ValueError, trocando a mensagem
+            # amigável "Nenhuma linha de venda válida" por um traceback cru na planilha
+            # de zero linhas. O helper já força dtype float64, então o caso vazio soma 0.
+            raw_declared_revenue += float(coerce_currency_series(raw_values).sum(skipna=True))
+            
+            date_format = mapping_override.get("date_format") if mapping_override else None
+            dates = coerce_date_series(raw[roles["date"]], date_format=date_format)
+            values = coerce_currency_series(raw_values)
             products = raw[roles["product"]].astype(str)
             customers = raw[roles["customer"]].astype(str)
             quantities = (
@@ -215,11 +236,15 @@ def load_sales_records(
                 ),
                 source_file=file_path.name,
                 source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
+                has_formula_error=bool(is_formula_error.iloc[i]),
             ))
 
+    reconciliation_gap = raw_declared_revenue - sum(r.value for r in records)
     summary = CleaningSummary(
         rows_read=rows_read, rows_accepted=len(records),
         rows_discarded_by_reason=discarded_by_reason, files_skipped=files_skipped,
+        raw_declared_revenue=float(raw_declared_revenue),
+        reconciliation_gap=float(reconciliation_gap),
     )
     return records, summary
 
@@ -284,7 +309,7 @@ _SALES_FRAME_SCHEMA: dict[str, str] = {
     "date": "datetime64[ns]", "product": "object", "customer": "object",
     "value": "float64", "entry_cost": "float64", "category": "object",
     "store": "object", "salesperson": "object", "payment_method": "object",
-    "quantity": "float64", "source_row": "int64",
+    "quantity": "float64", "source_row": "int64", "has_formula_error": "bool",
 }
 
 
@@ -294,7 +319,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
         "payment_method": r.payment_method, "quantity": r.quantity,
-        "source_row": r.source_row,
+        "source_row": r.source_row, "has_formula_error": r.has_formula_error,
     } for r in records], _SALES_FRAME_SCHEMA)
 
 
@@ -459,11 +484,24 @@ def detect_product_trends(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -
 
         decoupled = (company_growth_pct - product_growth_pct) > thresholds.trend_decoupling_pct and thresholds.trend_decoupling_pct > 0
 
+        short_term_margin = None
+        if decoupled:
+            valid_cost_mask = group["entry_cost"].notna()
+            if valid_cost_mask.any():
+                total_val = group.loc[valid_cost_mask, "value"].sum()
+                total_cost = group.loc[valid_cost_mask, "entry_cost"].sum()
+                if total_val > 0:
+                    short_term_margin = ((total_val - total_cost) / total_val) * 100.0
+
+        has_formula_errors = bool(group["has_formula_error"].any()) if "has_formula_error" in group.columns else False
+
         last_sale_period = group["period"].max() if len(group) else None
         entries.append(ProductTrendEntry(
             product=product, company_growth_pct=float(company_growth_pct),
             product_growth_pct=float(product_growth_pct), decoupled=bool(decoupled),
             last_sale_month=str(last_sale_period) if last_sale_period is not None else None,
+            short_term_margin=float(short_term_margin) if short_term_margin is not None else None,
+            has_formula_errors=has_formula_errors,
         ))
 
     return entries
@@ -2553,9 +2591,19 @@ def run_audit(
         generated_at=datetime.now(timezone.utc).isoformat()
     )
 
+    # [CAMADA 1: A REGRA DURA (Trustware / Elysian-Brain)]
+    # Força travas matemáticas irrefutáveis (ex: CRITICAL_RECONCILIATION_GAP) e modos de apresentação (ex: SHORT_WINDOW_MODE)
+    import sys
+    import os
+    # sys.path removed
+    from libs.trustware.forensic_gate import apply_forensic_locks
+    
+    report = apply_forensic_locks(report)
+
     if return_identity_map:
         return report, identity_map
     return report
+
 
 
 class ManualReviewMismatchError(ValueError):

@@ -6,6 +6,7 @@ commercial_auditor.py carrega números mágicos — todo limiar vem de
 `AuditThresholdsConfig`, injetado explicitamente e registrado no `ExecutiveAuditReport`
 final (reprodutibilidade: sabe-se exatamente com quais limiares a auditoria rodou).
 """
+from __future__ import annotations
 from pydantic import BaseModel, Field
 
 
@@ -193,6 +194,7 @@ class SalesRecord(BaseModel):
     payment_method: str | None = None
     source_file: str
     source_row: int
+    has_formula_error: bool = False
 
 
 class WinsorizedValue(BaseModel):
@@ -213,6 +215,8 @@ class CleaningSummary(BaseModel):
     rows_discarded_by_reason: dict[str, int] = Field(default_factory=dict)
     files_skipped: list[dict] = Field(default_factory=list)
     values_winsorized: list[WinsorizedValue] = Field(default_factory=list)
+    raw_declared_revenue: float | None = None
+    reconciliation_gap: float | None = None
 
 
 class RevenueLeakAnomaly(BaseModel):
@@ -260,7 +264,9 @@ class ProductTrendEntry(BaseModel):
     company_growth_pct: float
     product_growth_pct: float
     decoupled: bool
-    last_sale_month: str | None  # "YYYY-MM"
+    last_sale_month: str | None = None
+    short_term_margin: float | None = None
+    has_formula_errors: bool = False
 
 
 class RFMChampion(BaseModel):
@@ -918,3 +924,7 @@ class ExecutiveAuditReport(BaseModel):
     # habilidade), paralelo a advanced_metrics, nunca somado a executive_summary.
     team_diagnostics: TeamDiagnostics = Field(default_factory=TeamDiagnostics)
     generated_at: str
+    
+    # Trustware / Forensic Gate: Status de integridade imposto pela Regra Dura.
+    audit_status: str = "OK"
+    presentation_mode: str = "LONG_WINDOW_MODE"

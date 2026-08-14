@@ -11,7 +11,7 @@ from datetime import datetime
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     FormulaRegistryMap, NormalizedWorkbookIR, SemanticTranslationRequest,
     SemanticTranslationResult, FormulaTokenType, PatternClass, DomainFunction, DomainModule
 )

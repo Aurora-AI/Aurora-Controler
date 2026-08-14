@@ -14,10 +14,10 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 
 
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     CertifiedModule, DomainModule, MismatchReport, ValidationResult,
 )
-from sealing import (
+from libs.trustware.sealing import (
     SigningKeyUnavailable, canonical_digest, load_private_key, seal_module,
 )
 

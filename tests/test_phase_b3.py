@@ -4,13 +4,8 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for p in [
-    REPO_ROOT / "src" / "product_a" / "phase_b3",
-    REPO_ROOT / "src" / "product_a" / "trustware",
-]:
-    sys.path.insert(0, str(p))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     SimulationStep, SimulationAudit,
     GraphNode, GraphEdge, GraphNodeType, StagedRuleGraph,
     InputParameter, OutputMetric, IntentCapture,
@@ -135,7 +130,7 @@ def test_simulation_audit_serialization():
 # ---------------------------------------------------------------------------
 # Task 2 — simulation_engine tests
 # ---------------------------------------------------------------------------
-from simulation_engine import (
+from product_a.phase_b3.simulation_engine import (
     _is_complex_formula,
     _safe_calc,
     _build_topo_order,
@@ -234,7 +229,7 @@ def test_run_simulation_missing_ref():
 # Task 3 — hitl_loop tests
 # ---------------------------------------------------------------------------
 from unittest.mock import patch
-from hitl_loop import _print_step, run_hitl
+from product_a.phase_b3.hitl_loop import _print_step, run_hitl
 
 
 def test_print_step_shows_run_number(capsys):
@@ -309,8 +304,6 @@ import json
 
 def test_phase_b3_package_imports_cleanly():
     src_path = str(REPO_ROOT / "src")
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
     import product_a.phase_b3  # noqa: F401
     assert product_a.phase_b3.__file__  # confirms package was found
 
