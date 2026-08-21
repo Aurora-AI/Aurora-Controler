@@ -13,21 +13,14 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (
-    REPO_ROOT / "src" / "product_a" / "trustware", REPO_ROOT / "src" / "orchestrator",
-    REPO_ROOT / "src" / "api", REPO_ROOT / "src" / "worker",
-    REPO_ROOT / "src" / "product_a" / "phase_a4",
-):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 
 def test_worker_run_compile_reaches_terminal_status_without_signing_key(tmp_path, monkeypatch):
     monkeypatch.delenv("EXRS_SIGNING_KEY_FILE", raising=False)
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
 
-    import celery_app
-    from jobs import JobStore
+    from worker import celery_app
+    from api.jobs import JobStore
 
     fixture = REPO_ROOT / "tests" / "fixtures" / "coverage_test.xlsx"
     store = JobStore()  # usa EXRS_DATA_DIR (tmp_path) por default

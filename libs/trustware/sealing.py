@@ -26,7 +26,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PublicKey,
 )
 
-from pipeline_contracts import CertificationSeal, CertifiedModule
+from libs.trustware.pipeline_contracts import CertificationSeal, CertifiedModule
 
 
 class SigningKeyUnavailable(Exception):

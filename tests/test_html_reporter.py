@@ -4,11 +4,10 @@ from pathlib import Path
 import tempfile
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
 
-from html_reporter import generate_html_report, _esc, _pct
-from product_a.trustware.pipeline_contracts import ValidationResult
+from product_a.phase_a4.html_reporter import generate_html_report, _esc, _pct
+from libs.trustware.pipeline_contracts import ValidationResult
 
 
 def _make_results():
@@ -126,7 +125,7 @@ def test_esc_helper():
 
 
 def test_esc_attr_escapes_quotes():
-    from html_reporter import _esc_attr
+    from product_a.phase_a4.html_reporter import _esc_attr
     assert _esc_attr('"hello"') == "&quot;hello&quot;"
     assert _esc_attr("it's") == "it&#39;s"
     assert _esc_attr('<b>"test"</b>') == "&lt;b&gt;&quot;test&quot;&lt;/b&gt;"
@@ -143,7 +142,7 @@ def test_formula_with_double_quote_in_title_attr():
             status="PASSED",
         )
     ]
-    from product_a.trustware.pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass, PatternRegistryEntry
+    from libs.trustware.pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass, PatternRegistryEntry
     pattern = FormulaPattern(
         node_id="S!A1",
         formula_raw='=IF(A1="x",1,0)',   # aspas duplas na fórmula
@@ -179,7 +178,7 @@ def test_breakdown_without_fmap_shows_unclassified():
 
 def test_breakdown_with_fmap_shows_patterns():
     """Com fmap real, o breakdown deve mostrar as classes corretas."""
-    from product_a.trustware.pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass
+    from libs.trustware.pipeline_contracts import FormulaRegistryMap, FormulaPattern, PatternClass
     results = [
         ValidationResult(node_id="S!A1", expected_value=1, actual_value=1,
                          passed=True, status="PASSED"),
@@ -210,7 +209,7 @@ def test_breakdown_with_fmap_shows_patterns():
 
 def test_truncate_raw_before_escaping():
     """Truncamento deve ocorrer no valor RAW, não na string já escapada."""
-    from html_reporter import _truncate
+    from product_a.phase_a4.html_reporter import _truncate
     # String com '<' perto do limite — não deve partir &lt;
     raw = "a" * 78 + "<b>"  # 81 chars, '<' na posição 78
     display, attr = _truncate(raw, 80)

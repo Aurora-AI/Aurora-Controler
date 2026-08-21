@@ -125,6 +125,9 @@ def test_discarded_alarms_flags_ramping_salesperson_and_cold_start_store():
     assert categories_and_entities == {
         ("salesperson_ramp", "Vendedor Novo"),
         ("store_cold_start", "Loja Nova"),
+        # Fase E, E2 — commission_basis default "unknown" sempre gera este alarme
+        # (ponto cego honesto), independente de rampa/cold-start.
+        ("commission_basis_unknown", "rede"),
     }
 
 

@@ -9,8 +9,8 @@ import logging
 import os
 
 from litellm import completion
-from intent_extractor import extract_intent
-from product_a.trustware.pipeline_contracts import IntentCapture
+from product_a.phase_b1.intent_extractor import extract_intent
+from libs.trustware.pipeline_contracts import IntentCapture
 
 _log = logging.getLogger(__name__)
 

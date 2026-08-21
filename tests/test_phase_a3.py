@@ -6,10 +6,9 @@ from unittest.mock import patch, MagicMock
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from product_a.phase_a3.translator import extract_unresolved, build_prompt, translate_formula, translate_workbook
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     FormulaRegistryMap, FormulaPattern, PatternClass,
     NormalizedWorkbookIR, NormalizedSheet, NormalizedCell,
     FormulaToken, FormulaTokenType, SemanticTranslationRequest
@@ -111,7 +110,7 @@ class TestPhaseA3(unittest.TestCase):
 
     @patch('product_a.phase_a3.translator.translate_formula')
     def test_translate_workbook(self, mock_translate):
-        from product_a.trustware.pipeline_contracts import SemanticTranslationResult
+        from libs.trustware.pipeline_contracts import SemanticTranslationResult
         mock_translate.return_value = SemanticTranslationResult(
             node_id='Sheet1!B1',
             function_name='complex_func',

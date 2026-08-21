@@ -40,6 +40,15 @@ _ESTOQUE_ROLE_KEYWORDS: dict[str, list[str]] = {
     "qty_on_hand": ["qtd_atual", "estoque", "saldo", "quantidade"],
     "last_movement": ["ultimo_mov", "movimentacao"],
     "category": ["categoria", "familia", "linha"],
+    # Algoritmo 3 (corrosão de desconto) — preço de TABELA do produto, para comparar
+    # contra o preço efetivamente praticado na venda. Papel opcional: não entra em
+    # _ESTOQUE_REQUIRED_ROLES, então planilha sem esta coluna não quebra nenhum
+    # detector de Estoque existente — só desativa o detector que depende dela.
+    "list_price": ["preco_venda", "preco_tabela", "preco"],
+    # Fase D2 — nome legível do produto, pro Anexo Vivo nunca mostrar só o código
+    # cru do SKU. Papel opcional (fora de _ESTOQUE_REQUIRED_ROLES): sem a coluna, o
+    # anexo cai pro fallback honesto (só o código) — nunca inventa nome.
+    "description": ["descricao", "nome"],
 }
 _ESTOQUE_REQUIRED_ROLES = ("sku", "cost", "qty_on_hand", "last_movement")
 
@@ -59,6 +68,19 @@ _FINANCEIRO_ROLE_KEYWORDS: dict[str, list[str]] = {
 }
 _FINANCEIRO_REQUIRED_ROLES = ("period", "store", "service_revenue")
 
+# Fase C — vocabulário da aba Compras (a "NF de entrada"): custo REAL de aquisição do
+# SKU, por data de compra — usado pra checar se o `entry_cost` registrado na venda
+# (aba Vendas) bate com o que a empresa de fato pagou pelo produto. Dict separado dos
+# demais pela mesma razão de sempre ("custo"/"sku" mudam de sentido por aba).
+_COMPRAS_ROLE_KEYWORDS: dict[str, list[str]] = {
+    "purchase_id": ["compra_id", "id"],
+    "date": ["data", "emissao"],
+    "sku": ["sku", "produto", "item", "codigo"],
+    "qty": ["qtd", "quantidade"],
+    "cost": ["custo"],
+}
+_COMPRAS_REQUIRED_ROLES = ("date", "sku", "cost")
+
 
 def infer_column_roles(
     df: pd.DataFrame, override: dict[str, str] | None = None,
@@ -75,4 +97,17 @@ def infer_column_roles(
     required_roles = required_roles if required_roles is not None else _REQUIRED_ROLES
     return _infer_column_roles_generic(
         df, override=override, role_keywords=role_keywords, required_roles=required_roles,
+    )
+
+
+from kernel.tabular import read_dataframe_robust as _read_dataframe_robust_generic
+
+def read_dataframe(
+    path: str, sheet_name: str | None = None, role_keywords: dict[str, list[str]] | None = None
+) -> pd.DataFrame:
+    """Wrapper de domínio sobre `kernel.tabular.read_dataframe_robust`. Usa o vocabulário de
+    Vendas se `role_keywords` não for fornecido."""
+    role_keywords = role_keywords if role_keywords is not None else _ROLE_KEYWORDS
+    return _read_dataframe_robust_generic(
+        path=path, sheet_name=sheet_name, role_keywords=role_keywords
     )

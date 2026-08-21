@@ -9,9 +9,6 @@ from datetime import datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src",):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 from product_b.oracle.forensic_contracts import (
     ActionPlanItem, AuditThresholdsConfig, ChurnFinding, CleaningSummary, DiscardedAlarm,

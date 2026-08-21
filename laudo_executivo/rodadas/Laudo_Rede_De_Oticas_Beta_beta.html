@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Audit Report — EXRS Data Oracle</title>
+<style>
+  :root{
+    --bg:#faf9f7; --ink:#26241f; --ink-soft:#6b675e; --line:#e4e1da;
+    --card:#ffffff; --red:#b3261e; --red-soft:#fbeae9;
+    --green:#2c6e49; --fake-green:#9dbfa9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;}
+  .sans{font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 48px;}
+
+  /* Cada ato é uma "tela": um achado por tela (Spec §6) */
+  section.act{min-height:96vh;padding:56px 0 64px;border-bottom:1px solid var(--line);}
+  .masthead{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:3px solid var(--ink);padding-bottom:14px;}
+  .masthead h1{font-size:14px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;}
+  .masthead .meta{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;}
+  .kicker{margin-top:34px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);}
+
+  .money-hero{font-size:clamp(60px,9vw,112px);font-weight:700;line-height:1;letter-spacing:-.02em;}
+  .money-hero .bleed{color:var(--red);}
+  .headline{margin-top:18px;font-size:clamp(24px,3.2vw,34px);line-height:1.28;font-weight:400;max-width:21em;}
+  .headline .bleed{color:var(--red);font-weight:700;}
+  .sub{margin-top:16px;font-size:16.5px;line-height:1.62;color:var(--ink-soft);max-width:46em;}
+  .sub strong{color:var(--ink);}
+  .composition{margin-top:24px;font-size:12.5px;color:var(--ink-soft);
+    border-left:2px solid var(--line);padding-left:14px;line-height:1.7;max-width:52em;}
+  .composition em{font-style:normal;color:var(--ink);}
+
+  .cards{margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:820px){.cards{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--red);
+    padding:26px 24px 22px;display:flex;flex-direction:column;min-height:260px;}
+  .card .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);}
+  .card .value{margin-top:12px;font-size:36px;font-weight:700;color:var(--red);}
+  .card .cause{margin-top:12px;font-size:15px;line-height:1.55;flex:1;}
+  .card .fact{margin-top:12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .card a{margin-top:8px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;}
+  .card a::after{content:" →";}
+
+  .chapter-num{margin-top:32px;font-size:clamp(46px,7vw,84px);font-weight:700;letter-spacing:-.02em;}
+  .chapter-num.bleed{color:var(--red);}
+  .chartbox{margin-top:38px;background:var(--card);border:1px solid var(--line);padding:38px 40px 28px;}
+  .evidence{margin-top:30px;display:flex;gap:18px;flex-wrap:wrap;}
+  .ev{flex:1;min-width:240px;background:var(--card);border:1px solid var(--line);padding:20px 22px;}
+  .ev .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);}
+  .ev p{margin-top:10px;font-size:14.5px;line-height:1.58;}
+  .cost-line{margin-top:28px;font-size:15.5px;line-height:1.6;max-width:46em;}
+  .cost-line b{color:var(--red);}
+  .hookband{margin-top:26px;padding:18px 22px;background:var(--card);
+    border:1px solid var(--line);border-left:4px solid var(--ink);
+    font-size:14.5px;line-height:1.6;max-width:52em;}
+
+  /* Treemap (flex proporcional) */
+  .treemap{display:flex;flex-wrap:wrap;gap:6px;min-height:230px;}
+  .treemap .cell{background:var(--red);color:#fff;display:flex;flex-direction:column;
+    justify-content:flex-end;padding:12px;font-size:12.5px;min-width:90px;}
+  .treemap .cell.agg{background:var(--red-soft);color:var(--ink);border:1px dashed var(--red);}
+  .treemap .cell b{font-size:16px;}
+
+  /* Barras / série */
+  .bars{display:flex;align-items:flex-end;gap:10px;height:220px;}
+  .bars .b{flex:1;background:var(--red);opacity:.9;position:relative;}
+  .bars .b span{position:absolute;bottom:100%;left:0;right:0;text-align:center;
+    font-size:11px;color:var(--ink-soft);margin-bottom:6px;}
+  .axis-note{margin-top:14px;font-size:12px;color:var(--ink-soft);}
+
+  /* Waterfall */
+  .wf{position:relative;height:340px;}
+  .wf .baseline{position:absolute;left:0;right:0;border-top:1px dashed #c9c5bc;}
+  .wf .zero{position:absolute;right:0;top:-18px;font-size:11px;color:var(--ink-soft);}
+  .wf .col{position:absolute;width:20%;}
+  .wf .bar{position:absolute;left:0;right:0;}
+  .wf .blab{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:18px;}
+  .wf .clab{position:absolute;left:0;right:0;text-align:center;font-size:13px;
+    color:var(--ink-soft);line-height:1.4;}
+  .wf .clab b{display:block;color:var(--ink);font-size:14px;}
+
+  /* Honestidade */
+  .honesty-list{margin-top:36px;display:grid;gap:14px;max-width:52em;}
+  .hn{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);
+    padding:18px 22px;font-size:14.5px;line-height:1.6;}
+  .hn b{color:var(--green);}
+
+  /* Plano */
+  .plan{margin-top:36px;display:grid;gap:14px;max-width:56em;}
+  .pl{background:var(--card);border:1px solid var(--line);padding:20px 24px;
+    display:flex;gap:20px;align-items:baseline;}
+  .pl .rank{font-size:26px;font-weight:700;color:var(--ink-soft);min-width:38px;}
+  .pl .body{flex:1;}
+  .pl .body b{font-size:16px;}
+  .pl .body p{margin-top:6px;font-size:14px;line-height:1.55;color:var(--ink-soft);}
+  .pl .impact{font-size:18px;font-weight:700;white-space:nowrap;}
+  .pl.scenario{border-style:dashed;}
+  .pl.scenario .impact::after{content:" (cenário)";font-size:11px;color:var(--ink-soft);font-weight:400;}
+
+  .footerband{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;}
+  .prov{font-size:11px;color:var(--ink-soft);letter-spacing:.04em;max-width:40em;line-height:1.6;}
+  .cta{font-size:14px;white-space:nowrap;color:var(--ink);text-decoration:none;
+    border:1px solid var(--ink);padding:12px 22px;letter-spacing:.04em;}
+
+  /* Ato 6 — Anexo de Evidências (Spec v4 §16). Neutro de propósito: o vermelho já
+     gritou no corpo (§4.2, moeda escassa) — aqui é prova, não drama. */
+  .anexo-link{display:inline-block;margin-top:10px;font-size:12px;color:var(--ink-soft);
+    text-decoration:underline;text-underline-offset:3px;}
+  .anexo-section{margin-top:20px;background:var(--card);border:1px solid var(--line);}
+  .anexo-section + .anexo-section{margin-top:14px;}
+  .anexo-section summary{padding:18px 22px;cursor:pointer;font-weight:600;font-size:15px;
+    display:flex;justify-content:space-between;align-items:center;list-style:none;gap:12px;}
+  .anexo-section summary::-webkit-details-marker{display:none;}
+  .anexo-section summary::after{content:'+ expandir';font-size:11px;font-weight:400;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .anexo-section[open] summary::after{content:'– recolher';}
+  .anexo-section summary .meta{font-size:12.5px;color:var(--ink-soft);font-weight:400;}
+  .anexo-table-wrap{overflow-x:auto;}
+  .anexo-table{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap;}
+  .anexo-table th{text-align:left;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);padding:8px 16px;border-top:1px solid var(--line);white-space:nowrap;}
+  .anexo-table td{padding:10px 16px;border-top:1px solid var(--line);vertical-align:top;
+    white-space:normal;}
+  .anexo-table td.src{font-family:'Courier New',monospace;font-size:10.5px;
+    color:var(--ink-soft);white-space:nowrap;}
+  .anexo-table td.neg{color:var(--red);}
+  .anexo-note{margin-top:2px;font-size:11px;color:var(--green);}
+  .anexo-meta-line{margin-top:2px;font-size:11px;color:var(--ink-soft);}
+  .anexo-legend{padding:14px 22px;font-size:11.5px;color:var(--ink-soft);border-top:1px solid var(--line);}
+  .anexo-flags{display:flex;gap:4px;flex-wrap:wrap;}
+  .anexo-flag{font-size:9.5px;padding:2px 7px;background:var(--red-soft);color:var(--red);
+    text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     BLOCO DE DADOS — ÚNICO PONTO DE ENTRADA POR RODADA.
+     Regra (Spec §13): o agente gerador SUBSTITUI este objeto pelo
+     conteúdo derivado do audit_report.json congelado. É PROIBIDO
+     editar o HTML/CSS abaixo ou inventar campos ausentes: campo
+     ausente/null => o template renderiza o fallback honesto.
+     ============================================================ -->
+<script id="AUDIT_DATA" type="application/json">
+{
+  "rodada": "beta",
+  "cliente": "Rede de Óticas Beta",
+  "manchete": {
+    "total_risco": 69038.22,
+    "total_risco_display": "R$ 69 mil",
+    "frase": "escapando da sua rede agora — e parte do problema está escondida atrás de uma tabela de preço que não bate com o que você realmente paga.",
+    "composicao": "R$ 63.414,44 em clientes que sumiram + R$ 5.101,24 parados em estoque + R$ 522,54 vendidos abaixo do custo (produtos ARP-020 e ARP-021, ambas as lojas). Um achado à parte — não somado aqui, ver capítulo seguinte — mostra a tabela de custo do ARP-013 desalinhada da nota fiscal de compra."
+  },
+  "paradoxo": {
+    "loja": "Toda a rede (Loja 01 + Loja 02)",
+    "produto": -184.01,
+    "servico": 2040.0,
+    "total": 1855.99,
+    "contexto": "12 vendas da armação ARP-013, nas duas lojas",
+    "col1_label": "O que o relatório mostra",
+    "col1_context": "calculado com o custo hoje cadastrado (R$ 320,00/un.)",
+    "col2_label": "A correção do cadastro",
+    "col2_context": "custo cadastrado vs. custo real da NF: R$ 320,00 → R$ 150,00",
+    "col3_label": "O resultado real",
+    "col3_context": "com o custo que você de fato pagou",
+    "col3_style": "true",
+    "headline_html": "Sua tabela de custo <span class=\"bleed\">está mentindo sobre o que você paga.</span>",
+    "sub_html": "A armação ARP-013 parece dar prejuízo — o sistema hoje calcula a margem com um custo cadastrado de R$ 320,00 por unidade. Mas a nota fiscal de compra (aba Compras) mostra o custo real: R$ 150,00. A “perda” nunca existiu — o número que engana não é a venda, é o cadastro.",
+    "axis_note_html": "Aqui a barra final não esconde nada — ela é a verdade que o cadastro errado escondia: R$ 1.855,99 de margem real, nas mesmas 12 vendas que o relatório de hoje mostra como prejuízo.",
+    "recommendation_html": "Corrigir o custo cadastrado do ARP-013 (e verificar o LNT-900, mesmo padrão ao lado) é a implantação — sem isso, toda margem calculada sobre esses produtos continua errada.",
+    "controle": {
+      "loja": "LNT-900, mesma rede",
+      "frase": "mostra o mesmo padrão: 3 vendedores diferentes (incluindo um não identificado) praticam ~75% de desconto sobre a tabela de R$ 1.200, de forma consistente — não é 1 vendedor isolado, é a tabela",
+      "produto": 14438.72,
+      "value_label": "desconto acumulado sobre a tabela"
+    }
+  },
+  "sangramentos": [
+    {
+      "id": "cap-clientes",
+      "titulo": "Clientes Evaporando",
+      "valor": 63414.44,
+      "anexo_ref": "fila_reativacao",
+      "valor_display": "R$ 63.414,44",
+      "soco": "37 clientes deixaram de comprar — em silêncio. Ninguém percebeu, ninguém ligou.",
+      "serie_mensal": null,
+      "evidencias": [
+        "A detecção respeita o ciclo de compra de cada cliente — ninguém que compra 1x por ano foi contado como perdido.",
+        "O maior caso sozinho já vale R$ 4.494,48 em receita histórica.",
+        "A fila de reativação sai pronta, ordenada por valor histórico."
+      ],
+      "custo_mensal": "Cada mês sem uma rotina de reativação, parte desses R$ 63.414,44 vira perda definitiva.",
+      "gancho": "A campanha de reativação segmentada por ciclo é a consultoria rodando."
+    },
+    {
+      "id": "cap-caixa",
+      "titulo": "Caixa Preso",
+      "valor": 5101.24,
+      "anexo_ref": "estoque_parado",
+      "valor_display": "R$ 5.101,24",
+      "soco": "2 modelos de óculos solares parados há 9-11 meses, sem nenhuma venda.",
+      "treemap_itens": null,
+      "treemap_total_itens": 2,
+      "evidencias": [
+        "É caixa imobilizado: dinheiro que poderia estar em produto que gira ou no seu bolso.",
+        "Representa 25% do valor total do seu estoque atual — um quarto do capital parado.",
+        "Parte desse mesmo estoque já está sendo liquidado deliberadamente — ver o que NÃO é problema, abaixo."
+      ],
+      "custo_mensal": "R$ 5.101,24 parados não financiam produto que vende — e ocupam prateleira que poderia ter giro.",
+      "gancho": "Liberar esse caixa (liquidação assistida) é execução — nossa entrega."
+    },
+    {
+      "id": "cap-lucro",
+      "titulo": "Lucro Fantasma",
+      "valor": 522.54,
+      "anexo_ref": "triagem_discrepancias",
+      "valor_display": "R$ 522,54",
+      "soco": "20 vendas de 2 modelos de armação (ARP-020, ARP-021) saíram abaixo do próprio custo.",
+      "evidencias": [
+        "Confirmado linha a linha: preço praticado menor que o custo registrado na venda.",
+        "Espalhado entre 8 vendedores diferentes nas duas lojas — não é 1 pessoa, é um padrão.",
+        "Diferente do ARP-013 (capítulo anterior): aqui o cadastro bate, a venda é que saiu abaixo do custo de verdade."
+      ],
+      "custo_mensal": "Cada venda abaixo do custo é prejuízo real, não contábil — sai do caixa a cada unidade vendida.",
+      "gancho": "Trava de preço mínimo no balcão, com aprovação para exceção, é parte da implantação."
+    }
+  ],
+  "honestidade": [
+    {
+      "alarme": "Descontos de até 70% em óculos solares (SOL-030/031/032)",
+      "motivo": "promoção deliberada em produto parado — decisão de caixa da gerência, não erro. Custo sempre coberto."
+    },
+    {
+      "alarme": "Nenhuma das duas lojas aparece no vermelho",
+      "motivo": "produto e serviço saudáveis nas duas — o problema real desta rede está em cadastro e balcão, não em loja mascarada."
+    }
+  ],
+  "plano": [
+    {
+      "acao": "Reativar os clientes que sumiram",
+      "impacto": 63414.44,
+      "impacto_display": "R$ 63.414,44",
+      "cenario": false,
+      "sangramento_ref": "cap-clientes",
+      "como": "Fila pronta, ordenada por índice de aquecimento (ver anexo) — não por valor histórico puro. Começar pelos mais quentes: acabaram de estourar o próprio ciclo."
+    },
+    {
+      "acao": "Corrigir o cadastro de custo do ARP-013",
+      "impacto": 2040.0,
+      "impacto_display": "R$ 2.040,00",
+      "cenario": false,
+      "como": "Custo cadastrado (R$ 320,00) não bate com a nota fiscal de compra (R$ 150,00) — margem real escondida, comprovada nas 12 vendas do período. Verificar também o LNT-900, mesmo padrão."
+    },
+    {
+      "acao": "Liberar o caixa preso em estoque parado",
+      "impacto": 5101.24,
+      "impacto_display": "R$ 5.101,24",
+      "cenario": false,
+      "sangramento_ref": "cap-caixa",
+      "como": "2 modelos sem giro há 9-11 meses. Parte já está em liquidação — acelerar o restante."
+    },
+    {
+      "acao": "Estancar as vendas abaixo do custo (ARP-020, ARP-021)",
+      "impacto": 522.54,
+      "impacto_display": "R$ 522,54",
+      "cenario": false,
+      "sangramento_ref": "cap-lucro",
+      "como": "Trava de preço mínimo no PDV, com aprovação obrigatória para vender abaixo do custo registrado."
+    },
+    {
+      "acao": "Capturar a segunda venda (lente → solar)",
+      "impacto": 4706.72,
+      "impacto_display": "R$ 4.706,72",
+      "cenario": true,
+      "como": "78 clientes compraram lente e nunca compraram solar — 47% de gap. Valor dimensionado como cenário."
+    }
+  ],
+  "cta": "Falar sobre a implantação",
+  "procedencia": "Todos os valores extraídos do audit_report congelado da rodada beta (gerado em 20/07/2026), com procedência linha a linha · Fato medido ≠ cenário projetado, sempre rotulado · Como calculamos → anexo de metodologia.",
+  "anexo": {
+    "audit_report_generated_at": "2026-07-21T17:39:01.357635+00:00",
+    "estoque_parado": {
+      "total": 5101.24,
+      "itens": [
+        {
+          "sku": "SOL-030",
+          "descricao": "Óculos Solar Polarizado A",
+          "capital_preso": 2532.6,
+          "meses_parado": 10,
+          "src": "Estoque #13"
+        },
+        {
+          "sku": "SOL-031",
+          "descricao": "Óculos Solar Polarizado B",
+          "capital_preso": 2568.6400000000003,
+          "meses_parado": 9,
+          "src": "Estoque #14"
+        }
+      ]
+    },
+    "fila_reativacao": {
+      "total": 63414.44,
+      "clientes": 37,
+      "itens": [
+        {
+          "cliente": "Client_EX",
+          "ultima_compra": "2026-03-21",
+          "ciclo_dias": 49.75,
+          "silencio_dias": 101,
+          "indice_aquecimento": 2.030150753768844,
+          "valor_historico": 1235.48,
+          "src": "Vendas #261, #471, #601, #931, #1044"
+        },
+        {
+          "cliente": "Client_EA",
+          "ultima_compra": "2026-02-18",
+          "ciclo_dias": 57.75,
+          "silencio_dias": 132,
+          "indice_aquecimento": 2.2857142857142856,
+          "valor_historico": 1435.28,
+          "src": "Vendas #9, #334, #712, #877, #919"
+        },
+        {
+          "cliente": "Client_FB",
+          "ultima_compra": "2026-03-13",
+          "ciclo_dias": 46.8,
+          "silencio_dias": 109,
+          "indice_aquecimento": 2.3290598290598292,
+          "valor_historico": 1217.63,
+          "src": "Vendas #101, #162, #167, #498, #552, #1020"
+        },
+        {
+          "cliente": "Client_HY",
+          "ultima_compra": "2026-02-08",
+          "ciclo_dias": 58.5,
+          "silencio_dias": 142,
+          "indice_aquecimento": 2.427350427350427,
+          "valor_historico": 539.34,
+          "src": "Vendas #417, #710, #871"
+        },
+        {
+          "cliente": "Client_DD",
+          "ultima_compra": "2026-03-04",
+          "ciclo_dias": 48.2,
+          "silencio_dias": 118,
+          "indice_aquecimento": 2.4481327800829873,
+          "valor_historico": 1703.43,
+          "src": "Vendas #32, #284, #363, #579, #948, #993"
+        },
+        {
+          "cliente": "Client_CE",
+          "ultima_compra": "2026-03-18",
+          "ciclo_dias": 42.0,
+          "silencio_dias": 104,
+          "indice_aquecimento": 2.4761904761904763,
+          "valor_historico": 1925.82,
+          "src": "Vendas #374, #793, #883, #965, #1036"
+        },
+        {
+          "cliente": "Client_DY",
+          "ultima_compra": "2026-03-01",
+          "ciclo_dias": 48.0,
+          "silencio_dias": 121,
+          "indice_aquecimento": 2.5208333333333335,
+          "valor_historico": 1464.6799999999998,
+          "src": "Vendas #582, #624, #978"
+        },
+        {
+          "cliente": "Client_HP",
+          "ultima_compra": "2026-02-19",
+          "ciclo_dias": 50.75,
+          "silencio_dias": 131,
+          "indice_aquecimento": 2.58128078817734,
+          "valor_historico": 639.75,
+          "src": "Vendas #140, #197, #738, #799, #926"
+        },
+        {
+          "cliente": "Client_CJ",
+          "ultima_compra": "2026-02-09",
+          "ciclo_dias": 53.75,
+          "silencio_dias": 141,
+          "indice_aquecimento": 2.6232558139534885,
+          "valor_historico": 1887.04,
+          "src": "Vendas #47, #180, #657, #674, #880"
+        },
+        {
+          "cliente": "Client_AF",
+          "ultima_compra": "2026-02-26",
+          "ciclo_dias": 47.0,
+          "silencio_dias": 124,
+          "indice_aquecimento": 2.6382978723404253,
+          "valor_historico": 2856.88,
+          "src": "Vendas #195, #251, #754, #815, #961"
+        },
+        {
+          "cliente": "Client_EZ",
+          "ultima_compra": "2026-02-22",
+          "ciclo_dias": 46.2,
+          "silencio_dias": 128,
+          "indice_aquecimento": 2.7705627705627704,
+          "valor_historico": 1224.03,
+          "src": "Vendas #35, #193, #596, #644, #927, #938"
+        },
+        {
+          "cliente": "Client_EJ",
+          "ultima_compra": "2026-02-18",
+          "ciclo_dias": 47.25,
+          "silencio_dias": 132,
+          "indice_aquecimento": 2.7936507936507935,
+          "valor_historico": 1369.52,
+          "src": "Vendas #176, #210, #314, #752, #918"
+        },
+        {
+          "cliente": "Client_IB",
+          "ultima_compra": "2025-12-26",
+          "ciclo_dias": 66.5,
+          "silencio_dias": 186,
+          "indice_aquecimento": 2.7969924812030076,
+          "valor_historico": 527.3599999999999,
+          "src": "Vendas #183, #544, #697"
+        },
+        {
+          "cliente": "Client_HC",
+          "ultima_compra": "2025-12-30",
+          "ciclo_dias": 63.5,
+          "silencio_dias": 182,
+          "indice_aquecimento": 2.8661417322834644,
+          "valor_historico": 774.9200000000001,
+          "src": "Vendas #215, #617, #715"
+        },
+        {
+          "cliente": "Client_X",
+          "ultima_compra": "2026-02-20",
+          "ciclo_dias": 45.2,
+          "silencio_dias": 130,
+          "indice_aquecimento": 2.8761061946902653,
+          "valor_historico": 3098.9100000000008,
+          "src": "Vendas #46, #125, #307, #588, #914, #928"
+        },
+        {
+          "cliente": "Client_HO",
+          "ultima_compra": "2026-01-04",
+          "ciclo_dias": 57.0,
+          "silencio_dias": 177,
+          "indice_aquecimento": 3.1052631578947367,
+          "valor_historico": 665.75,
+          "src": "Vendas #75, #113, #673, #737"
+        },
+        {
+          "cliente": "Client_HN",
+          "ultima_compra": "2026-02-08",
+          "ciclo_dias": 45.333333333333336,
+          "silencio_dias": 142,
+          "indice_aquecimento": 3.1323529411764706,
+          "valor_historico": 678.3800000000001,
+          "src": "Vendas #338, #464, #837, #868"
+        },
+        {
+          "cliente": "Client_AY",
+          "ultima_compra": "2026-03-03",
+          "ciclo_dias": 35.8,
+          "silencio_dias": 119,
+          "indice_aquecimento": 3.3240223463687153,
+          "valor_historico": 2413.6,
+          "src": "Vendas #264, #322, #364, #396, #954, #985"
+        },
+        {
+          "cliente": "Client_AJ",
+          "ultima_compra": "2026-03-17",
+          "ciclo_dias": 31.2,
+          "silencio_dias": 105,
+          "indice_aquecimento": 3.3653846153846154,
+          "valor_historico": 2793.4900000000002,
+          "src": "Vendas #406, #426, #804, #867, #1007, #1031"
+        },
+        {
+          "cliente": "Client_BO",
+          "ultima_compra": "2026-01-31",
+          "ciclo_dias": 43.666666666666664,
+          "silencio_dias": 150,
+          "indice_aquecimento": 3.435114503816794,
+          "valor_historico": 2161.6200000000003,
+          "src": "Vendas #328, #534, #709, #835"
+        },
+        {
+          "cliente": "Client_IA",
+          "ultima_compra": "2026-02-14",
+          "ciclo_dias": 39.333333333333336,
+          "silencio_dias": 136,
+          "indice_aquecimento": 3.4576271186440675,
+          "valor_historico": 538.81,
+          "src": "Vendas #447, #658, #723, #897"
+        },
+        {
+          "cliente": "Client_FI",
+          "ultima_compra": "2026-03-30",
+          "ciclo_dias": 26.5,
+          "silencio_dias": 92,
+          "indice_aquecimento": 3.4716981132075473,
+          "valor_historico": 1170.18,
+          "src": "Vendas #856, #955, #1070"
+        },
+        {
+          "cliente": "Client_U",
+          "ultima_compra": "2026-03-19",
+          "ciclo_dias": 28.571428571428573,
+          "silencio_dias": 103,
+          "indice_aquecimento": 3.605,
+          "valor_historico": 3509.2,
+          "src": "Vendas #243, #484, #573, #634, #750, #832, #992, #1040"
+        },
+        {
+          "cliente": "Client_AB",
+          "ultima_compra": "2026-02-28",
+          "ciclo_dias": 33.714285714285715,
+          "silencio_dias": 122,
+          "indice_aquecimento": 3.61864406779661,
+          "valor_historico": 2967.52,
+          "src": "Vendas #39, #44, #149, #309, #762, #766, #791, #969"
+        },
+        {
+          "cliente": "Client_CR",
+          "ultima_compra": "2026-01-27",
+          "ciclo_dias": 41.6,
+          "silencio_dias": 154,
+          "indice_aquecimento": 3.7019230769230766,
+          "valor_historico": 1790.9900000000002,
+          "src": "Vendas #15, #145, #377, #418, #758, #824"
+        },
+        {
+          "cliente": "Client_BR",
+          "ultima_compra": "2026-02-06",
+          "ciclo_dias": 33.0,
+          "silencio_dias": 144,
+          "indice_aquecimento": 4.363636363636363,
+          "valor_historico": 2104.23,
+          "src": "Vendas #220, #381, #481, #509, #515, #858"
+        },
+        {
+          "cliente": "Client_DC",
+          "ultima_compra": "2026-02-25",
+          "ciclo_dias": 28.125,
+          "silencio_dias": 125,
+          "indice_aquecimento": 4.444444444444445,
+          "valor_historico": 1717.12,
+          "src": "Vendas #70, #237, #300, #430, #448, #469, #495, #676, #960"
+        },
+        {
+          "cliente": "Client_EK",
+          "ultima_compra": "2025-12-26",
+          "ciclo_dias": 41.25,
+          "silencio_dias": 186,
+          "indice_aquecimento": 4.509090909090909,
+          "valor_historico": 1369.1200000000001,
+          "src": "Vendas #61, #202, #357, #502, #696"
+        },
+        {
+          "cliente": "Client_DH",
+          "ultima_compra": "2026-02-22",
+          "ciclo_dias": 28.333333333333332,
+          "silencio_dias": 128,
+          "indice_aquecimento": 4.517647058823529,
+          "valor_historico": 1614.0900000000001,
+          "src": "Vendas #595, #798, #823, #940"
+        },
+        {
+          "cliente": "Client_GP",
+          "ultima_compra": "2026-03-17",
+          "ciclo_dias": 22.75,
+          "silencio_dias": 105,
+          "indice_aquecimento": 4.615384615384615,
+          "valor_historico": 873.45,
+          "src": "Vendas #663, #677, #718, #857, #1028"
+        },
+        {
+          "cliente": "Client_FD",
+          "ultima_compra": "2026-01-18",
+          "ciclo_dias": 31.5,
+          "silencio_dias": 163,
+          "indice_aquecimento": 5.174603174603175,
+          "valor_historico": 1211.1399999999999,
+          "src": "Vendas #297, #514, #719, #760, #783"
+        },
+        {
+          "cliente": "Client_AE",
+          "ultima_compra": "2026-01-16",
+          "ciclo_dias": 30.5,
+          "silencio_dias": 165,
+          "indice_aquecimento": 5.409836065573771,
+          "valor_historico": 2904.21,
+          "src": "Vendas #73, #520, #578, #589, #668, #772, #776"
+        },
+        {
+          "cliente": "Client_I",
+          "ultima_compra": "2026-02-15",
+          "ciclo_dias": 24.77777777777778,
+          "silencio_dias": 135,
+          "indice_aquecimento": 5.448430493273542,
+          "valor_historico": 4494.48,
+          "src": "Vendas #38, #67, #93, #110, #201, #250, #452, #466, #659, #902"
+        },
+        {
+          "cliente": "Client_DZ",
+          "ultima_compra": "2025-12-05",
+          "ciclo_dias": 34.5,
+          "silencio_dias": 207,
+          "indice_aquecimento": 6.0,
+          "valor_historico": 1446.9200000000003,
+          "src": "Vendas #87, #177, #206, #339, #621"
+        },
+        {
+          "cliente": "Client_R",
+          "ultima_compra": "2026-01-24",
+          "ciclo_dias": 22.88888888888889,
+          "silencio_dias": 157,
+          "indice_aquecimento": 6.859223300970874,
+          "valor_historico": 3741.9100000000003,
+          "src": "Vendas #10, #173, #190, #349, #513, #580, #641, #735, #759, #810"
+        },
+        {
+          "cliente": "Client_GU",
+          "ultima_compra": "2025-10-31",
+          "ciclo_dias": 22.333333333333332,
+          "silencio_dias": 242,
+          "indice_aquecimento": 10.835820895522389,
+          "valor_historico": 837.3399999999999,
+          "src": "Vendas #219, #367, #482, #492"
+        },
+        {
+          "cliente": "Client_ID",
+          "ultima_compra": "2025-10-31",
+          "ciclo_dias": 18.5,
+          "silencio_dias": 242,
+          "indice_aquecimento": 13.08108108108108,
+          "valor_historico": 510.82000000000005,
+          "src": "Vendas #333, #441, #491"
+        }
+      ]
+    },
+    "vendedores": {
+      "itens": [
+        {
+          "vendedor": "V-01",
+          "loja": "Loja 01",
+          "receita": 56382.71,
+          "n_vendas": 133,
+          "captura_pct": 98.69281045751634,
+          "margem_pct": 64.08058427840734,
+          "margem_loja_pct": 64.19822029415403,
+          "gap_pp": 0.11763601574668314,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "armacao",
+            "desvio_pp": 7.799524695421248,
+            "margem_categoria_pct": 61.016759786234815
+          },
+          "src": "Vendas #13, #20, #23, #29, #47, #68, #77, #104, #109, #143"
+        },
+        {
+          "vendedor": "V-02",
+          "loja": "Loja 01",
+          "receita": 61220.26,
+          "n_vendas": 147,
+          "captura_pct": 95.53072625698324,
+          "margem_pct": 63.775733719523565,
+          "margem_loja_pct": 64.19822029415403,
+          "gap_pp": 0.4224865746304616,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "lente",
+            "desvio_pp": 2.455742308436747,
+            "margem_categoria_pct": 65.67673237562074
+          },
+          "src": "Vendas #2, #3, #21, #22, #26, #44, #57, #65, #66, #67"
+        },
+        {
+          "vendedor": "V-03",
+          "loja": "Loja 01",
+          "receita": 55638.52,
+          "n_vendas": 145,
+          "captura_pct": 98.84393063583815,
+          "margem_pct": 63.86352476665447,
+          "margem_loja_pct": 64.19822029415403,
+          "gap_pp": 0.3346955274995551,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "armacao",
+            "desvio_pp": 2.4430567592716486,
+            "margem_categoria_pct": 61.016759786234815
+          },
+          "src": "Vendas #5, #12, #25, #34, #38, #39, #50, #72, #78, #80"
+        },
+        {
+          "vendedor": "V-04",
+          "loja": "Loja 01",
+          "receita": 61808.69,
+          "n_vendas": 151,
+          "captura_pct": 98.34254143646409,
+          "margem_pct": 65.04598301630402,
+          "margem_loja_pct": 64.19822029415403,
+          "gap_pp": -0.8477627221499944,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "solar",
+            "desvio_pp": 3.8174214803614426,
+            "margem_categoria_pct": 66.76066355352836
+          },
+          "src": "Vendas #16, #30, #36, #51, #53, #82, #88, #93, #111, #135"
+        },
+        {
+          "vendedor": "V-05",
+          "loja": "Loja 02",
+          "receita": 55684.26,
+          "n_vendas": 160,
+          "captura_pct": 94.79166666666667,
+          "margem_pct": 63.914865708909474,
+          "margem_loja_pct": 62.826397836873035,
+          "gap_pp": -1.0884678720364391,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "lente",
+            "desvio_pp": 2.013252037621733,
+            "margem_categoria_pct": 56.98586700697465
+          },
+          "src": "Vendas #6, #19, #54, #63, #71, #73, #75, #81, #86, #92"
+        },
+        {
+          "vendedor": "V-06",
+          "loja": "Loja 02",
+          "receita": 46936.06,
+          "n_vendas": 160,
+          "captura_pct": 96.17486338797814,
+          "margem_pct": 59.90894847160158,
+          "margem_loja_pct": 62.826397836873035,
+          "gap_pp": 2.9174493652714517,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "solar",
+            "desvio_pp": 3.095501136440241,
+            "margem_categoria_pct": 66.17345049321617
+          },
+          "src": "Vendas #9, #18, #31, #42, #43, #49, #69, #79, #101, #114"
+        },
+        {
+          "vendedor": "V-07",
+          "loja": "Loja 02",
+          "receita": 46001.35,
+          "n_vendas": 141,
+          "captura_pct": 95.42857142857143,
+          "margem_pct": 65.60942233217068,
+          "margem_loja_pct": 62.826397836873035,
+          "gap_pp": -2.7830244952976457,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "lente_contato",
+            "desvio_pp": 2.384671811136913,
+            "margem_categoria_pct": 66.38077758375869
+          },
+          "src": "Vendas #8, #11, #17, #32, #35, #46, #64, #87, #89, #95"
+        },
+        {
+          "vendedor": "V-08",
+          "loja": "Loja 02",
+          "receita": 49610.26,
+          "n_vendas": 150,
+          "captura_pct": 98.27586206896552,
+          "margem_pct": 64.27644201018096,
+          "margem_loja_pct": 62.826397836873035,
+          "gap_pp": -1.4500441733079228,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": {
+            "categoria": "armacao",
+            "desvio_pp": 6.915940379861112,
+            "margem_categoria_pct": 63.81586321143211
+          },
+          "src": "Vendas #4, #10, #15, #37, #41, #56, #60, #61, #70, #84"
+        },
+        {
+          "vendedor": "_UNKNOWN_SALESPERSON",
+          "loja": "Loja 02",
+          "receita": 1156.42,
+          "n_vendas": 4,
+          "captura_pct": 100.0,
+          "margem_pct": null,
+          "margem_loja_pct": null,
+          "gap_pp": null,
+          "flags": [],
+          "notas": [
+            "desconto vem de tabela cadastralmente errada — não imputável ao vendedor"
+          ],
+          "mix_top_desvio": null,
+          "src": "Vendas #58, #474, #663, #724"
+        }
+      ]
+    },
+    "triagem_discrepancias": {
+      "disparos": 38,
+      "pendentes": 0,
+      "itens": [
+        {
+          "id": "DTQ-0001",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 01",
+          "vendedor": "V-01",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #371, #732",
+          "perda_abaixo_custo": 44.089999999999975,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0002",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 01",
+          "vendedor": "V-02",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #1073",
+          "perda_abaixo_custo": 24.889999999999986,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0003",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 01",
+          "vendedor": "V-03",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #217, #323, #566",
+          "perda_abaixo_custo": 48.25,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0004",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 01",
+          "vendedor": "V-04",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #815, #1309",
+          "perda_abaixo_custo": 32.150000000000034,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0005",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 02",
+          "vendedor": "V-06",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #1104",
+          "perda_abaixo_custo": 10.819999999999993,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0006",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 02",
+          "vendedor": "V-07",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #1082",
+          "perda_abaixo_custo": 10.230000000000018,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0007",
+          "sku": "ARP-013",
+          "descricao": "Armação Grife Titânio Italiana",
+          "loja": "Loja 02",
+          "vendedor": "V-08",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "custo da venda diverge da nota fiscal de compra",
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #1164, #1191",
+          "perda_abaixo_custo": 13.579999999999984,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0008",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 01",
+          "vendedor": "V-01",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #191",
+          "perda_abaixo_custo": 21.680000000000007,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0009",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 01",
+          "vendedor": "V-03",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #528, #1158",
+          "perda_abaixo_custo": 54.420000000000016,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0010",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 01",
+          "vendedor": "V-04",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #899",
+          "perda_abaixo_custo": 33.56999999999999,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0011",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 02",
+          "vendedor": "V-05",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #241",
+          "perda_abaixo_custo": 23.829999999999984,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0012",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 02",
+          "vendedor": "V-06",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #101, #246",
+          "perda_abaixo_custo": 37.129999999999995,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0013",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 02",
+          "vendedor": "V-07",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #745, #1422",
+          "perda_abaixo_custo": 63.78000000000006,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0014",
+          "sku": "ARP-020",
+          "descricao": "Armação Grife Acetato Edição Limitada",
+          "loja": "Loja 02",
+          "vendedor": "V-08",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #1290",
+          "perda_abaixo_custo": 34.48999999999998,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0015",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 01",
+          "vendedor": "V-01",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #169, #340",
+          "perda_abaixo_custo": 58.73999999999998,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0016",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 01",
+          "vendedor": "V-02",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #423",
+          "perda_abaixo_custo": 14.79000000000002,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0017",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 01",
+          "vendedor": "V-03",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #868",
+          "perda_abaixo_custo": 22.889999999999986,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0018",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 01",
+          "vendedor": "V-04",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #30",
+          "perda_abaixo_custo": 38.75000000000003,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0019",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 02",
+          "vendedor": "V-05",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #198, #482",
+          "perda_abaixo_custo": 32.119999999999976,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0020",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 02",
+          "vendedor": "V-06",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #527, #1363",
+          "perda_abaixo_custo": 70.02999999999997,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0021",
+          "sku": "ARP-021",
+          "descricao": "Armação Grife Metal Dourado",
+          "loja": "Loja 02",
+          "vendedor": "V-07",
+          "veredito": "below_cost_sale",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #617",
+          "perda_abaixo_custo": 16.32000000000002,
+          "perda_confirmada": true
+        },
+        {
+          "id": "DTQ-0022",
+          "sku": "LNT-900",
+          "descricao": "Lente Progressiva Premium",
+          "loja": "Loja 02",
+          "vendedor": "V-05",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #255, #776, #917, #1033, #1147, #1202",
+          "perda_abaixo_custo": 710.6700000000001,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0023",
+          "sku": "LNT-900",
+          "descricao": "Lente Progressiva Premium",
+          "loja": "Loja 02",
+          "vendedor": "V-06",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #69, #253, #941, #1028, #1046, #1399",
+          "perda_abaixo_custo": 724.47,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0024",
+          "sku": "LNT-900",
+          "descricao": "Lente Progressiva Premium",
+          "loja": "Loja 02",
+          "vendedor": "_UNKNOWN_SALESPERSON",
+          "veredito": "suspected_cadastral_error",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "padrão de desconto repetido por 2+ vendedores da mesma loja",
+            "preço praticado abaixo do custo registrado na venda"
+          ],
+          "src": "Vendas #58, #474, #663, #724",
+          "perda_abaixo_custo": 523.58,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0025",
+          "sku": "SOL-030",
+          "descricao": "Óculos Solar Polarizado A",
+          "loja": "Loja 01",
+          "vendedor": "V-01",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1275",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0026",
+          "sku": "SOL-030",
+          "descricao": "Óculos Solar Polarizado A",
+          "loja": "Loja 01",
+          "vendedor": "V-03",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1089",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0027",
+          "sku": "SOL-030",
+          "descricao": "Óculos Solar Polarizado A",
+          "loja": "Loja 01",
+          "vendedor": "V-04",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1207, #1402",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0028",
+          "sku": "SOL-030",
+          "descricao": "Óculos Solar Polarizado A",
+          "loja": "Loja 02",
+          "vendedor": "V-06",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1398, #1401",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0029",
+          "sku": "SOL-030",
+          "descricao": "Óculos Solar Polarizado A",
+          "loja": "Loja 02",
+          "vendedor": "V-08",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1220, #1279, #1361",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0030",
+          "sku": "SOL-031",
+          "descricao": "Óculos Solar Polarizado B",
+          "loja": "Loja 01",
+          "vendedor": "V-01",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1120",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0031",
+          "sku": "SOL-031",
+          "descricao": "Óculos Solar Polarizado B",
+          "loja": "Loja 01",
+          "vendedor": "V-02",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1301",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0032",
+          "sku": "SOL-031",
+          "descricao": "Óculos Solar Polarizado B",
+          "loja": "Loja 01",
+          "vendedor": "V-03",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1087",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0033",
+          "sku": "SOL-031",
+          "descricao": "Óculos Solar Polarizado B",
+          "loja": "Loja 02",
+          "vendedor": "V-06",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1355",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0034",
+          "sku": "SOL-031",
+          "descricao": "Óculos Solar Polarizado B",
+          "loja": "Loja 02",
+          "vendedor": "V-07",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção",
+            "produto está na lista de estoque parado"
+          ],
+          "src": "Vendas #1300",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0035",
+          "sku": "SOL-032",
+          "descricao": "Óculos Solar Esportivo C",
+          "loja": "Loja 01",
+          "vendedor": "V-01",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção"
+          ],
+          "src": "Vendas #1103",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0036",
+          "sku": "SOL-032",
+          "descricao": "Óculos Solar Esportivo C",
+          "loja": "Loja 01",
+          "vendedor": "V-02",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção"
+          ],
+          "src": "Vendas #1287",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0037",
+          "sku": "SOL-032",
+          "descricao": "Óculos Solar Esportivo C",
+          "loja": "Loja 01",
+          "vendedor": "V-04",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção"
+          ],
+          "src": "Vendas #1118",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        },
+        {
+          "id": "DTQ-0038",
+          "sku": "SOL-032",
+          "descricao": "Óculos Solar Esportivo C",
+          "loja": "Loja 02",
+          "vendedor": "V-08",
+          "veredito": "deliberate_liquidation",
+          "veredito_origem": "auto_classified",
+          "evidencias": [
+            "forma de pagamento registrada como promoção"
+          ],
+          "src": "Vendas #1418",
+          "perda_abaixo_custo": null,
+          "perda_confirmada": false
+        }
+      ],
+      "total_abaixo_custo": 522.54
+    },
+    "metodologia": {
+      "limiares": [
+        {
+          "nome": "churn_cadence_multiplier",
+          "valor": 2.0
+        },
+        {
+          "nome": "churn_min_purchases",
+          "valor": 3
+        },
+        {
+          "nome": "cold_start_min_months",
+          "valor": 4.0
+        },
+        {
+          "nome": "commission_basis",
+          "valor": "unknown"
+        },
+        {
+          "nome": "concentration_risk_pct",
+          "valor": 25.0
+        },
+        {
+          "nome": "concentration_seller_vip_pct",
+          "valor": 40.0
+        },
+        {
+          "nome": "contingency_completeness_pct",
+          "valor": 30.0
+        },
+        {
+          "nome": "dead_stock_months",
+          "valor": 8
+        },
+        {
+          "nome": "flight_risk_min_flags",
+          "valor": 2
+        },
+        {
+          "nome": "flight_risk_trend_sigma",
+          "valor": 1.5
+        },
+        {
+          "nome": "flight_risk_trend_window_months",
+          "valor": 3
+        },
+        {
+          "nome": "gmroi_sku_high_margin_pct",
+          "valor": 40.0
+        },
+        {
+          "nome": "gmroi_sku_low_ratio",
+          "valor": 1.0
+        },
+        {
+          "nome": "latent_revenue_anchor_category",
+          "valor": "lente"
+        },
+        {
+          "nome": "latent_revenue_conversion_pct",
+          "valor": 20.0
+        },
+        {
+          "nome": "latent_revenue_target_category",
+          "valor": "solar"
+        },
+        {
+          "nome": "manual_review_discount_pct",
+          "valor": 60.0
+        },
+        {
+          "nome": "materiality_revenue_pct",
+          "valor": 1.0
+        },
+        {
+          "nome": "nf_cost_divergence_pct",
+          "valor": 15.0
+        },
+        {
+          "nome": "outlier_median_ratio",
+          "valor": 20.0
+        },
+        {
+          "nome": "promo_payment_label",
+          "valor": "promocao"
+        },
+        {
+          "nome": "provenance_sample_cap",
+          "valor": 10
+        },
+        {
+          "nome": "revenue_drop_sigma",
+          "valor": 2.0
+        },
+        {
+          "nome": "rfm_bins",
+          "valor": 5
+        },
+        {
+          "nome": "seasonality_min_months",
+          "valor": 12
+        },
+        {
+          "nome": "seller_corrosion_std_multiplier",
+          "valor": 2.0
+        },
+        {
+          "nome": "seller_margin_gap_pct",
+          "valor": 10.0
+        },
+        {
+          "nome": "seller_margin_mix_min_sample",
+          "valor": 10
+        },
+        {
+          "nome": "service_category_label",
+          "valor": "servico"
+        },
+        {
+          "nome": "service_reconciliation_gap_tolerance",
+          "valor": 1.0
+        },
+        {
+          "nome": "sev_min_capture_pct",
+          "valor": 60.0
+        },
+        {
+          "nome": "sev_ramp_min_days",
+          "valor": 180.0
+        },
+        {
+          "nome": "skill_gap_avoidance_pp",
+          "valor": 10.0
+        },
+        {
+          "nome": "trend_decoupling_pct",
+          "valor": 20.0
+        },
+        {
+          "nome": "variable_cost_pct",
+          "valor": 15.0
+        },
+        {
+          "nome": "vip_customer_top_pct",
+          "valor": 20.0
+        }
+      ],
+      "limpeza": {
+        "linhas_lidas": 1426,
+        "aceitas": 1426,
+        "descartes": {},
+        "podas_outlier": 0
+      }
+    }
+  },
+  "team": {}
+}
+</script>
+
+<div id="app" class="wrap"></div>
+
+<script>
+/* ================================================================
+   MOTOR DE RENDERIZAÇÃO — NÃO EDITAR POR RODADA (Spec §13).
+   Lê AUDIT_DATA e monta o deck. Alturas de gráfico são CALCULADAS
+   dos valores (Spec §4.4) — nunca hard-coded.
+   ================================================================ */
+const D = JSON.parse(document.getElementById('AUDIT_DATA').textContent);
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Compartilhados por Ato 6 (anexo) e Ato 7 (team) — ambos são formatação pura de
+// dado já conferido a montante (Zero Contradição), nunca cálculo aqui.
+const brlCents = n => (n == null) ? '—' :
+  'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const pct = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + '%';
+const pp = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + 'pp';
+const mast = sub => `<header class="masthead sans"><h1>EXRS Data Oracle · Executive Audit Report</h1>
+  <div class="meta">${esc(D.cliente)} — Rodada ${esc(D.rodada)} · ${esc(sub)}</div></header>`;
+const foot = () => `<footer class="footerband sans"><p class="prov">${esc(D.procedencia)}</p>
+  <a class="cta" href="#plano">${esc(D.cta)}</a></footer>`;
+const brl = n => 'R$ ' + Math.abs(n).toLocaleString('pt-BR', {maximumFractionDigits: 0});
+
+/* ---------- ATO 1 — O SOCO ---------- */
+app.insertAdjacentHTML('beforeend', `
+<section class="act" id="ato1">
+  ${mast('dados verificados linha a linha')}
+  <p class="kicker sans">Sumário executivo</p>
+  <div class="money-hero sans" style="margin-top:16px;"><span class="bleed">${esc(D.manchete.total_risco_display)}</span></div>
+  <h2 class="headline">${esc(D.manchete.frase)}</h2>
+  <p class="composition sans"><em>Composição do total (fatos medidos):</em> ${esc(D.manchete.composicao)}</p>
+  <div class="cards sans">
+    ${D.sangramentos.map((s,i)=>`
+      <article class="card">
+        <div class="tag">Sangramento 0${i+1}</div>
+        <div class="value">${esc(s.valor_display)}</div>
+        <p class="cause">${esc(s.soco)}</p>
+        <div class="fact">Fato medido</div>
+        <a href="#${esc(s.id)}">Capítulo: ${esc(s.titulo)}</a>
+        ${s.anexo_ref && D.anexo ? `<a class="anexo-link" href="#anexo-${esc(s.anexo_ref)}">ver evidências no anexo ↓</a>` : ''}
+      </article>`).join('')}
+  </div>
+  ${foot()}
+</section>`);
+
+/* ---------- ATO 2 — O PARADOXO (waterfall calculado) ----------
+   O mecanismo mais comum é máscara produto×serviço (v3: L7-Oeste) — mas o
+   waterfall é, na essência, uma identidade aditiva de 3 números reais
+   (esquerda + meio = direita), não um conceito fixo de "produto/serviço".
+   Rótulos e narrativa são PARAMETRIZÁVEIS via AUDIT_DATA (defaults =
+   texto original da história produto×serviço) para reaproveitar a MESMA
+   estrutura visual em qualquer identidade aditiva real — nunca force um
+   dado numa história que ele não sustenta (Spec v4 §1.5), generalize o
+   rótulo em vez de inventar um paradoxo. Ver Spec v4 §13.6. */
+(() => {
+  const P = D.paradoxo;
+  const col1Label = P.col1_label ?? 'Produto';
+  const col1Context = P.col1_context ?? 'o que a loja vende';
+  const col2Label = P.col2_label ?? 'Serviço';
+  const col2Context = P.col2_context ?? 'o que paga a conta';
+  const col3Label = P.col3_label ?? 'Total que você vê';
+  const col3Context = P.col3_context ?? 'o "verde" de mentira';
+  const headlineHtml = P.headline_html ??
+    'Sua loja campeã <span class="bleed">perde dinheiro em cada produto que vende.</span>';
+  const subHtml = P.sub_html ??
+    `A ${esc(P.loja)} lidera os seus relatórios. Mas separando <strong>o que ela vende</strong>
+     do <strong>que ela conserta</strong> (${esc(P.contexto)}), o produto opera no prejuízo e o serviço
+     paga a conta — e esconde o rombo.`;
+  const axisNoteHtml = P.axis_note_html ??
+    'A barra final é hachurada de propósito: o número é verdadeiro, a saúde é falsa — enquanto o total ' +
+    'parecer saudável, o produto sangra sem alarme.';
+  const recommendationHtml = P.recommendation_html ??
+    'Recompor mix e preço do produto <b>sem enfraquecer o serviço</b> que sustenta a loja — na ordem ' +
+    'certa. Esse rebalanceamento é o trabalho de implantação.';
+  const controlValueLabel = P.controle.value_label ?? 'produto';
+  // 'fake' (default) = hachura diagonal — o total PARECE bom mas esconde o problema
+  // (v3: L7-Oeste). 'true' = verde sólido — o total É a verdade boa, escondida por um
+  // primeiro número errado (não force a textura de "mentira" numa história onde o
+  // resultado final é genuinamente a correção, não a máscara).
+  const col3Style = P.col3_style ?? 'fake';
+  const col3Background = col3Style === 'true'
+    ? 'background:var(--green);opacity:.85;'
+    : `background:var(--fake-green);background-image:repeating-linear-gradient(45deg,
+       transparent,transparent 8px,rgba(255,255,255,.45) 8px,rgba(255,255,255,.45) 12px);`;
+
+  const H = 340, PAD = 34;                       // área útil do gráfico
+  const maxUp = Math.max(P.total, P.servico + P.produto, 0);
+  const maxDown = Math.min(P.produto, 0);
+  const scale = (H - PAD*2) / (maxUp - maxDown); // px por R$
+  const zeroY = PAD + maxUp * scale;
+  const y = v => zeroY - v * scale;
+  const prodTop = zeroY, prodH = Math.abs(P.produto)*scale;
+  const svcTop = y(P.produto + P.servico), svcH = P.servico*scale;
+  const totTop = y(P.total), totH = P.total*scale;
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="ato2">
+  ${mast('Ato 2 · A causa raiz — ' + P.loja)}
+  <p class="kicker sans">O paradoxo</p>
+  <h2 class="headline">${headlineHtml}</h2>
+  <p class="sub">${subHtml}</p>
+  <div class="chartbox sans"><div class="wf">
+    <div class="baseline" style="top:${zeroY}px;"><span class="zero">R$ 0</span></div>
+    <div class="col" style="left:6%;">
+      <div class="bar" style="top:${prodTop}px;height:${prodH}px;background:var(--red);"></div>
+      <div class="blab" style="top:${prodTop+prodH+8}px;color:var(--red);">−${brl(P.produto)}</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>${esc(col1Label)}</b>${esc(col1Context)}</div>
+    </div>
+    <div class="col" style="left:38%;">
+      <div class="bar" style="top:${svcTop}px;height:${svcH}px;background:var(--green);opacity:.85;"></div>
+      <div class="blab" style="top:${svcTop-30}px;color:var(--green);">+${brl(P.servico)}</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>${esc(col2Label)}</b>${esc(col2Context)}</div>
+    </div>
+    <div class="col" style="left:70%;">
+      <div class="bar" style="top:${totTop}px;height:${totH}px;${col3Background}"></div>
+      <div class="blab" style="top:${totTop-30}px;color:var(--ink-soft);">+${brl(P.total)}</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>${esc(col3Label)}</b>${esc(col3Context)}</div>
+    </div>
+  </div>
+  <p class="axis-note" style="margin-top:100px;">${axisNoteHtml}</p>
+  </div>
+  <div class="evidence sans">
+    <div class="ev" style="border-left:4px solid var(--red);">
+      <div class="tag">A prova de controle</div>
+      <p><b>${esc(P.controle.loja)}</b> ${esc(P.controle.frase)} (${esc(controlValueLabel)} ${P.controle.produto<0?'−':''}${brl(P.controle.produto)})</p>
+    </div>
+    <div class="ev" style="border-left:4px solid var(--ink);">
+      <div class="tag">O que isso pede</div>
+      <p>${recommendationHtml}</p>
+    </div>
+  </div>
+  ${foot()}
+</section>`);
+})();
+
+/* ---------- ATO 3 — OS TRÊS SANGRAMENTOS ---------- */
+D.sangramentos.forEach((s, i) => {
+  let chart = '';
+  if (s.id === 'cap-caixa') {
+    if (Array.isArray(s.treemap_itens) && s.treemap_itens.length) {
+      const shown = s.treemap_itens.slice(0, 5);           // teto de 5 (Spec §6)
+      const rest = s.treemap_itens.slice(5);
+      const restSum = rest.reduce((a, x) => a + x.valor, 0);
+      chart = `<div class="chartbox sans"><div class="treemap">
+        ${shown.map(x=>`<div class="cell" style="flex-grow:${x.valor};"><b>${brl(x.valor)}</b>${esc(x.nome)}</div>`).join('')}
+        ${rest.length?`<div class="cell agg" style="flex-grow:${restSum};"><b>${brl(restSum)}</b>+ ${rest.length} produtos no anexo</div>`:''}
+      </div><p class="axis-note">Área proporcional ao capital preso por produto.</p></div>`;
+    } else {
+      chart = `<div class="chartbox sans"><div class="treemap">
+        <div class="cell" style="flex-grow:1;"><b>${esc(s.valor_display)}</b>${s.treemap_total_itens} produtos sem giro — detalhamento por item no anexo</div>
+      </div><p class="axis-note">Mapa por produto disponível quando o motor exportar o detalhamento (procedência preservada — nada é estimado aqui).</p></div>`;
+    }
+  } else if (s.id === 'cap-clientes') {
+    if (Array.isArray(s.serie_mensal) && s.serie_mensal.length) {
+      const mx = Math.max(...s.serie_mensal.map(m => m.valor));
+      chart = `<div class="chartbox sans"><div class="bars">
+        ${s.serie_mensal.map(m=>`<div class="b" style="height:${(m.valor/mx)*100}%;"><span>${esc(m.mes)}</span></div>`).join('')}
+      </div><p class="axis-note">Receita histórica dos clientes que pararam de comprar, mês a mês — o gotejamento.</p></div>`;
+    } else {
+      chart = `<div class="chartbox sans" style="text-align:center;padding:56px 40px;">
+        <div class="money-hero" style="font-size:clamp(48px,7vw,84px);"><span class="bleed">${esc(s.valor_display)}</span></div>
+        <p class="axis-note" style="margin-top:18px;">de receita histórica foi embora em silêncio ·
+        série mensal do gotejamento disponível quando o motor exportar a linha do tempo — nada é estimado aqui.</p>
+      </div>`;
+    }
+  } else {
+    chart = `<div class="chartbox sans" style="display:flex;gap:32px;align-items:center;justify-content:center;padding:48px 40px;flex-wrap:wrap;">
+      <div style="text-align:center;"><div style="font-size:13px;color:var(--ink-soft);">você paga</div>
+        <div style="font-size:52px;font-weight:700;">R$ 190</div></div>
+      <div style="font-size:30px;color:var(--ink-soft);">→</div>
+      <div style="text-align:center;"><div style="font-size:13px;color:var(--ink-soft);">vende por</div>
+        <div style="font-size:52px;font-weight:700;">R$ 200</div></div>
+      <div style="font-size:30px;color:var(--ink-soft);">=</div>
+      <div style="text-align:center;"><div style="font-size:13px;color:var(--red);">depois do custo de operar</div>
+        <div style="font-size:52px;font-weight:700;color:var(--red);">prejuízo</div></div>
+    </div>`;
+  }
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="${esc(s.id)}">
+  ${mast('Capítulo ' + (i+1) + ' de 3 · ' + s.titulo)}
+  <p class="kicker sans">Sangramento 0${i+1} — ${esc(s.titulo)}</p>
+  <div class="chapter-num sans bleed">${esc(s.valor_display)}</div>
+  <h2 class="headline" style="font-size:clamp(20px,2.6vw,28px);">${esc(s.soco)}</h2>
+  ${chart}
+  <div class="evidence sans">
+    ${s.evidencias.slice(0,3).map(e=>`<div class="ev"><p>${esc(e)}</p></div>`).join('')}
+  </div>
+  <p class="cost-line"><b>Se nada mudar:</b> ${esc(s.custo_mensal)}</p>
+  <div class="hookband sans">${esc(s.gancho)}</div>
+  ${s.anexo_ref && D.anexo ? `<p class="sans"><a class="anexo-link" href="#anexo-${esc(s.anexo_ref)}">ver evidências no anexo ↓</a></p>` : ''}
+  ${foot()}
+</section>`);
+});
+
+/* ---------- ATO 4 — A ABSOLVIÇÃO ---------- */
+app.insertAdjacentHTML('beforeend', `
+<section class="act" id="ato4">
+  ${mast('Ato 4 · Os alarmes que descartamos')}
+  <p class="kicker sans" style="color:var(--green);">O que NÃO é problema</p>
+  <h2 class="headline">Um sistema que só encontra problemas está vendendo medo.</h2>
+  <p class="sub">O nosso descartou estes alarmes falsos antes de te mostrar qualquer vermelho.
+    É por isso que os vermelhos deste laudo são reais.</p>
+  <div class="honesty-list sans">
+    ${D.honestidade.map(h=>`<div class="hn"><b>${esc(h.alarme)}</b> — ${esc(h.motivo)}</div>`).join('')}
+  </div>
+  ${foot()}
+</section>`);
+
+/* ---------- ATO 5 — A SAÍDA (ordenado por impacto; cenário sempre por último entre iguais) ---------- */
+const plano = [...D.plano].sort((a,b) => (a.cenario - b.cenario) || (b.impacto - a.impacto));
+app.insertAdjacentHTML('beforeend', `
+<section class="act" id="plano"${D.anexo ? '' : ' style="border-bottom:none;"'}>
+  ${mast('Ato 5 · O plano — ordenado pelo que mais custa')}
+  <p class="kicker sans">A saída</p>
+  <h2 class="headline">O diagnóstico está feito. A ordem abaixo é a ordem do dinheiro.</h2>
+  <p class="sub">Cada item diz <strong>o quê</strong> corrigir. O <strong>como</strong> — implantação,
+    rotina e acompanhamento — é o trabalho da consultoria.</p>
+  <div class="plan sans">
+    ${plano.map((p,i)=>`
+      <div class="pl${p.cenario?' scenario':''}">
+        <div class="rank">${String(i+1).padStart(2,'0')}</div>
+        <div class="body"><b>${esc(p.acao)}</b><p>${esc(p.como)}</p></div>
+        <div class="impact">${esc(p.impacto_display)}</div>
+      </div>`).join('')}
+  </div>
+  ${foot()}
+</section>`);
+
+/* ---------- ATO 6 — ANEXO DE EVIDÊNCIAS (Spec v4 §16) ----------
+   Só renderiza quando D.anexo existe — AUDIT_DATA sem anexo continua
+   idêntico a antes (retrocompatibilidade §16.7). Cada seção é <details>
+   recolhido; o dado já vem pronto do build_anexo (Zero Contradição já
+   conferiu as somas ANTES deste HTML existir) — aqui é só formatação,
+   zero cálculo. */
+if (D.anexo) {
+  const A = D.anexo;
+
+  const secEstoque = A.estoque_parado ? `
+    <details class="anexo-section" id="anexo-estoque_parado">
+      <summary><span>Estoque parado</span>
+        <span class="meta">${A.estoque_parado.itens.length} produtos · ${brlCents(A.estoque_parado.total)}</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Produto</th><th>Descrição</th><th>Capital preso</th><th>Meses parado</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.estoque_parado.itens.map(i => `<tr>
+          <td>${esc(i.sku)}</td><td>${esc(i.descricao || '—')}</td>
+          <td>${brlCents(i.capital_preso)}</td><td>${i.meses_parado ?? '—'}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secFila = A.fila_reativacao ? `
+    <details class="anexo-section" id="anexo-fila_reativacao">
+      <summary><span>Fila de reativação</span>
+        <span class="meta">${A.fila_reativacao.clientes} clientes · ${brlCents(A.fila_reativacao.total)}</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Cliente</th><th>Última compra</th><th>Ciclo próprio</th><th>Silêncio</th>
+        <th>Índice de aquecimento</th><th>R$ histórico</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.fila_reativacao.itens.map(i => `<tr>
+          <td>${esc(i.cliente)}</td><td>${esc(i.ultima_compra || '—')}</td>
+          <td>${i.ciclo_dias != null ? Math.round(i.ciclo_dias) + 'd' : '—'}</td>
+          <td>${i.silencio_dias ?? '—'}d</td>
+          <td>${i.indice_aquecimento != null ? Number(i.indice_aquecimento).toFixed(2).replace('.', ',') + '×' : '—'}</td>
+          <td>${brlCents(i.valor_historico)}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">Ordenado por índice de aquecimento (dias em silêncio ÷ ciclo próprio do
+        cliente) — 1,2× = acabou de estourar o ritmo, ligar primeiro; 4× = frio, não queimar energia
+        de balcão nele. Nunca por R$ histórico puro.</p>
+    </details>` : '';
+
+  const secVendedores = A.vendedores ? `
+    <details class="anexo-section" id="anexo-vendedores">
+      <summary><span>Vendedores</span><span class="meta">${A.vendedores.itens.length} avaliados</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Receita</th><th>Margem</th><th>Margem da loja</th>
+        <th>Gap</th><th>Captura</th><th>Sinais</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.vendedores.itens.map(v => `<tr>
+          <td>${esc(v.vendedor)}</td><td>${esc(v.loja)}</td><td>${brlCents(v.receita)}</td>
+          <td class="${v.margem_pct != null && v.margem_pct < 0 ? 'neg' : ''}">${pct(v.margem_pct)}</td>
+          <td>${pct(v.margem_loja_pct)}</td><td>${pp(v.gap_pp)}</td><td>${pct(v.captura_pct)}</td>
+          <td>
+            <div class="anexo-flags">${v.flags.map(f => `<span class="anexo-flag">${esc(f.replace(/_/g, ' '))}</span>`).join('')}</div>
+            ${v.notas.map(n => `<div class="anexo-note">${esc(n)}</div>`).join('')}
+            ${v.mix_top_desvio ? `<div class="anexo-meta-line">${esc(v.mix_top_desvio.categoria)}: +${pp(v.mix_top_desvio.desvio_pp)} vs. loja (categoria margeia ${pct(v.mix_top_desvio.margem_categoria_pct)})</div>` : ''}
+          </td>
+          <td class="src">${esc(v.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secTriagem = A.triagem_discrepancias ? `
+    <details class="anexo-section" id="anexo-triagem_discrepancias">
+      <summary><span>Triagem de discrepâncias</span>
+        <span class="meta">${A.triagem_discrepancias.disparos} casos · ${A.triagem_discrepancias.pendentes} pendentes${
+          A.triagem_discrepancias.total_abaixo_custo != null
+            ? ` · ${brlCents(A.triagem_discrepancias.total_abaixo_custo)} abaixo do custo` : ''
+        }</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Produto</th><th>Loja</th><th>Vendedor</th><th>Veredito</th><th>Perda</th><th>Evidências</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.triagem_discrepancias.itens.map(i => `<tr>
+          <td>${esc(i.sku)}${i.descricao ? `<div class="anexo-meta-line">${esc(i.descricao)}</div>` : ''}</td>
+          <td>${esc(i.loja)}</td><td>${esc(i.vendedor)}</td>
+          <td>${esc((i.veredito || 'em auditoria').replace(/_/g, ' '))}${i.veredito_origem === 'pending_manual_review' ? ' <span class="anexo-meta-line">(pendente)</span>' : ''}</td>
+          <td>${i.perda_confirmada ? brlCents(i.perda_abaixo_custo) : '—'}</td>
+          <td>${i.evidencias.map(e => `<div>${esc(e)}</div>`).join('')}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secMetodologia = A.metodologia ? `
+    <details class="anexo-section" id="anexo-metodologia">
+      <summary><span>Metodologia</span><span class="meta">como calculamos</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr><th>Limiar</th><th>Valor</th></tr></thead><tbody>
+        ${A.metodologia.limiares.map(l => `<tr><td>${esc(l.nome)}</td><td>${esc(String(l.valor))}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">${A.metodologia.limpeza.linhas_lidas ?? '—'} linhas lidas ·
+        ${A.metodologia.limpeza.aceitas ?? '—'} aceitas ·
+        ${A.metodologia.limpeza.podas_outlier ?? 0} podas de outlier.</p>
+    </details>` : '';
+
+  // Ato 6 só fecha a borda (é o último) quando o Ato 7 (team) não for renderizar
+  // logo em seguida — mesmo padrão condicional já usado no Ato 5 para o Ato 6.
+  const temTeam = !!(D.team && (D.team.evasao || D.team.comissionamento || D.team.habilidade));
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="anexo"${temTeam ? '' : ' style="border-bottom:none;"'}>
+  ${mast('Ato 6 · Anexo de evidências')}
+  <p class="kicker sans">A prova, linha a linha</p>
+  <h2 class="headline">Cada número deste laudo pode ser refeito à mão.</h2>
+  <p class="sub">O detalhamento que sustenta cada capítulo — nomes, valores e a linha exata
+    do seu arquivo de onde cada número saiu.</p>
+  <div class="sans" style="margin-top:32px;">
+    ${secEstoque}${secFila}${secVendedores}${secTriagem}${secMetodologia}
+  </div>
+  ${foot()}
+</section>`);
+}
+
+/* Ato 7 · A Física da Equipe (Fase E parte 1) — só renderiza quando D.team tem
+   pelo menos uma seção; AUDIT_DATA sem team continua idêntico a antes
+   (retrocompatibilidade). Mesmo padrão de <details> recolhido do Ato 6; o dado já
+   vem pronto do build_team (Zero Contradição/Z7/Z8 já conferiram a montante) —
+   aqui é só formatação, zero cálculo. */
+if (D.team && (D.team.evasao || D.team.comissionamento || D.team.habilidade)) {
+  const T = D.team;
+
+  const secEvasao = T.evasao ? `
+    <details class="anexo-section" id="team-evasao">
+      <summary><span>Evasão de talentos</span>
+        <span class="meta">${T.evasao.itens.length} em risco</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Meses avaliados</th><th>Captura</th>
+        <th>Desconto</th><th>Ticket</th><th>Sinais</th><th>Carteira em risco</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${T.evasao.itens.map(e => `<tr>
+          <td>${esc(e.vendedor)}</td><td>${esc(e.loja)}</td><td>${e.meses_avaliados ?? '—'}</td>
+          <td>${e.captura_trend_pp != null ? '↓ ' + pp(e.captura_trend_pp) : '—'}</td>
+          <td>${e.desconto_trend_pp != null ? '↑ ' + pp(e.desconto_trend_pp) : '—'}</td>
+          <td>${e.ticket_trend_pct != null ? '↓ ' + pct(e.ticket_trend_pct) : '—'}</td>
+          <td><div class="anexo-flags">${e.sinais.map(s => `<span class="anexo-flag">${esc(s.replace(/_/g, ' '))}</span>`).join('')}</div></td>
+          <td>${brlCents(e.carteira_em_risco)}</td>
+          <td class="src">${esc(e.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">Carteira em risco = receita bruta do vendedor no período (inclui venda
+        anônima e estorno) — é o que evapora SE o vendedor sair, não uma perda já ocorrida. Nunca somado
+        aos sangramentos do corpo do laudo (naturezas diferentes).</p>
+    </details>` : '';
+
+  const secComissionamento = T.comissionamento ? `
+    <details class="anexo-section" id="team-comissionamento">
+      <summary><span>Conflito de comissionamento</span>
+        <span class="meta">${T.comissionamento.itens.length} vendedores</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Base de comissão</th><th>Achado</th><th>Recomendação</th>
+      </tr></thead><tbody>
+        ${T.comissionamento.itens.map(c => `<tr>
+          <td>${esc(c.vendedor)}</td><td>${esc(c.loja)}</td>
+          <td>${esc((c.base_comissao || '').replace(/_/g, ' '))}</td>
+          <td>${esc(c.resumo_achado)}</td>
+          <td>${esc(c.recomendacao)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secHabilidade = T.habilidade ? `
+    <details class="anexo-section" id="team-habilidade">
+      <summary><span>Matriz de habilidade</span>
+        <span class="meta">${T.habilidade.itens.length} hipóteses</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Categoria</th><th>Desvio de mix</th>
+        <th>Margem da categoria</th><th>Hipótese</th>
+      </tr></thead><tbody>
+        ${T.habilidade.itens.map(h => `<tr>
+          <td>${esc(h.vendedor)}</td><td>${esc(h.loja)}</td><td>${esc(h.categoria)}</td>
+          <td>${pp(h.desvio_mix_pp)}</td><td>${pct(h.margem_categoria_pct)}</td>
+          <td>${esc(h.hipotese)}
+            <div class="anexo-meta-line">hipótese derivada de padrão de mix, não diagnóstico confirmado —
+              conversão real exigiria dado de tentativas (aba Orçamentos, fora desta rodada)</div>
+          </td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="team" style="border-bottom:none;">
+  ${mast('Ato 7 · A Física da Equipe')}
+  <p class="kicker sans">O sistema em volta do vendedor</p>
+  <h2 class="headline">Nem todo resultado ruim é falta de esforço.</h2>
+  <p class="sub">Incentivo, habilidade e evasão — o que o sistema permite ou impede, não só o
+    resultado que ele produz.</p>
+  <div class="sans" style="margin-top:32px;">
+    ${secEvasao}${secComissionamento}${secHabilidade}
+  </div>
+  ${foot()}
+</section>`);
+}
+</script>
+</body>
+</html>

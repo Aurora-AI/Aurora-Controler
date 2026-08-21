@@ -3,20 +3,11 @@ import pytest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "api",
-    REPO_ROOT / "src" / "phase_c1",
-    REPO_ROOT / "src" / "phase_c2",
-    REPO_ROOT / "src" / "phase_c3",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     C0Dataset, IngestionStrategy, DetectedStructure, ValidationSummary,
 )
-from main import generate_dashboard, DashboardRequest, health_check
+from api.main import generate_dashboard, DashboardRequest, health_check
 
 def _c0_fixture() -> C0Dataset:
     return C0Dataset(
@@ -61,7 +52,7 @@ async def test_generate_dashboard_endpoint():
 
 def test_upload_and_generate_endpoint():
     from fastapi.testclient import TestClient
-    from main import app
+    from api.main import app
 
     client = TestClient(app)
     csv_data = "cnpj,status,quantidade\n00.1/0001-01,Aprovado,10.0\n00.2/0001-02,Reprovado,20.0\n"
@@ -84,12 +75,12 @@ def test_upload_and_generate_endpoint():
 
 def _client():
     from fastapi.testclient import TestClient
-    from main import app
+    from api.main import app
     return TestClient(app)
 
 
 def test_compile_xlsx_reaches_terminal_status():
-    from jobs import TERMINAL_STATUSES
+    from api.jobs import TERMINAL_STATUSES
     fixture = REPO_ROOT / "tests" / "fixtures" / "coverage_test.xlsx"
     client = _client()
     with open(fixture, "rb") as f:

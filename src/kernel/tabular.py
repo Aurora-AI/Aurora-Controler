@@ -34,6 +34,71 @@ def _normalize(text: str) -> str:
     return "".join(c for c in nfkd if not unicodedata.combining(c)).lower()
 
 
+def read_dataframe_robust(
+    path: str,
+    sheet_name: str | None,
+    role_keywords: dict[str, list[str]],
+    max_scan_rows: int = 20,
+) -> pd.DataFrame:
+    """Lê um arquivo tabular (CSV/Excel) localizando a linha de cabeçalho dinamicamente
+    com base na densidade de palavras-chave. Ignora 'lixo' inicial."""
+    import pathlib
+    path_obj = pathlib.Path(path)
+    
+    if path_obj.suffix.lower() == ".csv":
+        df_raw = pd.read_csv(path_obj, header=None, dtype=str)
+    else:
+        # Default to the first sheet if sheet_name is not specified, to prevent returning a dict of all sheets
+        target_sheet = sheet_name if sheet_name is not None else 0
+        df_raw = pd.read_excel(path_obj, sheet_name=target_sheet, header=None, dtype=str, engine="openpyxl")
+    
+    if df_raw.empty:
+        return pd.DataFrame()
+        
+    best_row_idx = 0
+    max_matches = -1
+    scan_limit = min(max_scan_rows, len(df_raw))
+    
+    for i in range(scan_limit):
+        row_values = df_raw.iloc[i].fillna("").astype(str).tolist()
+        matches = 0
+        assigned_roles = set()
+        
+        for role, keywords in role_keywords.items():
+            for val in row_values:
+                normalized = _normalize(val)
+                if any(k in normalized for k in keywords):
+                    if role not in assigned_roles:
+                        matches += 1
+                        assigned_roles.add(role)
+                        break
+                        
+        if matches > max_matches:
+            max_matches = matches
+            best_row_idx = i
+            
+    if max_matches <= 0:
+        best_row_idx = 0
+        
+    headers = df_raw.iloc[best_row_idx].fillna("").astype(str).tolist()
+    unique_headers = []
+    seen = {}
+    for h in headers:
+        if not h:
+            h = "Unnamed"
+        if h in seen:
+            seen[h] += 1
+            unique_headers.append(f"{h}_{seen[h]}")
+        else:
+            seen[h] = 0
+            unique_headers.append(h)
+            
+    df_clean = df_raw.iloc[best_row_idx + 1:].copy()
+    df_clean.columns = unique_headers
+    df_clean.reset_index(drop=True, inplace=True)
+    return df_clean
+
+
 def infer_column_roles(
     df: pd.DataFrame,
     role_keywords: dict[str, list[str]],

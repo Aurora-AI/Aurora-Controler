@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>EXRS — Auditoria Comercial de retail_hostile_test_v1.xlsx</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", sans-serif; background:#F8FAFC;
+           color:#0F172A; margin:0; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    h1 { font-weight:600; color:#0F172A; margin-bottom:4px; }
+    h2 { font-size:16px; font-weight:600; color:#334155; margin-top:32px; text-transform:uppercase; letter-spacing:0.04em; }
+    .sub { color:#64748B; font-size:13px; margin-bottom:24px; }
+    .kpi-row { display:flex; gap:16px; margin-bottom:12px; }
+    .kpi { background:#fff; border:1px solid #E2E8F0; border-radius:8px; padding:16px 20px; flex:1; }
+    .kpi-value { display:block; font-size:24px; font-weight:700; color:#0F172A; }
+    .kpi-label { display:block; font-size:12px; color:#64748B; margin-top:4px; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #E2E8F0; border-radius:8px; overflow:hidden; }
+    th, td { text-align:left; padding:10px 14px; border-bottom:1px solid #F1F5F9; font-size:13px; }
+    th { color:#64748B; font-weight:600; background:#F8FAFC; }
+    table.seasonality td { text-align:center; }
+    .badge { color:#fff; padding:2px 10px; border-radius:4px; font-size:11px; }
+    .clean { color:#16A34A; font-size:14px; }
+    details { margin-top:8px; font-size:13px; color:#475569; }
+    .alert-red { background: #FEF2F2; color: #991B1B; border-left: 4px solid #DC2626; padding: 12px; margin-bottom: 16px; font-size: 14px; border-radius: 4px; font-weight: 500; line-height: 1.4; }
+    .alert-green { background: #F0FDF4; color: #166534; border-left: 4px solid #16A34A; padding: 12px; margin-bottom: 16px; font-size: 14px; border-radius: 4px; font-weight: 500; line-height: 1.4; }
+    </style>
+</head>
+<body>
+<div class="page">
+  <h1>📊 Auditoria Forense Comercial — retail_hostile_test_v1.xlsx</h1>
+  <div class="sub">Gerado em 30/07/2026 14:53 · Período: 2026-03 a
+    2026-04 · Uso estritamente local — este relatório contém
+    identidades reais de clientes.</div>
+
+  <h2>Ingestão e Limpeza</h2>
+  
+    <div class='alert-red'>⚠️ RECONCILIAÇÃO FALHOU: O Faturamento Declarado (R$ 35.353,50) difere do Grid Transacional Aceito (R$ 34.503,00). Gap: R$ 850,50 (2.41%).</div>
+    <div class='alert-red'>⚠️ ALERTA FORENSE: Taxa de descarte abusiva (23.5%). A integridade estatística do relatório está comprometida.</div>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-value">34</span><span class="kpi-label">linhas lidas</span></div>
+      <div class="kpi"><span class="kpi-value">26</span><span class="kpi-label">linhas aceitas</span></div>
+      <div class="kpi"><span class="kpi-value">8</span><span class="kpi-label">linhas descartadas (23.5%)</span></div>
+    </div>
+    <details>
+      <summary>Motivos de descarte / arquivos pulados</summary>
+      <ul><li>valor_nao_numerico: 1</li><li>data_invalida: 7</li></ul>
+      <ul><li>nenhum arquivo pulado</li></ul>
+    </details>
+    
+
+  <h2>Vazamento de Receita</h2>
+  <div class='alert-red'>🚨 SELO DE SEGURANÇA DESATIVADO: Gap de reconciliação detectado. A ausência de anomalias listadas abaixo NÃO garante ausência de vazamentos, pois o total financeiro está mascarado/corrompido.</div>
+
+  <h2>Churn Invisível</h2>
+  <p class='clean'>✅ Nenhum cliente em churn invisível detectado.</p>
+
+  <h2>Tendência de Produto</h2>
+  
+    <table>
+      <thead><tr><th>Produto</th><th>Crescimento empresa</th><th>Crescimento produto</th>
+      <th>Tendência</th><th>Margem Curto-Prazo</th><th>Última venda</th></tr></thead>
+      <tbody><tr><td>SKU-1044</td><td>+0.3%</td><td>-33.3%</td><td>⚠️ descolado</td><td>38.8%</td><td>2026-04</td></tr>
+<tr><td>SKU-3321</td><td>+0.3%</td><td>+0.0%</td><td>✅ acompanha</td><td>—</td><td>2026-04</td></tr>
+<tr><td>SKU-5541</td><td>+0.3%</td><td>+100.0%</td><td>✅ acompanha</td><td>—</td><td>2026-04</td></tr>
+<tr><td>SKU-8832</td><td>+0.3%</td><td>-32.0%</td><td>⚠️ descolado</td><td>29.5%</td><td>2026-04</td></tr>
+<tr><td>SKU-9921</td><td>+0.3%</td><td>-25.0%</td><td>⚠️ descolado</td><td>24.1%</td><td>2026-04</td></tr></tbody>
+    </table>
+    
+
+  <h2>Sazonalidade</h2>
+  <p class='clean'>ℹ️ Sazonalidade (total): dados insuficientes (2 mês(es) de histórico).</p>
+</div>
+</body>
+</html>

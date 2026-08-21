@@ -3,14 +3,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "phase_c3",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     Resolution, DataView, DashboardComponent, Layout, NarrativeBlock,
     DashboardSpec, ChartRule, DashboardComponentSpec,
 )
@@ -60,10 +54,10 @@ def test_dashboard_component_spec_pair():
 
 
 # --- Task 14: catalog ---
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     MetricsReport, KPI, Aggregation, AggregationRow, SemanticModel, SemanticField,
 )
-from catalog import (
+from phase_c3.catalog import (
     CHART_RULES, PREDICATE_REGISTRY, DATA_VIEW_BUILDER_REGISTRY,
 )
 
@@ -111,14 +105,14 @@ def test_builder_status_distribution_produces_series():
 
 
 def test_fmt_kpi_preserves_decimals():
-    from catalog import _fmt_kpi
+    from phase_c3.catalog import _fmt_kpi
     assert _fmt_kpi(20.0, "total_quantidade") == "20"
     assert _fmt_kpi(19.99, "total_valor") == "19,99"   # decimal preservado
     assert _fmt_kpi(0.2076, "aprovado_rate") == "20,8%"
 
 
 # --- Task 15: recommend ---
-from recommend import recommend
+from phase_c3.recommend import recommend
 
 
 def test_recommend_returns_component_specs():
@@ -148,7 +142,7 @@ def test_recommend_ordered_by_priority():
 
 
 # --- Task 16: spec_builder ---
-from spec_builder import build_dashboard_spec, validate_spec_self_contained
+from phase_c3.spec_builder import build_dashboard_spec, validate_spec_self_contained
 
 
 def test_build_dashboard_spec_is_self_contained():
@@ -192,7 +186,7 @@ def test_build_dashboard_spec_no_llm_empty_narrative():
 import json as _json
 import subprocess as _sub
 import os as _os
-from narrative import build_narrative_prompt
+from phase_c3.narrative import build_narrative_prompt
 
 
 def test_build_narrative_prompt_includes_kpis():

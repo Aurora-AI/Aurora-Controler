@@ -3,10 +3,9 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
 
-from normalizer import tokenize_formula
+from kernel.phase_a1_5.normalizer import tokenize_formula
 
 def test_tokenize_malformed_formula_logs_and_does_not_raise(caplog):
     """Fórmula malformada não deve lançar exceção; deve logar em DEBUG se tokenizer falhar."""
@@ -32,12 +31,10 @@ def test_normalizer_uses_pipeline_contracts_classes():
     import sys
     from pathlib import Path
     REPO = Path(__file__).resolve().parents[1]
-    sys.path.insert(0, str(REPO / "src" / "kernel" / "phase_a1_5"))
-    sys.path.insert(0, str(REPO / "src" / "product_a" / "trustware"))
 
     import importlib
-    import normalizer as norm
-    import product_a.trustware.pipeline_contracts as pc
+    from kernel.phase_a1_5 import normalizer as norm
+    import libs.trustware.pipeline_contracts as pc
 
     assert norm.FormulaToken is pc.FormulaToken, \
         "FormulaToken em normalizer não é o mesmo de pipeline_contracts"

@@ -1,0 +1,49 @@
+=========================================================================================================
+                   ART-PER-001 · PAINEL DE PERFORMANCE POR BANDAS (v1.0)
+=========================================================================================================
+  INDICADOR-MÃE (ÂNCORA): GAP EM R$ ENTRE A MÉDIA GERAL E O TOPO DA EQUIPE
+  VALOR CONSOLIDADO:      R$ 55,844.77  [Selo: CONFIRMADO]
+  OBJETIVO DECLARADO:     Mover a curva de distribuição para a direita (capacitação, nunca corte de cauda)
+---------------------------------------------------------------------------------------------------------
+  GOVERNANÇA: 34 Vendedores Avaliados | 14 c/ Amostra Reduzida (REG-NUM-002)
+  REG-SEV-004: Zero identificação nominal de vendedores | Teto da Superfície: 4 Elementos Canônicos
+=========================================================================================================
+  [ELEMENTO 2] DISTRIBUIÇÃO E MÉTRICAS POR BANDA DE PERFORMANCE
+---------------------------------------------------------------------------------------------------------
+  BANDA      VENDEDORES   SHARE %    RECEITA MÉDIA      FAIXA (MIN - MAX)            CAPTURA MÉDIA  
+---------------------------------------------------------------------------------------------------------
+  Topo       8              56.2%   R$ 96,093.92       R$ 82,343.42 - R$ 127,384.97 69.1%          
+  Forte      9              28.5%   R$ 43,383.43       R$ 21,630.65 - R$ 78,637.93  86.6%          
+  Médio      9              12.0%   R$ 18,238.42       R$ 13,503.23 - R$ 21,602.32  100.0%         
+  Base       8               3.3%   R$ 5,640.40        R$ 894.00 - R$ 10,436.90     100.0%         
+=========================================================================================================
+  [ELEMENTO 3] ASSINATURAS DE COMPORTAMENTO E PLANO DE DESENVOLVIMENTO
+---------------------------------------------------------------------------------------------------------
+  • BANDA TOPO: Alto volume e tração comercial (captura média de 69.1%) — referência para replicação de boas práticas
+  • BANDA FORTE: Consistência operacional (captura média de 86.6%) — potencial de alavancagem para banda Topo via ticket e mix
+  • BANDA MÉDIO: Operação padrão (captura média de 100.0%) — necessita reforço de mix de alto valor e vendas cruzadas
+  • BANDA BASE: Baixa densidade de vendas (captura média de 100.0%) — foco prioritário em capacitação técnica e conversão de balcão
+=========================================================================================================
+  [ELEMENTO 4] TENDÊNCIAS INTRA-LOJA (DISTRIBUIÇÃO DE BANDAS E GAP LOCAL)
+---------------------------------------------------------------------------------------------------------
+  LOJA                 TOTAL    TOPO     FORTE    MÉDIO    BASE     RECEITA MÉDIA    GAP TOPO LOCAL  
+---------------------------------------------------------------------------------------------------------
+  L1 - Centro          4        3        1        0        0        R$ 101,264.12    R$ 26,120.85    
+  L10 - Industrial     4        0        0        0        4        R$ 1,626.59      R$ 618.93       
+  L2 - Shopping        4        2        2        0        0        R$ 77,698.56     R$ 17,994.32    
+  L3 - Bairro          4        3        1        0        0        R$ 77,436.26     R$ 12,714.53    
+  L4 - Zona Sul        3        0        1        2        0        R$ 18,889.47     R$ 2,741.18     
+  L5 - Norte           3        0        0        3        0        R$ 17,812.95     R$ 2,970.73     
+  L6 - Leste           3        0        0        0        3        R$ 9,393.32      R$ 1,015.66     
+  L7 - Oeste           3        0        1        2        0        R$ 22,315.06     R$ 2,397.40     
+  L8 - Praia           3        0        3        0        0        R$ 29,087.80     R$ 3,739.87     
+  L9 - Serra           3        0        0        2        1        R$ 14,624.44     R$ 5,308.75     
+=========================================================================================================
+
+--- RESUMO DE GOVERNANCA PAINEL DE BANDAS ---
+Artefato: ART-PER-001 (v1.0)
+Teto de Superficie: 4 elementos
+Total Vendedores Avaliados: 34
+Total Vendedores Baixa Amostra (REG-NUM-002): 14
+Total Lojas Cobertas: 10
+Indicador Ancora (Gap Topo vs Media): R$ 55,844.77

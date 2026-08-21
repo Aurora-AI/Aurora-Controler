@@ -10,7 +10,7 @@ from collections import deque
 # Setup path for pipeline_contracts
 
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     NormalizedWorkbookIR, NormalizedSheet, NormalizedCell,
     ExecutionDAG, DAGNode, DAGEdge, CycleInfo, CycleType
 )

@@ -1,0 +1,26 @@
+=========================================================================================================
+                          ART-COC-001 · COCKPIT DO DONO (v1.0)
+=========================================================================================================
+  INDICADOR-MÃE (ÂNCORA): CICLO MÉDIO DE RECOMPRA DA BASE (ciclo)
+  VALOR CONSOLIDADO:      67.9 dias  [Meta: QUEDA]  Selo: CONFIRMADO
+  DIAGNÓSTICO FATO:       Mediana de cadência observada em 47 clientes com compras recorrentes
+---------------------------------------------------------------------------------------------------------
+  GOVERNANÇA: 3 KPIs Confirmados | 4 KPIs Quarentenados em SEM_BASE (Teto: 7 elementos)
+  REG-SEV-004: Painel consolidado da rede (zero identificação individual) | REG-NUM-001: Quarentena estrita
+=========================================================================================================
+#    KPI ID       SÍMBOLO         VALOR CONSOLIDADO      META       STATUS / SELO   DETALHE / FATO                     
+---------------------------------------------------------------------------------------------------------
+2    FOR-BAS-010  tx_ident        [SEM_BASE]             ALTA       SEM_BASE        Campo não fornecido no relatório contábil sem recálculo fora do motor (LAC-FOR-063)
+3    FOR-BAS-009  tx_recompra     [SEM_BASE]             ALTA       SEM_BASE        Total de clientes únicos não preservado no relatório congelado (LAC-FOR-063)
+4    FOR-BAS-007  attach_cat      61.5%                  ALTA       CONFIRMADO      Conversão lente -> solar (221 elegíveis)
+5    FOR-EST-003  GMROI_doc       0.63 (índice)          ALTA       CONFIRMADO      GMROI consolidado da rede sobre 6 categorias de produto
+6    FOR-BAS-011  conv_pendentes  [SEM_BASE]             ALTA       SEM_BASE        Tabela de orçamentos e pendências inexistente no arquivo (LAC-FOR-063)
+7    FOR-FIN-004  MRR             [SEM_BASE]             ALTA       SEM_BASE        Tabela de planos e assinaturas recorrentes inexistente no arquivo (LAC-FOR-063)
+=========================================================================================================
+
+--- RESUMO DE GOVERNANCA COCKPIT DO DONO ---
+Artefato: ART-COC-001 (v1.0)
+Teto de Superficie: 7 elementos
+Total Ativos (Confirmados): 3
+Total Quarentenados (SEM_BASE): 4
+Indicador Ancora: Ciclo Médio de Recompra da Base = 67.9 dias

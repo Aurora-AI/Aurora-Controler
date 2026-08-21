@@ -71,6 +71,8 @@ def test_key_findings_from_the_meeting_stay_pinned():
     assert [item["tier"] for item in summary["action_plan"]] == sorted(
         item["tier"] for item in summary["action_plan"]
     )
+    # Fase E, E2 — commission_basis_unknown sempre aparece com o threshold default
+    # ("unknown"), somado às duas categorias pré-existentes.
     assert {a["category"] for a in summary["discarded_alarms"]} <= {
-        "salesperson_ramp", "store_cold_start",
+        "salesperson_ramp", "store_cold_start", "commission_basis_unknown",
     }

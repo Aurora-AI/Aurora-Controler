@@ -9,14 +9,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "product_a" / "phase_b1",
-    REPO_ROOT / "src" / "product_a" / "phase_b2",
-    REPO_ROOT / "src" / "product_a" / "phase_b3",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 
 def test_run_pipeline_deterministic(tmp_path):
@@ -46,13 +38,13 @@ def test_run_pipeline_deterministic(tmp_path):
 
 def test_b2_graph_assembly_from_intent(tmp_path):
     """B2 graph assembler funciona com IntentCapture mínimo."""
-    from product_a.trustware.pipeline_contracts import (
+    from libs.trustware.pipeline_contracts import (
         IntentCapture, InputParameter, OutputMetric,
         GraphNodeType,
     )
 
     # Verificar que load_graph_from_prefix existe e lança FileNotFoundError corretamente
-    from graph_assembler import load_graph_from_prefix
+    from product_a.phase_b2.graph_assembler import load_graph_from_prefix
     import pytest
     with pytest.raises(FileNotFoundError):
         load_graph_from_prefix("output/arquivo_que_nao_existe")
@@ -60,9 +52,9 @@ def test_b2_graph_assembly_from_intent(tmp_path):
 
 def test_b3_simulation_roundtrip():
     """B3 SimulationAudit serializa e deserializa sem perda."""
-    from product_a.trustware.pipeline_contracts import SimulationAudit, SimulationStep, StagedRuleGraph, GraphNode, GraphEdge, GraphNodeType, IntentCapture, InputParameter, OutputMetric
-    from simulation_engine import run_simulation, make_step
-    from hitl_loop import run_hitl
+    from libs.trustware.pipeline_contracts import SimulationAudit, SimulationStep, StagedRuleGraph, GraphNode, GraphEdge, GraphNodeType, IntentCapture, InputParameter, OutputMetric
+    from product_a.phase_b3.simulation_engine import run_simulation, make_step
+    from product_a.phase_b3.hitl_loop import run_hitl
 
     intent = IntentCapture(
         workbook_name="IntTest",

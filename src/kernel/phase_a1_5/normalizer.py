@@ -12,7 +12,7 @@ _log = logging.getLogger(__name__)
 
 from openpyxl.formula import Tokenizer
 from openpyxl.utils import get_column_letter, column_index_from_string
-from kernel.contracts import (
+from libs.trustware.pipeline_contracts import (
     WorkbookIR, NormalizedWorkbookIR, NormalizedSheet, NormalizedCell,
     FormulaToken, FormulaTokenType, CellData, SheetData
 )
@@ -100,6 +100,10 @@ def tokenize_formula(formula: str, locale: str = 'en-US') -> list[FormulaToken]:
             # Ajuste de tipos baseado no valor se o Tokenizer falhar na classificação fina
             if token_type == FormulaTokenType.CONSTANT and re.match(r'^[A-Z]+\d+', value.upper()):
                  token_type = FormulaTokenType.OPERAND
+                 
+            # Fix para detectar Fudge Factors e strings literais (openpyxl tags as OPERAND)
+            if item.type == 'OPERAND' and getattr(item, 'subtype', '') in ('NUMBER', 'TEXT'):
+                 token_type = FormulaTokenType.CONSTANT
             
             if token_type == FormulaTokenType.FUNCTION:
                 if value.endswith('('):

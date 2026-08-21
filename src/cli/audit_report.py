@@ -38,11 +38,29 @@ def _build_cleaning_section(report: ExecutiveAuditReport) -> str:
     skipped = "".join(
         f"<li>{_esc(f['file'])} — {_esc(f['reason'])}</li>" for f in c.files_skipped
     ) or "<li>nenhum arquivo pulado</li>"
+    
+    discard_rate = (c.rows_read - c.rows_accepted) / c.rows_read if c.rows_read > 0 else 0
+    discard_alert = ""
+    if discard_rate > 0.05:
+        discard_alert = f"<div class='alert-red'>⚠️ ALERTA FORENSE: Taxa de descarte abusiva ({discard_rate:.1%}). A integridade estatística do relatório está comprometida.</div>"
+
+    raw_rev = c.raw_declared_revenue or 0.0
+    gap = c.reconciliation_gap or 0.0
+    gap_pct = (abs(gap) / raw_rev * 100) if raw_rev else 0.0
+    
+    gap_alert = ""
+    if gap != 0:
+        gap_alert = f"<div class='alert-red'>⚠️ RECONCILIAÇÃO FALHOU: O Faturamento Declarado ({_fmt_brl(raw_rev)}) difere do Grid Transacional Aceito ({_fmt_brl(raw_rev - gap)}). Gap: {_fmt_brl(gap)} ({gap_pct:.2f}%).</div>"
+    else:
+        gap_alert = f"<div class='alert-green'>✅ Reconciliação de Grid: Sucedida ({_fmt_brl(raw_rev)} bate com grid transacional).</div>"
+
     return f"""
+    {gap_alert}
+    {discard_alert}
     <div class="kpi-row">
       <div class="kpi"><span class="kpi-value">{c.rows_read}</span><span class="kpi-label">linhas lidas</span></div>
       <div class="kpi"><span class="kpi-value">{c.rows_accepted}</span><span class="kpi-label">linhas aceitas</span></div>
-      <div class="kpi"><span class="kpi-value">{c.rows_read - c.rows_accepted}</span><span class="kpi-label">linhas descartadas</span></div>
+      <div class="kpi"><span class="kpi-value">{c.rows_read - c.rows_accepted}</span><span class="kpi-label">linhas descartadas ({discard_rate:.1%})</span></div>
     </div>
     <details>
       <summary>Motivos de descarte / arquivos pulados</summary>
@@ -53,16 +71,28 @@ def _build_cleaning_section(report: ExecutiveAuditReport) -> str:
 
 
 def _build_revenue_leaks_table(report: ExecutiveAuditReport) -> str:
+    c = report.cleaning
+    gap = c.reconciliation_gap or 0.0
+    
+    if gap != 0:
+        header_msg = "<div class='alert-red'>🚨 SELO DE SEGURANÇA DESATIVADO: Gap de reconciliação detectado. A ausência de anomalias listadas abaixo NÃO garante ausência de vazamentos, pois o total financeiro está mascarado/corrompido.</div>"
+    elif not report.revenue_leaks:
+        header_msg = "<p class='clean'>✅ Nenhum vazamento de receita detectado. (Grid de dados validado financeiramente)</p>"
+    else:
+        header_msg = ""
+        
     if not report.revenue_leaks:
-        return "<p class='clean'>✅ Nenhum vazamento de receita detectado.</p>"
+        return header_msg
+
     rows = "\n".join(
         f"<tr><td>{_esc(a.scope)}</td><td>{_esc(a.entity_id)}</td><td>{_esc(a.period)}</td>"
         f"<td>{_fmt_brl(a.expected_value)}</td><td>{_fmt_brl(a.actual_value)}</td>"
         f"<td>{a.drop_sigma:.2f}σ</td>"
-        f"<td><span class='badge' style='background:{_SEVERITY_COLORS.get(a.severity, "#64748B")}'>{_esc(a.severity)}</span></td></tr>"
+        f"<td><span class='badge' style='background:{_SEVERITY_COLORS.get(a.severity, '#64748B')}'>{_esc(a.severity)}</span></td></tr>"
         for a in report.revenue_leaks
     )
     return f"""
+    {header_msg}
     <table>
       <thead><tr><th>Escopo</th><th>Entidade</th><th>Período</th><th>Esperado</th>
       <th>Realizado</th><th>Desvio</th><th>Severidade</th></tr></thead>
@@ -94,18 +124,28 @@ def _build_churn_table(report: ExecutiveAuditReport, identity_map: dict[str, str
 def _build_product_trends_table(report: ExecutiveAuditReport) -> str:
     if not report.product_trends:
         return "<p class='clean'>Nenhum produto analisado.</p>"
-    rows = "\n".join(
-        f"<tr><td>{_esc(t.product)}</td><td>{t.company_growth_pct:+.1f}%</td>"
-        f"<td>{t.product_growth_pct:+.1f}%</td>"
-        f"<td>{'⚠️ descolado' if t.decoupled else '✅ acompanha'}</td>"
-        f"<td>{_esc(t.last_sale_month or '—')}</td></tr>"
-        for t in report.product_trends
-    )
+    
+    rows = []
+    for t in report.product_trends:
+        trend = "⚠️ descolado" if t.decoupled else "✅ acompanha"
+        margin = f"{t.short_term_margin:.1f}%" if t.short_term_margin is not None else "—"
+        if t.has_formula_errors:
+            trend += " <span class='badge' style='background:#DC2626'>ERRO DE FÓRMULA</span>"
+            
+        rows.append(
+            f"<tr><td>{_esc(t.product)}</td><td>{t.company_growth_pct:+.1f}%</td>"
+            f"<td>{t.product_growth_pct:+.1f}%</td>"
+            f"<td>{trend}</td>"
+            f"<td>{margin}</td>"
+            f"<td>{_esc(t.last_sale_month or '—')}</td></tr>"
+        )
+        
+    rows_html = "\n".join(rows)
     return f"""
     <table>
       <thead><tr><th>Produto</th><th>Crescimento empresa</th><th>Crescimento produto</th>
-      <th>Tendência</th><th>Última venda</th></tr></thead>
-      <tbody>{rows}</tbody>
+      <th>Tendência</th><th>Margem Curto-Prazo</th><th>Última venda</th></tr></thead>
+      <tbody>{rows_html}</tbody>
     </table>
     """
 
@@ -151,6 +191,8 @@ def render_audit_report(
     .badge { color:#fff; padding:2px 10px; border-radius:4px; font-size:11px; }
     .clean { color:#16A34A; font-size:14px; }
     details { margin-top:8px; font-size:13px; color:#475569; }
+    .alert-red { background: #FEF2F2; color: #991B1B; border-left: 4px solid #DC2626; padding: 12px; margin-bottom: 16px; font-size: 14px; border-radius: 4px; font-weight: 500; line-height: 1.4; }
+    .alert-green { background: #F0FDF4; color: #166534; border-left: 4px solid #16A34A; padding: 12px; margin-bottom: 16px; font-size: 14px; border-radius: 4px; font-weight: 500; line-height: 1.4; }
     """
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">

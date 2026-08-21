@@ -202,6 +202,8 @@ O arquivo `EXRS_Template_Laudo_Executivo_v4.html` é a **implementação canôni
 13.4. **Evolução do template:** mudanças de forma (novo gráfico, nova seção) exigem nova versão desta Spec (v5) + novo template versionado. Nunca fork silencioso por cliente.
 13.5. **Aderência:** um laudo só é considerado "no padrão EXRS" se for este template + um AUDIT_DATA que passe no checklist §11.
 
+13.6. **O Ato 2 (paradoxo) é uma identidade aditiva genérica, não um conceito fixo de "produto/serviço" [adicionado 20/07/2026].** O waterfall renderiza qualquer trinca real onde `esquerda + meio = direita` (validado por `build_laudo.py` §1.3) — a máscara produto×serviço (caso L7-Oeste, v3) é o mecanismo mais comum, não o único. Quando a rodada não tem essa história (nenhuma loja com margem mascarada) mas tem OUTRA identidade aditiva real e materialmente forte (ex.: preço de tabela vs. custo cadastrado vs. custo real da NF), os rótulos e a narrativa do Ato 2 são parametrizáveis via `paradoxo.{col1,col2,col3}_{label,context}`, `paradoxo.headline_html`, `paradoxo.sub_html`, `paradoxo.axis_note_html`, `paradoxo.recommendation_html`, `paradoxo.controle.value_label`, `paradoxo.col3_style` (`"fake"` default = hachura, o total PARECE bom mas esconde; `"true"` = verde sólido, o total É a verdade boa que um número inicial errado escondia) — todos opcionais, com default = o texto/estilo original da história produto×serviço (retrocompatibilidade garantida: rodada sem esses campos renderiza IDÊNTICO a antes). **Nunca force uma rodada sem paradoxo real na história L7 só para preencher o Ato — reaproveite os rótulos para a identidade aditiva que o dado realmente sustenta, ou omita o Ato (ver §1.5: nunca inventa achado sem base).**
+
 ---
 
 ## 14. CASA CANÔNICA E ENTREGÁVEL OFICIAL (decisão de 19/07/2026)
@@ -210,6 +212,67 @@ O arquivo `EXRS_Template_Laudo_Executivo_v4.html` é a **implementação canôni
 14.2. **Entregável oficial (fase 1):** o **arquivo HTML standalone** gerado por `build_laudo.py` — autocontido, abre em qualquer navegador, sem servidor. É este arquivo que vai ao cliente.
 14.3. **Pipeline oficial:** `motor → rodadas/audit_data_<cliente>_<rodada>.json (congelado) → python build_laudo.py → Laudo_<Cliente>_<rodada>.html`. Nenhuma LLM entre o dado e a tela; a LLM só redige os campos narrativos do JSON, sob esta Spec, e o script reprova violações (exit 1).
 14.4. **Fase 2 (futuro declarado, não é fork):** portar este padrão para o `aurora-frontend` (Next.js) como sistema interativo, lendo o MESMO audit_data congelado. Até lá, o Insight Board atual NÃO é o padrão EXRS e não deve ser enviado a cliente como laudo.
+
+---
+
+## 15. TRIAGEM DE DISCREPÂNCIAS E FILA DE AUDITORIA MANUAL [INEGOCIÁVEL]
+
+Decisão de produto (20/07/2026), motivada pelo caso real de desconto agregado de 337% (V-30/L9): distorção numérica severa não é erro para descartar nem fato para exibir cru. OS executável: `SPEC_Fase_C_Fila_Auditoria_Manual.md` (raiz do repo) — **EXECUTADA** no motor (`detect_discrepancy_triage`, `apply_manual_review_verdicts`; 19 testes). Validado contra dado real: fila manual = 4,4% dos disparos (critério de aceite <10%); ARP-013/L9 classificado automaticamente como `suspected_cadastral_error`. Pendente: wiring no `build_laudo.py`/template (a triagem ainda não é renderizada — motor apenas). O que é LEI para o laudo:
+
+15.1. **Número implausível nunca aparece cru na visão executiva.** Transação/agregado que dispare os guard-rails de plausibilidade (desconto sobre tabela além do limiar, venda abaixo do custo) entra em TRIAGEM antes de qualquer renderização.
+
+15.2. **A máquina classifica primeiro; o humano recebe só o resíduo.** O motor pré-classifica com as evidências do próprio dado (custo da linha, NF de compra/aba Compras, estoque morto, flag de promoção, padrão sistêmico da loja) na taxonomia fixa: `suspected_cadastral_error` · `below_cost_sale` · `deliberate_liquidation`. Só o inclassificável vai à fila manual. Fila inundada = árvore de decisão errada, nunca "trabalho para depois".
+
+15.3. **Pendente nunca vira fato.** Item `pending_manual_review` não entra em soma, card ou plano de ação. Renderiza-se no máximo como "Em auditoria: N desvios em verificação contra a NF de compra" — processo, não fragilidade. O validador (`build_laudo.py`) REPROVA laudo que viole isto.
+
+15.4. **Destino por veredito (auto ou humano — mesma taxonomia):**
+- `deliberate_liquidation` → Ato 4 ("O que NÃO é problema"): desova consciente de capital parado, com motivo.
+- `below_cost_sale` → capítulo Lucro Fantasma, com R$ agregado e gancho de governança de balcão.
+- `cadastral_error` → NUNCA como perda do dono; vira achado de qualidade de dado ("sua tabela não descreve sua operação") — gancho de venda próprio.
+
+15.5. **Culpa exige referência confiável.** Vendedor cujo desconto vem de tabela cadastralmente errada nunca é apresentado como "corrosivo" — o alerta correspondente carrega `tainted_by_triage` e fica fora de qualquer narrativa de culpa individual.
+
+15.6. **Veredito humano vive fora do relatório congelado** (arquivo-irmão `manual_review_<rodada>.json`, referenciando itens por id) — o `audit_report.json` permanece imutável (§1); o gerador funde os dois na renderização.
+
+---
+
+## 16. O ANEXO VIVO E O ZERO CONTRADIÇÃO [INEGOCIÁVEL]
+
+Decisão de produto (20/07/2026), motivada pela pergunta do usuário diante do laudo Beta ("quais são os 2 modelos parados? quem são os vendedores? que números provam?"): o corpo do laudo prometia anexo em ≥4 pontos e o anexo não existia. OS executável: `SPEC_Fase_D2_Anexo_Vivo_e_Zero_Contradicao.md` (raiz do repo) — **EXECUTADA** (20/07/2026): D1.0 (`sku_descriptions`/`sku_capital`/`sku_months_since` no motor), D1 (`build_anexo` em `build_laudo.py`, 5 seções), D2 (Ato 6 no template, `<details>` retrocompatível), D3 (`valida_anexo_sintatico` + `valida_zero_contradicao`, checagens Z1/Z2/Z4/Z5/Z6). Validado contra v3 e Beta: laudo v3 responde com nome+R$+meses+origem para os 16 SKUs parados; fila de reativação da v3 abre com o cliente mais QUENTE (Client_LV, 2,02×), não o de maior R$; V-30/L9-Serra aparece com o gap de margem E a nota de absolvição do desconto simultaneamente; suíte de sabotagem confirma reprovação com a igualdade exata apontada. QA pós-execução (commit `d519693`): 2 achados corrigidos — Z5 crashava com `TypeError` não tratado quando `plano[].impacto` era `null`; Z2 (fila de reativação) não tinha a perna de checagem contra o relatório congelado que Z1 já tinha (assimetria corrigida). Pré-requisito de motor (Pilares 1–3, commit `b0eb74c`: mix de margem por vendedor, chaves de rastreabilidade, índice de recuperabilidade). Z3 (SPEC_Fase_E_Parte1_Execucao.md, Parte A) — **EXECUTADA**: `below_cost_loss_brl`/`below_cost_total_brl` no motor (§16.2bis), validado contra o Beta real (14 vendas de ARP-020/ARP-021, R$522,54 — batendo exatamente com o `cap-lucro.valor` já escrito). O que é LEI para o laudo:
+
+16.1. **Promessa de anexo sem anexo = laudo reprovado.** Toda menção a "anexo" no corpo, e todo `anexo_ref` de sangramento, deve resolver para uma seção real do Ato 6. O inverso também: seção de anexo cujo total participa de um card deve estar vinculada por `anexo_ref` — evidência órfã é dessincronia, reprovada.
+
+16.2. **O corpo É a soma do anexo (Zero Contradição).** Card monetário carrega `valor` numérico; o validador confere, com tolerância de R$ 0,01 (mesma régua da soma do paradoxo, §1.3), as igualdades card ↔ Σ(itens do anexo) ↔ relatório congelado (as três pernas, quando `--report` presente). A manchete carrega `total_risco` numérico ≡ Σ dos sangramentos monetários; o display é arredondamento declarado desse número e **nunca excede o fato**. Plano com `sangramento_ref` deve bater o `valor` do card. Divergiu → `exit 1`, nada é gerado.
+
+16.2bis. **Sangramento vindo da triagem (Z3) soma só o veredito genuíno.** `below_cost` (Fase C) é a EVIDÊNCIA de uma linha, não o veredito final — um item pode disparar `below_cost=True` e ainda ser reclassificado para `suspected_cadastral_error` (custo cadastrado errado, não sangria real; mesma trava de "culpa exige referência confiável" do §15.5). `below_cost_total_brl` (motor) soma `below_cost_loss_brl` só dos itens com `verdict == "below_cost_sale"` — nunca todo item com a evidência disparada, sob pena de misturar prejuízo real com artefato de cadastro (mesmo padrão de `total_operational_loss` excluir alerta `promotional=True`). `below_cost_loss_brl` permanece preenchido no item cadastral (fato honesto por linha), só não entra no total agregado nem no que Z3 confere.
+
+16.3. **O anexo é derivado, nunca editado.** `build_anexo` lê somente o `audit_report_<rodada>.json` congelado (com vereditos manuais fundidos antes, §15.6). Número que falta no congelado se corrige no MOTOR, nunca se calcula na apresentação. Mesma trava anti-fusão-errada do §15.6: `audit_report_generated_at` divergente = rejeição alta.
+
+16.4. **Todo item de anexo tem procedência visível** (`src`: aba + linha do arquivo original do cliente), com corte de amostra sempre declarado ("+N", "amostra de N") — nunca truncamento silencioso.
+
+16.5. **A fila de reativação ordena por índice de aquecimento (silêncio ÷ ciclo próprio), R$ como desempate** — nunca por R$ puro. O índice é razão de fatos medidos; rotulá-lo como probabilidade/previsão viola a régua fato≠cenário.
+
+16.6. **Duas verdades convivem:** vendedor pode aparecer com gap de margem E com a nota de absolvição do desconto (`tainted`, §15.5) simultaneamente — o anexo nunca esconde uma para simplificar a outra. Flag sem a evidência numérica ao lado é adjetivo, e adjetivo sem número é proibido no anexo.
+
+16.7. **Teto de 5 não se aplica ao Ato 6** (ele é o destino do "excedente → anexo" do §6); acima de 50 linhas, colapsa em top-50 + total do restante, com corte declarado. Pseudonimização preservada sempre. Vocabulário do §3.4 vale no anexo; código de SKU é permitido (vocabulário do próprio cliente), acompanhado de descrição quando disponível.
+
+---
+
+## 17. A FÍSICA DA EQUIPE (Ato 7) [INEGOCIÁVEL]
+
+Decisão de produto (21/07/2026), motivada pelo diagnóstico do usuário: o motor julga o RESULTADO do funcionário (captura, corrosão de margem, rampa, Mix de Margem) mas ignora a FÍSICA da operação por trás — o que o sistema em volta do vendedor permite, premia ou impede. OS executável: `SPEC_Fase_E_Parte1_Execucao.md` (raiz do repo, Parte B) — **EXECUTADA** (21/07/2026): `team_diagnostics` no motor (E1 `detect_seller_flight_risk`, E2 `detect_incentive_misalignment`, E3-v1 `detect_skill_gaps`), Ato 7 no template, `build_team`/`Z7`/`Z8` em `build_laudo.py`. Planta-mãe: `SPEC_Fase_E_Fisica_da_Equipe.md` (5 pilares completos; esta rodada cobre os 3 que não exigem dado novo de planilha — E4/E5 ficam para a parte 2, fora desta lei por ora).
+
+17.1. **`team_diagnostics` nunca soma a `executive_summary`.** Os três totais existentes (`total_operational_loss`/`_capital_frozen`/`_ltv_risk`) e `action_plan` do relatório congelado não são tocados por E1/E2/E3 — mesmo `carteira_em_risco_brl` (E1), que reusa um número que já existe (`SalespersonPerformance.total_revenue`), fica de fora: somar risco de evasão de vendedor com risco de churn de cliente sob um único total mascararia qual risco é qual. `team_diagnostics` é um bloco paralelo, com seção narrativa própria (Ato 7) — vínculo com o corpo por `team_ref` (§17.2 Z7), nunca por `nature` (esse campo já existe, mas dentro de `ActionPlanItem`/`executive_summary`, mecanismo fechado e não relacionado).
+
+17.2. **O corpo É a soma do Ato 7, quando referenciado (Zero Contradição estendido).** `plano[]` ganha o campo opcional `team_ref` — espelha `sangramento_ref` (§16.2), mas resolve contra `team.evasao` (Ato 7) em vez de `anexo`/`sangramentos` (Ato 6). Quando presente, `plano[].impacto` deve bater `team.evasao[chave].carteira_em_risco` com a mesma tolerância de R$ 0,01 (**Z7**). `chave` de cada item de evasão é `"<vendedor>@<loja>"`. Só evasão (E1) tem valor monetário referenciável — comissionamento/habilidade (E2/E3) não têm R$, nunca precisam de `team_ref`.
+
+17.3. **Promessa de Ato 7 sem Ato 7 = laudo reprovado (Z8).** Toda menção no corpo a "evasão"/"incentivo"/"hipótese" resolve para o Ato 7 ter sido gerado (`--report` presente) — mesmo espírito de §16.1, escopo restrito ao vocabulário de E1/E2/E3 nesta rodada. "Capacidade"/"escalonamento" (E4/E5) **não são varridos ainda** — nenhum item de ocupação/escala existe em `team`, e variá-los reprovaria por engano qualquer menção antes de E4/E5 serem implementados; a varredura se estende quando a parte 2 da Fase E for executada.
+
+17.4. **`below_cost` é evidência, não veredito — mesma disciplina se aplica a qualquer achado com duas camadas de decisão.** Precedente fixado em Z3 (§16.2bis) e reforçado aqui: nenhum total agregado nesta lei pode somar um sinal bruto sem checar se ele sobreviveu à reclassificação/absolvição (cadastro errado, taint, etc.) — sempre o veredito final, nunca a evidência isolada.
+
+17.5. **Habilidade é sempre hipótese.** `SkillGapDiagnosis.hypothesis` nunca é apresentada como fato medido — vocabulário obrigatório "hipótese"/"possível", nunca "diagnóstico confirmado" (mesma disciplina de `latent_revenue`, §1.4). `is_proxy=True` e `data_gap` sempre visíveis quando existirem — a v1 desta OS é proxy (mix), a conversão real (aba Orçamentos) é extensão futura registrada na planta-mãe, não bloqueia esta rodada.
+
+17.6. **Comissionamento é fato de negócio declarado, nunca inferido.** `commission_basis` (`AuditThresholdsConfig`) vem da configuração da rodada — sem ele (`"unknown"`, default), `incentive_misalignment` fica vazio e `DiscardedAlarm(category="commission_basis_unknown")` documenta o ponto cego. Nenhum detector infere a base de comissão a partir de receita/custo.
 
 ---
 

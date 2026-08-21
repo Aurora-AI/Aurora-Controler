@@ -5,10 +5,10 @@ import pytest
 
 
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     CertifiedModule, DomainModule, MismatchReport, ValidationResult,
 )
-from certification_gate import verify_certification, CertificationGateError
+from libs.trustware.certification_gate import verify_certification, CertificationGateError
 
 
 def _domain() -> DomainModule:

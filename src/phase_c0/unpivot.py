@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from dashboard_contracts import DetectedStructure
+from libs.trustware.dashboard_contracts import DetectedStructure
 
 # Valores que indicam linha de total geral (case-insensitive)
 _GRAND_TOTAL_TOKENS = ("total geral", "grand total")
@@ -138,8 +138,8 @@ def _is_empty(row: list[Any]) -> bool:
 
 def build_c0_dataset(path: str) -> "C0Dataset":
     """Lê o arquivo, detecta estrutura, un-pivota se preciso e monta o C0Dataset."""
-    from ingest import read_table
-    from dashboard_contracts import (
+    from phase_c0.ingest import read_table
+    from libs.trustware.dashboard_contracts import (
         C0Dataset, IngestionStrategy, SourceMapEntry,
         DiscardedRow, ValidationSummary,
     )
@@ -286,7 +286,7 @@ def _assemble_hierarchical(
     total_rows_read: int, measure_idx: list[int],
 ):
     """Monta o C0Dataset para um layout de pivô aninhado."""
-    from dashboard_contracts import (
+    from libs.trustware.dashboard_contracts import (
         C0Dataset, DetectedStructure, DiscardedRow, IngestionStrategy,
         SourceMapEntry, ValidationSummary,
     )

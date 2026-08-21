@@ -19,9 +19,8 @@ from typing import List
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     ValidationResult, MismatchReport, DomainModule, DomainFunction,
     FormulaRegistryMap, PatternClass
 )
@@ -29,8 +28,8 @@ from product_a.trustware.pipeline_contracts import (
 def identify_repair_candidates(results: List[ValidationResult], fmap: FormulaRegistryMap) -> MismatchReport:
     """Consolida todos os resultados em um MismatchReport sumário."""
     passed   = sum(1 for r in results if r.passed)
-    failed   = sum(1 for r in results if not r.passed and r.status != "SKIPPED_NO_CACHE")
-    skipped  = sum(1 for r in results if r.status == "SKIPPED_NO_CACHE")
+    failed   = sum(1 for r in results if not r.passed and r.status not in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP"))
+    skipped  = sum(1 for r in results if r.status in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP"))
 
     return MismatchReport(
         total_nodes=len(results),
