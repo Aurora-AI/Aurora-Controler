@@ -466,3 +466,54 @@ def test_z5_impacto_nulo_nao_crasha_reprova_graciosamente():
     }
     build_laudo.valida_zero_contradicao(dados, anexo=None, report=None)  # não deve lançar
     assert not any("Z5" in e for e in build_laudo.ERROS)
+
+
+def test_build_anexo_fila_reativacao_handles_none_and_nan_ratios():
+    """Adversarial: silence_to_cycle_ratio=None ou NaN não pode crashar com TypeError nem corromper ordenação."""
+    report = {
+        "churn_findings": [
+            {"customer_id": "C_NONE", "historical_annual_value": 100.0, "silence_to_cycle_ratio": None, "source_rows": [1]},
+            {"customer_id": "C_NAN", "historical_annual_value": 200.0, "silence_to_cycle_ratio": float("nan"), "source_rows": [2]},
+            {"customer_id": "C_HOT", "historical_annual_value": 300.0, "silence_to_cycle_ratio": 1.5, "source_rows": [3]},
+            {"customer_id": "C_WARM", "historical_annual_value": 400.0, "silence_to_cycle_ratio": 2.5, "source_rows": [4]},
+        ]
+    }
+    anexo = build_laudo.build_anexo(report)
+    itens = anexo["fila_reativacao"]["itens"]
+    assert len(itens) == 4
+    # Hot (1.5) e Warm (2.5) devem vir primeiro
+    assert itens[0]["cliente"] == "C_HOT"
+    assert itens[0]["indice_aquecimento"] == 1.5
+    assert itens[1]["cliente"] == "C_WARM"
+    assert itens[1]["indice_aquecimento"] == 2.5
+
+
+def test_build_anexo_against_consultoria_xlsx_gabarito():
+    """Validação direta de ART-ANX-001 contra a fixture Consultoria.xlsx."""
+    from product_b.oracle.commercial_auditor import run_audit
+
+    fixture_path = Path(__file__).parent.parent / "Consultoria.xlsx"
+    if not fixture_path.exists():
+        pytest.skip("Consultoria.xlsx ausente")
+
+    report, id_map = run_audit(fixture_path, return_identity_map=True)
+    report_dict = report.model_dump(mode="json")
+    anexo = build_laudo.build_anexo(report_dict)
+
+    # 1. Estoque parado
+    assert "estoque_parado" in anexo
+    assert anexo["estoque_parado"]["total"] == pytest.approx(35040.0)
+    assert len(anexo["estoque_parado"]["itens"]) == 16
+    assert sum(i["capital_preso"] for i in anexo["estoque_parado"]["itens"]) == pytest.approx(35040.0)
+
+    # 2. Fila de reativação
+    assert "fila_reativacao" in anexo
+    assert anexo["fila_reativacao"]["clientes"] == 47
+    assert anexo["fila_reativacao"]["total"] == pytest.approx(90852.03, rel=1e-3)
+    assert sum(i["valor_historico"] for i in anexo["fila_reativacao"]["itens"]) == pytest.approx(90852.03, rel=1e-3)
+
+    # 3. Triagem
+    assert "triagem_discrepancias" in anexo
+    assert anexo["triagem_discrepancias"]["disparos"] == 964
+    assert len(anexo["triagem_discrepancias"]["itens"]) == 964
+

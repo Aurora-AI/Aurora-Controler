@@ -19,6 +19,7 @@ Padrões: template = EXRS_Template_Laudo_Executivo_v4.html (mesma pasta do scrip
 """
 import argparse
 import json
+import math
 import re
 import sys
 import unicodedata
@@ -215,10 +216,14 @@ def build_anexo(report, cap=10):
     # --- fila_reativacao (Pilar 3: ordenada por aquecimento, R$ como desempate) ---
     churn = report.get("churn_findings") or []
     if churn:
-        ordenado = sorted(
-            churn,
-            key=lambda c: (c.get("silence_to_cycle_ratio", 0.0), -c.get("historical_annual_value", 0.0)),
-        )
+        def _safe_churn_sort_key(c):
+            r = c.get("silence_to_cycle_ratio")
+            v = c.get("historical_annual_value")
+            valid_r = r if isinstance(r, (int, float)) and math.isfinite(r) and r > 0 else float("inf")
+            valid_v = v if isinstance(v, (int, float)) and math.isfinite(v) else 0.0
+            return (valid_r, -valid_v)
+
+        ordenado = sorted(churn, key=_safe_churn_sort_key)
         itens = [
             {
                 "cliente": c["customer_id"], "ultima_compra": c.get("last_purchase"),

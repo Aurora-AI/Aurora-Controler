@@ -75,7 +75,7 @@ def test_rescue_queue_ordering_by_recoverability_not_value():
     assert artifact.itens_ativos[1].silence_to_cycle_ratio == 2.8
 
 
-def test_rescue_queue_trava_t1_no_recalculation_and_t2_reg_num_001():
+def test_reprova_recalculo_aritmetico_trava_t1_e_t2_reg_num_001():
     """Trava T1 + T2: Se o silence_to_cycle_ratio for inválido (<=0, None, NaN) ou ausente
     no relatório congelado, o formatador NUNCA recalcula days_silent / cadence.
     Ele quarentena o registro em SEM_BASE e o exclui da fila ativa."""
@@ -115,8 +115,8 @@ def test_rescue_queue_trava_t1_no_recalculation_and_t2_reg_num_001():
     (50.0, 0.0),
     (50.0, -2.0),
 ])
-def test_rescue_queue_adversarial_non_finite_inputs(cadence_val, ratio_val):
-    """Degrau 3 Adversarial: Nenhum float não finito ou <= 0 pode vazar para a fila ativa."""
+def test_reprova_cadence_e_ratio_nao_finitos_ou_degenerados(cadence_val, ratio_val):
+    """Degrau 3 Adversarial / Sabotagem: Nenhum float não finito ou <= 0 pode vazar para a fila ativa."""
     finding = ChurnFinding(
         customer_id="Client_Adversarial",
         purchase_count=2,
