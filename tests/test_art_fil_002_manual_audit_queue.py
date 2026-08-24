@@ -202,6 +202,41 @@ def test_reprova_valores_nao_finitos_em_precos_e_custos(bad_val):
     assert "[S/TAB]" in rendered or "R$" in rendered
 
 
+@pytest.mark.parametrize("bad_val", [float("nan"), float("inf"), float("-inf")])
+def test_reprova_practiced_price_nao_finito_nunca_fabrica_numero(bad_val):
+    """REG-NUM-001 / Sabotagem: practiced_price não finito nunca vira 'R$ nan' /
+    'R$ inf' na tela. O item continua na fila (ainda precisa de olho humano nas
+    outras evidências), só que com [SEM DADO] no lugar do preço fictício."""
+    ev = DiscrepancyEvidence(below_cost=False, sku_in_dead_stock=False, is_promo_flagged=False, cost_diverges_from_nf=False, store_systemic_pattern=False)
+    item = DiscrepancyTriageItem(
+        id="DTQ-PRICE-BAD",
+        sku="SKU-X",
+        store="L1",
+        salesperson="V1",
+        source_rows=[1],
+        practiced_price=bad_val,
+        list_price=100.0,
+        entry_cost=50.0,
+        nf_cost=50.0,
+        discount_over_list_pct=10.0,
+        below_cost_loss_brl=None,
+        evidence=ev,
+        verdict=None,
+        status="pending_manual_review",
+    )
+    triage = DiscrepancyTriage(triggered_count=1, auto_classified=[], manual_queue=[item])
+    report = _make_dummy_report(triage)
+    artifact = build_manual_audit_queue(report)
+
+    assert artifact.itens_pendentes[0].practiced_price is None
+
+    rendered = render_manual_audit_queue_text(artifact)
+    line = [l for l in rendered.splitlines() if "DTQ-PRICE-BAD" in l][0]
+    assert "[SEM DADO]" in line
+    assert "nan" not in line.lower()
+    assert "inf" not in line.lower()
+
+
 def test_manual_audit_queue_render_is_single_element_t4():
     """Trava T4: Superfície mínima de 1 elemento."""
     ev = DiscrepancyEvidence(below_cost=True, sku_in_dead_stock=False, is_promo_flagged=False, cost_diverges_from_nf=True, store_systemic_pattern=False)

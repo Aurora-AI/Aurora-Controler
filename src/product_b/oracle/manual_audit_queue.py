@@ -52,7 +52,9 @@ class ManualAuditQueueItem(BaseModel):
     salesperson: str
     
     # Preços e custos da linha / catálogo / NF
-    practiced_price: float
+    # None quando o motor não apurou um preço praticado válido para o grupo
+    # (REG-NUM-001: nunca fingir um preço; o item continua na fila sem o número).
+    practiced_price: float | None
     list_price: float | None = None
     entry_cost: float | None = None
     nf_cost: float | None = None
@@ -140,7 +142,7 @@ def build_manual_audit_queue(report: ExecutiveAuditReport) -> ManualAuditQueueAr
             sku_description=i.sku_description,
             store=i.store,
             salesperson=i.salesperson,
-            practiced_price=float(i.practiced_price),
+            practiced_price=float(i.practiced_price) if math.isfinite(i.practiced_price) else None,
             list_price=float(i.list_price) if i.list_price is not None and math.isfinite(i.list_price) else None,
             entry_cost=float(i.entry_cost) if i.entry_cost is not None and math.isfinite(i.entry_cost) else None,
             nf_cost=float(i.nf_cost) if i.nf_cost is not None and math.isfinite(i.nf_cost) else None,
@@ -201,7 +203,7 @@ def render_manual_audit_queue_text(artifact: ManualAuditQueueArtifact) -> str:
         lines.append("NENHUM ITEM PENDENTE DE AUDITORIA MANUAL (Fila limpa — 100% resolvido automaticamente)")
     else:
         for idx, item in enumerate(artifact.itens_pendentes, start=1):
-            prat_str = f"R$ {item.practiced_price:,.2f}"
+            prat_str = f"R$ {item.practiced_price:,.2f}" if item.practiced_price is not None else "[SEM DADO]"
             tab_str = f"R$ {item.list_price:,.2f}" if item.list_price is not None else "[S/TAB]"
             nf_str = f"R$ {item.nf_cost:,.2f}" if item.nf_cost is not None else "[S/NF]"
             ev_str = "; ".join(item.evidencias) if item.evidencias else "Sem evidência conclusiva"
