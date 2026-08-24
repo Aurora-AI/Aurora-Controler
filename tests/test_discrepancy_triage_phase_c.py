@@ -8,6 +8,7 @@ degradation por evidência (nunca tudo-ou-nada), e a fusão do arquivo-irmão de
 vereditos humanos.
 """
 import json
+import math
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -397,6 +398,47 @@ def test_never_crashes_when_entry_cost_column_is_entirely_absent():
     ])
     triage = detect_discrepancy_triage(vendas, None, None, [], THRESHOLDS)
     assert triage.triggered_count == 0  # sem custo e sem lista de preço, nada dispara
+
+
+@pytest.mark.parametrize("bad_value", [float("inf"), float("-inf")])
+def test_reprova_value_nao_finito_nunca_vira_practiced_price_fabricado(bad_value):
+    """REG-NUM-001 / Sabotagem: um `value` não finito (ou uma quantidade
+    implausivelmente pequena que faz value/qty estourar pra inf) nunca pode virar
+    um `practiced_price` fictício no relatório congelado. A linha quebrada sai da
+    análise (mesmo critério já usado para value<=0) em vez de disparar Trigger A/B
+    com um preço inventado."""
+    vendas = _sales([
+        {"product": "SKU-BAD", "customer": "C1", "value": bad_value, "quantity": 1.0,
+         "salesperson": "V-01", "store": "L1"},
+        # linha válida no mesmo lote — prova que só a linha quebrada é excluída,
+        # não o lote inteiro.
+        {"product": "SKU-OK", "customer": "C2", "value": 10.0, "quantity": 1.0,
+         "entry_cost": 50.0, "salesperson": "V-01", "store": "L1"},
+    ])
+    estoque = _estoque([
+        {"sku": "SKU-BAD", "custo_unit": 50.0, "qtd_atual": 5.0, "preco_venda": 500.0},
+        {"sku": "SKU-OK", "custo_unit": 50.0, "qtd_atual": 5.0, "preco_venda": 500.0},
+    ])
+    triage = detect_discrepancy_triage(vendas, estoque, None, [], THRESHOLDS)
+
+    all_items = triage.auto_classified + triage.manual_queue
+    assert all(item.sku != "SKU-BAD" for item in all_items)
+    for item in all_items:
+        assert math.isfinite(item.practiced_price)
+
+
+def test_reprova_overflow_de_preco_unitario_por_quantidade_minuscula():
+    """REG-NUM-001 / Sabotagem: value individualmente finito, mas dividido por uma
+    quantidade implausivelmente pequena (erro de casa decimal), estoura pra inf
+    em ponto flutuante. Mesma trava da sabotagem acima, via um caminho diferente
+    até o mesmo resultado degenerado."""
+    vendas = _sales([
+        {"product": "SKU-OVF", "customer": "C1", "value": 1e250, "quantity": 1e-100,
+         "salesperson": "V-01", "store": "L1"},
+    ])
+    estoque = _estoque([{"sku": "SKU-OVF", "custo_unit": 50.0, "qtd_atual": 5.0, "preco_venda": 500.0}])
+    triage = detect_discrepancy_triage(vendas, estoque, None, [], THRESHOLDS)
+    assert triage.triggered_count == 0
 
 
 def test_dead_stock_evidence_without_estoque_sheet():

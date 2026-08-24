@@ -1896,7 +1896,10 @@ def detect_discrepancy_triage(
         return None
 
     sales = vendas_df.copy()
-    sales = sales[sales["value"] > 0]  # devolução/estorno fora, mesmo critério da Fase B
+    # devolução/estorno fora (mesmo critério da Fase B); valor não finito também sai
+    # aqui — sem um `value` real não há desconto/sangria de verdade pra triar, só
+    # dado quebrado (REG-NUM-001: nunca sinalizar em cima de um número fabricado).
+    sales = sales[(sales["value"] > 0) & np.isfinite(sales["value"])]
     if "category" in sales.columns and not sales["category"].isna().all():
         sales = sales[sales["category"] != thresholds.service_category_label]
     if sales.empty:
@@ -1915,6 +1918,12 @@ def detect_discrepancy_triage(
     qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
     sales["unit_price"] = sales["value"] / qty_safe
     sales["_qty_safe"] = qty_safe
+    # `value` já é finito (filtro acima), mas value/qty_safe pode estourar pra inf
+    # quando qty_safe é implausivelmente pequeno (erro de casa decimal na
+    # quantidade) — mesmo critério: sem preço unitário real, não há o que triar.
+    sales = sales[np.isfinite(sales["unit_price"])]
+    if sales.empty:
+        return DiscrepancyTriage(triggered_count=0)
 
     # Trigger B — abaixo do custo da PRÓPRIA linha (independente de Estoque)
     sales["below_cost"] = sales["entry_cost"].notna() & (sales["unit_price"] < sales["entry_cost"])
