@@ -201,6 +201,39 @@ def test_reprova_gmroi_com_margem_negativa_ou_estoque_zerado():
     assert "negativo" in kpi_loss.descricao_fato
 
 
+def test_reprova_mixed_row_nan_for_gmroi():
+    """REG-NUM-001 / Sabotagem Adversarial: Linhas de GMROI devem ser descartadas
+    inteiramente se qualquer componente (gross_margin ou avg_inventory_value) for NaN.
+    Validação mista cruzada não deve criar um índice zumbi fabricado."""
+    report = _make_minimal_report(
+        gmroi=[
+            GmroiEntry(
+                category="Categoria A",
+                gross_margin=1000.0,
+                avg_inventory_value=float("nan"),
+                gmroi=float("nan"),
+                sample_size=10,
+                is_directional_only=False,
+            ),
+            GmroiEntry(
+                category="Categoria B",
+                gross_margin=float("nan"),
+                avg_inventory_value=500.0,
+                gmroi=float("nan"),
+                sample_size=10,
+                is_directional_only=False,
+            ),
+        ]
+    )
+    artifact = build_owner_cockpit(report)
+    
+    kpi_gmroi = [k for k in artifact.kpis_secundarios if k.kpi_id == "FOR-EST-003"][0]
+    # Se combinasse os válidos de linhas diferentes: margin 1000 / inv 500 = 2.0 (BUG)
+    # Como ambas as linhas são inválidas quando pareadas, deve ir para SEM_BASE
+    assert kpi_gmroi.status_selo == "SEM_BASE"
+    assert kpi_gmroi.value is None
+
+
 @pytest.mark.parametrize("bad_val", [float("nan"), float("inf"), float("-inf"), -50.0, 0.0])
 def test_reprova_valores_nao_finitos_ou_degenerados_em_cadencia_ancora(bad_val):
     """Degrau 3 Adversarial: Cadências não finitas ou <=0 em churn findings não contaminam o indicador-mãe."""

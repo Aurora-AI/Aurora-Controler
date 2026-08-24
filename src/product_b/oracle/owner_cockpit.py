@@ -211,8 +211,9 @@ def build_owner_cockpit(report: ExecutiveAuditReport) -> OwnerCockpitArtifact:
 
     # 5. FOR-EST-003 (GMROI — Retorno de Margem sobre Estoque)
     if report.gmroi and len(report.gmroi) > 0:
-        tot_margin = sum(g.gross_margin for g in report.gmroi if math.isfinite(g.gross_margin))
-        tot_inv = sum(g.avg_inventory_value for g in report.gmroi if math.isfinite(g.avg_inventory_value))
+        valid_rows = [g for g in report.gmroi if math.isfinite(g.gross_margin) and math.isfinite(g.avg_inventory_value)]
+        tot_margin = sum(g.gross_margin for g in valid_rows)
+        tot_inv = sum(g.avg_inventory_value for g in valid_rows)
         if tot_inv > 0:
             gmroi_consolidado = tot_margin / tot_inv
             if gmroi_consolidado <= 0:
