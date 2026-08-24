@@ -263,7 +263,7 @@ def build_band_performance(report: ExecutiveAuditReport) -> BandPerformanceArtif
 
         store_summaries.append(
             StoreBandSummary(
-                store=_sanitize_single_line(st_name),
+                store=_sanitize_text_no_seller(st_name),
                 seller_count=len(st_list),
                 band_counts=b_counts,
                 store_mean_revenue_brl=round(st_mean, 2),

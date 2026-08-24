@@ -262,3 +262,36 @@ def test_band_performance_against_consultoria_xlsx_gabarito():
     # Proibição de nomes de vendedores no render
     assert "V-01" not in rendered
     assert "V-30" not in rendered
+
+
+def test_reprova_seller_token_in_store_name():
+    """REG-SEV-004 / Sabotagem Adversarial: Lojas contendo nomes/tokens de vendedores
+    devem ser mascaradas para evitar vazamento nominal indireto."""
+    sps = [
+        _make_seller("V-01", 10000.0),
+        _make_seller("V-02", 8000.0),
+        _make_seller("V-03", 5000.0),
+        _make_seller("V-04", 2000.0),
+    ]
+    corrosion = [
+        SellerMarginCorrosionAlert(
+            salesperson="V-01",
+            store="Vendedor Joao Silva (loja mal cadastrada)",
+            total_revenue=100.0,
+            total_discount=10.0,
+            discount_pct=10.0,
+            store_mean_discount_pct=5.0,
+            store_std_discount_pct=1.0,
+            sample_size=10,
+            is_corrosive=True
+        )
+    ]
+    report = _make_minimal_report(sp=sps, corrosion=corrosion)
+    artifact = build_band_performance(report)
+    rendered = render_band_performance_text(artifact)
+
+    # A loja "Vendedor Joao Silva (loja mal cadastrada)" não deve aparecer na íntegra
+    # e deve ser higienizada para "equipe_restringida".
+    assert "Joao Silva" not in rendered
+    assert "equipe_restringida" in rendered
+
