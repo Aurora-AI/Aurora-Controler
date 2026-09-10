@@ -178,6 +178,13 @@ class AuditThresholdsConfig(BaseModel):
     # DiscardedAlarm em vez de adivinhar. Mesmo espírito de `service_category_label`/
     # `promo_payment_label` (vocabulário de negócio como campo, não string cravada).
     commission_basis: str = "unknown"  # "gross_revenue" | "contribution_margin" | "mixed"
+    # Reconciliação Comercial e Cruzamento Entrada x Saída (Bloco B5/B7)
+    # Alíquota média retida por canais de intermediação/marketplace (take-rate)
+    reconciliation_channel_take_rate_pct: float = 23.14
+    # Alíquota de imposto sobre faturamento (Simples Nacional / Padrão)
+    reconciliation_tax_rate_pct: float = 6.0
+    # Piso de markup seguro abaixo do qual a venda corre risco iminente de prejuízo
+    reconciliation_min_markup_threshold: float = 1.45
 
 
 class SalesRecord(BaseModel):
@@ -525,6 +532,63 @@ class DiscrepancyTriage(BaseModel):
     below_cost_total_brl: float | None = None
 
 
+class SupplierMarginEntry(BaseModel):
+    """Margem de contribuição e markup agregados por fornecedor da NF de compra."""
+    supplier: str
+    gross_revenue: float
+    cmv_total: float
+    markup: float | None = None
+    contribution_margin_brl: float
+    contribution_margin_pct: float
+    items_count: int
+    share_revenue_pct: float = 0.0
+
+
+class CategoryMarginEntry(BaseModel):
+    """Margem de contribuição e markup agregados por categoria de produto."""
+    category: str
+    gross_revenue: float
+    cmv_total: float
+    markup: float | None = None
+    contribution_margin_brl: float
+    contribution_margin_pct: float
+    items_count: int
+    share_revenue_pct: float = 0.0
+
+
+class BelowCostSaleItem(BaseModel):
+    """Venda efetuada com margem de contribuição negativa ou abaixo do custo de compra."""
+    sku: str
+    product_name: str
+    unit_price: float
+    entry_cost: float
+    loss_brl: float
+    loss_pct: float
+    quantity: float
+    source_row: int | None = None
+    supplier: str | None = None
+
+
+class CommercialReconciliationSummary(BaseModel):
+    """Reconciliação Comercial em Duas Vias: Entradas (Compras/CMV) x Saídas (Vendas)."""
+    gross_revenue: float
+    cmv_total: float
+    gross_profit_brl: float
+    gross_markup: float | None = None
+    channel_costs_brl: float
+    channel_take_rate_pct: float
+    taxes_brl: float = 0.0
+    tax_rate_pct: float = 0.0
+    net_contribution_margin_brl: float
+    net_contribution_margin_pct: float
+    negative_margin_count: int
+    negative_margin_loss_brl: float
+    two_way_reconciliation_gap: float = 0.0
+    supplier_margins: list[SupplierMarginEntry] = Field(default_factory=list)
+    category_margins: list[CategoryMarginEntry] = Field(default_factory=list)
+    top_below_cost_sales: list[BelowCostSaleItem] = Field(default_factory=list)
+
+
 class AdvancedMetrics(BaseModel):
     """Namespace comum das teses analíticas pós-Fase A (Fase B: os 5 algoritmos
     originais; Fase C: `discrepancy_triage`; Fase D: `seller_margin_mix`) — cada uma
@@ -553,6 +617,8 @@ class AdvancedMetrics(BaseModel):
     # categoria/vendedor/custo, ou quando ninguém bater `seller_margin_mix_min_sample`
     # — nunca aponta "destruidor de margem" sem base estatística.
     seller_margin_mix: list[SellerMarginMixProfile] = Field(default_factory=list)
+    # Reconciliação Comercial Entrada x Saída por default (Bloco B5/B7)
+    commercial_reconciliation: CommercialReconciliationSummary | None = None
 
 
 class StorePerformance(BaseModel):

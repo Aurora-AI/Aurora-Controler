@@ -15,6 +15,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import xml.etree.ElementTree as ET
+
 from kernel.robustness import benchmark_population as _benchmark_population_generic
 from kernel.robustness import dedup_by_key
 from kernel.tabular import records_to_frame as _records_to_frame_generic
@@ -28,7 +30,8 @@ from product_b.oracle.column_mapper import (
 )
 from product_b.oracle.forensic_contracts import (
     ActionPlanItem, AdvancedMetrics, AttachRateOpportunity, AuditThresholdsConfig,
-    ChurnFinding, CleaningSummary, ConcentrationRiskAlert, ContributionMarginAlert,
+    BelowCostSaleItem, CategoryMarginEntry, ChurnFinding, CleaningSummary,
+    CommercialReconciliationSummary, ConcentrationRiskAlert, ContributionMarginAlert,
     CrossSellGapCustomer, CustomerConcentrationFinding, DataCompletenessFinding,
     DeadStockFinding, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
     DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, FlightRiskAlert,
@@ -37,10 +40,10 @@ from product_b.oracle.forensic_contracts import (
     SalespersonPerformance, SellerCategoryMixEntry, SellerMarginCorrosionAlert,
     SellerMarginMixProfile, ServiceDecomposition, ServiceReconciliation,
     SeasonalityCurve, SkillGapDiagnosis, StoreMacroSummary, StorePerformance,
-    TeamDiagnostics, WinsorizedValue,
+    SupplierMarginEntry, TeamDiagnostics, WinsorizedValue,
 )
 
-_SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
+_SUPPORTED_SUFFIXES = {".xlsx", ".csv", ".xml"}
 _ANONYMOUS_CUSTOMER = "SEM_CADASTRO"
 # Venda com coluna de loja mapeada mas valor ausente NA linha (dado real messy) — não
 # é descartada nem some da agregação, vira um pseudo-grupo estável (mesmo padrão de
@@ -103,6 +106,196 @@ _AVG_DAYS_PER_MONTH = 30.44
 _SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro", "Compras")
 
 
+def _strip_ns(tag: str) -> str:
+    """Remove o namespace SEFAZ XML da tag (ex: '{http://...}infNFe' -> 'infNFe')."""
+    return tag.split("}")[-1] if "}" in tag else tag
+
+
+def _parse_nfe_xml_file(
+    file_path: Path, target_company_identifier: str | None = None
+) -> tuple[str, list[dict]]:
+    """Analisa um arquivo XML de NF-e e retorna (doc_type, items), onde:
+    - doc_type: 'venda' (NF-e de saída emitida pela empresa para clientes)
+                ou 'compra' (NF-e de entrada / emitida por fornecedor para a empresa)
+    - items: lista de dicts com os dados extraídos de cada tag <det>.
+    """
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+    for elem in root.iter():
+        elem.tag = _strip_ns(elem.tag)
+
+    nNF_elem = root.find(".//nNF")
+    nNF_val = nNF_elem.text if (nNF_elem is not None and nNF_elem.text) else file_path.stem
+
+    dhEmi_elem = root.find(".//dhEmi")
+    if dhEmi_elem is None:
+        dhEmi_elem = root.find(".//dEmi")
+    dhEmi_val = dhEmi_elem.text if (dhEmi_elem is not None and dhEmi_elem.text) else None
+
+    tpNF_elem = root.find(".//tpNF")
+    tpNF_val = tpNF_elem.text.strip() if (tpNF_elem is not None and tpNF_elem.text) else "1"
+
+    emit_cnpj = root.find(".//emit/CNPJ")
+    emit_cpf = root.find(".//emit/CPF")
+    emit_doc = emit_cnpj.text if (emit_cnpj is not None and emit_cnpj.text) else (
+        emit_cpf.text if (emit_cpf is not None and emit_cpf.text) else ""
+    )
+    emit_nome = root.find(".//emit/xNome")
+    emit_nome_val = emit_nome.text.strip() if (emit_nome is not None and emit_nome.text) else ""
+
+    dest_cnpj = root.find(".//dest/CNPJ")
+    dest_cpf = root.find(".//dest/CPF")
+    dest_doc = dest_cnpj.text if (dest_cnpj is not None and dest_cnpj.text) else (
+        dest_cpf.text if (dest_cpf is not None and dest_cpf.text) else ""
+    )
+    dest_nome = root.find(".//dest/xNome")
+    dest_nome_val = dest_nome.text.strip() if (dest_nome is not None and dest_nome.text) else ""
+
+    dest_uf = root.find(".//dest/enderDest/UF")
+    dest_uf_val = dest_uf.text.strip() if (dest_uf is not None and dest_uf.text) else None
+
+    dest_mun = root.find(".//dest/enderDest/xMun")
+    dest_mun_val = dest_mun.text.strip() if (dest_mun is not None and dest_mun.text) else None
+
+    tPag_elem = root.find(".//pag/detPag/tPag")
+    payment_method = tPag_elem.text.strip() if (tPag_elem is not None and tPag_elem.text) else None
+
+    items_raw = root.findall(".//det")
+    parsed_items = []
+    has_inbound_cfop = False
+
+    for item in items_raw:
+        cProd = item.find(".//prod/cProd")
+        cEAN = item.find(".//prod/cEAN")
+        xProd = item.find(".//prod/xProd")
+        NCM = item.find(".//prod/NCM")
+        CFOP = item.find(".//prod/CFOP")
+        uCom = item.find(".//prod/uCom")
+        qCom = item.find(".//prod/qCom")
+        vUnCom = item.find(".//prod/vUnCom")
+        vProd = item.find(".//prod/vProd")
+        vDesc = item.find(".//prod/vDesc")
+
+        cfop_str = CFOP.text.strip() if (CFOP is not None and CFOP.text) else ""
+        if cfop_str.startswith(("1", "2", "3")):
+            has_inbound_cfop = True
+
+        try:
+            qty = float(qCom.text) if (qCom is not None and qCom.text) else 1.0
+        except ValueError:
+            qty = 1.0
+
+        try:
+            unit_price = float(vUnCom.text) if (vUnCom is not None and vUnCom.text) else 0.0
+        except ValueError:
+            unit_price = 0.0
+
+        try:
+            total_val = float(vProd.text) if (vProd is not None and vProd.text) else (unit_price * qty)
+        except ValueError:
+            total_val = unit_price * qty
+
+        try:
+            desc_val = float(vDesc.text) if (vDesc is not None and vDesc.text) else 0.0
+        except ValueError:
+            desc_val = 0.0
+
+        parsed_items.append({
+            "nfe_number": nNF_val,
+            "date": dhEmi_val,
+            "emitente_nome": emit_nome_val,
+            "emitente_doc": emit_doc,
+            "destinatario_nome": dest_nome_val,
+            "destinatario_doc": dest_doc,
+            "uf": dest_uf_val,
+            "municipio": dest_mun_val,
+            "sku": cProd.text.strip() if (cProd is not None and cProd.text) else "",
+            "ean": cEAN.text.strip() if (cEAN is not None and cEAN.text) else "",
+            "product": xProd.text.strip() if (xProd is not None and xProd.text) else "",
+            "ncm": NCM.text.strip() if (NCM is not None and NCM.text) else "",
+            "cfop": cfop_str,
+            "unit": uCom.text.strip() if (uCom is not None and uCom.text) else "",
+            "quantity": qty,
+            "unit_price": unit_price,
+            "cost": unit_price,
+            "value": total_val,
+            "discount": desc_val,
+            "payment_method": payment_method,
+            "supplier": emit_nome_val,
+        })
+
+    # Classificação Fiscal Estrita (Diretriz QA 1 — Risco Fiscal):
+    # - CFOP iniciando em 1, 2 ou 3, ou tpNF == '0' -> SEMPRE COMPRA / ENTRADA
+    # - Se o destinatário for a empresa auditada -> COMPRA / ENTRADA
+    if tpNF_val == "0" or has_inbound_cfop:
+        doc_type = "compra"
+    elif target_company_identifier:
+        t_id = target_company_identifier.upper().strip()
+        if t_id in dest_nome_val.upper() or (dest_doc and t_id in dest_doc):
+            doc_type = "compra"
+        else:
+            doc_type = "venda"
+    else:
+        doc_type = "venda"
+
+    return doc_type, parsed_items
+
+
+def _load_catalog_file(file_path: Path) -> pd.DataFrame | None:
+    """Carrega planilha de catálogo/estoque/controle de produtos (ex: Controle.xls)."""
+    try:
+        if file_path.suffix.lower() == ".xls":
+            import xlrd
+            wb = xlrd.open_workbook(str(file_path), ignore_workbook_corruption=True)
+            s = wb.sheet_by_index(0)
+            headers = [str(s.cell_value(0, c)).strip() for c in range(s.ncols)]
+            rows = []
+            for r in range(1, s.nrows):
+                rows.append([s.cell_value(r, c) for c in range(s.ncols)])
+            df = pd.DataFrame(rows, columns=headers)
+        elif file_path.suffix.lower() == ".xlsx":
+            df = pd.read_excel(file_path, engine="openpyxl")
+        else:
+            return None
+
+        if df.empty:
+            return None
+
+        col_map = {}
+        for c in df.columns:
+            cl = str(c).lower()
+            if ("sku" in cl or "código" in cl or "codigo" in cl) and "sku" not in col_map.values():
+                col_map[c] = "sku"
+            elif ("descri" in cl or "produto" in cl or "nome" in cl) and "description" not in col_map.values():
+                col_map[c] = "description"
+            elif ("custo" in cl or "cost" in cl) and "cost" not in col_map.values():
+                col_map[c] = "cost"
+            elif ("preço" in cl or "preco" in cl or "tabela" in cl) and "custo" not in cl and "list_price" not in col_map.values():
+                col_map[c] = "list_price"
+            elif ("estoque" in cl or "saldo" in cl or "qty" in cl) and "qty_on_hand" not in col_map.values():
+                col_map[c] = "qty_on_hand"
+            elif ("fornecedor" in cl or "supplier" in cl) and "supplier" not in col_map.values():
+                col_map[c] = "supplier"
+            elif ("categoria" in cl or "category" in cl) and "category" not in col_map.values():
+                col_map[c] = "category"
+
+        if "cost" in col_map.values() and ("sku" in col_map.values() or "description" in col_map.values()):
+            df = df.rename(columns=col_map)
+            df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0.0)
+            if "list_price" in df.columns:
+                df["list_price"] = pd.to_numeric(df["list_price"], errors="coerce").fillna(0.0)
+            if "qty_on_hand" in df.columns:
+                df["qty_on_hand"] = pd.to_numeric(df["qty_on_hand"], errors="coerce").fillna(0.0)
+            if "sku" in df.columns:
+                df["sku"] = df["sku"].astype(str).str.strip()
+            if "description" in df.columns:
+                df["description"] = df["description"].astype(str).str.strip()
+            return df
+        return None
+    except Exception:
+        return None
+
+
 def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
     """Lê as abas nomeadas da série B (Estoque, Clientes, Financeiro) e da Fase C
     (Compras — a "NF de entrada", ver `detect_discrepancy_triage`) quando existem —
@@ -110,30 +303,79 @@ def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
     ou .xlsx de aba única) simplesmente não alimenta os detectores que dependem
     delas — nunca inventa dado ausente, nunca derruba a auditoria."""
     path = Path(path)
-    if path.is_dir() or path.suffix.lower() != ".xlsx":
-        return {}
-    workbook = pd.ExcelFile(path, engine="openpyxl")
-    sheet_roles = {
-        "Estoque": _ESTOQUE_ROLE_KEYWORDS,
-        "Clientes": _CLIENTES_ROLE_KEYWORDS,
-        "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
-        "Compras": _COMPRAS_ROLE_KEYWORDS,
-    }
-    return {
-        name: read_dataframe(str(path), sheet_name=name, role_keywords=sheet_roles[name])
-        for name in _SERIES_B_SHEETS if name in workbook.sheet_names
-    }
+    if path.is_file() and path.suffix.lower() == ".xlsx":
+        workbook = pd.ExcelFile(path, engine="openpyxl")
+        sheet_roles = {
+            "Estoque": _ESTOQUE_ROLE_KEYWORDS,
+            "Clientes": _CLIENTES_ROLE_KEYWORDS,
+            "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
+            "Compras": _COMPRAS_ROLE_KEYWORDS,
+        }
+        return {
+            name: read_dataframe(str(path), sheet_name=name, role_keywords=sheet_roles[name])
+            for name in _SERIES_B_SHEETS if name in workbook.sheet_names
+        }
+
+    if path.is_dir():
+        named: dict[str, pd.DataFrame] = {}
+        # 1. Procurar planilhas .xlsx/.xls na pasta
+        excel_files = sorted(
+            f for f in path.rglob("*")
+            if f.is_file() and f.suffix.lower() in {".xlsx", ".xls"}
+        )
+        for ef in excel_files:
+            try:
+                if ef.suffix.lower() == ".xlsx":
+                    wb = pd.ExcelFile(ef, engine="openpyxl")
+                    sheet_roles = {
+                        "Estoque": _ESTOQUE_ROLE_KEYWORDS,
+                        "Clientes": _CLIENTES_ROLE_KEYWORDS,
+                        "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
+                        "Compras": _COMPRAS_ROLE_KEYWORDS,
+                    }
+                    for name in _SERIES_B_SHEETS:
+                        if name in wb.sheet_names and name not in named:
+                            named[name] = read_dataframe(str(ef), sheet_name=name, role_keywords=sheet_roles[name])
+
+                if "Estoque" not in named:
+                    cat_df = _load_catalog_file(ef)
+                    if cat_df is not None and not cat_df.empty:
+                        named["Estoque"] = cat_df
+            except Exception:
+                pass
+
+        # 2. Procurar XMLs de compra (entradas de fornecedores)
+        xml_files = sorted(f for f in path.rglob("*.xml") if f.is_file())
+        purchase_items = []
+        for xf in xml_files:
+            try:
+                doc_type, items = _parse_nfe_xml_file(xf)
+                if doc_type == "compra":
+                    purchase_items.extend(items)
+            except Exception:
+                pass
+
+        if purchase_items:
+            df_purchases = pd.DataFrame(purchase_items)
+            if "Compras" in named and not named["Compras"].empty:
+                named["Compras"] = pd.concat([named["Compras"], df_purchases], ignore_index=True)
+            else:
+                named["Compras"] = df_purchases
+
+        return named
+
+    return {}
 
 
 def load_sales_records(
     path: Path, mapping_override: dict[str, str] | None = None,
 ) -> tuple[list[SalesRecord], CleaningSummary]:
-    """Ingere um arquivo (.xlsx/.csv) OU uma pasta inteira, higieniza e retorna os
+    """Ingere um arquivo (.xlsx/.csv/.xml) OU uma pasta inteira, higieniza e retorna os
     SalesRecord aceitos + a contabilidade completa da limpeza. Arquivo cujo esquema não
     produz os 4 papéis mínimos é pulado e reportado — nunca mesclado errado."""
     path = Path(path)
     files = (
-        sorted(f for f in path.iterdir() if f.suffix.lower() in _SUPPORTED_SUFFIXES)
+        sorted(f for f in path.rglob("*") if f.is_file() and f.suffix.lower() in _SUPPORTED_SUFFIXES)
         if path.is_dir() else [path]
     )
 
@@ -143,15 +385,92 @@ def load_sales_records(
     files_skipped: list[dict] = []
     raw_declared_revenue = 0.0
 
+    target_company: str | None = None
+    if path.is_dir():
+        emit_counts: dict[str, int] = {}
+        for f in files:
+            if f.suffix.lower() == ".xml":
+                try:
+                    tree = ET.parse(f)
+                    r = tree.getroot()
+                    for elem in r.iter():
+                        elem.tag = _strip_ns(elem.tag)
+                    e_name = r.find(".//emit/xNome")
+                    if e_name is not None and e_name.text:
+                        clean_name = e_name.text.strip()
+                        emit_counts[clean_name] = emit_counts.get(clean_name, 0) + 1
+                except Exception:
+                    pass
+        if emit_counts:
+            target_company = max(emit_counts, key=emit_counts.get)
+
     for file_path in files:
-        raw = read_dataframe(str(file_path))
-        rows_read += len(raw)
+        if file_path.suffix.lower() == ".xml":
+            try:
+                doc_type, items = _parse_nfe_xml_file(file_path, target_company_identifier=target_company)
+                if doc_type != "venda":
+                    files_skipped.append({
+                        "file": file_path.name,
+                        "reason": f"NF-e de entrada/compra ({len(items)} itens) direcionada para Compras",
+                    })
+                    continue
+
+                rows_read += len(items)
+                for item_idx, item in enumerate(items):
+                    raw_date = item.get("date")
+                    if not raw_date:
+                        discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
+                        continue
+                    try:
+                        dt = pd.to_datetime(str(raw_date)[:19]).to_pydatetime()
+                    except Exception:
+                        discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
+                        continue
+
+                    val = item.get("value")
+                    if val is None or pd.isna(val) or not np.isfinite(val):
+                        discarded_by_reason["valor_nao_numerico"] = discarded_by_reason.get("valor_nao_numerico", 0) + 1
+                        continue
+
+                    prod = item.get("product")
+                    if not prod or pd.isna(prod):
+                        discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
+                        continue
+
+                    qty = item.get("quantity")
+                    effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
+                    line_val = float(val)
+                    raw_declared_revenue += line_val
+
+                    customer = item.get("destinatario_nome") or _ANONYMOUS_CUSTOMER
+                    records.append(SalesRecord(
+                        date=dt,
+                        product=str(prod),
+                        customer=str(customer),
+                        value=line_val,
+                        quantity=effective_qty,
+                        entry_cost=None,
+                        category=None,
+                        store=item.get("emitente_nome") or None,
+                        salesperson=None,
+                        payment_method=item.get("payment_method"),
+                        source_file=file_path.name,
+                        source_row=item_idx + 2,
+                        has_formula_error=False,
+                    ))
+            except Exception as e:
+                files_skipped.append({"file": file_path.name, "reason": f"Erro XML: {e}"})
+                continue
+            continue
+
         try:
+            raw = read_dataframe(str(file_path))
+            rows_read += len(raw)
             roles = infer_column_roles(raw, override=mapping_override)
-            
+
             raw_costs = raw[roles["cost"]] if "cost" in roles else pd.Series([None] * len(raw))
             is_formula_error = raw_costs.astype(str).str.contains(r'#DIV/0!|#REF!|#VALUE!|#N/A', na=False)
-            
+
             raw_values = raw[roles["value"]]
             # `coerce_currency_series` em vez de `.apply(_clean_currency_value)` cru:
             # `read_dataframe` devolve colunas com StringDtype, e `.apply()` sobre uma
@@ -161,7 +480,7 @@ def load_sales_records(
             # amigável "Nenhuma linha de venda válida" por um traceback cru na planilha
             # de zero linhas. O helper já força dtype float64, então o caso vazio soma 0.
             raw_declared_revenue += float(coerce_currency_series(raw_values).sum(skipna=True))
-            
+
             date_format = mapping_override.get("date_format") if mapping_override else None
             dates = coerce_date_series(raw[roles["date"]], date_format=date_format)
             values = coerce_currency_series(raw_values)
@@ -186,9 +505,9 @@ def load_sales_records(
             payments = (
                 raw[roles["payment"]] if "payment" in roles else pd.Series([None] * len(raw))
             )
-        except (ColumnMappingError, DateAmbiguityError) as e:
-            # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
-            # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
+        except (ColumnMappingError, DateAmbiguityError, Exception) as e:
+            # Arquivo com esquema incompatível, erro de leitura ou mistura de formato:
+            # pulado e reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
             files_skipped.append({"file": file_path.name, "reason": str(e)})
             continue
 
@@ -2466,6 +2785,349 @@ def build_executive_summary(
     )
 
 
+def enrich_sales_entry_costs(
+    sales_df: pd.DataFrame,
+    compras_df: pd.DataFrame | None,
+    estoque_df: pd.DataFrame | None,
+) -> pd.DataFrame:
+    """Enriquece o DataFrame de vendas com custos de aquisição (CMV), fornecedores,
+    categorias e preços de tabela a partir da aba/dados de Compras (NF-e entrada)
+    e Estoque/Catálogo (ex: Controle.xls).
+
+    Preserva estritamente custos já existentes e válidos (> 0).
+    Realiza matching por SKU exato, código EAN e fallback por similaridade textual.
+    """
+    if sales_df.empty:
+        return sales_df
+    if (compras_df is None or compras_df.empty) and (estoque_df is None or estoque_df.empty):
+        return sales_df
+
+    df = sales_df.copy()
+
+    sku_costs: dict[str, float] = {}
+    sku_suppliers: dict[str, str] = {}
+    sku_categories: dict[str, str] = {}
+    sku_list_prices: dict[str, float] = {}
+
+    desc_costs: dict[str, float] = {}
+    desc_suppliers: dict[str, str] = {}
+    desc_categories: dict[str, str] = {}
+    desc_list_prices: dict[str, float] = {}
+
+    def _clean_text(val: str) -> str:
+        s = str(val).lower()
+        for ch in ["-", "/", ".", ",", "_", "(", ")"]:
+            s = s.replace(ch, " ")
+        return " ".join(s.split())
+
+    if compras_df is not None and not compras_df.empty:
+        for _, r in compras_df.iterrows():
+            sku = str(r.get("sku", "")).strip()
+            c = pd.to_numeric(r.get("cost", 0), errors="coerce")
+            supp = str(r.get("supplier", "")).strip() if pd.notna(r.get("supplier")) else ""
+            desc = _clean_text(r.get("product", "") or r.get("description", ""))
+            if pd.notna(c) and c > 0:
+                if sku and sku != "nan":
+                    sku_costs[sku] = float(c)
+                    if supp:
+                        sku_suppliers[sku] = supp
+                if desc and desc != "nan":
+                    desc_costs[desc] = float(c)
+                    if supp:
+                        desc_suppliers[desc] = supp
+
+    if estoque_df is not None and not estoque_df.empty:
+        for _, r in estoque_df.iterrows():
+            sku = str(r.get("sku", "")).strip()
+            c = pd.to_numeric(r.get("cost", 0), errors="coerce")
+            lp = pd.to_numeric(r.get("list_price", 0), errors="coerce")
+            supp = str(r.get("supplier", "")).strip() if pd.notna(r.get("supplier")) else ""
+            cat = str(r.get("category", "")).strip() if pd.notna(r.get("category")) else ""
+            desc = _clean_text(r.get("description", "") or r.get("product", ""))
+            if pd.notna(c) and c > 0:
+                if sku and sku != "nan":
+                    sku_costs[sku] = float(c)
+                    if supp:
+                        sku_suppliers[sku] = supp
+                    if cat:
+                        sku_categories[sku] = cat
+                    if pd.notna(lp) and lp > 0:
+                        sku_list_prices[sku] = float(lp)
+                if desc and desc != "nan":
+                    desc_costs[desc] = float(c)
+                    if supp:
+                        desc_suppliers[desc] = supp
+                    if cat:
+                        desc_categories[desc] = cat
+                    if pd.notna(lp) and lp > 0:
+                        desc_list_prices[desc] = float(lp)
+
+    from difflib import get_close_matches
+    desc_keys = list(desc_costs.keys())
+
+    original_costs = df["entry_cost"] if "entry_cost" in df.columns else pd.Series([None] * len(df))
+    has_supplier_col = "supplier" in df.columns
+    has_cat_col = "category" in df.columns
+    has_lp_col = "list_price" in df.columns
+
+    new_costs = []
+    new_suppliers = []
+    new_categories = []
+    new_list_prices = []
+
+    for idx in range(len(df)):
+        orig_cost = original_costs.iloc[idx]
+        row = df.iloc[idx]
+        sku = str(row.get("sku", "")).strip() if "sku" in df.columns else ""
+        prod = str(row.get("product", "")).strip()
+        clean_prod = _clean_text(prod)
+
+        existing_supp = row.get("supplier") if has_supplier_col else None
+        existing_cat = row.get("category") if has_cat_col else None
+        existing_lp = row.get("list_price") if has_lp_col else None
+
+        # Se a linha já possui custo definido no arquivo de origem, preserva estritamente
+        if pd.notna(orig_cost):
+            cost = orig_cost
+            supp = existing_supp
+            cat = existing_cat
+            lp = existing_lp
+        else:
+            cost = np.nan
+            supp = existing_supp
+            cat = existing_cat
+            lp = existing_lp
+
+            if sku and sku in sku_costs:
+                cost = sku_costs[sku]
+                if not supp and sku in sku_suppliers:
+                    supp = sku_suppliers[sku]
+                if not cat and sku in sku_categories:
+                    cat = sku_categories[sku]
+                if not lp and sku in sku_list_prices:
+                    lp = sku_list_prices[sku]
+            elif clean_prod and clean_prod in desc_costs:
+                cost = desc_costs[clean_prod]
+                if not supp and clean_prod in desc_suppliers:
+                    supp = desc_suppliers[clean_prod]
+                if not cat and clean_prod in desc_categories:
+                    cat = desc_categories[clean_prod]
+                if not lp and clean_prod in desc_list_prices:
+                    lp = desc_list_prices[clean_prod]
+            elif clean_prod and desc_keys:
+                matches = get_close_matches(clean_prod, desc_keys, n=1, cutoff=0.4)
+                if matches:
+                    m = matches[0]
+                    cost = desc_costs[m]
+                    if not supp and m in desc_suppliers:
+                        supp = desc_suppliers[m]
+                    if not cat and m in desc_categories:
+                        cat = desc_categories[m]
+                    if not lp and m in desc_list_prices:
+                        lp = desc_list_prices[m]
+
+        if not supp:
+            if sku and sku in sku_suppliers:
+                supp = sku_suppliers[sku]
+            elif clean_prod and clean_prod in desc_suppliers:
+                supp = desc_suppliers[clean_prod]
+
+        if not cat:
+            if sku and sku in sku_categories:
+                cat = sku_categories[sku]
+            elif clean_prod and clean_prod in desc_categories:
+                cat = desc_categories[clean_prod]
+
+        new_costs.append(cost)
+        new_suppliers.append(supp)
+        new_categories.append(cat)
+        new_list_prices.append(lp)
+
+    df["entry_cost"] = new_costs
+    df["supplier"] = new_suppliers
+    df["category"] = new_categories
+    df["list_price"] = new_list_prices
+    return df
+
+
+def detect_commercial_reconciliation(
+    sales_df: pd.DataFrame,
+    named_sheets: dict[str, pd.DataFrame],
+    thresholds: AuditThresholdsConfig,
+) -> CommercialReconciliationSummary | None:
+    """Calcula a Reconciliação Comercial em Duas Vias: Cruzamento Entradas x Saídas.
+
+    Totaliza CMV, Lucro Bruto, Markup, Dedução de custos de intermediação e tributos,
+    Margem de Contribuição Líquida, e gera rankings por Fornecedor, por Categoria e
+    a lista de vendas deficitárias (MC < 0 ou abaixo do custo).
+
+    Garante que a divergência na validação em duas vias não ultrapasse R$ 0,02.
+    """
+    if sales_df.empty:
+        return None
+
+    sales = sales_df[(sales_df["value"] > 0) & np.isfinite(sales_df["value"])].copy()
+    if sales.empty:
+        return None
+
+    if "entry_cost" not in sales.columns or sales["entry_cost"].dropna().empty or (sales["entry_cost"] > 0).sum() == 0:
+        return None
+
+    channel_take_rate = thresholds.reconciliation_channel_take_rate_pct
+    tax_rate = thresholds.reconciliation_tax_rate_pct
+
+    qty = sales["quantity"].where(sales["quantity"].notna() & (sales["quantity"] > 0), 1.0)
+    unit_cost = pd.to_numeric(sales["entry_cost"], errors="coerce").fillna(0.0)
+
+    # Diretriz QA 2: Proteção estrita contra divisão por zero e custos negativos
+    unit_cost = unit_cost.apply(lambda c: c if c > 0 else 0.0)
+    sales["_qty"] = qty
+    sales["_unit_cost"] = unit_cost
+    sales["_cmv"] = unit_cost * qty
+    sales["_val"] = sales["value"]
+    sales["_gross_profit"] = sales["_val"] - sales["_cmv"]
+    sales["_channel_costs"] = sales["_val"] * (channel_take_rate / 100.0)
+    sales["_taxes"] = sales["_val"] * (tax_rate / 100.0)
+    sales["_net_margin"] = sales["_gross_profit"] - sales["_channel_costs"] - sales["_taxes"]
+
+    gross_revenue = float(round(sales["_val"].sum(), 2))
+    cmv_total = float(round(sales["_cmv"].sum(), 2))
+    gross_profit_brl = float(round(gross_revenue - cmv_total, 2))
+    gross_markup = float(round(gross_revenue / cmv_total, 2)) if cmv_total > 0 else None
+    channel_costs_brl = float(round(sales["_channel_costs"].sum(), 2))
+    taxes_brl = float(round(sales["_taxes"].sum(), 2))
+    net_contribution_margin_brl = float(round(sales["_net_margin"].sum(), 2))
+    net_contribution_margin_pct = float(round((net_contribution_margin_brl / gross_revenue * 100.0), 2)) if gross_revenue > 0 else 0.0
+
+    neg_mask = (sales["_net_margin"] < -0.001) | (
+        (sales["_unit_cost"] > 0) & ((sales["_val"] / sales["_qty"]) < sales["_unit_cost"])
+    )
+    negative_margin_count = int(neg_mask.sum())
+    negative_margin_loss_brl = float(round(abs(sales.loc[neg_mask, "_net_margin"].sum()), 2))
+
+    top_below_cost_sales: list[BelowCostSaleItem] = []
+    for _, r in sales[neg_mask].sort_values("_net_margin", ascending=True).iterrows():
+        unit_p = float(round(r["_val"] / r["_qty"], 2))
+        u_cost = float(round(r["_unit_cost"], 2))
+        loss = float(round(abs(r["_net_margin"]), 2))
+        loss_pct = float(round((loss / r["_val"] * 100.0), 2)) if r["_val"] > 0 else 0.0
+        top_below_cost_sales.append(BelowCostSaleItem(
+            sku=str(r.get("sku", "") or r.get("product", ""))[:50],
+            product_name=str(r.get("product", "")),
+            unit_price=unit_p,
+            entry_cost=u_cost,
+            loss_brl=loss,
+            loss_pct=loss_pct,
+            quantity=float(r["_qty"]),
+            source_row=int(r["source_row"]) if ("source_row" in r and pd.notna(r["source_row"])) else None,
+            supplier=str(r["supplier"]) if ("supplier" in r and pd.notna(r["supplier"])) else None,
+        ))
+
+    sales["_supp"] = (
+        sales["supplier"].fillna("FORNECEDOR_NAO_IDENTIFICADO")
+        if "supplier" in sales.columns and not sales["supplier"].isna().all()
+        else "FORNECEDOR_NAO_IDENTIFICADO"
+    )
+
+    supp_entries: list[SupplierMarginEntry] = []
+    for supp_name, grp in sales.groupby("_supp"):
+        s_rev = float(round(grp["_val"].sum(), 2))
+        s_cmv = float(round(grp["_cmv"].sum(), 2))
+        s_mc = float(round(grp["_net_margin"].sum(), 2))
+        s_mkup = float(round(s_rev / s_cmv, 2)) if s_cmv > 0 else None
+        s_mc_pct = float(round(s_mc / s_rev * 100.0, 2)) if s_rev > 0 else 0.0
+        s_share = float(round(s_rev / gross_revenue * 100.0, 2)) if gross_revenue > 0 else 0.0
+        supp_entries.append(SupplierMarginEntry(
+            supplier=str(supp_name),
+            gross_revenue=s_rev,
+            cmv_total=s_cmv,
+            markup=s_mkup,
+            contribution_margin_brl=s_mc,
+            contribution_margin_pct=s_mc_pct,
+            items_count=len(grp),
+            share_revenue_pct=s_share,
+        ))
+    supp_entries.sort(key=lambda x: x.gross_revenue, reverse=True)
+
+    def _infer_category(prod: str) -> str:
+        p = str(prod).lower()
+        if "carretilha" in p:
+            return "Carretilhas"
+        if "molinete" in p:
+            return "Molinetes"
+        if "vara" in p:
+            return "Varas"
+        if "isca" in p:
+            return "Iscas"
+        if "linha" in p or "multifilamento" in p:
+            return "Linhas"
+        if "lente" in p:
+            return "Lentes"
+        if "armacao" in p or "armação" in p:
+            return "Armações"
+        if "solar" in p:
+            return "Solares"
+        return "Diversos / Outros"
+
+    if "category" in sales.columns and not sales["category"].isna().all():
+        sales["_cat"] = sales["category"].fillna("Diversos / Outros")
+    else:
+        sales["_cat"] = sales["product"].apply(_infer_category)
+
+    cat_entries: list[CategoryMarginEntry] = []
+    for cat_name, grp in sales.groupby("_cat"):
+        c_rev = float(round(grp["_val"].sum(), 2))
+        c_cmv = float(round(grp["_cmv"].sum(), 2))
+        c_mc = float(round(grp["_net_margin"].sum(), 2))
+        c_mkup = float(round(c_rev / c_cmv, 2)) if c_cmv > 0 else None
+        c_mc_pct = float(round(c_mc / c_rev * 100.0, 2)) if c_rev > 0 else 0.0
+        c_share = float(round(c_rev / gross_revenue * 100.0, 2)) if gross_revenue > 0 else 0.0
+        cat_entries.append(CategoryMarginEntry(
+            category=str(cat_name),
+            gross_revenue=c_rev,
+            cmv_total=c_cmv,
+            markup=c_mkup,
+            contribution_margin_brl=c_mc,
+            contribution_margin_pct=c_mc_pct,
+            items_count=len(grp),
+            share_revenue_pct=c_share,
+        ))
+    cat_entries.sort(key=lambda x: x.gross_revenue, reverse=True)
+
+    # Validação em Duas Vias (Doutrina Aurora §13):
+    sum_supp_mc = sum(s.contribution_margin_brl for s in supp_entries)
+    sum_cat_mc = sum(c.contribution_margin_brl for c in cat_entries)
+    gap_supp = abs(sum_supp_mc - net_contribution_margin_brl)
+    gap_cat = abs(sum_cat_mc - net_contribution_margin_brl)
+    reconciliation_gap = float(round(max(gap_supp, gap_cat), 4))
+
+    if reconciliation_gap > 0.02:
+        raise ValueError(
+            f"VIOLACAO_DUAS_VIAS: Divergência entre margem consolidada (R$ {net_contribution_margin_brl:.2f}) "
+            f"e soma das partes (Fornecedores: R$ {sum_supp_mc:.2f}, Categorias: R$ {sum_cat_mc:.2f}) "
+            f"excedeu o teto estrito de R$ 0,02 (gap: R$ {reconciliation_gap:.4f})."
+        )
+
+    return CommercialReconciliationSummary(
+        gross_revenue=gross_revenue,
+        cmv_total=cmv_total,
+        gross_profit_brl=gross_profit_brl,
+        gross_markup=gross_markup,
+        channel_costs_brl=channel_costs_brl,
+        channel_take_rate_pct=channel_take_rate,
+        taxes_brl=taxes_brl,
+        tax_rate_pct=tax_rate,
+        net_contribution_margin_brl=net_contribution_margin_brl,
+        net_contribution_margin_pct=net_contribution_margin_pct,
+        negative_margin_count=negative_margin_count,
+        negative_margin_loss_brl=negative_margin_loss_brl,
+        two_way_reconciliation_gap=reconciliation_gap,
+        supplier_margins=supp_entries,
+        category_margins=cat_entries,
+        top_below_cost_sales=top_below_cost_sales,
+    )
+
+
 def run_audit(
     path: Path,
     thresholds: AuditThresholdsConfig | None = None,
@@ -2494,6 +3156,7 @@ def run_audit(
         ]
 
     df = _records_to_frame(records)
+    df = enrich_sales_entry_costs(df, named_sheets.get("Compras"), named_sheets.get("Estoque"))
 
     revenue_leaks = detect_revenue_leaks(df, thresholds)
     churn_findings = detect_churn(df, thresholds)
@@ -2534,6 +3197,8 @@ def run_audit(
                 alert.tainted_by_triage = True
                 alert.is_corrosive = False
 
+    commercial_reconciliation = detect_commercial_reconciliation(df, named_sheets, thresholds)
+
     advanced_metrics = AdvancedMetrics(
         gmroi_alerts=detect_gmroi_by_sku(df, named_sheets.get("Estoque"), thresholds),
         attach_rate_opportunities=detect_attach_rate_opportunities(df, thresholds),
@@ -2542,6 +3207,7 @@ def run_audit(
         follow_on_conversion=detect_follow_on_conversion(df, thresholds),
         discrepancy_triage=discrepancy_triage,
         seller_margin_mix=seller_margin_mix,
+        commercial_reconciliation=commercial_reconciliation,
     )
 
     # Fase E parte 1 — Física da Equipe. E2 (detect_incentive_misalignment) DEPOIS

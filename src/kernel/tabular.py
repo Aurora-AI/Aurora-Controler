@@ -46,11 +46,22 @@ def read_dataframe_robust(
     path_obj = pathlib.Path(path)
     
     if path_obj.suffix.lower() == ".csv":
-        df_raw = pd.read_csv(path_obj, header=None, dtype=str)
+        try:
+            df_raw = pd.read_csv(path_obj, header=None, dtype=str, sep=None, engine="python")
+        except Exception:
+            try:
+                df_raw = pd.read_csv(path_obj, header=None, dtype=str, sep=";")
+            except Exception:
+                df_raw = pd.read_csv(path_obj, header=None, dtype=str, sep=",")
     else:
-        # Default to the first sheet if sheet_name is not specified, to prevent returning a dict of all sheets
         target_sheet = sheet_name if sheet_name is not None else 0
-        df_raw = pd.read_excel(path_obj, sheet_name=target_sheet, header=None, dtype=str, engine="openpyxl")
+        if path_obj.suffix.lower() == ".xls":
+            try:
+                df_raw = pd.read_excel(path_obj, sheet_name=target_sheet, header=None, dtype=str, engine="xlrd")
+            except Exception:
+                df_raw = pd.read_excel(path_obj, sheet_name=target_sheet, header=None, dtype=str)
+        else:
+            df_raw = pd.read_excel(path_obj, sheet_name=target_sheet, header=None, dtype=str, engine="openpyxl")
     
     if df_raw.empty:
         return pd.DataFrame()
