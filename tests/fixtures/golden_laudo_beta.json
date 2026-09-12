@@ -7,8 +7,8 @@
         "rows_discarded_by_reason": {},
         "files_skipped": [],
         "values_winsorized": [],
-        "raw_declared_revenue": 409160.49,
-        "reconciliation_gap": -37275.04000000004
+        "raw_declared_revenue": 446435.5300000009,
+        "reconciliation_gap": 8.731149137020111e-10
     },
     "thresholds": {
         "revenue_drop_sigma": 2.0,
@@ -4017,6 +4017,6 @@
         "incentive_misalignment": [],
         "skill_gaps": []
     },
-    "audit_status": "CRITICAL_RECONCILIATION_GAP",
+    "audit_status": "OK",
     "presentation_mode": "LONG_WINDOW_MODE"
 }

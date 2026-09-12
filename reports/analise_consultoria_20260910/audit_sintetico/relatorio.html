@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>EXRS — Auditoria Comercial de rede_oticas_beta_test.xlsx</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", sans-serif; background:#F8FAFC;
+           color:#0F172A; margin:0; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    h1 { font-weight:600; color:#0F172A; margin-bottom:4px; }
+    h2 { font-size:16px; font-weight:600; color:#334155; margin-top:32px; text-transform:uppercase; letter-spacing:0.04em; }
+    .sub { color:#64748B; font-size:13px; margin-bottom:24px; }
+    .kpi-row { display:flex; gap:16px; margin-bottom:12px; }
+    .kpi { background:#fff; border:1px solid #E2E8F0; border-radius:8px; padding:16px 20px; flex:1; }
+    .kpi-value { display:block; font-size:24px; font-weight:700; color:#0F172A; }
+    .kpi-label { display:block; font-size:12px; color:#64748B; margin-top:4px; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #E2E8F0; border-radius:8px; overflow:hidden; }
+    th, td { text-align:left; padding:10px 14px; border-bottom:1px solid #F1F5F9; font-size:13px; }
+    th { color:#64748B; font-weight:600; background:#F8FAFC; }
+    table.seasonality td { text-align:center; }
+    .badge { color:#fff; padding:2px 10px; border-radius:4px; font-size:11px; }
+    .clean { color:#16A34A; font-size:14px; }
+    details { margin-top:8px; font-size:13px; color:#475569; }
+    .alert-red { background: #FEF2F2; color: #991B1B; border-left: 4px solid #DC2626; padding: 12px; margin-bottom: 16px; font-size: 14px; border-radius: 4px; font-weight: 500; line-height: 1.4; }
+    .alert-green { background: #F0FDF4; color: #166534; border-left: 4px solid #16A34A; padding: 12px; margin-bottom: 16px; font-size: 14px; border-radius: 4px; font-weight: 500; line-height: 1.4; }
+    </style>
+</head>
+<body>
+<div class="page">
+  <h1>📊 Auditoria Forense Comercial — rede_oticas_beta_test.xlsx</h1>
+  <div class="sub">Gerado em 10/09/2026 17:17 · Período: 2025-07 a
+    2026-06 · Uso estritamente local — este relatório contém
+    identidades reais de clientes.</div>
+
+  <h2>Ingestão e Limpeza</h2>
+  
+    <div class='alert-red'>⚠️ RECONCILIAÇÃO FALHOU: O Faturamento Declarado (R$ 409.160,49) difere do Grid Transacional Aceito (R$ 446.435,53). Gap: R$ -37.275,04 (9.11%).</div>
+    
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-value">1426</span><span class="kpi-label">linhas lidas</span></div>
+      <div class="kpi"><span class="kpi-value">1426</span><span class="kpi-label">linhas aceitas</span></div>
+      <div class="kpi"><span class="kpi-value">0</span><span class="kpi-label">linhas descartadas (0.0%)</span></div>
+    </div>
+    <details>
+      <summary>Motivos de descarte / arquivos pulados</summary>
+      <ul><li>nenhuma linha descartada</li></ul>
+      <ul><li>nenhum arquivo pulado</li></ul>
+    </details>
+    
+
+  <h2>⚖️ Reconciliação Comercial & Margem Real (Entradas × Saídas)</h2>
+  
+    <div class='alert-red'>
+          ⚠️ <strong>ALERTA DE PREJUÍZO OPERACIONAL:</strong> Foram detectadas <strong>66 operações</strong>
+          com MARGEM NEGATIVA (MC &lt; 0 ou venda abaixo do custo de compra).<br/>
+          Rombo de Caixa Acumulado nessas operações: <strong>R$ 6.935,68</strong>.
+        </div>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-value">R$ 446.435,53</span><span class="kpi-label">Receita Bruta Total</span></div>
+      <div class="kpi"><span class="kpi-value">R$ 174.199,03</span><span class="kpi-label">CMV (Custo de Entrada NFe)</span></div>
+      <div class="kpi"><span class="kpi-value">R$ 272.236,50</span><span class="kpi-label">Lucro Bruto Comercial (2.56x)</span></div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-value">R$ 130.091,31</span><span class="kpi-label">Custos Variáveis (23.1% Mkt + 6.0% Imposto)</span></div>
+      <div class="kpi"><span class="kpi-value" style="color:#16A34A">R$ 142.145,19</span><span class="kpi-label">Margem Contribuição Líquida (31.8%)</span></div>
+      <div class="kpi"><span class="kpi-value"><span style='color:#16A34A;font-weight:600;'>✅ Bateu (gap R$ 0,00)</span></span><span class="kpi-label">Validação em Duas Vias (§13)</span></div>
+    </div>
+
+    
+    <h3 style="font-size:14px;color:#991B1B;margin-top:20px;">Top Operações com Maior Prejuízo Unitário / Sangria</h3>
+    <table>
+      <thead><tr><th>Produto / SKU</th><th>Fornecedor</th><th>Qtd</th><th>Preço Unit</th><th>Custo Entrada</th><th>Rombo (R$)</th><th>Perda (%)</th></tr></thead>
+      <tbody><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 276,30</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 224,21</td><td style='color:#DC2626;'>-81.2%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 285,58</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 217,64</td><td style='color:#DC2626;'>-76.2%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 286,21</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 217,19</td><td style='color:#DC2626;'>-75.9%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 287,38</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 216,36</td><td style='color:#DC2626;'>-75.3%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 289,06</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 215,17</td><td style='color:#DC2626;'>-74.4%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 291,75</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 213,27</td><td style='color:#DC2626;'>-73.1%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 292,88</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 212,47</td><td style='color:#DC2626;'>-72.5%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 293,64</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 211,93</td><td style='color:#DC2626;'>-72.2%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 298,67</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 208,36</td><td style='color:#DC2626;'>-69.8%</td></tr><tr><td>LNT-900</td><td>N/I</td><td>1</td><td>R$ 299,73</td><td>R$ 420,00</td><td style='color:#DC2626;font-weight:600;'>R$ 207,61</td><td style='color:#DC2626;'>-69.3%</td></tr></tbody>
+    </table>
+    
+
+    <h3 style="font-size:14px;color:#334155;margin-top:20px;">Margem e Markup por Fornecedor (NF-e de Compra)</h3>
+    <table>
+      <thead><tr><th>Fornecedor</th><th>Receita</th><th>CMV</th><th>Markup</th><th>Margem Contribuição</th><th>MC %</th><th>Share</th></tr></thead>
+      <tbody><tr><td>FORNECEDOR_NAO_IDENTIFICADO</td><td>R$ 446.435,53</td><td>R$ 174.199,03</td><td>2.56x</td><td style='color:#16A34A;font-weight:600;'>R$ 142.145,19</td><td>31.8%</td><td>100.0%</td></tr></tbody>
+    </table>
+
+    <h3 style="font-size:14px;color:#334155;margin-top:20px;">Margem e Markup por Categoria</h3>
+    <table>
+      <thead><tr><th>Categoria</th><th>Receita</th><th>CMV</th><th>Markup</th><th>Margem Contribuição</th><th>MC %</th><th>Share</th></tr></thead>
+      <tbody><tr><td>armacao</td><td>R$ 182.087,78</td><td>R$ 73.536,98</td><td>2.48x</td><td style='color:#16A34A;font-weight:600;'>R$ 55.490,42</td><td>30.5%</td><td>40.8%</td></tr><tr><td>lente</td><td>R$ 154.366,81</td><td>R$ 62.625,53</td><td>2.46x</td><td style='color:#16A34A;font-weight:600;'>R$ 46.758,79</td><td>30.3%</td><td>34.6%</td></tr><tr><td>solar</td><td>R$ 61.696,83</td><td>R$ 22.129,34</td><td>2.79x</td><td style='color:#16A34A;font-weight:600;'>R$ 21.589,03</td><td>35.0%</td><td>13.8%</td></tr><tr><td>lente_contato</td><td>R$ 40.850,12</td><td>R$ 15.247,41</td><td>2.68x</td><td style='color:#16A34A;font-weight:600;'>R$ 13.698,99</td><td>33.5%</td><td>9.2%</td></tr><tr><td>servico</td><td>R$ 7.433,99</td><td>R$ 659,77</td><td>11.27x</td><td style='color:#16A34A;font-weight:600;'>R$ 4.607,96</td><td>62.0%</td><td>1.7%</td></tr></tbody>
+    </table>
+    
+
+  <h2>Vazamento de Receita</h2>
+  <div class='alert-red'>🚨 SELO DE SEGURANÇA DESATIVADO: Gap de reconciliação detectado. A ausência de anomalias listadas abaixo NÃO garante ausência de vazamentos, pois o total financeiro está mascarado/corrompido.</div>
+
+  <h2>Churn Invisível</h2>
+  
+    <table>
+      <thead><tr><th>Cliente</th><th>Compras</th><th>Cadência média</th>
+      <th>Última compra</th><th>Meses em silêncio</th><th>Valor histórico anual</th></tr></thead>
+      <tbody><tr><td>CLI-0002</td><td>5</td><td>32 dias</td><td>2026-01-18</td><td>5 mês(es)</td><td>R$ 1.211,14</td></tr>
+<tr><td>CLI-0018</td><td>6</td><td>33 dias</td><td>2026-02-06</td><td>4 mês(es)</td><td>R$ 2.104,23</td></tr>
+<tr><td>CLI-0022</td><td>3</td><td>58 dias</td><td>2026-02-08</td><td>4 mês(es)</td><td>R$ 539,34</td></tr>
+<tr><td>CLI-0028</td><td>10</td><td>25 dias</td><td>2026-02-15</td><td>4 mês(es)</td><td>R$ 4.494,48</td></tr>
+<tr><td>CLI-0057</td><td>4</td><td>39 dias</td><td>2026-02-14</td><td>4 mês(es)</td><td>R$ 538,81</td></tr>
+<tr><td>CLI-0062</td><td>5</td><td>54 dias</td><td>2026-02-09</td><td>4 mês(es)</td><td>R$ 1.887,04</td></tr>
+<tr><td>CLI-0085</td><td>5</td><td>47 dias</td><td>2026-02-26</td><td>4 mês(es)</td><td>R$ 2.856,88</td></tr>
+<tr><td>CLI-0086</td><td>3</td><td>26 dias</td><td>2026-03-30</td><td>3 mês(es)</td><td>R$ 1.170,18</td></tr>
+<tr><td>CLI-0089</td><td>8</td><td>34 dias</td><td>2026-02-28</td><td>4 mês(es)</td><td>R$ 2.967,52</td></tr>
+<tr><td>CLI-0093</td><td>4</td><td>45 dias</td><td>2026-02-08</td><td>4 mês(es)</td><td>R$ 678,38</td></tr>
+<tr><td>CLI-0101</td><td>6</td><td>36 dias</td><td>2026-03-03</td><td>3 mês(es)</td><td>R$ 2.413,60</td></tr>
+<tr><td>CLI-0102</td><td>5</td><td>42 dias</td><td>2026-03-18</td><td>3 mês(es)</td><td>R$ 1.925,82</td></tr>
+<tr><td>CLI-0131</td><td>8</td><td>29 dias</td><td>2026-03-19</td><td>3 mês(es)</td><td>R$ 3.509,20</td></tr>
+<tr><td>CLI-0134</td><td>6</td><td>46 dias</td><td>2026-02-22</td><td>4 mês(es)</td><td>R$ 1.224,03</td></tr>
+<tr><td>CLI-0140</td><td>4</td><td>44 dias</td><td>2026-01-31</td><td>5 mês(es)</td><td>R$ 2.161,62</td></tr>
+<tr><td>CLI-0144</td><td>5</td><td>51 dias</td><td>2026-02-19</td><td>4 mês(es)</td><td>R$ 639,75</td></tr>
+<tr><td>CLI-0159</td><td>4</td><td>22 dias</td><td>2025-10-31</td><td>8 mês(es)</td><td>R$ 837,34</td></tr>
+<tr><td>CLI-0163</td><td>6</td><td>42 dias</td><td>2026-01-27</td><td>5 mês(es)</td><td>R$ 1.790,99</td></tr>
+<tr><td>CLI-0166</td><td>3</td><td>64 dias</td><td>2025-12-30</td><td>6 mês(es)</td><td>R$ 774,92</td></tr>
+<tr><td>CLI-0179</td><td>5</td><td>58 dias</td><td>2026-02-18</td><td>4 mês(es)</td><td>R$ 1.435,28</td></tr>
+<tr><td>CLI-0181</td><td>4</td><td>28 dias</td><td>2026-02-22</td><td>4 mês(es)</td><td>R$ 1.614,09</td></tr>
+<tr><td>CLI-0192</td><td>5</td><td>50 dias</td><td>2026-03-21</td><td>3 mês(es)</td><td>R$ 1.235,48</td></tr>
+<tr><td>CLI-0200</td><td>5</td><td>23 dias</td><td>2026-03-17</td><td>3 mês(es)</td><td>R$ 873,45</td></tr>
+<tr><td>CLI-0207</td><td>5</td><td>41 dias</td><td>2025-12-26</td><td>6 mês(es)</td><td>R$ 1.369,12</td></tr>
+<tr><td>CLI-0209</td><td>6</td><td>31 dias</td><td>2026-03-17</td><td>3 mês(es)</td><td>R$ 2.793,49</td></tr>
+<tr><td>CLI-0211</td><td>3</td><td>66 dias</td><td>2025-12-26</td><td>6 mês(es)</td><td>R$ 527,36</td></tr>
+<tr><td>CLI-0217</td><td>3</td><td>18 dias</td><td>2025-10-31</td><td>8 mês(es)</td><td>R$ 510,82</td></tr>
+<tr><td>CLI-0219</td><td>3</td><td>48 dias</td><td>2026-03-01</td><td>3 mês(es)</td><td>R$ 1.464,68</td></tr>
+<tr><td>CLI-0224</td><td>6</td><td>45 dias</td><td>2026-02-20</td><td>4 mês(es)</td><td>R$ 3.098,91</td></tr>
+<tr><td>CLI-0228</td><td>4</td><td>57 dias</td><td>2026-01-04</td><td>5 mês(es)</td><td>R$ 665,75</td></tr>
+<tr><td>CLI-0236</td><td>5</td><td>34 dias</td><td>2025-12-05</td><td>6 mês(es)</td><td>R$ 1.446,92</td></tr>
+<tr><td>CLI-0240</td><td>5</td><td>47 dias</td><td>2026-02-18</td><td>4 mês(es)</td><td>R$ 1.369,52</td></tr>
+<tr><td>CLI-0244</td><td>6</td><td>48 dias</td><td>2026-03-04</td><td>3 mês(es)</td><td>R$ 1.703,43</td></tr>
+<tr><td>CLI-0247</td><td>9</td><td>28 dias</td><td>2026-02-25</td><td>4 mês(es)</td><td>R$ 1.717,12</td></tr>
+<tr><td>CLI-0253</td><td>7</td><td>30 dias</td><td>2026-01-16</td><td>5 mês(es)</td><td>R$ 2.904,21</td></tr>
+<tr><td>CLI-0259</td><td>10</td><td>23 dias</td><td>2026-01-24</td><td>5 mês(es)</td><td>R$ 3.741,91</td></tr>
+<tr><td>CLI-0260</td><td>6</td><td>47 dias</td><td>2026-03-13</td><td>3 mês(es)</td><td>R$ 1.217,63</td></tr></tbody>
+    </table>
+    
+
+  <h2>Tendência de Produto</h2>
+  
+    <table>
+      <thead><tr><th>Produto</th><th>Crescimento empresa</th><th>Crescimento produto</th>
+      <th>Tendência</th><th>Margem Curto-Prazo</th><th>Última venda</th></tr></thead>
+      <tbody><tr><td>ARM-001</td><td>-11.9%</td><td>+5.1%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>ARM-002</td><td>-11.9%</td><td>+15.8%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>ARM-003</td><td>-11.9%</td><td>+34.4%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>ARP-013</td><td>-11.9%</td><td>+101.6%</td><td>✅ acompanha</td><td>—</td><td>2026-05</td></tr>
+<tr><td>ARP-020</td><td>-11.9%</td><td>-1.4%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>ARP-021</td><td>-11.9%</td><td>-26.1%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>LC-010</td><td>-11.9%</td><td>-2.2%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>LC-011</td><td>-11.9%</td><td>-37.9%</td><td>⚠️ descolado</td><td>66.0%</td><td>2026-06</td></tr>
+<tr><td>LNT-100</td><td>-11.9%</td><td>-17.3%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>LNT-500</td><td>-11.9%</td><td>-9.8%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>LNT-900</td><td>-11.9%</td><td>-25.9%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>SOL-030</td><td>-11.9%</td><td>+7.6%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>SOL-031</td><td>-11.9%</td><td>-23.1%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>SOL-032</td><td>-11.9%</td><td>-17.1%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>SVC-001</td><td>-11.9%</td><td>+3.8%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr>
+<tr><td>SVC-002</td><td>-11.9%</td><td>-6.8%</td><td>✅ acompanha</td><td>—</td><td>2026-06</td></tr></tbody>
+    </table>
+    
+
+  <h2>Sazonalidade</h2>
+  <table class='seasonality'><tbody><tr><td>Jan<br><b>1.14</b></td><td>Fev<br><b>1.06</b></td><td>Mar<br><b>0.79</b></td><td>Abr<br><b>0.98</b></td><td>Mai<br><b>0.84</b></td><td>Jun<br><b>0.81</b></td><td>Jul<br><b>1.26</b></td><td>Ago<br><b>1.02</b></td><td>Set<br><b>1.03</b></td><td>Out<br><b>0.97</b></td><td>Nov<br><b>0.99</b></td><td>Dez<br><b>1.12</b></td></tr></tbody></table>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "fornecedor_unico_tratado_como_venda": {
+    "vendas": 1,
+    "abas_compra": []
+  },
+  "xml_duplicado_e_desconto": {
+    "linhas": 2,
+    "soma_value": 200.0,
+    "esperado_documento_unico_liquido": 90
+  },
+  "custo_futuro": {
+    "custo_atribuido": 80.0,
+    "custo_anterior": 40
+  },
+  "custo_por_descricao_sem_sku_correspondente": {
+    "custo_atribuido": 70.0
+  }
+}

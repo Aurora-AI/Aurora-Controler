@@ -1,0 +1,52 @@
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+â Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 15 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  6%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [ 13%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 20%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 26%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 33%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 40%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 46%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 53%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 60%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 66%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 73%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 80%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 86%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 93%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [100%]
+
+============================= 15 passed in 1.73s ==============================
+

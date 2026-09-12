@@ -7,7 +7,7 @@ commercial_auditor.py carrega números mágicos — todo limiar vem de
 final (reprodutibilidade: sabe-se exatamente com quais limiares a auditoria rodou).
 """
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class AuditThresholdsConfig(BaseModel):
@@ -202,6 +202,25 @@ class SalesRecord(BaseModel):
     source_file: str
     source_row: int
     has_formula_error: bool = False
+    gross_value: float | None = None
+    discount: float | None = None
+    net_value: float | None = None
+    unit_price: float | None = None
+    unit: str | None = None
+    doc_id: str | None = None
+    doc_type: str | None = "venda"
+    cost_quarantine: bool = False
+
+    @model_validator(mode="after")
+    def _populate_sales_record_defaults(self):
+        if self.gross_value is None:
+            disc = self.discount or 0.0
+            self.gross_value = float(self.value + disc) if self.discount else float(self.value)
+        if self.discount is None:
+            self.discount = 0.0
+        if self.net_value is None:
+            self.net_value = float(self.value)
+        return self
 
 
 class WinsorizedValue(BaseModel):
@@ -224,6 +243,21 @@ class CleaningSummary(BaseModel):
     values_winsorized: list[WinsorizedValue] = Field(default_factory=list)
     raw_declared_revenue: float | None = None
     reconciliation_gap: float | None = None
+    reconciliation_status: str | None = Field(default=None, exclude=True)
+    is_reconciled: bool = Field(default=False, exclude=True)
+
+    @model_validator(mode="after")
+    def _compute_reconciliation_status(self):
+        if self.reconciliation_gap is None:
+            self.reconciliation_status = "SEM_BASE"
+            self.is_reconciled = False
+        elif abs(self.reconciliation_gap) < 0.01:
+            self.reconciliation_status = "CONCILIADO"
+            self.is_reconciled = True
+        else:
+            self.reconciliation_status = "DIVERGENTE"
+            self.is_reconciled = False
+        return self
 
 
 class RevenueLeakAnomaly(BaseModel):
@@ -304,6 +338,7 @@ class ContributionMarginAlert(BaseModel):
     contribution_margin: float
     sample_size: int
     promotional: bool = False
+    insufficient_cost_coverage: bool = Field(default=False, exclude=True)
 
 
 class LatentRevenueFinding(BaseModel):
@@ -372,6 +407,7 @@ class GmroiEntry(BaseModel):
     gmroi: float | None  # None se não há estoque nessa categoria (divisão por zero)
     sample_size: int  # nº de vendas que compuseram a margem bruta
     is_directional_only: bool = False
+    insufficient_cost_coverage: bool = Field(default=False, exclude=True)
 
 
 class GmroiSkuAlert(BaseModel):
@@ -390,6 +426,7 @@ class GmroiSkuAlert(BaseModel):
     capital_frozen: float  # qtd_atual × custo_unit deste SKU no snapshot de Estoque
     gmroi: float  # gross_margin / capital_frozen
     is_illusory_margin: bool = True  # sempre True nesta lista — documentativo
+    insufficient_cost_coverage: bool = Field(default=False, exclude=True)
 
 
 class CrossSellGapCustomer(BaseModel):
@@ -584,6 +621,7 @@ class CommercialReconciliationSummary(BaseModel):
     negative_margin_count: int
     negative_margin_loss_brl: float
     two_way_reconciliation_gap: float = 0.0
+    quarantined_cost_sales_brl: float = Field(default=0.0, exclude=True)
     supplier_margins: list[SupplierMarginEntry] = Field(default_factory=list)
     category_margins: list[CategoryMarginEntry] = Field(default_factory=list)
     top_below_cost_sales: list[BelowCostSaleItem] = Field(default_factory=list)
@@ -654,6 +692,7 @@ class StorePerformance(BaseModel):
     margin_sample_size: int  # nº de vendas com custo de entrada conhecido que compuseram a margem
     months_of_history: float  # (última venda − primeira venda) da PRÓPRIA loja, em meses
     has_sufficient_history: bool  # months_of_history >= thresholds.cold_start_min_months
+    cost_coverage_pct: float = Field(default=100.0, exclude=True)
 
 
 class StoreMacroSummary(BaseModel):

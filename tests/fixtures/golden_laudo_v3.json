@@ -25,8 +25,8 @@
                 "capped_value": 2716.2
             }
         ],
-        "raw_declared_revenue": 1423228.96,
-        "reconciliation_gap": -10429.300000000047
+        "raw_declared_revenue": 1433658.2599999977,
+        "reconciliation_gap": -2.3283064365386963e-09
     },
     "thresholds": {
         "revenue_drop_sigma": 2.0,
@@ -45846,6 +45846,6 @@
             }
         ]
     },
-    "audit_status": "CRITICAL_RECONCILIATION_GAP",
+    "audit_status": "OK",
     "presentation_mode": "LONG_WINDOW_MODE"
 }

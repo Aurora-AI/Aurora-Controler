@@ -1,0 +1,823 @@
+================================================================================
+LAUDO DE VERIFICAÇÃO FÍSICA E HOMOLOGAÇÃO — PACOTE P05
+Data/Hora UTC: 2026-09-11T15:35:43.679618+00:00
+Branch Ativa: feat/fase-d-camada-evidencia
+Hashes SHA-256 dos Componentes Auditados:
+  - src\product_b\oracle\commercial_auditor.py: 95e88977e659797389968880a07fb8f8315ed6efb1927c836413f3924384933d
+  - src\product_b\oracle\forensic_contracts.py: 237ae4777306df91c4e15a44be34c3084cd91cf7680973ed1d5000bfc83d12eb
+  - src\product_b\oracle\column_mapper.py: b196d4409d028f97ad0f9473302d1335745786bf09cfb33274bb8b6d30b98743
+  - tests\test_reprova_p05_engine.py: 9b15a77a1091ec6de55d84cf0b7424499e5461ae18b5477bc569251e1c5feca7
+================================================================================
+
+--- RESULTADO SUÍTE SABOTAGEM / ACEITE P05 ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 23 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  4%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [  8%]
+tests/test_reprova_p05_engine.py::test_fix01_quatro_cenarios_identidade_fiscal PASSED [ 13%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 17%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 21%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_cross_source_multiplos_itens_e_invariancia PASSED [ 26%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 30%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 34%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 39%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 43%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 47%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 52%]
+tests/test_reprova_p05_engine.py::test_fix04_conexao_detectores_reais_quarentena_e_cobertura PASSED [ 56%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 60%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 65%]
+tests/test_reprova_p05_engine.py::test_fix10_reproducao_historica_e_aceite_corrigido_fixture_beta PASSED [ 69%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 73%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 78%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [ 82%]
+tests/test_reprova_p05_engine.py::test_fix11_resolucao_temporal_snapshots_lojas_e_conflito PASSED [ 86%]
+tests/test_reprova_p05_engine.py::test_adv01_reprova_defeito_nfe_mesmo_numero_series_distintas_nao_colapsam PASSED [ 91%]
+tests/test_reprova_p05_engine.py::test_adv02_reprova_defeito_target_company_cnpj_formatado_reconhece_empresa PASSED [ 95%]
+tests/test_reprova_p05_engine.py::test_adv04_reprova_defeito_reconciliation_gap_none_deve_ser_sem_base_fail_closed PASSED [100%]
+
+============================= 23 passed in 2.44s ==============================
+
+
+--- RESULTADO SUÍTE DE REGRESSÃO GLOBAL ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 38%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 57%]
+................................................FF........F............. [ 63%]
+........................................................................ [ 70%]
+...s.s.................................................................. [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 89%]
+.....ssssss............................................................. [ 95%]
+................................................s.                       [100%]
+================================== FAILURES ===================================
+__________________ test_laudo_matches_golden_master_exactly ___________________
+tests\test_golden_laudo_beta.py:39: in test_laudo_matches_golden_master_exactly
+    assert actual == expected, (
+E   AssertionError: O laudo da rede Beta divergiu do golden master. Se a mudança no motor foi intencional, regenere tests/fixtures/golden_laudo_beta.json deliberadamente (nunca só pra fazer este teste passar) e confirme cada número novo — em especial as 7 pegadinhas da aba Gabarito do arquivo original — antes de commitar.
+E   assert {'period_star....0, ...}, ...} == {'period_star....0, ...}, ...}
+E     
+E     Omitting 21 identical items, use -vv to show
+E     Differing items:
+E     {'cleaning': {'rows_read': 1426, 'rows_accepted': 1426, 'rows_discarded_by_reason': {'revisao_identificacao_incompleta': 1426}, 'files_skipped': [], ...}} != {'cleaning': {'rows_read': 1426, 'rows_accepted': 1426, 'rows_discarded_by_reason': {}, 'files_skipped': [], ...}}
+E     {'contribution_margin_alerts': [{'product': 'ARP-013', 'avg_price': 304.6658333333333, 'avg_entry_cost': 320.0, 'variable_cost_pct': 15.0, ...}]} != {'contribution_margin_alerts': [{'product': 'ARP-013', 'avg_price': 304.6658333333333, 'avg_ent...
+E     
+E     ...Full output truncated (4 lines hidden), use '-vv' to show
+________ test_ingestion_reads_alternate_column_names_with_zero_discard ________
+tests\test_golden_laudo_beta.py:59: in test_ingestion_reads_alternate_column_names_with_zero_discard
+    assert report.cleaning.rows_discarded_by_reason == {}
+E   AssertionError: assert {'revisao_ide...mpleta': 1426} == {}
+E     
+E     Left contains 1 more item:
+E     {'revisao_identificacao_incompleta': 1426}
+E     Use -v to get more diff
+__________________ test_laudo_matches_golden_master_exactly ___________________
+tests\test_golden_laudo_v3.py:35: in test_laudo_matches_golden_master_exactly
+    assert actual == expected, (
+E   AssertionError: O laudo divergiu do golden master (laudo v3 apresentado na reunião). Se a mudança no motor foi intencional, regenere tests/fixtures/golden_laudo_v3.json deliberadamente (nunca só pra fazer este teste passar) e confirme cada número novo antes de commitar.
+E   assert {'period_star....0, ...}, ...} == {'period_star....0, ...}, ...}
+E     
+E     Omitting 20 identical items, use -vv to show
+E     Differing items:
+E     {'cleaning': {'rows_read': 3045, 'rows_accepted': 3021, 'rows_discarded_by_reason': {'revisao_identificacao_incompleta': 3021, 'valor_nao_numerico': 23, 'data_invalida': 1}, 'files_skipped': [], ...}} != {'cleaning': {'rows_read': 3045, 'rows_accepted': 3021, 'rows_discarded_by_reason': {'valor_nao_numerico': 23, 'data_invalida': 1}, 'files_skipped': [], ...}}
+E     {'advanced_metrics': {'gmroi_alerts': [{'sku': 'ARM-002', 'total_revenue': 2925.17, 'total_cost': 1440.98, 'gross_marg...store': 'L2 - Shopping', 'salespe...
+E     
+E     ...Full output truncated (5 lines hidden), use '-vv' to show
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_golden_laudo_beta.py::test_laudo_matches_golden_master_exactly
+FAILED tests/test_golden_laudo_beta.py::test_ingestion_reads_alternate_column_names_with_zero_discard
+FAILED tests/test_golden_laudo_v3.py::test_laudo_matches_golden_master_exactly
+3 failed, 1118 passed, 9 skipped, 1 warning in 202.44s (0:03:22)
+
+
+STATUS: REPROVADO (Falha na regressão global, exit code 1)
+================================================================================
+LAUDO DE VERIFICAÇÃO FÍSICA E HOMOLOGAÇÃO — PACOTE P05
+Data/Hora UTC: 2026-09-11T15:42:20.164286+00:00
+Branch Ativa: feat/fase-d-camada-evidencia
+Hashes SHA-256 dos Componentes Auditados:
+  - src\product_b\oracle\commercial_auditor.py: 9f3522b6714687a96779dff377d118ad99067f3a64d81cfb2114adbc32cf108f
+  - src\product_b\oracle\forensic_contracts.py: 099dd75f0040e53c94cc44878ce42baca1bb34049a3abaaab05d49d588f8aedc
+  - src\product_b\oracle\column_mapper.py: b196d4409d028f97ad0f9473302d1335745786bf09cfb33274bb8b6d30b98743
+  - tests\test_reprova_p05_engine.py: 9b15a77a1091ec6de55d84cf0b7424499e5461ae18b5477bc569251e1c5feca7
+================================================================================
+
+--- RESULTADO SUÍTE SABOTAGEM / ACEITE P05 ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 23 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  4%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [  8%]
+tests/test_reprova_p05_engine.py::test_fix01_quatro_cenarios_identidade_fiscal PASSED [ 13%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 17%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 21%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_cross_source_multiplos_itens_e_invariancia PASSED [ 26%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 30%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 34%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 39%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 43%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 47%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 52%]
+tests/test_reprova_p05_engine.py::test_fix04_conexao_detectores_reais_quarentena_e_cobertura PASSED [ 56%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 60%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 65%]
+tests/test_reprova_p05_engine.py::test_fix10_reproducao_historica_e_aceite_corrigido_fixture_beta PASSED [ 69%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 73%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 78%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [ 82%]
+tests/test_reprova_p05_engine.py::test_fix11_resolucao_temporal_snapshots_lojas_e_conflito PASSED [ 86%]
+tests/test_reprova_p05_engine.py::test_adv01_reprova_defeito_nfe_mesmo_numero_series_distintas_nao_colapsam PASSED [ 91%]
+tests/test_reprova_p05_engine.py::test_adv02_reprova_defeito_target_company_cnpj_formatado_reconhece_empresa PASSED [ 95%]
+tests/test_reprova_p05_engine.py::test_adv04_reprova_defeito_reconciliation_gap_none_deve_ser_sem_base_fail_closed PASSED [100%]
+
+============================= 23 passed in 3.18s ==============================
+
+
+--- RESULTADO SUÍTE DE REGRESSÃO GLOBAL ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 38%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 57%]
+........................................................................ [ 63%]
+........................................................................ [ 70%]
+...s.s.................................................................. [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 89%]
+.....ssssss............................................................. [ 95%]
+................................................s.                       [100%]
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1121 passed, 9 skipped, 1 warning in 6893.21s (1:54:53)
+
+
+================================================================================
+STATUS: APROVADO COM EXITO
+Todos os gates e testes de regressão foram homologados com exit code 0.
+================================================================================
+================================================================================
+LAUDO DE VERIFICAÇÃO FÍSICA E HOMOLOGAÇÃO — PACOTE P05
+Data/Hora UTC: 2026-09-11T18:26:09.083766+00:00
+Branch Ativa: feat/fase-d-camada-evidencia
+Hashes SHA-256 dos Componentes Auditados:
+  - src\product_b\oracle\commercial_auditor.py: 9b340fc5a5c77e6638b69f459d2b51a223892501b2662c18f6992333502e6497
+  - src\product_b\oracle\forensic_contracts.py: 099dd75f0040e53c94cc44878ce42baca1bb34049a3abaaab05d49d588f8aedc
+  - src\product_b\oracle\column_mapper.py: b196d4409d028f97ad0f9473302d1335745786bf09cfb33274bb8b6d30b98743
+  - tests\test_reprova_p05_engine.py: 1cd6ff013cf14bdfffcad789314387fff19a1968db5c52d6b8477e973039d106
+================================================================================
+
+--- RESULTADO SUÍTE SABOTAGEM / ACEITE P05 ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 26 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  3%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [  7%]
+tests/test_reprova_p05_engine.py::test_fix01_quatro_cenarios_identidade_fiscal PASSED [ 11%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 15%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 19%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_cross_source_multiplos_itens_e_invariancia PASSED [ 23%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_identidade_incompleta_e_multi_item_sem_match PASSED [ 26%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 30%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 34%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 38%]
+tests/test_reprova_p05_engine.py::test_fix03_receita_declarada_preco_unitario_vs_total_linha_e_estorno PASSED [ 42%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 46%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 50%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 53%]
+tests/test_reprova_p05_engine.py::test_fix04_conexao_detectores_reais_quarentena_e_cobertura PASSED [ 57%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 61%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 65%]
+tests/test_reprova_p05_engine.py::test_fix10_reproducao_historica_e_aceite_corrigido_fixture_beta PASSED [ 69%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 73%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 76%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [ 80%]
+tests/test_reprova_p05_engine.py::test_fix11_resolucao_temporal_snapshots_lojas_e_conflito PASSED [ 84%]
+tests/test_reprova_p05_engine.py::test_fix11_estoque_sem_base_valida_e_resolucao_temporal PASSED [ 88%]
+tests/test_reprova_p05_engine.py::test_adv01_reprova_defeito_nfe_mesmo_numero_series_distintas_nao_colapsam PASSED [ 92%]
+tests/test_reprova_p05_engine.py::test_adv02_reprova_defeito_target_company_cnpj_formatado_reconhece_empresa PASSED [ 96%]
+tests/test_reprova_p05_engine.py::test_adv04_reprova_defeito_reconciliation_gap_none_deve_ser_sem_base_fail_closed PASSED [100%]
+
+============================= 26 passed in 3.34s ==============================
+
+
+--- RESULTADO SUÍTE DE REGRESSÃO GLOBAL ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+...........................................                              [100%]
+43 passed in 2.93s
+
+
+================================================================================
+STATUS: APROVADO COM EXITO
+Todos os gates e testes de regressão foram homologados com exit code 0.
+================================================================================
+================================================================================
+LAUDO DE VERIFICAÇÃO FÍSICA E HOMOLOGAÇÃO — PACOTE P05
+Data/Hora UTC: 2026-09-11T18:40:37.533326+00:00
+Branch Ativa: feat/fase-d-camada-evidencia
+Hashes SHA-256 dos Componentes Auditados:
+  - src\product_b\oracle\commercial_auditor.py: c9a46e4f5adee20985c62f2bd1017fd7c0c41093eef8e9baa417e5862e4647f2
+  - src\product_b\oracle\forensic_contracts.py: 099dd75f0040e53c94cc44878ce42baca1bb34049a3abaaab05d49d588f8aedc
+  - src\product_b\oracle\column_mapper.py: b196d4409d028f97ad0f9473302d1335745786bf09cfb33274bb8b6d30b98743
+  - tests\test_reprova_p05_engine.py: 11366a5cfd3696e7775188ba125328714f1d75834b722c3c315cac16c055635a
+================================================================================
+
+--- RESULTADO SUÍTE SABOTAGEM / ACEITE P05 ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 26 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  3%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [  7%]
+tests/test_reprova_p05_engine.py::test_fix01_quatro_cenarios_identidade_fiscal PASSED [ 11%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 15%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 19%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_cross_source_multiplos_itens_e_invariancia PASSED [ 23%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_identidade_incompleta_e_multi_item_sem_match PASSED [ 26%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 30%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 34%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 38%]
+tests/test_reprova_p05_engine.py::test_fix03_receita_declarada_preco_unitario_vs_total_linha_e_estorno PASSED [ 42%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 46%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 50%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 53%]
+tests/test_reprova_p05_engine.py::test_fix04_conexao_detectores_reais_quarentena_e_cobertura PASSED [ 57%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 61%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 65%]
+tests/test_reprova_p05_engine.py::test_fix10_reproducao_historica_e_aceite_corrigido_fixture_beta PASSED [ 69%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 73%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 76%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [ 80%]
+tests/test_reprova_p05_engine.py::test_fix11_resolucao_temporal_snapshots_lojas_e_conflito PASSED [ 84%]
+tests/test_reprova_p05_engine.py::test_fix11_estoque_sem_base_valida_e_resolucao_temporal PASSED [ 88%]
+tests/test_reprova_p05_engine.py::test_adv01_reprova_defeito_nfe_mesmo_numero_series_distintas_nao_colapsam PASSED [ 92%]
+tests/test_reprova_p05_engine.py::test_adv02_reprova_defeito_target_company_cnpj_formatado_reconhece_empresa PASSED [ 96%]
+tests/test_reprova_p05_engine.py::test_adv04_reprova_defeito_reconciliation_gap_none_deve_ser_sem_base_fail_closed PASSED [100%]
+
+============================= 26 passed in 2.41s ==============================
+
+
+--- RESULTADO SUÍTE DE REGRESSÃO GLOBAL COMPLETA ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 38%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 57%]
+................................................F.........F............. [ 63%]
+........................................................................ [ 69%]
+...s.s.................................................................. [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 88%]
+........................................................................ [ 95%]
+...................................................s.                    [100%]
+================================== FAILURES ===================================
+__________________ test_laudo_matches_golden_master_exactly ___________________
+tests\test_golden_laudo_beta.py:39: in test_laudo_matches_golden_master_exactly
+    assert actual == expected, (
+E   AssertionError: O laudo da rede Beta divergiu do golden master. Se a mudança no motor foi intencional, regenere tests/fixtures/golden_laudo_beta.json deliberadamente (nunca só pra fazer este teste passar) e confirme cada número novo — em especial as 7 pegadinhas da aba Gabarito do arquivo original — antes de commitar.
+E   assert {'period_star....0, ...}, ...} == {'period_star....0, ...}, ...}
+E     
+E     Omitting 23 identical items, use -vv to show
+E     Differing items:
+E     {'audit_status': 'OK'} != {'audit_status': 'CRITICAL_RECONCILIATION_GAP'}
+E     {'cleaning': {'rows_read': 1426, 'rows_accepted': 1426, 'rows_discarded_by_reason': {}, 'files_skipped': [], ...}} != {'cleaning': {'rows_read': 1426, 'rows_accepted': 1426, 'rows_discarded_by_reason': {}, 'files_skipped': [], ...}}
+E     Use -v to get more diff
+__________________ test_laudo_matches_golden_master_exactly ___________________
+tests\test_golden_laudo_v3.py:35: in test_laudo_matches_golden_master_exactly
+    assert actual == expected, (
+E   AssertionError: O laudo divergiu do golden master (laudo v3 apresentado na reunião). Se a mudança no motor foi intencional, regenere tests/fixtures/golden_laudo_v3.json deliberadamente (nunca só pra fazer este teste passar) e confirme cada número novo antes de commitar.
+E   assert {'period_star....0, ...}, ...} == {'period_star....0, ...}, ...}
+E     
+E     Omitting 23 identical items, use -vv to show
+E     Differing items:
+E     {'audit_status': 'OK'} != {'audit_status': 'CRITICAL_RECONCILIATION_GAP'}
+E     {'cleaning': {'rows_read': 3045, 'rows_accepted': 3021, 'rows_discarded_by_reason': {'valor_nao_numerico': 23, 'data_invalida': 1}, 'files_skipped': [], ...}} != {'cleaning': {'rows_read': 3045, 'rows_accepted': 3021, 'rows_discarded_by_reason': {'valor_nao_numerico': 23, 'data_invalida': 1}, 'files_skipped': [], ...}}
+E     Use -v to get more diff
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_golden_laudo_beta.py::test_laudo_matches_golden_master_exactly
+FAILED tests/test_golden_laudo_v3.py::test_laudo_matches_golden_master_exactly
+2 failed, 1128 passed, 3 skipped, 1 warning in 289.48s (0:04:49)
+
+
+STATUS: REPROVADO (Falha na REGRESSÃO GLOBAL, exit code 1)
+================================================================================
+LAUDO DE VERIFICAÇÃO FÍSICA E HOMOLOGAÇÃO — PACOTE P05
+Data/Hora UTC: 2026-09-11T18:52:23.266295+00:00
+Branch Ativa: feat/fase-d-camada-evidencia
+Hashes SHA-256 dos Componentes Auditados:
+  - src\product_b\oracle\commercial_auditor.py: c9a46e4f5adee20985c62f2bd1017fd7c0c41093eef8e9baa417e5862e4647f2
+  - src\product_b\oracle\forensic_contracts.py: 099dd75f0040e53c94cc44878ce42baca1bb34049a3abaaab05d49d588f8aedc
+  - src\product_b\oracle\column_mapper.py: b196d4409d028f97ad0f9473302d1335745786bf09cfb33274bb8b6d30b98743
+  - tests\test_reprova_p05_engine.py: 11366a5cfd3696e7775188ba125328714f1d75834b722c3c315cac16c055635a
+================================================================================
+
+--- RESULTADO SUÍTE SABOTAGEM / ACEITE P05 ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 26 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  3%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [  7%]
+tests/test_reprova_p05_engine.py::test_fix01_quatro_cenarios_identidade_fiscal PASSED [ 11%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 15%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 19%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_cross_source_multiplos_itens_e_invariancia PASSED [ 23%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_identidade_incompleta_e_multi_item_sem_match PASSED [ 26%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 30%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 34%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 38%]
+tests/test_reprova_p05_engine.py::test_fix03_receita_declarada_preco_unitario_vs_total_linha_e_estorno PASSED [ 42%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 46%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 50%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 53%]
+tests/test_reprova_p05_engine.py::test_fix04_conexao_detectores_reais_quarentena_e_cobertura PASSED [ 57%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 61%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 65%]
+tests/test_reprova_p05_engine.py::test_fix10_reproducao_historica_e_aceite_corrigido_fixture_beta PASSED [ 69%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 73%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 76%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [ 80%]
+tests/test_reprova_p05_engine.py::test_fix11_resolucao_temporal_snapshots_lojas_e_conflito PASSED [ 84%]
+tests/test_reprova_p05_engine.py::test_fix11_estoque_sem_base_valida_e_resolucao_temporal PASSED [ 88%]
+tests/test_reprova_p05_engine.py::test_adv01_reprova_defeito_nfe_mesmo_numero_series_distintas_nao_colapsam PASSED [ 92%]
+tests/test_reprova_p05_engine.py::test_adv02_reprova_defeito_target_company_cnpj_formatado_reconhece_empresa PASSED [ 96%]
+tests/test_reprova_p05_engine.py::test_adv04_reprova_defeito_reconciliation_gap_none_deve_ser_sem_base_fail_closed PASSED [100%]
+
+============================= 26 passed in 4.20s ==============================
+
+
+--- RESULTADO SUÍTE DE REGRESSÃO GLOBAL COMPLETA ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 38%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 57%]
+........................................................................ [ 63%]
+........................................................................ [ 69%]
+...s.s.................................................................. [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 88%]
+........................................................................ [ 95%]
+...................................................s.                    [100%]
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1130 passed, 3 skipped, 1 warning in 325.11s (0:05:25)
+
+
+================================================================================
+STATUS: REGRESSAO GLOBAL APROVADA
+Todos os 26 testes de P05 e a suíte global de testes do repositório foram homologados com exit code 0.
+================================================================================
+================================================================================
+LAUDO DE VERIFICAÇÃO FÍSICA E HOMOLOGAÇÃO — PACOTE P05
+Data/Hora UTC: 2026-09-11T19:17:50.778441+00:00
+Branch Ativa: feat/fase-d-camada-evidencia
+Hashes SHA-256 dos Componentes Auditados:
+  - src\product_b\oracle\commercial_auditor.py: b655932b40c5b25ec7fd5cc961441cc2143966bf82e267b3303795ee62b70323
+  - src\product_b\oracle\forensic_contracts.py: 099dd75f0040e53c94cc44878ce42baca1bb34049a3abaaab05d49d588f8aedc
+  - src\product_b\oracle\column_mapper.py: b196d4409d028f97ad0f9473302d1335745786bf09cfb33274bb8b6d30b98743
+  - tests\test_reprova_p05_engine.py: b73ee2316e1f0f3f86d2752dc906a80bcbe437f9efaea32e592ef070f0171c2f
+================================================================================
+
+--- RESULTADO SUÍTE SABOTAGEM / ACEITE P05 ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Projetos\Aurora\AuroraControler
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collecting ... collected 27 items
+
+tests/test_reprova_p05_engine.py::test_fix01_controle_positivo_venda_loja_para_cliente PASSED [  3%]
+tests/test_reprova_p05_engine.py::test_fix01_reprova_defeito_fornecedor_frequente_nao_pode_virar_empresa_auditada PASSED [  7%]
+tests/test_reprova_p05_engine.py::test_fix01_quatro_cenarios_identidade_fiscal PASSED [ 11%]
+tests/test_reprova_p05_engine.py::test_fix02_controle_positivo_vendas_semelhantes_distintas_nao_colapsam PASSED [ 14%]
+tests/test_reprova_p05_engine.py::test_fix02_reprova_defeito_reenvio_mesmo_xml_infla_receita PASSED [ 18%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_cross_source_multiplos_itens_e_invariancia PASSED [ 22%]
+tests/test_reprova_p05_engine.py::test_fix02_reconciliacao_identidade_incompleta_e_multi_item_sem_match PASSED [ 25%]
+tests/test_reprova_p05_engine.py::test_fix03_controle_positivo_venda_simples_sem_desconto PASSED [ 29%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_xml_com_desconto_nao_deduz_no_valor_economico PASSED [ 33%]
+tests/test_reprova_p05_engine.py::test_fix03_reprova_defeito_quantidade_maior_que_um_com_desconto_tabular PASSED [ 37%]
+tests/test_reprova_p05_engine.py::test_fix03_receita_declarada_preco_unitario_vs_total_linha_e_estorno PASSED [ 40%]
+tests/test_reprova_p05_engine.py::test_fix03_estorno_por_valor_negativo_com_quantidade_positiva_e_ambiguidade_de_sinais PASSED [ 44%]
+tests/test_reprova_p05_engine.py::test_fix04_controle_positivo_custo_historico_anterior_a_venda PASSED [ 48%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_compra_futura_nao_pode_retroagir_para_venda_passada PASSED [ 51%]
+tests/test_reprova_p05_engine.py::test_fix04_reprova_defeito_correspondencia_ambigua_vai_para_quarentena PASSED [ 55%]
+tests/test_reprova_p05_engine.py::test_fix04_conexao_detectores_reais_quarentena_e_cobertura PASSED [ 59%]
+tests/test_reprova_p05_engine.py::test_fix10_controle_positivo_conciliacao_exata PASSED [ 62%]
+tests/test_reprova_p05_engine.py::test_fix10_reprova_defeito_residuo_beta_bloqueia_rotulo_conciliado PASSED [ 66%]
+tests/test_reprova_p05_engine.py::test_fix10_reproducao_historica_e_aceite_corrigido_fixture_beta PASSED [ 70%]
+tests/test_reprova_p05_engine.py::test_fix11_controle_positivo_arquivo_unico_com_abas_padrao PASSED [ 74%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_multiplos_arquivos_com_abas_de_estoque_nao_descarta_segunda_filial PASSED [ 77%]
+tests/test_reprova_p05_engine.py::test_fix11_reprova_defeito_inversao_de_ordem_de_leitura_deve_ser_invariante PASSED [ 81%]
+tests/test_reprova_p05_engine.py::test_fix11_resolucao_temporal_snapshots_lojas_e_conflito PASSED [ 85%]
+tests/test_reprova_p05_engine.py::test_fix11_estoque_sem_base_valida_e_resolucao_temporal PASSED [ 88%]
+tests/test_reprova_p05_engine.py::test_adv01_reprova_defeito_nfe_mesmo_numero_series_distintas_nao_colapsam PASSED [ 92%]
+tests/test_reprova_p05_engine.py::test_adv02_reprova_defeito_target_company_cnpj_formatado_reconhece_empresa PASSED [ 96%]
+tests/test_reprova_p05_engine.py::test_adv04_reprova_defeito_reconciliation_gap_none_deve_ser_sem_base_fail_closed PASSED [100%]
+
+============================= 27 passed in 3.17s ==============================
+
+
+--- RESULTADO SUÍTE DE REGRESSÃO GLOBAL COMPLETA ---
+  Arithmetic          :  44 fÃ³rmulas
+  Conditional         :  26 fÃ³rmulas
+  Aggregation         :  30 fÃ³rmulas
+  Lookup              :  24 fÃ³rmulas
+  DateLogic           :  30 fÃ³rmulas
+  Text                :  30 fÃ³rmulas
+  Ranking             :  24 fÃ³rmulas
+  Threshold           :  24 fÃ³rmulas
+  Financial           :  20 fÃ³rmulas
+  Engineering         :  34 fÃ³rmulas
+  ExternalRef         :   3 fÃ³rmulas
+
+âœ… Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fÃ³rmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx â€” 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv â€” datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  â€” 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx â€” 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture binária: create_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture binária: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 38%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 57%]
+........................................................................ [ 63%]
+........................................................................ [ 69%]
+...s.s.................................................................. [ 76%]
+........................................................................ [ 82%]
+........................................................................ [ 88%]
+........................................................................ [ 95%]
+....................................................s.                   [100%]
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1131 passed, 3 skipped, 1 warning in 294.89s (0:04:54)
+
+
+================================================================================
+STATUS: REGRESSAO GLOBAL APROVADA
+Todos os testes de P05 (27) e a suíte global de testes do repositório foram homologados com exit code 0.
+================================================================================

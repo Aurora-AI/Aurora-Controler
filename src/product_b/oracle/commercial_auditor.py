@@ -127,6 +127,9 @@ def _parse_nfe_xml_file(
     nNF_elem = root.find(".//nNF")
     nNF_val = nNF_elem.text if (nNF_elem is not None and nNF_elem.text) else file_path.stem
 
+    serie_elem = root.find(".//serie")
+    serie_val = serie_elem.text.strip() if (serie_elem is not None and serie_elem.text) else "1"
+
     dhEmi_elem = root.find(".//dhEmi")
     if dhEmi_elem is None:
         dhEmi_elem = root.find(".//dEmi")
@@ -164,6 +167,25 @@ def _parse_nfe_xml_file(
     parsed_items = []
     has_inbound_cfop = False
 
+    infNFe = root.find(".//infNFe")
+    chave_acesso = ""
+    if infNFe is not None:
+        raw_id = infNFe.attrib.get("Id", "")
+        if raw_id.startswith("NFe"):
+            chave_acesso = raw_id[3:]
+        else:
+            chave_acesso = raw_id
+    if not chave_acesso:
+        chNFe_elem = root.find(".//chNFe")
+        if chNFe_elem is not None and chNFe_elem.text:
+            chave_acesso = chNFe_elem.text.strip()
+
+    mod_elem = root.find(".//mod")
+    mod_val = mod_elem.text.strip() if (mod_elem is not None and mod_elem.text) else "55"
+
+    clean_emit_doc = re.sub(r"\D", "", emit_doc)
+    doc_identity = chave_acesso if (chave_acesso and len(chave_acesso) == 44) else f"{clean_emit_doc}_{mod_val}_{serie_val}_{nNF_val}"
+
     for item in items_raw:
         cProd = item.find(".//prod/cProd")
         cEAN = item.find(".//prod/cEAN")
@@ -200,8 +222,13 @@ def _parse_nfe_xml_file(
         except ValueError:
             desc_val = 0.0
 
+        net_val = max(0.0, total_val - desc_val)
         parsed_items.append({
+            "doc_identity": doc_identity,
+            "chave_acesso": chave_acesso,
+            "modelo": mod_val,
             "nfe_number": nNF_val,
+            "serie": serie_val,
             "date": dhEmi_val,
             "emitente_nome": emit_nome_val,
             "emitente_doc": emit_doc,
@@ -218,25 +245,40 @@ def _parse_nfe_xml_file(
             "quantity": qty,
             "unit_price": unit_price,
             "cost": unit_price,
-            "value": total_val,
+            "gross_value": total_val,
             "discount": desc_val,
+            "net_value": net_val,
+            "value": net_val,
             "payment_method": payment_method,
             "supplier": emit_nome_val,
         })
 
-    # Classificação Fiscal Estrita (Diretriz QA 1 — Risco Fiscal):
+    # Classificação Fiscal Estrita (Diretriz QA 1 / FIX-01, FIX-02 e ADV-02):
     # - CFOP iniciando em 1, 2 ou 3, ou tpNF == '0' -> SEMPRE COMPRA / ENTRADA
     # - Se o destinatário for a empresa auditada -> COMPRA / ENTRADA
+    # - Se o emitente for a empresa auditada -> VENDA / SAÍDA
+    # - Se terceiro para terceiro -> TERCEIROS
+    # - Se target_company_identifier não fornecido -> PENDENCIA_IDENTIDADE (proibido autorizar venda)
     if tpNF_val == "0" or has_inbound_cfop:
         doc_type = "compra"
     elif target_company_identifier:
-        t_id = target_company_identifier.upper().strip()
-        if t_id in dest_nome_val.upper() or (dest_doc and t_id in dest_doc):
+        t_id_str = target_company_identifier.strip()
+        t_digits = re.sub(r"\D", "", t_id_str)
+        has_valid_doc = len(t_digits) >= 11  # CPF (11) ou CNPJ (14)
+        dest_digits = re.sub(r"\D", "", dest_doc) if dest_doc else ""
+        emit_digits = re.sub(r"\D", "", emit_doc) if emit_doc else ""
+
+        is_dest = (t_id_str.upper() in dest_nome_val.upper()) or (has_valid_doc and t_digits in dest_digits)
+        is_emit = (t_id_str.upper() in emit_nome_val.upper()) or (has_valid_doc and t_digits in emit_digits)
+
+        if is_dest:
             doc_type = "compra"
-        else:
+        elif is_emit:
             doc_type = "venda"
+        else:
+            doc_type = "terceiros"
     else:
-        doc_type = "venda"
+        doc_type = "pendencia_identidade"
 
     return doc_type, parsed_items
 
@@ -296,7 +338,93 @@ def _load_catalog_file(file_path: Path) -> pd.DataFrame | None:
         return None
 
 
-def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
+def _sanitize_and_resolve_inventory(
+    df_est: pd.DataFrame, reference_date: datetime | str | None = None
+) -> pd.DataFrame:
+    """Consolida e resolve temporalmente a aba Estoque (FIX-11).
+    Regras estritas de integridade:
+    1. A chave primária é (loja, sku) quando loja existe, ou sku isolado.
+    2. Se reference_date for informado e houver coluna de snapshot:
+       - Linhas com data válida <= reference_date são elegíveis.
+       - Linhas com data futura (> reference_date) ou inválida (NaT) são INELIGÍVEIS.
+       - Por filial/loja: se a filial não possuir nenhuma posição elegível, seus dados futuros
+         são descartados e ela é registrada em attrs['stores_unavailable'] como indisponível/sem base.
+         É proibido retornar quantidade 0 para a filial (o que simularia ruptura/estoque zerado).
+       - Se nenhuma filial/linha for elegível, retorna DataFrame vazio preservando as colunas,
+         com attrs['base_valida'] = False e attrs['motivo'] = 'estoque_indisponivel_data_futura'.
+    3. Quando não houver coluna de snapshot, detecta duplicidades e registra conflito
+       explícito (conflito_snapshot = True) se houver valores divergentes na mesma chave.
+    """
+    if df_est is None or df_est.empty:
+        return df_est
+
+    df_est = df_est.copy()
+    sku_c = next((c for c in df_est.columns if str(c).strip().lower() in {"sku", "produto", "codigo", "item"}), None)
+    store_c = next((c for c in df_est.columns if str(c).strip().lower() in {"loja", "filial", "unidade", "store"}), None)
+    snap_c = next((c for c in df_est.columns if str(c).strip().lower() in {"data_posicao", "data_snapshot", "data_base", "data_estoque"}), None)
+
+    if not sku_c:
+        return df_est
+
+    group_cols = [store_c, sku_c] if store_c else [sku_c]
+    val_cols = [c for c in df_est.columns if c not in group_cols and c not in {"conflito_snapshot", "_dt_snap"}]
+
+    if snap_c and reference_date is not None:
+        df_est["_dt_snap"] = pd.to_datetime(df_est[snap_c], errors="coerce")
+        ref_dt = pd.to_datetime(reference_date)
+
+        if store_c:
+            all_stores = set(df_est[store_c].dropna().unique())
+            eligible_mask = (df_est["_dt_snap"].notna()) & (df_est["_dt_snap"] <= ref_dt)
+            stores_with_eligible = set(df_est.loc[eligible_mask, store_c].dropna().unique())
+            stores_unavailable = all_stores - stores_with_eligible
+
+            df_eligible = df_est[eligible_mask].copy()
+            if df_eligible.empty:
+                empty_df = pd.DataFrame(columns=[c for c in df_est.columns if c != "_dt_snap"])
+                empty_df.attrs["base_valida"] = False
+                empty_df.attrs["motivo"] = "estoque_indisponivel_data_futura"
+                empty_df.attrs["stores_unavailable"] = sorted(list(all_stores))
+                return empty_df
+
+            df_eligible = df_eligible.sort_values(by=group_cols + ["_dt_snap"]).reset_index(drop=True)
+            df_result = df_eligible.drop_duplicates(subset=group_cols, keep="last")
+            df_result = df_result.drop(columns=["_dt_snap"])
+            df_result.attrs["base_valida"] = True
+            df_result.attrs["stores_unavailable"] = sorted(list(stores_unavailable))
+            return df_result.reset_index(drop=True)
+        else:
+            eligible_mask = (df_est["_dt_snap"].notna()) & (df_est["_dt_snap"] <= ref_dt)
+            df_eligible = df_est[eligible_mask].copy()
+            if df_eligible.empty:
+                empty_df = pd.DataFrame(columns=[c for c in df_est.columns if c != "_dt_snap"])
+                empty_df.attrs["base_valida"] = False
+                empty_df.attrs["motivo"] = "estoque_indisponivel_data_futura"
+                return empty_df
+
+            df_eligible = df_eligible.sort_values(by=group_cols + ["_dt_snap"]).reset_index(drop=True)
+            df_result = df_eligible.drop_duplicates(subset=group_cols, keep="last")
+            df_result = df_result.drop(columns=["_dt_snap"])
+            df_result.attrs["base_valida"] = True
+            return df_result.reset_index(drop=True)
+
+    elif snap_c:
+        df_est["_dt_snap"] = pd.to_datetime(df_est[snap_c], errors="coerce")
+        df_est = df_est.sort_values(by=group_cols + ["_dt_snap"]).reset_index(drop=True)
+        df_est = df_est.drop_duplicates(subset=group_cols, keep="last")
+        df_est = df_est.drop(columns=["_dt_snap"])
+        return df_est.reset_index(drop=True)
+    else:
+        exact_dups = df_est.duplicated(subset=group_cols + val_cols, keep="first")
+        df_est = df_est[~exact_dups].reset_index(drop=True)
+
+        key_dups = df_est.duplicated(subset=group_cols, keep=False)
+        if key_dups.any():
+            df_est["conflito_snapshot"] = key_dups
+        return df_est.reset_index(drop=True)
+
+
+def load_named_sheets(path: Path, reference_date: datetime | str | None = None) -> dict[str, pd.DataFrame]:
     """Lê as abas nomeadas da série B (Estoque, Clientes, Financeiro) e da Fase C
     (Compras — a "NF de entrada", ver `detect_discrepancy_triage`) quando existem —
     Vendas continua vindo de `load_sales_records`. Arquivo sem essas abas (CSV, pasta,
@@ -311,10 +439,15 @@ def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
             "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
             "Compras": _COMPRAS_ROLE_KEYWORDS,
         }
-        return {
+        sheet_names = list(workbook.sheet_names)
+        workbook.close()
+        named = {
             name: read_dataframe(str(path), sheet_name=name, role_keywords=sheet_roles[name])
-            for name in _SERIES_B_SHEETS if name in workbook.sheet_names
+            for name in _SERIES_B_SHEETS if name in sheet_names
         }
+        if "Estoque" in named:
+            named["Estoque"] = _sanitize_and_resolve_inventory(named["Estoque"], reference_date=reference_date)
+        return named
 
     if path.is_dir():
         named: dict[str, pd.DataFrame] = {}
@@ -333,23 +466,41 @@ def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
                         "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
                         "Compras": _COMPRAS_ROLE_KEYWORDS,
                     }
+                    wb_sheet_names = list(wb.sheet_names)
+                    wb.close()
                     for name in _SERIES_B_SHEETS:
-                        if name in wb.sheet_names and name not in named:
-                            named[name] = read_dataframe(str(ef), sheet_name=name, role_keywords=sheet_roles[name])
+                        if name in wb_sheet_names:
+                            sheet_df = read_dataframe(str(ef), sheet_name=name, role_keywords=sheet_roles[name])
+                            if name in named and not named[name].empty:
+                                named[name] = pd.concat([named[name], sheet_df], ignore_index=True)
+                            else:
+                                named[name] = sheet_df
 
-                if "Estoque" not in named:
+                    has_estoque_sheet = "Estoque" in wb_sheet_names
+                else:
+                    has_estoque_sheet = False
+
+                if not has_estoque_sheet:
                     cat_df = _load_catalog_file(ef)
                     if cat_df is not None and not cat_df.empty:
-                        named["Estoque"] = cat_df
+                        if "Estoque" in named and not named["Estoque"].empty:
+                            named["Estoque"] = pd.concat([named["Estoque"], cat_df], ignore_index=True)
+                        else:
+                            named["Estoque"] = cat_df
             except Exception:
                 pass
+
+        # Consolidação e resolução determinística de Estoque (FIX-11):
+        if "Estoque" in named and not named["Estoque"].empty:
+            named["Estoque"] = _sanitize_and_resolve_inventory(named["Estoque"], reference_date=reference_date)
+
 
         # 2. Procurar XMLs de compra (entradas de fornecedores)
         xml_files = sorted(f for f in path.rglob("*.xml") if f.is_file())
         purchase_items = []
         for xf in xml_files:
             try:
-                doc_type, items = _parse_nfe_xml_file(xf)
+                doc_type, items = _parse_nfe_xml_file(xf, target_company_identifier=None)
                 if doc_type == "compra":
                     purchase_items.extend(items)
             except Exception:
@@ -361,6 +512,15 @@ def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
                 named["Compras"] = pd.concat([named["Compras"], df_purchases], ignore_index=True)
             else:
                 named["Compras"] = df_purchases
+
+        # Invariância e determinismo: ordena os dataframes consolidados por colunas-chave se existirem
+        for name, df in named.items():
+            if df is not None and not df.empty:
+                sort_cols = [c for c in ["sku", "produto", "codigo", "cliente_id", "cpf", "date", "data"] if c in df.columns]
+                if sort_cols:
+                    named[name] = df.sort_values(by=sort_cols).reset_index(drop=True)
+                else:
+                    named[name] = df.reset_index(drop=True)
 
         return named
 
@@ -386,83 +546,124 @@ def load_sales_records(
     raw_declared_revenue = 0.0
 
     target_company: str | None = None
-    if path.is_dir():
-        emit_counts: dict[str, int] = {}
-        for f in files:
-            if f.suffix.lower() == ".xml":
-                try:
-                    tree = ET.parse(f)
-                    r = tree.getroot()
-                    for elem in r.iter():
-                        elem.tag = _strip_ns(elem.tag)
-                    e_name = r.find(".//emit/xNome")
-                    if e_name is not None and e_name.text:
-                        clean_name = e_name.text.strip()
-                        emit_counts[clean_name] = emit_counts.get(clean_name, 0) + 1
-                except Exception:
-                    pass
-        if emit_counts:
-            target_company = max(emit_counts, key=emit_counts.get)
+    if mapping_override and ("target_company_identifier" in mapping_override or "target_company" in mapping_override):
+        target_company = mapping_override.get("target_company_identifier") or mapping_override.get("target_company")
 
-    for file_path in files:
-        if file_path.suffix.lower() == ".xml":
-            try:
-                doc_type, items = _parse_nfe_xml_file(file_path, target_company_identifier=target_company)
-                if doc_type != "venda":
-                    files_skipped.append({
-                        "file": file_path.name,
-                        "reason": f"NF-e de entrada/compra ({len(items)} itens) direcionada para Compras",
-                    })
+    # Separar arquivos XML e Tabulares para garantir invariância de ordem de leitura
+    xml_files = [f for f in files if f.suffix.lower() == ".xml"]
+    tabular_files = [f for f in files if f.suffix.lower() in {".xlsx", ".xls", ".csv"}]
+
+    seen_xml_identities: set[str] = set()
+    # Estruturas para reconciliação cross-source (FIX-02):
+    xml_by_chave: dict[str, list[dict]] = {}
+    xml_by_composite: dict[tuple[str, str, str, str], list[dict]] = {}
+
+    # PASS 1: Processar todos os XMLs fiscais
+    for file_path in xml_files:
+        try:
+            doc_type, items = _parse_nfe_xml_file(file_path, target_company_identifier=target_company)
+            if doc_type != "venda":
+                if doc_type == "compra":
+                    reason = f"NF-e de entrada/compra ({len(items)} itens) direcionada para Compras"
+                elif doc_type == "pendencia_identidade":
+                    reason = f"Identidade fiscal da empresa auditada não informada ({len(items)} itens pendentes)"
+                    discarded_by_reason["identidade_empresa_nao_informada"] = (
+                        discarded_by_reason.get("identidade_empresa_nao_informada", 0) + len(items)
+                    )
+                elif doc_type == "terceiros":
+                    reason = f"Documento fiscal de terceiros estranho à empresa auditada ({len(items)} itens)"
+                    discarded_by_reason["documento_terceiros"] = (
+                        discarded_by_reason.get("documento_terceiros", 0) + len(items)
+                    )
+                else:
+                    reason = f"Documento fiscal ignorado ({doc_type})"
+                files_skipped.append({"file": file_path.name, "reason": reason})
+                continue
+
+            if not items:
+                continue
+
+            doc_id_key = items[0].get("doc_identity", file_path.stem)
+            if doc_id_key in seen_xml_identities:
+                files_skipped.append({
+                    "file": file_path.name,
+                    "reason": f"Documento fiscal duplicado (NF {items[0].get('nfe_number')}) já processado",
+                })
+                discarded_by_reason["documento_duplicado"] = discarded_by_reason.get("documento_duplicado", 0) + len(items)
+                continue
+            seen_xml_identities.add(doc_id_key)
+
+            # Indexação estruturada para reconciliação cross-source (chave de acesso e tupla composta)
+            n_nf = str(items[0].get("nfe_number", "")).strip()
+            ser = str(items[0].get("serie", "")).strip()
+            mod = str(items[0].get("modelo", "")).strip()
+            e_doc = re.sub(r"\D", "", str(items[0].get("emitente_doc", "")))
+            ch = str(items[0].get("chave_acesso", "")).strip()
+
+            if e_doc and mod and ser and n_nf:
+                comp_key = (e_doc, mod, ser, n_nf)
+                xml_by_composite[comp_key] = items
+            if ch and len(ch) == 44:
+                xml_by_chave[ch] = items
+
+            rows_read += len(items)
+            for item_idx, item in enumerate(items):
+                raw_date = item.get("date")
+                if not raw_date:
+                    discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
+                    continue
+                try:
+                    dt = pd.to_datetime(str(raw_date)[:19]).to_pydatetime()
+                except Exception:
+                    discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
                     continue
 
-                rows_read += len(items)
-                for item_idx, item in enumerate(items):
-                    raw_date = item.get("date")
-                    if not raw_date:
-                        discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
-                        continue
-                    try:
-                        dt = pd.to_datetime(str(raw_date)[:19]).to_pydatetime()
-                    except Exception:
-                        discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
-                        continue
+                val = item.get("value")
+                if val is None or pd.isna(val) or not np.isfinite(val):
+                    discarded_by_reason["valor_nao_numerico"] = discarded_by_reason.get("valor_nao_numerico", 0) + 1
+                    continue
 
-                    val = item.get("value")
-                    if val is None or pd.isna(val) or not np.isfinite(val):
-                        discarded_by_reason["valor_nao_numerico"] = discarded_by_reason.get("valor_nao_numerico", 0) + 1
-                        continue
+                prod = item.get("product")
+                if not prod or pd.isna(prod):
+                    discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
+                    continue
 
-                    prod = item.get("product")
-                    if not prod or pd.isna(prod):
-                        discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
-                        continue
+                qty = item.get("quantity")
+                effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
+                net_val = float(item.get("net_value", val))
+                gross_val = float(item.get("gross_value", net_val))
+                desc_val = float(item.get("discount", 0.0))
+                raw_declared_revenue += net_val
 
-                    qty = item.get("quantity")
-                    effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
-                    line_val = float(val)
-                    raw_declared_revenue += line_val
-
-                    customer = item.get("destinatario_nome") or _ANONYMOUS_CUSTOMER
-                    records.append(SalesRecord(
-                        date=dt,
-                        product=str(prod),
-                        customer=str(customer),
-                        value=line_val,
-                        quantity=effective_qty,
-                        entry_cost=None,
-                        category=None,
-                        store=item.get("emitente_nome") or None,
-                        salesperson=None,
-                        payment_method=item.get("payment_method"),
-                        source_file=file_path.name,
-                        source_row=item_idx + 2,
-                        has_formula_error=False,
-                    ))
-            except Exception as e:
-                files_skipped.append({"file": file_path.name, "reason": f"Erro XML: {e}"})
-                continue
+                customer = item.get("destinatario_nome") or _ANONYMOUS_CUSTOMER
+                records.append(SalesRecord(
+                    date=dt,
+                    product=str(prod),
+                    customer=str(customer),
+                    value=net_val,
+                    gross_value=gross_val,
+                    discount=desc_val,
+                    net_value=net_val,
+                    quantity=effective_qty,
+                    unit_price=float(item.get("unit_price", 0.0)),
+                    unit=item.get("unit"),
+                    doc_id=item.get("nfe_number"),
+                    doc_type="venda",
+                    entry_cost=None,
+                    category=None,
+                    store=item.get("emitente_nome") or None,
+                    salesperson=None,
+                    payment_method=item.get("payment_method"),
+                    source_file=file_path.name,
+                    source_row=item_idx + 2,
+                    has_formula_error=False,
+                ))
+        except Exception as e:
+            files_skipped.append({"file": file_path.name, "reason": f"Erro XML: {e}"})
             continue
 
+    # PASS 2: Processar arquivos tabulares com reconciliação cross-source
+    for file_path in tabular_files:
         try:
             raw = read_dataframe(str(file_path))
             rows_read += len(raw)
@@ -472,14 +673,14 @@ def load_sales_records(
             is_formula_error = raw_costs.astype(str).str.contains(r'#DIV/0!|#REF!|#VALUE!|#N/A', na=False)
 
             raw_values = raw[roles["value"]]
-            # `coerce_currency_series` em vez de `.apply(_clean_currency_value)` cru:
-            # `read_dataframe` devolve colunas com StringDtype, e `.apply()` sobre uma
-            # série VAZIA preserva o dtype string (não há elemento para inferir float).
-            # `.sum()` de série string vazia devolve '' (identidade de concatenação),
-            # não 0 — e o `float('')` estourava ValueError, trocando a mensagem
-            # amigável "Nenhuma linha de venda válida" por um traceback cru na planilha
-            # de zero linhas. O helper já força dtype float64, então o caso vazio soma 0.
-            raw_declared_revenue += float(coerce_currency_series(raw_values).sum(skipna=True))
+            val_col_name = str(roles["value"]).strip().lower()
+            is_unit_price = (
+                any(k in val_col_name for k in ["unitario", "unit", "praticado", "vuncom", "vl_unit"])
+                or (val_col_name in {"preco", "preco_tabela", "preco_bruto", "preco_liquido"}
+                    and not any(k in val_col_name for k in ["total", "subtotal", "faturamento", "venda"]))
+            )
+            is_explicit_gross = any(k in val_col_name for k in ["bruto", "gross", "subtotal", "vprod", "preco_tabela"])
+            is_explicit_net = any(k in val_col_name for k in ["liquido", "net"])
 
             date_format = mapping_override.get("date_format") if mapping_override else None
             dates = coerce_date_series(raw[roles["date"]], date_format=date_format)
@@ -494,9 +695,6 @@ def load_sales_records(
                 coerce_currency_series(raw[roles["cost"]])
                 if "cost" in roles else pd.Series([None] * len(raw))
             )
-            # Sem .astype(str): NaN de célula vazia precisa sobreviver como NaN (não
-            # "nan" string) até o pd.isna() por linha abaixo — mesma armadilha do bug
-            # real de cliente ausente.
             categories = raw[roles["category"]] if "category" in roles else pd.Series([None] * len(raw))
             stores = raw[roles["store"]] if "store" in roles else pd.Series([None] * len(raw))
             salespersons = (
@@ -505,9 +703,28 @@ def load_sales_records(
             payments = (
                 raw[roles["payment"]] if "payment" in roles else pd.Series([None] * len(raw))
             )
+            discount_col = None
+            if mapping_override and "discount" in mapping_override and mapping_override["discount"] in raw.columns:
+                discount_col = mapping_override["discount"]
+            else:
+                for c in raw.columns:
+                    if str(c).strip().lower() in {"desconto", "discount", "desc", "vdesc"}:
+                        discount_col = c
+                        break
+
+            discounts = (
+                coerce_currency_series(raw[discount_col])
+                if discount_col else pd.Series([0.0] * len(raw))
+            )
+
+            # Detectar colunas de identidade documental para reconciliação cross-source
+            chave_col = next((c for c in raw.columns if str(c).strip().lower() in {"chave_acesso", "ch_nfe", "chave"}), None)
+            doc_col = next((c for c in raw.columns if str(c).strip().lower() in {"nfe", "nf", "numero_nf", "num_nf", "doc", "documento", "cupom"}), None)
+            serie_col = next((c for c in raw.columns if str(c).strip().lower() in {"serie", "ser"}), None)
+            model_col = next((c for c in raw.columns if str(c).strip().lower() in {"modelo", "mod"}), None)
+            emit_col = next((c for c in raw.columns if str(c).strip().lower() in {"emitente", "cnpj", "cnpj_loja", "emit_doc"}), None)
+
         except (ColumnMappingError, DateAmbiguityError, Exception) as e:
-            # Arquivo com esquema incompatível, erro de leitura ou mistura de formato:
-            # pulado e reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
             files_skipped.append({"file": file_path.name, "reason": str(e)})
             continue
 
@@ -521,30 +738,154 @@ def load_sales_records(
             if pd.isna(products.iloc[i]):
                 discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
                 continue
-            # Venda sem cliente identificado (walk-in) é dado real, não sujeira — a
-            # venda existe e conta na receita. Vira um pseudo-cliente estável em vez de
-            # descartada, para não perder receita real do produto/período.
+
             customer = _ANONYMOUS_CUSTOMER if pd.isna(customers.iloc[i]) else customers.iloc[i]
             qty = quantities.iloc[i]
             cost = entry_costs.iloc[i]
             cat = categories.iloc[i]
             store = stores.iloc[i]
             salesperson = salespersons.iloc[i]
-            # Unidade econômica correta da linha é preço × quantidade — não só o
-            # preço unitário (bug real: uma devolução com qtd=-1 entrava como venda
-            # POSITIVA de mesmo valor, porque quantity nunca era usada). Quantidade
-            # ausente/não mapeada assume 1 (preserva o comportamento de todo arquivo
-            # sem coluna de quantidade — nada muda pra eles). Isso também expõe erro
-            # de digitação de quantidade (ex. qtd=99) para a poda de outlier abaixo —
-            # nunca escala o erro em silêncio, só deixa visível pra ser podado.
             effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
-            line_value = float(values.iloc[i]) * effective_qty
+            disc_val = float(discounts.iloc[i]) if not pd.isna(discounts.iloc[i]) else 0.0
+
+            # Diferenciação semântica das 4 combinações: (Preço Unitário vs Total) x (Bruto vs Líquido)
+            raw_num = float(values.iloc[i])
+
+            # Detecção de ambiguidade de sinais (ex: preço unitário negativo com quantidade negativa cancelando sinal)
+            if is_unit_price and raw_num < 0 and effective_qty < 0:
+                discarded_by_reason["estorno_sinais_ambiguos"] = discarded_by_reason.get("estorno_sinais_ambiguos", 0) + 1
+                continue
+
+            is_return = (effective_qty < 0) or (raw_num < 0)
+
+            if is_unit_price:
+                unit_magnitude = abs(raw_num)
+                qty_magnitude = abs(effective_qty)
+
+                if is_explicit_net:
+                    # CASO 2: Preço Unitário Líquido (ex: preco_liquido)
+                    net_mag = unit_magnitude * qty_magnitude
+                    gross_mag = net_mag + disc_val
+                    if is_return:
+                        line_value = -net_mag
+                        gross_val = -gross_mag
+                    else:
+                        line_value = net_mag
+                        gross_val = gross_mag
+                    raw_unit_price = (gross_mag / qty_magnitude) if qty_magnitude != 0 else unit_magnitude
+                else:
+                    # CASO 1: Preço Unitário Bruto (ex: preco_unitario, preco_praticado, preco_unit, preco_bruto)
+                    gross_mag = unit_magnitude * qty_magnitude
+                    net_mag = max(0.0, gross_mag - disc_val)
+                    if is_return:
+                        gross_val = -gross_mag
+                        line_value = -net_mag
+                    else:
+                        gross_val = gross_mag
+                        line_value = net_mag
+                    raw_unit_price = unit_magnitude
+            else:
+                tot_magnitude = abs(raw_num)
+                qty_magnitude = abs(effective_qty) if effective_qty != 0 else 1.0
+
+                if is_explicit_gross:
+                    # CASO 3: Total Bruto da Linha (ex: total_bruto, valor_bruto, subtotal, vprod)
+                    gross_mag = tot_magnitude
+                    net_mag = max(0.0, gross_mag - disc_val)
+                    if is_return:
+                        gross_val = -gross_mag
+                        line_value = -net_mag
+                    else:
+                        gross_val = gross_mag
+                        line_value = net_mag
+                    raw_unit_price = (gross_mag / qty_magnitude) if qty_magnitude != 0 else gross_mag
+                else:
+                    # CASO 4: Total Líquido da Linha (ex: valor_liquido, total_liquido, total, valor, faturamento)
+                    net_mag = tot_magnitude
+                    gross_mag = net_mag + disc_val
+                    if is_return:
+                        line_value = -net_mag
+                        gross_val = -gross_mag
+                    else:
+                        line_value = net_mag
+                        gross_val = gross_mag
+                    raw_unit_price = (gross_mag / qty_magnitude) if qty_magnitude != 0 else net_mag
+
+            raw_declared_revenue += line_value
+
+            # Reconciliação Cross-Source XML + ERP (FIX-02)
+            r_chave = str(raw[chave_col].iloc[i]).strip() if (chave_col and pd.notna(raw[chave_col].iloc[i])) else ""
+            r_doc = str(raw[doc_col].iloc[i]).strip() if (doc_col and pd.notna(raw[doc_col].iloc[i])) else ""
+            r_serie = str(raw[serie_col].iloc[i]).strip() if (serie_col and pd.notna(raw[serie_col].iloc[i])) else ""
+            r_mod = str(raw[model_col].iloc[i]).strip() if (model_col and pd.notna(raw[model_col].iloc[i])) else ""
+            r_emit = re.sub(r"\D", "", str(raw[emit_col].iloc[i])) if (emit_col and pd.notna(raw[emit_col].iloc[i])) else ""
+
+            matched_xml_items: list[dict] | None = None
+            if r_chave and len(r_chave) == 44 and r_chave in xml_by_chave:
+                matched_xml_items = xml_by_chave[r_chave]
+            elif r_doc and r_serie and r_mod and r_emit:
+                comp_key = (r_emit, r_mod, r_serie, r_doc)
+                if comp_key in xml_by_composite:
+                    matched_xml_items = xml_by_composite[comp_key]
+            # Caso contrário: identidade fiscal incompleta ou ausência de documento.
+            # PROIBIDO presumir valores de modelo, série ou emitente para forçar descarte!
+            # A linha segue preservada no ERP como venda legítima.
+
+            if matched_xml_items:
+                # DOCUMENTO FISCAL LOCALIZADO NO XML!
+                prod_str = str(products.iloc[i]).strip().lower()
+                m_item = next(
+                    (it for it in matched_xml_items
+                     if (it.get("sku") and str(it.get("sku", "")).strip().lower() == prod_str)
+                     or (it.get("product") and str(it.get("product", "")).strip().lower() == prod_str)),
+                    None
+                )
+                if len(matched_xml_items) > 1:
+                    if m_item is not None:
+                        expected_item_val = m_item["net_value"]
+                        val_diff = abs(line_value - expected_item_val)
+                        if val_diff <= 0.02:
+                            # Reconciliado com sucesso por item e valor!
+                            discarded_by_reason["reconciliado_cross_source"] = discarded_by_reason.get("reconciliado_cross_source", 0) + 1
+                            raw_declared_revenue -= line_value
+                            continue
+                        else:
+                            discarded_by_reason["divergencia_valor_cross_source"] = discarded_by_reason.get("divergencia_valor_cross_source", 0) + 1
+                    else:
+                        # Produto NÃO localizado no documento multi-item do XML!
+                        # NUNCA igualar a line_value para forçar resíduo zero!
+                        # A linha NÃO pode ser descartada como reconciliada!
+                        discarded_by_reason["item_nao_localizado_cross_source"] = discarded_by_reason.get("item_nao_localizado_cross_source", 0) + 1
+                else:
+                    # Documento fiscal de item único
+                    single_item = matched_xml_items[0]
+                    expected_val = single_item["net_value"]
+                    val_diff = abs(line_value - expected_val)
+                    if val_diff <= 0.02:
+                        discarded_by_reason["reconciliado_cross_source"] = discarded_by_reason.get("reconciliado_cross_source", 0) + 1
+                        raw_declared_revenue -= line_value
+                        continue
+                    else:
+                        discarded_by_reason["divergencia_valor_cross_source"] = discarded_by_reason.get("divergencia_valor_cross_source", 0) + 1
+            elif not r_doc and not r_chave:
+                # Linha com identificação documental ausente:
+                # REGRA MANDATÓRIA: data e valor NUNCA autorizam deduplicação!
+                # Preservada como venda legítima (NÃO descartada)
+                pass
+
             records.append(SalesRecord(
                 date=dates.iloc[i].to_pydatetime(),
                 product=products.iloc[i],
                 customer=customer,
                 value=line_value,
+                gross_value=gross_val,
+                discount=disc_val,
+                net_value=line_value,
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
+                unit_price=raw_unit_price,
+                unit=None,
+                doc_id=r_doc or None,
+                doc_type="venda",
                 entry_cost=None if cost is None or pd.isna(cost) else float(cost),
                 category=None if cat is None or pd.isna(cat) else str(cat),
                 store=None if store is None or pd.isna(store) else str(store),
@@ -554,9 +895,72 @@ def load_sales_records(
                     else str(payments.iloc[i])
                 ),
                 source_file=file_path.name,
-                source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
+                source_row=i + 2,
                 has_formula_error=bool(is_formula_error.iloc[i]),
             ))
+
+    # FIX-04: Resolução de Custo Temporal e Quarentena de Ambiguidade
+    compras_df = None
+    estoque_df = None
+
+    if path.is_file() and path.suffix.lower() == ".xlsx":
+        try:
+            wb = pd.ExcelFile(path, engine="openpyxl")
+            if "Compras" in wb.sheet_names:
+                compras_df = pd.read_excel(path, sheet_name="Compras")
+            if "Estoque" in wb.sheet_names:
+                estoque_df = pd.read_excel(path, sheet_name="Estoque")
+        except Exception:
+            pass
+    elif path.is_dir():
+        named_aux = load_named_sheets(path)
+        compras_df = named_aux.get("Compras")
+        estoque_df = named_aux.get("Estoque")
+
+    if compras_df is not None and not compras_df.empty:
+        c_prod_col = next((c for c in compras_df.columns if str(c).lower() in {"produto", "product", "sku"}), None)
+        c_data_col = next((c for c in compras_df.columns if str(c).lower() in {"data", "date"}), None)
+        c_custo_col = next((c for c in compras_df.columns if str(c).lower() in {"custo", "cost", "unit_price", "valor"}), None)
+
+        if c_prod_col and c_data_col and c_custo_col:
+            compras_clean = compras_df.copy()
+            compras_clean["_dt"] = pd.to_datetime(compras_clean[c_data_col], errors="coerce")
+            compras_clean["_cost"] = pd.to_numeric(compras_clean[c_custo_col], errors="coerce")
+            compras_clean = compras_clean.dropna(subset=["_dt", "_cost"]).sort_values(by="_dt")
+
+            for rec in records:
+                prod_name = rec.product.strip()
+                sale_dt = pd.to_datetime(rec.date)
+                p_matches = compras_clean[
+                    (compras_clean[c_prod_col].astype(str).str.strip().str.lower() == prod_name.lower()) &
+                    (compras_clean["_dt"] <= sale_dt)
+                ]
+                if not p_matches.empty:
+                    rec.entry_cost = float(p_matches.iloc[-1]["_cost"])
+                else:
+                    future_matches = compras_clean[
+                        compras_clean[c_prod_col].astype(str).str.strip().str.lower() == prod_name.lower()
+                    ]
+                    if not future_matches.empty and rec.entry_cost is None:
+                        rec.entry_cost = None
+
+    if estoque_df is not None and not estoque_df.empty:
+        e_prod_col = next((c for c in estoque_df.columns if str(c).lower() in {"produto", "product", "description", "descri"}), None)
+        e_cost_col = next((c for c in estoque_df.columns if str(c).lower() in {"custo", "cost"}), None)
+
+        if e_prod_col and e_cost_col:
+            for rec in records:
+                prod_name = rec.product.strip().lower()
+                cand_costs = []
+                for _, row in estoque_df.iterrows():
+                    e_name = str(row[e_prod_col]).strip().lower()
+                    if prod_name in e_name or e_name in prod_name:
+                        c_val = pd.to_numeric(row[e_cost_col], errors="coerce")
+                        if pd.notna(c_val):
+                            cand_costs.append(float(c_val))
+                unique_cand_costs = set(cand_costs)
+                if len(unique_cand_costs) > 1:
+                    rec.cost_quarantine = True
 
     reconciliation_gap = raw_declared_revenue - sum(r.value for r in records)
     summary = CleaningSummary(
@@ -629,6 +1033,7 @@ _SALES_FRAME_SCHEMA: dict[str, str] = {
     "value": "float64", "entry_cost": "float64", "category": "object",
     "store": "object", "salesperson": "object", "payment_method": "object",
     "quantity": "float64", "source_row": "int64", "has_formula_error": "bool",
+    "cost_quarantine": "bool",
 }
 
 
@@ -639,6 +1044,7 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
         "payment_method": r.payment_method, "quantity": r.quantity,
         "source_row": r.source_row, "has_formula_error": r.has_formula_error,
+        "cost_quarantine": bool(getattr(r, "cost_quarantine", False)),
     } for r in records], _SALES_FRAME_SCHEMA)
 
 
@@ -944,15 +1350,30 @@ def detect_contribution_margin(
     if valid.empty:
         return []
 
-    grouped = valid.groupby("product").agg(
-        avg_price=("value", "mean"), avg_entry_cost=("entry_cost", "mean"),
-        sample_size=("value", "count"),
-    )
-    grouped["variable_cost"] = grouped["avg_price"] * thresholds.variable_cost_pct / 100.0
-    grouped["contribution_margin"] = (
-        grouped["avg_price"] - grouped["avg_entry_cost"] - grouped["variable_cost"]
-    )
-    negative = grouped[grouped["contribution_margin"] < 0]
+    if "cost_quarantine" in valid.columns:
+        is_quarantined = valid["cost_quarantine"].astype(bool)
+        trusted = valid[~is_quarantined]
+    else:
+        trusted = valid
+        is_quarantined = pd.Series(False, index=valid.index)
+
+    if not trusted.empty:
+        grouped = trusted.groupby("product").agg(
+            avg_price=("value", "mean"), avg_entry_cost=("entry_cost", "mean"),
+            sample_size=("value", "count"),
+        )
+        grouped["variable_cost"] = grouped["avg_price"] * thresholds.variable_cost_pct / 100.0
+        grouped["contribution_margin"] = (
+            grouped["avg_price"] - grouped["avg_entry_cost"] - grouped["variable_cost"]
+        )
+        negative = grouped[grouped["contribution_margin"] < 0]
+    else:
+        negative = pd.DataFrame(columns=["avg_price", "avg_entry_cost", "sample_size", "variable_cost", "contribution_margin"])
+
+    quarantined_products = set()
+    if is_quarantined.any():
+        prod_all_quarantine = is_quarantined.groupby(valid["product"]).all()
+        quarantined_products = set(prod_all_quarantine[prod_all_quarantine].index)
 
     # C3 — promoção deliberada não é prejuízo estrutural: produto cuja TOTALIDADE
     # das vendas válidas tem `payment_method == promo_payment_label` é marcado
@@ -969,7 +1390,8 @@ def detect_contribution_margin(
         )
     else:
         all_promo = pd.Series(dtype=bool)
-    return [
+
+    alerts = [
         ContributionMarginAlert(
             product=str(product), avg_price=float(row["avg_price"]),
             avg_entry_cost=float(row["avg_entry_cost"]),
@@ -977,9 +1399,27 @@ def detect_contribution_margin(
             contribution_margin=float(row["contribution_margin"]),
             sample_size=int(row["sample_size"]),
             promotional=bool(all_promo.get(product, False)),
+            insufficient_cost_coverage=False,
         )
         for product, row in negative.iterrows()
     ]
+
+    for product in sorted(quarantined_products):
+        p_rows = valid[valid["product"] == product]
+        avg_price = float(p_rows["value"].mean())
+        alerts.append(
+            ContributionMarginAlert(
+                product=str(product),
+                avg_price=avg_price,
+                avg_entry_cost=0.0,
+                variable_cost_pct=float(thresholds.variable_cost_pct),
+                contribution_margin=0.0,
+                sample_size=len(p_rows),
+                promotional=bool(all_promo.get(product, False)),
+                insufficient_cost_coverage=True,
+            )
+        )
+    return alerts
 
 
 def detect_store_performance(
@@ -1015,18 +1455,22 @@ def detect_store_performance(
 
     valid = df.dropna(subset=["entry_cost"]) if "entry_cost" in df.columns else df.iloc[0:0]
     valid = valid[valid["value"] > 0]
+    if "cost_quarantine" in valid.columns:
+        valid_trusted = valid[~valid["cost_quarantine"].astype(bool)]
+    else:
+        valid_trusted = valid
 
     entries: list[StorePerformance] = []
     for store in sorted(revenue_by_store.index):
-        store_valid = valid[valid["store"] == store]
-        margin_sample_size = len(store_valid)
+        store_trusted = valid_trusted[valid_trusted["store"] == store]
+        margin_sample_size = len(store_trusted)
         if margin_sample_size == 0:
             avg_price = 0.0
             avg_entry_cost = 0.0
             contribution_margin_avg = 0.0
         else:
-            avg_price = float(store_valid["value"].mean())
-            avg_entry_cost = float(store_valid["entry_cost"].mean())
+            avg_price = float(store_trusted["value"].mean())
+            avg_entry_cost = float(store_trusted["entry_cost"].mean())
             variable_cost = avg_price * thresholds.variable_cost_pct / 100.0
             contribution_margin_avg = avg_price - avg_entry_cost - variable_cost
         contribution_margin_total = contribution_margin_avg * margin_sample_size
@@ -1035,9 +1479,12 @@ def detect_store_performance(
         months_of_history = float(span_days) / _AVG_DAYS_PER_MONTH
         has_sufficient_history = months_of_history >= thresholds.cold_start_min_months
 
+        total_store_sales = int(count_by_store[store])
+        cost_coverage_pct = float(round(margin_sample_size / total_store_sales * 100.0, 2)) if total_store_sales > 0 else 0.0
+
         entries.append(StorePerformance(
             store=str(store), gross_revenue=float(revenue_by_store[store]),
-            revenue_sample_size=int(count_by_store[store]),
+            revenue_sample_size=total_store_sales,
             avg_price=float(avg_price), avg_entry_cost=float(avg_entry_cost),
             variable_cost_pct=float(thresholds.variable_cost_pct),
             contribution_margin_avg=float(contribution_margin_avg),
@@ -1045,6 +1492,7 @@ def detect_store_performance(
             margin_sample_size=margin_sample_size,
             months_of_history=months_of_history,
             has_sufficient_history=has_sufficient_history,
+            cost_coverage_pct=cost_coverage_pct,
         ))
     return entries
 
@@ -1386,8 +1834,16 @@ def detect_gmroi(
     inventory_by_category = (est_frame["qty"] * est_frame["cost"]).groupby(est_frame["category"]).sum()
 
     sales = vendas_df.dropna(subset=["category", "entry_cost"])
-    margin_by_category = (sales["value"] - sales["entry_cost"]).groupby(sales["category"]).sum()
-    count_by_category = sales.groupby("category").size()
+    if "cost_quarantine" in sales.columns:
+        is_quarantine = sales["cost_quarantine"].astype(bool)
+        sales_trusted = sales[~is_quarantine]
+        quarantined_by_category = is_quarantine.groupby(sales["category"]).any()
+    else:
+        sales_trusted = sales
+        quarantined_by_category = pd.Series(False, index=sales["category"].unique() if not sales.empty else [])
+
+    margin_by_category = (sales_trusted["value"] - sales_trusted["entry_cost"]).groupby(sales_trusted["category"]).sum()
+    count_by_category = sales_trusted.groupby("category").size()
 
     entries: list[GmroiEntry] = []
     all_below_1 = True
@@ -1401,10 +1857,12 @@ def detect_gmroi(
         if gmroi is not None and gmroi >= 1.0:
             all_below_1 = False
             
+        has_quarantine = bool(quarantined_by_category.get(category, False))
         entries.append(GmroiEntry(
             category=category, gross_margin=gross_margin, avg_inventory_value=avg_inventory_value,
             gmroi=gmroi, sample_size=int(count_by_category.get(category, 0)),
-            is_directional_only=False
+            is_directional_only=False,
+            insufficient_cost_coverage=has_quarantine,
         ))
         
     if all_below_1 and entries:
@@ -1465,8 +1923,20 @@ def detect_gmroi_by_sku(
         sales = sales[sales["category"] != thresholds.service_category_label]
     if sales.empty:
         return []
-    revenue_by_sku = sales.groupby("product")["value"].sum()
-    cost_by_sku = sales.groupby("product")["entry_cost"].sum()
+
+    if "cost_quarantine" in sales.columns:
+        is_quarantine = sales["cost_quarantine"].astype(bool)
+        sales_trusted = sales[~is_quarantine]
+        sku_has_quarantine = is_quarantine.groupby(sales["product"]).any()
+    else:
+        sales_trusted = sales
+        sku_has_quarantine = pd.Series(False, index=sales["product"].unique())
+
+    if sales_trusted.empty:
+        return []
+
+    revenue_by_sku = sales_trusted.groupby("product")["value"].sum()
+    cost_by_sku = sales_trusted.groupby("product")["entry_cost"].sum()
     margin_by_sku = revenue_by_sku - cost_by_sku
 
     common = capital_by_sku.index.intersection(margin_by_sku.index)
@@ -1487,6 +1957,7 @@ def detect_gmroi_by_sku(
             sku=str(sku), total_revenue=float(revenue_by_sku[sku]), total_cost=float(cost_by_sku[sku]),
             gross_margin=float(margin_by_sku[sku]), markup_pct=float(markup_pct[sku]),
             capital_frozen=float(capital_by_sku[sku]), gmroi=float(gmroi[sku]), is_illusory_margin=True,
+            insufficient_cost_coverage=bool(sku_has_quarantine.get(sku, False)),
         )
         for sku in illusory_skus
     ]
@@ -2246,6 +2717,8 @@ def detect_discrepancy_triage(
 
     # Trigger B — abaixo do custo da PRÓPRIA linha (independente de Estoque)
     sales["below_cost"] = sales["entry_cost"].notna() & (sales["unit_price"] < sales["entry_cost"])
+    if "cost_quarantine" in sales.columns:
+        sales["below_cost"] = sales["below_cost"] & (~sales["cost_quarantine"].astype(bool))
     # Fase E parte 1 (Z3) — perda REAL da linha, só onde ela dispara below_cost:
     # qty x entry_cost - value (equivalente a qty x (entry_cost - unit_price), mas usa
     # `value` direto em vez de reconstruir unit_price x qty). NaN nas demais linhas —
@@ -2981,9 +3454,15 @@ def detect_commercial_reconciliation(
 
     # Diretriz QA 2: Proteção estrita contra divisão por zero e custos negativos
     unit_cost = unit_cost.apply(lambda c: c if c > 0 else 0.0)
+
+    is_quarantined = sales["cost_quarantine"].astype(bool) if "cost_quarantine" in sales.columns else pd.Series(False, index=sales.index)
+    quarantined_sales_brl = float(round(sales.loc[is_quarantined, "value"].sum(), 2))
+
+    effective_unit_cost = np.where(is_quarantined, 0.0, unit_cost)
+
     sales["_qty"] = qty
-    sales["_unit_cost"] = unit_cost
-    sales["_cmv"] = unit_cost * qty
+    sales["_unit_cost"] = effective_unit_cost
+    sales["_cmv"] = effective_unit_cost * qty
     sales["_val"] = sales["value"]
     sales["_gross_profit"] = sales["_val"] - sales["_cmv"]
     sales["_channel_costs"] = sales["_val"] * (channel_take_rate / 100.0)
@@ -2999,8 +3478,10 @@ def detect_commercial_reconciliation(
     net_contribution_margin_brl = float(round(sales["_net_margin"].sum(), 2))
     net_contribution_margin_pct = float(round((net_contribution_margin_brl / gross_revenue * 100.0), 2)) if gross_revenue > 0 else 0.0
 
-    neg_mask = (sales["_net_margin"] < -0.001) | (
-        (sales["_unit_cost"] > 0) & ((sales["_val"] / sales["_qty"]) < sales["_unit_cost"])
+    neg_mask = (~is_quarantined) & (
+        (sales["_net_margin"] < -0.001) | (
+            (sales["_unit_cost"] > 0) & ((sales["_val"] / sales["_qty"]) < sales["_unit_cost"])
+        )
     )
     negative_margin_count = int(neg_mask.sum())
     negative_margin_loss_brl = float(round(abs(sales.loc[neg_mask, "_net_margin"].sum()), 2))
@@ -3122,6 +3603,7 @@ def detect_commercial_reconciliation(
         negative_margin_count=negative_margin_count,
         negative_margin_loss_brl=negative_margin_loss_brl,
         two_way_reconciliation_gap=reconciliation_gap,
+        quarantined_cost_sales_brl=quarantined_sales_brl,
         supplier_margins=supp_entries,
         category_margins=cat_entries,
         top_below_cost_sales=top_below_cost_sales,

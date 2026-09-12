@@ -49,6 +49,9 @@ _ESTOQUE_ROLE_KEYWORDS: dict[str, list[str]] = {
     # cru do SKU. Papel opcional (fora de _ESTOQUE_REQUIRED_ROLES): sem a coluna, o
     # anexo cai pro fallback honesto (só o código) — nunca inventa nome.
     "description": ["descricao", "nome"],
+    # P05 / FIX-11 — Loja/Filial e Data do Snapshot do estoque (papéis opcionais)
+    "store": ["loja", "filial", "unidade"],
+    "snapshot_date": ["data_posicao", "data_snapshot", "data_base"],
 }
 _ESTOQUE_REQUIRED_ROLES = ("sku", "cost", "qty_on_hand", "last_movement")
 
