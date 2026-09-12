@@ -27,3 +27,5 @@ scratch/
 *.key
 .worktrees/
 .claude/
+*.lnk
+frontend-consultoria/
