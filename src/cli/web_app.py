@@ -15,6 +15,7 @@ from fastapi import BackgroundTasks, FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import HTMLResponse
 
 from cli.main import run_compile_cli
+from api.upload_guard import validate_upload, UploadValidationError
 
 _JOBS: dict[str, dict] = {}
 _LOCK = Lock()
@@ -25,10 +26,10 @@ def _process(token: str, xlsx_path: Path, dest_dir: Path) -> None:
         exit_code = run_compile_cli(xlsx_path, dest_dir, debug=False, chat=False)
         with _LOCK:
             _JOBS[token]["status"] = "DONE" if exit_code == 0 else "ERROR"
-    except Exception as e:  # noqa: BLE001 — status do job NUNCA é silencioso
+    except Exception:  # noqa: BLE001 — status do job NUNCA é silencioso
         with _LOCK:
             _JOBS[token]["status"] = "ERROR"
-            _JOBS[token]["detail"] = str(e)
+            _JOBS[token]["detail"] = "Falha no processamento do arquivo."
     finally:
         # O input já foi totalmente consumido pelo pipeline — não precisa
         # persistir. dest_dir é mantido: GET /result/{token} lista seus arquivos.
@@ -51,10 +52,16 @@ def create_app() -> FastAPI:
 
     @app.post("/upload")
     async def upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+        content = await file.read()
+        try:
+            validate_upload(file.filename, content)
+        except UploadValidationError as e:
+            raise HTTPException(status_code=e.status_code, detail=e.message)
+
         token = uuid.uuid4().hex
         work_dir = Path(tempfile.mkdtemp(prefix=f"exrs_ui_{token}_"))
         xlsx_path = work_dir / Path(file.filename).name
-        xlsx_path.write_bytes(await file.read())
+        xlsx_path.write_bytes(content)
         dest_dir = work_dir / "output"
 
         with _LOCK:

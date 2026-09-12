@@ -73,10 +73,17 @@ def test_upload_and_generate_endpoint():
 
 # ─── ME-5: Plano de Controle (compile + jobs) ───────────────────────────────
 
+@pytest.fixture(autouse=True)
+def _setup_api_tokens(monkeypatch):
+    import json
+    monkeypatch.setenv("EXRS_API_TOKENS", json.dumps({
+        "api_test_token": {"tenant_id": "test_tenant"}
+    }))
+
 def _client():
     from fastapi.testclient import TestClient
     from api.main import app
-    return TestClient(app)
+    return TestClient(app, headers={"Authorization": "Bearer api_test_token"})
 
 
 def test_compile_xlsx_reaches_terminal_status():

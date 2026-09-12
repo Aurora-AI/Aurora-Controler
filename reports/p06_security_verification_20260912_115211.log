@@ -1,0 +1,70 @@
+================================================================================
+EXRS — REGISTRO DE VERIFICAÇÃO GLOBAL E SEGURANÇA P06
+Data/Hora UTC: 2026-09-12T11:52:11.812741+00:00
+Diretório: C:\Projetos\Aurora\AuroraControler
+Interpretador: C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+================================================================================
+HASHES SHA-256 DOS COMPONENTES TOCADOS:
+  - pyproject.toml: 42f1c2d0570296c76cb487263821029321e19ef96edad041b6dfce7d7290131d
+  - src\cli\output.py: 9ce38ba79822add83451da80a5353839c39998c7255cdb1b6213993a5207fe37
+  - src\api\asgi_upload_limiter.py: 0e510019263b46fe5224cc18db1c7143840d1bd6170c644a9db6c6a50d912eba
+  - src\api\auth.py: c1c742939ea787362c73981ca5f7337cf9e592dd0f4ad00d9984401e5b94950d
+  - src\api\jobs.py: b4cafab612cc33b4d60ee922590f66d594fc1605a7d34fb7276cee9c7ba68b9c
+  - src\orchestrator\storage_manager.py: 518c99bfdee1110314dc3d8dfcae62cb49c9b10b75324a25797ec8014bf95834
+  - src\worker\celery_app.py: 4154bde0fae17a9d9b5786042cd992de316c17e6bd2a535556b18c2bcf2d811c
+  - src\api\main.py: 31fd847a8275f13caf523e82dad3d9da8962ee9808ec318f3550015bd9e3ee20
+  - tests\test_reprova_p06_security.py: e7a6d7ff535dfec42efcb50f2c64c50d2808675ab227da3db51d6d5298541314
+================================================================================
+EXECUÇÃO DA SUÍTE GLOBAL (pytest tests/ -q):
+================================================================================
+  Arithmetic          :  44 fórmulas
+  Conditional         :  26 fórmulas
+  Aggregation         :  30 fórmulas
+  Lookup              :  24 fórmulas
+  DateLogic           :  30 fórmulas
+  Text                :  30 fórmulas
+  Ranking             :  24 fórmulas
+  Threshold           :  24 fórmulas
+  Financial           :  20 fórmulas
+  Engineering         :  34 fórmulas
+  ExternalRef         :   3 fórmulas
+
+✅ Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fórmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx — 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv — datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  — 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx — 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture bin�ria: create_test_workbook.py...
+
+[conftest] Gerando fixture bin�ria: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture bin�ria: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 56%]
+........................................................................ [ 62%]
+........................................................................ [ 69%]
+...s.s.................................................................. [ 75%]
+........................................................................ [ 81%]
+........................................................................ [ 88%]
+........................................................................ [ 94%]
+..............................................................s.         [100%]
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1141 passed, 3 skipped, 1 warning in 261.99s (0:04:21)
+
+EXIT_CODE=0

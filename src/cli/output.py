@@ -12,8 +12,12 @@ from product_a.phase_a4.html_reporter import generate_html_report
 
 from cli.codegen import render_replay_module
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-_FORMULA_ENGINE_SRC = _REPO_ROOT / "src" / "product_a" / "phase_a4" / "formula_evaluator.py"
+_HERE = Path(__file__).resolve().parent
+# Suporta tanto ambiente empacotado (site-packages/product_a) quanto repo local (src/product_a)
+_INSTALLED_ENGINE_SRC = _HERE.parent / "product_a" / "phase_a4" / "formula_evaluator.py"
+_DEV_ENGINE_SRC = _HERE.parents[1] / "src" / "product_a" / "phase_a4" / "formula_evaluator.py"
+_FORMULA_ENGINE_SRC = _INSTALLED_ENGINE_SRC if _INSTALLED_ENGINE_SRC.exists() else _DEV_ENGINE_SRC
+
 
 # _exrs_range_utils.py NÃO é uma cópia vendorizada de normalizer.py — normalizer.py tem
 # efeitos colaterais de import (sys.path.insert, import de pipeline_contracts) que quebram

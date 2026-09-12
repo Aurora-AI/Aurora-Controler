@@ -57,9 +57,13 @@ def test_worker_exception_is_not_silent(tmp_path, monkeypatch):
     monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
 
     job_id = uuid.uuid4().hex
+    tenant_id = "tenant_obs"
     from api.jobs import JobStore
-    JobStore().create(job_id, "x.xlsx")
-    status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
+    JobStore().create(job_id, "x.xlsx", tenant_id=tenant_id)
+    upload_file = tmp_path / tenant_id / job_id / "upload" / "x.xlsx"
+    upload_file.parent.mkdir(parents=True, exist_ok=True)
+    upload_file.write_text("dummy", encoding="utf-8")
+    status = celery_app.run_compile(job_id, str(upload_file), tenant_id=tenant_id)
     assert status == "ERROR"
 
     events = _read_jsonl(tmp_path / "factory_events.jsonl")
@@ -83,13 +87,17 @@ def test_observability_failure_never_orphans_job(tmp_path, monkeypatch):
                         lambda *a, **k: (_ for _ in ()).throw(OSError("disk full")))
 
     job_id = uuid.uuid4().hex
+    tenant_id = "tenant_obs"
     from api.jobs import JobStore
     store = JobStore()
-    store.create(job_id, "x.xlsx")
-    status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
+    store.create(job_id, "x.xlsx", tenant_id=tenant_id)
+    upload_file = tmp_path / tenant_id / job_id / "upload" / "x.xlsx"
+    upload_file.parent.mkdir(parents=True, exist_ok=True)
+    upload_file.write_text("dummy", encoding="utf-8")
+    status = celery_app.run_compile(job_id, str(upload_file), tenant_id=tenant_id)
     assert status == "ERROR"
     # O ponto: status terminal persistido apesar da observabilidade ter explodido.
-    assert store.get(job_id)["status"] == "ERROR"
+    assert store.get(job_id, tenant_id=tenant_id)["status"] == "ERROR"
 
 
 def test_sandbox_event_correlates_job_id_via_context(tmp_path, monkeypatch):
@@ -110,7 +118,9 @@ def test_sandbox_event_correlates_job_id_via_context(tmp_path, monkeypatch):
 
 def test_compile_broker_failure_emits_event_and_503(tmp_path, monkeypatch):
     """Enqueue falho (broker down) → evento + HTTP 503, nunca silencioso."""
+    import json
     monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+    monkeypatch.setenv("EXRS_API_TOKENS", json.dumps({"token_obs": {"tenant_id": "tenant_obs"}}))
     from fastapi.testclient import TestClient
     from api import main
 
@@ -118,7 +128,7 @@ def test_compile_broker_failure_emits_event_and_503(tmp_path, monkeypatch):
         raise ConnectionError("redis down")
     monkeypatch.setattr(main.compile_job, "delay", _boom)
 
-    client = TestClient(main.app)
+    client = TestClient(main.app, headers={"Authorization": "Bearer token_obs"})
     fixture = REPO_ROOT / "tests" / "fixtures" / "coverage_test.xlsx"
     resp = client.post("/api/v1/compile", files={"file": ("coverage_test.xlsx",
                        fixture.read_bytes(),

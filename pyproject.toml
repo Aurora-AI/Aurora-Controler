@@ -24,6 +24,14 @@ dependencies = [
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+package-dir = {"" = "src", "libs" = "libs"}
+
+[tool.setuptools.packages.find]
+where = ["src", "."]
+include = ["api*", "cli*", "kernel*", "orchestrator*", "phase_*", "product_*", "worker*", "libs*"]
+
+
 [project.scripts]
 exrs = "cli.main:main"
 

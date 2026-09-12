@@ -13,7 +13,7 @@ _PROJECT_ROOT = _HERE.parents[1]
 
 import uuid
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -27,12 +27,15 @@ from phase_c3.narrative import generate_narrative
 from orchestrator.storage_manager import StorageManager
 from api.jobs import JobStore
 from api.upload_guard import validate_upload, UploadValidationError
+from api.asgi_upload_limiter import ASGIUploadLimitMiddleware
+from api.auth import get_authenticated_tenant
 from worker.celery_app import compile_job
 from libs.trustware.factory_events import factory_tool_unavailable
 
 job_store = JobStore()
 
 app = FastAPI(title="Aurora Controler - EXRS Dashboard Engine", version="1.0.0")
+app.add_middleware(ASGIUploadLimitMiddleware, max_bytes=26 * 1024 * 1024)
 
 class DashboardRequest(BaseModel):
     dataset: C0Dataset
@@ -70,8 +73,15 @@ async def generate_dashboard(request: DashboardRequest):
             
         validate_spec_self_contained(spec)
         return spec
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import logging
+        logging.getLogger("exrs.api").exception("Erro ao gerar dashboard: %s", e)
+        raise HTTPException(
+            status_code=500,
+            detail="Erro interno no processamento do dashboard. Solicitação não pôde ser atendida."
+        )
 
 @app.post("/api/v1/dashboard/upload-and-generate")
 async def upload_and_generate(file: UploadFile = File(...)):
@@ -86,11 +96,16 @@ async def upload_and_generate(file: UploadFile = File(...)):
             detail=f"Formato de arquivo não suportado: {suffix}. Envie .xlsx, .xlsm ou .csv."
         )
 
+    content = await file.read()
+    try:
+        validate_upload(file.filename, content)
+    except UploadValidationError as e:
+        raise HTTPException(status_code=e.status_code, detail=e.message)
+
     temp_path = None
     try:
         # Save upload to temporary file
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-            content = await file.read()
             tmp.write(content)
             temp_path = Path(tmp.name)
 
@@ -124,10 +139,15 @@ async def upload_and_generate(file: UploadFile = File(...)):
             "spec": spec
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Erro no processamento: {str(e)}")
+        import logging
+        logging.getLogger("exrs.api").exception("Erro no upload-and-generate: %s", e)
+        raise HTTPException(
+            status_code=500,
+            detail="Erro interno no processamento do arquivo. Solicitação não pôde ser atendida."
+        )
     finally:
         # Clean up temporary file
         if temp_path and temp_path.exists():
@@ -137,10 +157,13 @@ async def upload_and_generate(file: UploadFile = File(...)):
                 pass
 
 @app.post("/api/v1/compile")
-async def compile_workbook(file: UploadFile = File(...)):
+async def compile_workbook(
+    file: UploadFile = File(...),
+    tenant_id: str = Depends(get_authenticated_tenant)
+):
     """
     Plano de Controle: recebe um upload, valida (extensão/tamanho/zip-bomb), isola o arquivo
-    sob output/{job_id}/, registra o job como PENDING e enfileira no broker (Celery+Redis).
+    sob output/{tenant_id}/{job_id}/, registra o job como PENDING e enfileira no broker (Celery+Redis).
     """
     content = await file.read()
     try:
@@ -149,17 +172,17 @@ async def compile_workbook(file: UploadFile = File(...)):
         raise HTTPException(status_code=e.status_code, detail=e.message)
 
     job_id = uuid.uuid4().hex
-    storage = StorageManager(job_id)
+    storage = StorageManager(job_id=job_id, tenant_id=tenant_id)
     upload_dir = storage.output_dir / "upload"
     upload_dir.mkdir(parents=True, exist_ok=True)
     # Path(...).name neutraliza path traversal no nome do arquivo enviado.
     saved = upload_dir / Path(file.filename).name
     saved.write_bytes(content)
 
-    job_store.create(job_id, file.filename)
+    job_store.create(job_id=job_id, filename=file.filename, tenant_id=tenant_id)
     # Plano de Execução: enfileira no broker. Em EXRS_CELERY_EAGER=1 roda inline (testes).
     try:
-        compile_job.delay(job_id, str(saved))
+        compile_job.delay(job_id, str(saved), tenant_id=tenant_id)
     except Exception as e:  # broker indisponível — falha explícita, nunca silenciosa
         factory_tool_unavailable(
             tool="redis-broker",
@@ -167,18 +190,24 @@ async def compile_workbook(file: UploadFile = File(...)):
             fallback="job marcado BROKER_UNAVAILABLE; HTTP 503 ao cliente",
             job_id=job_id,
         )
-        job_store.update_status(job_id, "ERROR", detail="BROKER_UNAVAILABLE")
+        job_store.update_status(job_id, "ERROR", detail="BROKER_UNAVAILABLE", tenant_id=tenant_id)
         raise HTTPException(status_code=503, detail="Broker indisponível — tente novamente.")
     return {"job_id": job_id, "status": "PENDING"}
 
 
 @app.get("/api/v1/jobs/{job_id}")
-async def get_job(job_id: str):
-    """Status do job de compilação (polling)."""
-    record = job_store.get(job_id)
+async def get_job(
+    job_id: str,
+    tenant_id: str = Depends(get_authenticated_tenant)
+):
+    """Status do job de compilação (polling confinado por tenant)."""
+    record = job_store.get(job_id, tenant_id=tenant_id)
     if record is None:
         raise HTTPException(status_code=404, detail="job_id não encontrado")
+    if record.get("status") == "ERROR":
+        record["detail"] = "Falha no processamento do arquivo. Consulte o suporte com o identificador do job."
     return record
+
 
 
 # Mount static files folder to serve the frontend SPA
