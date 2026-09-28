@@ -16,21 +16,21 @@ from kernel.tabular import (  # noqa: F401 — re-exportado para quem já import
 from kernel.tabular import infer_column_roles as _infer_column_roles_generic
 
 _ROLE_KEYWORDS: dict[str, list[str]] = {
-    "date": ["data", "emissao", "dt"],
-    "product": ["produto", "item", "sku", "descricao", "servico"],
-    "customer": ["cliente", "razao", "cnpj"],
-    "value": ["valor", "vlr", "total", "liquido", "preco"],
-    "quantity": ["qtd", "quant", "quantidade"],
-    "cost": ["custo"],
-    "category": ["categoria", "familia", "linha"],
-    "store": ["loja", "filial", "unidade"],
-    "salesperson": ["vendedor"],
-    "payment": ["forma_pagto", "pagamento", "pagto"],
-    "marketplace_fee": ["taxa_mktp", "comissao_plataforma", "marketplace", "comissao"],
-    "shipping_cost": ["frete", "envio", "logistica"],
-    "ad_spend": ["ads", "patrocinado", "trafego", "marketing"],
-    "return_cost": ["devolucao", "reversa", "estorno_frete"],
-    "channel": ["canal", "origem", "plataforma"],
+    "date": ["data", "emissao", "dt", "data_venda", "data_emissao", "dt_emissao", "data_pedido", "data_faturamento"],
+    "product": ["produto", "item", "sku", "descricao", "servico", "nome_do_produto", "codigo_do_item", "descrição_do_item"],
+    "customer": ["cliente", "razao", "cnpj", "nome_fantasia", "razao_social", "nome_cliente", "nome_contato", "destinatario"],
+    "value": ["valor", "vlr", "total", "liquido", "preco", "valor_total", "total_bruto", "vlr_liquido", "total_venda", "valor_faturado"],
+    "quantity": ["qtd", "quant", "quantidade", "quantidade_comercial", "qtde", "qnt"],
+    "cost": ["custo", "custo_medio", "custo_aquisicao", "vlr_custo", "preco_de_custo"],
+    "category": ["categoria", "familia", "linha", "grupo", "subgrupo", "departamento"],
+    "store": ["loja", "filial", "unidade", "empresa", "unidade_de_negocio", "local_de_estoque", "estabelecimento"],
+    "salesperson": ["vendedor", "representante", "atendente"],
+    "payment": ["forma_pagto", "pagamento", "pagto", "condicao_pagamento", "meio_de_pagamento"],
+    "marketplace_fee": ["taxa_mktp", "comissao_plataforma", "marketplace", "comissao", "tarifa_plataforma", "taxa_integracao"],
+    "shipping_cost": ["frete", "envio", "logistica", "valor_frete", "custo_envio"],
+    "ad_spend": ["ads", "patrocinado", "trafego", "marketing", "investimento_midia"],
+    "return_cost": ["devolucao", "reversa", "estorno_frete", "custo_devolucao"],
+    "channel": ["canal", "origem", "plataforma", "ponto_de_venda", "pdv", "integracao"],
 }
 
 _REQUIRED_ROLES = ("date", "product", "customer", "value")
