@@ -33,14 +33,14 @@ from product_b.oracle.forensic_contracts import (
     BelowCostSaleItem, CategoryMarginEntry, ChurnFinding, CleaningSummary,
     CommercialReconciliationSummary, ConcentrationRiskAlert, ContributionMarginAlert,
     CrossSellGapCustomer, CustomerConcentrationFinding, DataCompletenessFinding,
-    DeadStockFinding, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
+    DeadStockFinding, DigitalPhantomProfitItem, DigitalPhantomProfitSummary, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
     DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, FlightRiskAlert,
     GmroiEntry, GmroiSkuAlert, IncentiveMisalignmentAlert, LatentRevenueFinding,
     ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
     SalespersonPerformance, SellerCategoryMixEntry, SellerMarginCorrosionAlert,
     SellerMarginMixProfile, ServiceDecomposition, ServiceReconciliation,
     SeasonalityCurve, SkillGapDiagnosis, StoreMacroSummary, StorePerformance,
-    SupplierMarginEntry, TeamDiagnostics, WinsorizedValue,
+    SupplierMarginEntry, TaxReformScenarioResult, TeamDiagnostics, WinsorizedValue,
 )
 
 _SUPPORTED_SUFFIXES = {".xlsx", ".csv", ".xml"}
@@ -3423,6 +3423,122 @@ def enrich_sales_entry_costs(
     return df
 
 
+
+def detect_digital_phantom_profit(
+    sales_df: pd.DataFrame,
+) -> DigitalPhantomProfitSummary | None:
+    """Calcula o lucro fantasma digital SKU a SKU considerando os custos específicos da plataforma.
+    
+    Substitui a lógica de take_rate flat. Determina estado dos custos (MEDIDO, PARCIAL, SEM_BASE).
+    """
+    if sales_df.empty:
+        return None
+        
+    sales = sales_df[(sales_df["value"] > 0) & np.isfinite(sales_df["value"])].copy()
+    if sales.empty:
+        return None
+        
+    # Precisamos ter pelo menos as colunas para calcular lucro digital
+    if "entry_cost" not in sales.columns:
+        return None
+        
+    # Inicializa colunas se não existirem
+    for col in ["marketplace_fee", "shipping_cost", "ad_spend", "return_cost"]:
+        if col not in sales.columns:
+            sales[col] = 0.0
+            
+    sales["marketplace_fee"] = pd.to_numeric(sales["marketplace_fee"], errors='coerce')
+    sales["shipping_cost"] = pd.to_numeric(sales["shipping_cost"], errors='coerce')
+    sales["ad_spend"] = pd.to_numeric(sales["ad_spend"], errors='coerce')
+    sales["return_cost"] = pd.to_numeric(sales["return_cost"], errors='coerce')
+    sales["entry_cost"] = pd.to_numeric(sales["entry_cost"], errors='coerce')
+    
+    if "channel" not in sales.columns:
+        sales["channel"] = "Multicanal"
+    else:
+        sales["channel"] = sales["channel"].fillna("Multicanal")
+        
+    # Prepara lista de items
+    items = []
+    total_gross = 0.0
+    total_net = 0.0
+    phantom_loss = 0.0
+    phantom_count = 0
+    state_dist = {"MEDIDO": 0, "PARCIAL": 0, "SEM_BASE": 0}
+    
+    # Agrupa por SKU e canal
+    if "product" not in sales.columns:
+        sales["product"] = "Desconhecido"
+        
+    for (sku, channel), grp in sales.groupby(["product", "channel"]):
+        gross_rev = float(round(grp["value"].sum(), 2))
+        entry_cost = float(round(grp["entry_cost"].sum(), 2)) if not grp["entry_cost"].isna().all() else 0.0
+        mkt_fee = float(round(grp["marketplace_fee"].sum(), 2))
+        ship = float(round(grp["shipping_cost"].sum(), 2))
+        ad = float(round(grp["ad_spend"].sum(), 2))
+        ret_cost = float(round(grp["return_cost"].sum(), 2))
+        
+        # State logic
+        has_cost = not grp["entry_cost"].isna().all() and entry_cost > 0
+        has_mkt = mkt_fee > 0
+        has_ship = ship > 0
+        
+        state = "SEM_BASE"
+        if has_cost and has_mkt and has_ship:
+            state = "MEDIDO"
+        elif has_cost or has_mkt or has_ship:
+            state = "PARCIAL"
+            
+        state_dist[state] += 1
+        
+        # Só computamos net_margin real se tivermos base mínima. 
+        # Se for SEM_BASE ou PARCIAL, assumimos 0 para não fabricar lucro ilusório.
+        if state in ("SEM_BASE", "PARCIAL"):
+            net_margin = 0.0
+            net_margin_pct = 0.0
+            is_phantom = False
+        else:
+            net_margin = float(round(gross_rev - entry_cost - mkt_fee - ship - ad - ret_cost, 2))
+            net_margin_pct = float(round((net_margin / gross_rev * 100.0), 2)) if gross_rev > 0 else 0.0
+            
+            # Arredondamento crítico para falsos positivos em limites de float
+            if -0.01 < net_margin < 0.0:
+                net_margin = 0.0
+                
+            is_phantom = net_margin < 0
+            
+        if is_phantom:
+            phantom_count += 1
+            phantom_loss += net_margin
+            
+        total_gross += gross_rev
+        total_net += net_margin
+        
+        items.append(DigitalPhantomProfitItem(
+            sku=str(sku),
+            channel=str(channel),
+            gross_revenue=gross_rev,
+            entry_cost=entry_cost,
+            marketplace_fee=mkt_fee,
+            shipping_cost=ship,
+            ad_spend=ad,
+            return_cost=ret_cost,
+            net_margin_brl=net_margin,
+            net_margin_pct=net_margin_pct,
+            digital_cost_state=state,
+            is_phantom=is_phantom
+        ))
+        
+    return DigitalPhantomProfitSummary(
+        total_gross_revenue=float(round(total_gross, 2)),
+        total_net_margin_brl=float(round(total_net, 2)),
+        phantom_skus_count=phantom_count,
+        phantom_loss_brl=float(round(phantom_loss, 2)),
+        items=items,
+        state_distribution=state_dist
+    )
+
+
 def detect_commercial_reconciliation(
     sales_df: pd.DataFrame,
     named_sheets: dict[str, pd.DataFrame],
@@ -3464,14 +3580,17 @@ def detect_commercial_reconciliation(
     sales["_unit_cost"] = effective_unit_cost
     sales["_cmv"] = effective_unit_cost * qty
     sales["_val"] = sales["value"]
-    sales["_gross_profit"] = sales["_val"] - sales["_cmv"]
+    
+    # Se está em quarentena (sem custo), não podemos assumir 100% de lucro.
+    # Zeramos a margem e o lucro bruto para estas transações para não inflar a DRE.
+    sales["_gross_profit"] = np.where(is_quarantined, 0.0, sales["_val"] - sales["_cmv"])
     sales["_channel_costs"] = sales["_val"] * (channel_take_rate / 100.0)
     sales["_taxes"] = sales["_val"] * (tax_rate / 100.0)
-    sales["_net_margin"] = sales["_gross_profit"] - sales["_channel_costs"] - sales["_taxes"]
-
+    sales["_net_margin"] = np.where(is_quarantined, 0.0, sales["_gross_profit"] - sales["_channel_costs"] - sales["_taxes"])
+    
     gross_revenue = float(round(sales["_val"].sum(), 2))
     cmv_total = float(round(sales["_cmv"].sum(), 2))
-    gross_profit_brl = float(round(gross_revenue - cmv_total, 2))
+    gross_profit_brl = float(round(sales["_gross_profit"].sum(), 2))
     gross_markup = float(round(gross_revenue / cmv_total, 2)) if cmv_total > 0 else None
     channel_costs_brl = float(round(sales["_channel_costs"].sum(), 2))
     taxes_brl = float(round(sales["_taxes"].sum(), 2))
@@ -3610,6 +3729,50 @@ def detect_commercial_reconciliation(
     )
 
 
+
+def simulate_tax_reform(
+    sales_df: pd.DataFrame,
+    thresholds: AuditThresholdsConfig
+) -> TaxReformScenarioResult | None:
+    """ME-3: Simulação estrita dos impactos tributários da Reforma (CBS/IBS + Split Payment).
+    
+    Aplica a alíquota padrão da simulação sobre a receita e calcula o float de caixa retido.
+    """
+    if sales_df.empty:
+        return None
+        
+    sales = sales_df[(sales_df["value"] > 0) & np.isfinite(sales_df["value"])].copy()
+    if sales.empty:
+        return None
+        
+    total_gross_revenue = float(round(sales["value"].sum(), 2))
+    if total_gross_revenue <= 0:
+        return None
+        
+    current_tax_rate = thresholds.reconciliation_tax_rate_pct / 100.0
+    simulated_tax_rate = 0.0924  # CBS 9.24% de referência
+    
+    current_tax = float(round(total_gross_revenue * current_tax_rate, 2))
+    simulated_tax = float(round(total_gross_revenue * simulated_tax_rate, 2))
+    
+    tax_delta = float(round(simulated_tax - current_tax, 2))
+    dre_margin_impact = float(round(-tax_delta, 2))
+    
+    withheld_brl = simulated_tax
+    float_impact = 30
+    
+    return TaxReformScenarioResult(
+        scenario_name="Transição CBS 9.24% + Split Payment",
+        gross_revenue=total_gross_revenue,
+        current_tax_brl=current_tax,
+        simulated_tax_brl=simulated_tax,
+        tax_delta_brl=tax_delta,
+        dre_net_margin_impact_brl=dre_margin_impact,
+        cash_flow_float_impact_days=float_impact,
+        split_payment_withheld_brl=withheld_brl
+    )
+
+
 def run_audit(
     path: Path,
     thresholds: AuditThresholdsConfig | None = None,
@@ -3680,6 +3843,8 @@ def run_audit(
                 alert.is_corrosive = False
 
     commercial_reconciliation = detect_commercial_reconciliation(df, named_sheets, thresholds)
+    digital_phantom_profit = detect_digital_phantom_profit(df)
+    tax_scenario = simulate_tax_reform(df, thresholds)
 
     advanced_metrics = AdvancedMetrics(
         gmroi_alerts=detect_gmroi_by_sku(df, named_sheets.get("Estoque"), thresholds),
@@ -3690,6 +3855,8 @@ def run_audit(
         discrepancy_triage=discrepancy_triage,
         seller_margin_mix=seller_margin_mix,
         commercial_reconciliation=commercial_reconciliation,
+        digital_phantom_profit=digital_phantom_profit,
+        tax_scenario=tax_scenario,
     )
 
     # Fase E parte 1 — Física da Equipe. E2 (detect_incentive_misalignment) DEPOIS

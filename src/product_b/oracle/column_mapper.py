@@ -26,6 +26,11 @@ _ROLE_KEYWORDS: dict[str, list[str]] = {
     "store": ["loja", "filial", "unidade"],
     "salesperson": ["vendedor"],
     "payment": ["forma_pagto", "pagamento", "pagto"],
+    "marketplace_fee": ["taxa_mktp", "comissao_plataforma", "marketplace", "comissao"],
+    "shipping_cost": ["frete", "envio", "logistica"],
+    "ad_spend": ["ads", "patrocinado", "trafego", "marketing"],
+    "return_cost": ["devolucao", "reversa", "estorno_frete"],
+    "channel": ["canal", "origem", "plataforma"],
 }
 
 _REQUIRED_ROLES = ("date", "product", "customer", "value")

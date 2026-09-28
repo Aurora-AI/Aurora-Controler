@@ -210,6 +210,12 @@ class SalesRecord(BaseModel):
     doc_id: str | None = None
     doc_type: str | None = "venda"
     cost_quarantine: bool = False
+    marketplace_fee: float | None = None
+    shipping_cost: float | None = None
+    ad_spend: float | None = None
+    return_cost: float | None = None
+    channel: str | None = None
+    digital_cost_state: str = "MEDIDO"
 
     @model_validator(mode="after")
     def _populate_sales_record_defaults(self):
@@ -657,6 +663,11 @@ class AdvancedMetrics(BaseModel):
     seller_margin_mix: list[SellerMarginMixProfile] = Field(default_factory=list)
     # Reconciliação Comercial Entrada x Saída por default (Bloco B5/B7)
     commercial_reconciliation: CommercialReconciliationSummary | None = None
+    
+    # ME-1: Lucro Fantasma Digital (SKU a SKU com custos digitais reais)
+    digital_phantom_profit: DigitalPhantomProfitSummary | None = None
+    # ME-1: Simulação Tributária (CBS/IBS + Split Payment)
+    tax_scenario: TaxReformScenarioResult | None = None
 
 
 class StorePerformance(BaseModel):
@@ -1033,3 +1044,41 @@ class ExecutiveAuditReport(BaseModel):
     # Trustware / Forensic Gate: Status de integridade imposto pela Regra Dura.
     audit_status: str = "OK"
     presentation_mode: str = "LONG_WINDOW_MODE"
+
+
+class DigitalPhantomProfitItem(BaseModel):
+    """ME-1: Custo oculto digital detalhado por SKU."""
+    sku: str
+    channel: str
+    gross_revenue: float
+    entry_cost: float
+    marketplace_fee: float
+    shipping_cost: float
+    ad_spend: float
+    return_cost: float
+    net_margin_brl: float
+    net_margin_pct: float
+    digital_cost_state: str  # "MEDIDO", "PARCIAL", "SEM_BASE"
+    is_phantom: bool  # True se net_margin_brl < 0
+
+
+class DigitalPhantomProfitSummary(BaseModel):
+    """ME-1: Agregado de lucro fantasma digital."""
+    total_gross_revenue: float
+    total_net_margin_brl: float
+    phantom_skus_count: int
+    phantom_loss_brl: float
+    items: list[DigitalPhantomProfitItem] = Field(default_factory=list)
+    state_distribution: dict[str, int] = Field(default_factory=dict)
+
+
+class TaxReformScenarioResult(BaseModel):
+    """ME-1: Simulação estrita dos impactos tributários (DRE vs Caixa)."""
+    scenario_name: str
+    gross_revenue: float
+    current_tax_brl: float
+    simulated_tax_brl: float
+    tax_delta_brl: float
+    dre_net_margin_impact_brl: float
+    cash_flow_float_impact_days: int
+    split_payment_withheld_brl: float

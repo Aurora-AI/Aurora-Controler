@@ -276,4 +276,14 @@ Decisão de produto (21/07/2026), motivada pelo diagnóstico do usuário: o moto
 
 ---
 
+## 18. LUCRO FANTASMA DIGITAL E REFORMA TRIBUTÁRIA [INEGOCIÁVEL]
+
+Decisão de produto (28/09/2026), baseada no cenário de consultoria comercial para 2026-2027.
+
+18.1. **Lucro Fantasma Digital é FATO MEDIDO SKU a SKU.** Diferencia-se do lucro fantasma macro (Ato 2) por auditar custos de plataforma e fulfillment diretamente nas transações de vendas de canais digitais (`marketplace_fee`, `shipping_cost`, etc.). O estado da linha é rotulado (`MEDIDO`, `PARCIAL`, `SEM_BASE`).
+18.2. **Reforma Tributária (CBS/IBS + Split Payment) é CENÁRIO ASSUMIDO.**
+- O impacto negativo de alíquotas (ex. 9.24%) é classificado como "Impacto na DRE (Margem Líquida)".
+- O impacto do Split Payment é classificado como "Retenção de Fluxo de Caixa / Capital de Giro".
+- **NUNCA** somar a retenção de caixa ao impacto na DRE. São dores financeiras diferentes.
+
 *Fim da lei. Qualquer laudo do EXRS Data Oracle gerado após esta data obedece a este documento na íntegra.*
