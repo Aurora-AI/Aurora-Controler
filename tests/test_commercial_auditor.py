@@ -22,10 +22,6 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src",):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
-sys.path.insert(0, str(REPO_ROOT / "tests" / "fixtures"))
 
 from datetime import datetime
 
@@ -34,7 +30,7 @@ from product_b.oracle.commercial_auditor import (
     anonymize_customers, load_sales_records, run_audit,
 )
 
-from create_audit_test_workbook import (  # noqa: E402 — importa o modelo de verdade da fixture
+from tests.fixtures.create_audit_test_workbook import (  # noqa: E402 — importa o modelo de verdade da fixture
     CHURN_LAST_ACTIVE_MONTH_INDEX, CUSTOMERS, LEAK_MONTH_INDEX, MONTHS,
     _adaptador_usb, _cabo_hdmi, _filtro_ar,
 )

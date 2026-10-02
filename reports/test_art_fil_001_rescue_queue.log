@@ -1,0 +1,61 @@
+=== ART-FIL-001 · Fila de Resgate Diária (v1-reduzida) ===
+Contatos Ativos: 47 | Excluídos (SEM_BASE): 0
+Ordenação: Recuperabilidade (silêncio ÷ ciclo) [FOR-BAS-006, CANDIDATO]
+Nota de Escopo: Superfície parcial: entrega 'cliente' e 'por que agora' (recuperabilidade). Coluna 'o que oferecer' (cross-sell) omitida por dependência de FOR-BAS-007 (CONFLITANTE, LAC-FOR-060) e FOR-BAS-008 (LAC-FOR-061).
+--------------------------------------------------------------------------------
+#    CLIENTE         ÚLT. COMPRA  SILÊNCIO/CICLO   VALOR HIST.    RFM            
+--------------------------------------------------------------------------------
+1    Client_LN       2025-09-14   2.02x            R$ 1,181.57    Em Risco / Churn
+2    Client_MN       2026-01-26   2.11x            R$ 1,045.49    Em Risco / Churn
+3    Client_MD       2026-01-30   2.17x            R$ 1,095.19    Em Risco / Churn
+4    Client_JW       2026-03-17   2.20x            R$ 1,417.22    Em Risco / Churn
+5    Client_HW       2026-01-27   2.20x            R$ 1,724.56    Em Risco / Churn
+6    Client_HZ       2026-02-16   2.33x            R$ 1,707.17    Em Risco / Churn
+7    Client_KN       2026-02-16   2.37x            R$ 1,315.06    Em Risco / Churn
+8    Client_JD       2026-02-19   2.37x            R$ 1,519.68    Em Risco / Churn
+9    Client_IF       2025-12-25   2.40x            R$ 1,647.28    Em Risco / Churn
+10   Client_QE       2026-01-20   2.41x            R$ 582.04      Em Risco / Churn
+11   Client_LF       2026-02-02   2.45x            R$ 1,244.10    Em Risco / Churn
+12   Client_OA       2026-02-02   2.45x            R$ 861.20      Em Risco / Churn
+13   Client_PS       2026-01-26   2.46x            R$ 679.48      Em Risco / Churn
+14   Client_ER       2025-06-06   2.50x            R$ 3,136.01    Em Risco / Churn
+15   Client_LI       2025-10-31   2.53x            R$ 1,230.67    Em Risco / Churn
+16   Client_OS       2025-08-24   2.61x            R$ 798.91      Em Risco / Churn
+17   Client_MY       2025-09-14   2.63x            R$ 999.41      Em Risco / Churn
+18   Client_JO       2026-02-13   2.73x            R$ 1,458.45    Em Risco / Churn
+19   Client_MC       2026-03-08   2.79x            R$ 1,111.47    Em Risco / Churn
+20   Client_MK       2025-11-15   2.91x            R$ 1,057.57    Em Risco / Churn
+21   Client_KL       2025-09-10   3.11x            R$ 1,318.22    Em Risco / Churn
+22   Client_PE       2026-01-03   3.13x            R$ 772.01      Em Risco / Churn
+23   Client_RH       2026-02-09   3.23x            R$ 279.41      Em Risco / Churn
+24   Client_IL       2025-09-28   3.26x            R$ 1,609.92    Em Risco / Churn
+25   Client_NR       2026-04-10   3.46x            R$ 898.75      Em Risco / Churn
+26   Client_MP       2025-08-24   3.67x            R$ 1,032.45    Em Risco / Churn
+27   Client_HI       2025-08-09   3.72x            R$ 1,937.66    Em Risco / Churn
+28   Client_KQ       2025-11-14   4.08x            R$ 1,295.86    Em Risco / Churn
+29   Client_NX       2025-10-22   4.11x            R$ 869.79      Em Risco / Churn
+30   Client_HU       2025-07-18   4.62x            R$ 1,766.60    Em Risco / Churn
+31   Client_F        2025-08-11   4.67x            R$ 9,072.00    Em Risco / Churn
+32   Client_OC       2026-01-20   4.78x            R$ 858.71      Em Risco / Churn
+33   Client_CY       2025-08-01   4.80x            R$ 3,828.97    Em Risco / Churn
+34   Client_NJ       2026-03-24   4.87x            R$ 960.83      Em Risco / Churn
+35   Client_LR       2025-10-11   5.02x            R$ 1,170.73    Em Risco / Churn
+36   Client_NT       2026-01-31   5.62x            R$ 886.01      Em Risco / Churn
+37   Client_CI       2025-08-21   5.67x            R$ 4,221.18    Em Risco / Churn
+38   Client_CF       2025-08-05   5.93x            R$ 4,257.03    Em Risco / Churn
+39   Client_G        2025-08-10   5.96x            R$ 9,072.00    Em Risco / Churn
+40   Client_EU       2025-07-30   6.03x            R$ 3,075.01    Em Risco / Churn
+41   Client_DP       2025-07-10   6.37x            R$ 3,586.85    Em Risco / Churn
+42   Client_PM       2025-06-23   6.56x            R$ 715.90      Em Risco / Churn
+43   Client_LQ       2025-03-30   6.57x            R$ 1,174.55    Em Risco / Churn
+44   Client_RG       2026-03-09   7.37x            R$ 285.21      Em Risco / Churn
+45   Client_H        2025-06-20   7.46x            R$ 9,072.00    Em Risco / Churn
+46   Client_OP       2026-03-23   8.59x            R$ 812.39      Em Risco / Churn
+47   Client_RV       2025-10-12   15.57x           R$ 209.46      Em Risco / Churn
+
+--- IDENTIFICACAO NOMINAL GABARITO ---
+GABARITO CHURN CONFIRMADO: C-017 -> Client_CY (silence/cycle=4.80x, rows=[89, 126, 256, 1487, 1490])
+GABARITO CHURN CONFIRMADO: C-019 -> Client_CI (silence/cycle=5.67x, rows=[531, 672, 1095, 1175, 1481])
+GABARITO CHURN CONFIRMADO: C-021 -> Client_CF (silence/cycle=5.93x, rows=[79, 602, 1297, 1316, 1341])
+GABARITO CHURN CONFIRMADO: C-020 -> Client_EU (silence/cycle=6.03x, rows=[100, 120, 179, 295])
+GABARITO CHURN CONFIRMADO: C-018 -> Client_DP (silence/cycle=6.37x, rows=[92, 320, 395, 1212])

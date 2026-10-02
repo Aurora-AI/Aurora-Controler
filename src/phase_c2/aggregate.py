@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
-from dashboard_contracts import Aggregation, AggregationRow
+from libs.trustware.dashboard_contracts import Aggregation, AggregationRow
 
 
 def aggregate_by(

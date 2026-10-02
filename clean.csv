@@ -1,0 +1,36 @@
+Data,SKU,Vendedor,Preço Praticado,Nan,Preço Praticado 2,Comissão,Notas
+Data,SKU,Vendedor,Preço Praticado,,Preço Praticado,Comissão,Notas
+15/03/2026,SKU-9921,Carlos Silva," R$   1.450,00 - ",aux_1,1100,,Ok
+03/15/2026,SKU-8832,Ana Costa,850.5,,600,,Desconto Especial
+45731,SKU-9921,Carlos Silva,"(250,00)",temp,100,,Troca
+2026-03-17,SKU-1044,Marcos Lima,R$ - ,,450,,Erro comissão
+18/03/2026,SKU-8832,Ana Costa,1200,X,,,Ref externa
+19/03/2026,SKU-3321,Roberto M.,"1500,00",,950,,Formato string
+20/03/2026,SKU-9921,Carlos Silva,1450,,1100,,
+21/03/2026,SKU-1044,Ana Costa,490,aux,300,,
+22/03/2026,SKU-5541,Carlos Silva,3200,,2100,,Venda alta
+23/03/2026,SKU-8832,Roberto M.,850.5,,600,,
+24/03/2026,SKU-9921,Ana Costa,1450,,1100,,
+25/03/2026,SKU-1044,Carlos Silva,490,,300,,
+26/03/2026,SKU-3321,Marcos Lima,1500,,950,,
+27/03/2026,SKU-8832,Ana Costa,850.5,,600,,
+28/03/2026,SKU-9921,Carlos Silva,1450,,1100,,
+SUBTOTAL PARCIAL MARÇO (NÃO EXCLUIR),,,,,,,
+29/03/2026,SKU-9921,Carlos Silva,1450,,1100,,
+30/03/2026,SKU-8832,Ana Costa,850.5,,600,,
+31/03/2026,SKU-1044,Marcos Lima,490,,300,,
+01/04/2026,SKU-5541,Roberto M.,3200,,2100,,
+02/04/2026,SKU-9921,Carlos Silva,1450,,1100,,
+03/04/2026,SKU-8832,Ana Costa,850.5,,600,,
+04/04/2026,SKU-3321,Marcos Lima,1500,,950,,
+05/04/2026,SKU-1044,Carlos Silva,490,,300,,
+06/04/2026,SKU-9921,Ana Costa,1450,,1100,,
+07/04/2026,SKU-8832,Roberto M.,850.5,,600,,
+08/04/2026,SKU-5541,Carlos Silva,3200,,2100,,
+09/04/2026,SKU-1044,Ana Costa,490,,300,,
+10/04/2026,SKU-9921,Marcos Lima,1450,,1100,,
+11/04/2026,SKU-8832,Carlos Silva,850.5,,600,,
+12/04/2026,SKU-3321,Ana Costa,1500,,950,,
+,,,,,,,
+,,,,,,,
+,,TOTAL GERAL,,,,,

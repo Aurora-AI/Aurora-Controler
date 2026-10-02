@@ -1,0 +1,291 @@
+================================================================================
+EXRS — REGISTRO DE VERIFICAÇÃO GLOBAL E SEGURANÇA P06
+Data/Hora UTC: 2026-09-12T11:46:05.518296+00:00
+Diretório: C:\Projetos\Aurora\AuroraControler
+Interpretador: C:\Projetos\Aurora\AuroraControler\.venv\Scripts\python.exe
+================================================================================
+HASHES SHA-256 DOS COMPONENTES TOCADOS:
+  - pyproject.toml: 42f1c2d0570296c76cb487263821029321e19ef96edad041b6dfce7d7290131d
+  - src\cli\output.py: 9ce38ba79822add83451da80a5353839c39998c7255cdb1b6213993a5207fe37
+  - src\api\asgi_upload_limiter.py: 0e510019263b46fe5224cc18db1c7143840d1bd6170c644a9db6c6a50d912eba
+  - src\api\auth.py: c1c742939ea787362c73981ca5f7337cf9e592dd0f4ad00d9984401e5b94950d
+  - src\api\jobs.py: b4cafab612cc33b4d60ee922590f66d594fc1605a7d34fb7276cee9c7ba68b9c
+  - src\orchestrator\storage_manager.py: bd38da6d79244c032c708460c81a6ae4178e00d4ceedaf59ee28902e7a3b0008
+  - src\worker\celery_app.py: b3b6aeb34bbcb25bf1f40c137992dc50b8e8607ede9f6a0ebb8226bed605c11c
+  - src\api\main.py: 31fd847a8275f13caf523e82dad3d9da8962ee9808ec318f3550015bd9e3ee20
+  - tests\test_reprova_p06_security.py: e7a6d7ff535dfec42efcb50f2c64c50d2808675ab227da3db51d6d5298541314
+================================================================================
+EXECUÇÃO DA SUÍTE GLOBAL (pytest tests/ -q):
+================================================================================
+  Arithmetic          :  44 fórmulas
+  Conditional         :  26 fórmulas
+  Aggregation         :  30 fórmulas
+  Lookup              :  24 fórmulas
+  DateLogic           :  30 fórmulas
+  Text                :  30 fórmulas
+  Ranking             :  24 fórmulas
+  Threshold           :  24 fórmulas
+  Financial           :  20 fórmulas
+  Engineering         :  34 fórmulas
+  ExternalRef         :   3 fórmulas
+
+✅ Planilha gerada: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx
+   Total de fórmulas: 289
+   Abas: 12
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\sales_history_test.xlsx — 258 registros
+[OK] C:\Projetos\Aurora\AuroraControler\tests\fixtures\mixed_dates_test.csv — datas em formatos misturados (DD/MM e MM/DD)
+[OK] otica_test_bom.xlsx  — 3018 linhas de venda (completude 90%)
+[OK] otica_test_ruim.xlsx — 2975 linhas de venda (completude 25%, ~12% corrompidas)
+[OK] Gabarito (oculto) com 13 anomalias documentadas.
+
+[conftest] Gerando fixture bin�ria: create_test_workbook.py...
+
+[conftest] Gerando fixture bin�ria: create_audit_test_workbook.py...
+
+[conftest] Gerando fixture bin�ria: create_otica_test_workbook.py...
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 56%]
+........................................................................ [ 62%]
+..........................................FF............................ [ 69%]
+...s.s.................................................................. [ 75%]
+........................................................................ [ 81%]
+...F.................................................................... [ 88%]
+........................................................................ [ 94%]
+........................F.....................................sF         [100%]
+================================== FAILURES ===================================
+_____________________ test_worker_exception_is_not_silent _____________________
+
+tmp_path = WindowsPath('C:/Users/rodri/AppData/Local/Temp/pytest-of-rodri/pytest-55/test_worker_exception_is_not_s0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000020FD7C86E10>
+
+    def test_worker_exception_is_not_silent(tmp_path, monkeypatch):
+        """Se um passo do pipeline LEVANTAR, o worker emite evento + trace terminal (n�o mudo)."""
+        monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+        from worker import celery_app
+    
+        def _boom(*a, **k):
+            raise RuntimeError("docker socket explodiu")
+        monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
+    
+        job_id = uuid.uuid4().hex
+        from api.jobs import JobStore
+        JobStore().create(job_id, "x.xlsx")
+>       status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_observability.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+job_id = '1c882bf036b4492992f74da425680a9b', file_path = '/tmp/x.xlsx'
+tenant_id = 'default'
+
+    def run_compile(job_id: str, file_path: str, tenant_id: str = "default") -> str:
+        """
+        Corpo do processamento de um job. Independente de Celery � reaproveit�vel.
+        Transiciona o job no store: RUNNING \u2192 status terminal do orquestrador.
+        Valida confinamento estrito de arquivo e correspond�ncia de tenant_id.
+        """
+        from libs.trustware.factory_events import emit_event, trace, set_job
+        set_job(job_id)  # correlaciona eventos emitidos l� no fundo (ex.: sandbox sem Docker)
+    
+        # 1. Confinamento estrito de arquivo (Anti-Path Traversal / Cross-Tenant File Access)
+        resolved_file = Path(file_path).resolve()
+        base_dir = Path(os.getenv("EXRS_DATA_DIR", "output")).resolve()
+        authorized_dir = (base_dir / tenant_id / job_id).resolve()
+        if not resolved_file.is_relative_to(authorized_dir):
+>           raise PermissionError(
+                f"Arquivo n�o confinado � pasta autorizada do tenant/job: {resolved_file} fora de {authorized_dir}"
+            )
+E           PermissionError: Arquivo n�o confinado � pasta autorizada do tenant/job: C:\tmp\x.xlsx fora de C:\Users\rodri\AppData\Local\Temp\pytest-of-rodri\pytest-55\test_worker_exception_is_not_s0\default\1c882bf036b4492992f74da425680a9b
+
+src\worker\celery_app.py:58: PermissionError
+________________ test_observability_failure_never_orphans_job _________________
+
+tmp_path = WindowsPath('C:/Users/rodri/AppData/Local/Temp/pytest-of-rodri/pytest-55/test_observability_failure_nev0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000020FD86892E0>
+
+    def test_observability_failure_never_orphans_job(tmp_path, monkeypatch):
+        """Se a pr�pria escrita de evento falhar, o job ainda � persistido ERROR (nunca RUNNING)."""
+        monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+        from worker import celery_app
+    
+        def _boom(*a, **k):
+            raise RuntimeError("pipeline quebrou")
+        monkeypatch.setattr(celery_app, "orchestrate_pipeline", _boom)
+        # observabilidade indispon�vel (ex.: disco cheio) � run_compile importa emit_event de
+        # factory_events em tempo de chamada, ent�o o patch � no m�dulo de origem.
+        from libs.trustware import factory_events
+        monkeypatch.setattr(factory_events, "emit_event",
+                            lambda *a, **k: (_ for _ in ()).throw(OSError("disk full")))
+    
+        job_id = uuid.uuid4().hex
+        from api.jobs import JobStore
+        store = JobStore()
+        store.create(job_id, "x.xlsx")
+>       status = celery_app.run_compile(job_id, "/tmp/x.xlsx")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_observability.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+job_id = 'f3ad8c6cf3934b7793414c945e4f73c9', file_path = '/tmp/x.xlsx'
+tenant_id = 'default'
+
+    def run_compile(job_id: str, file_path: str, tenant_id: str = "default") -> str:
+        """
+        Corpo do processamento de um job. Independente de Celery � reaproveit�vel.
+        Transiciona o job no store: RUNNING \u2192 status terminal do orquestrador.
+        Valida confinamento estrito de arquivo e correspond�ncia de tenant_id.
+        """
+        from libs.trustware.factory_events import emit_event, trace, set_job
+        set_job(job_id)  # correlaciona eventos emitidos l� no fundo (ex.: sandbox sem Docker)
+    
+        # 1. Confinamento estrito de arquivo (Anti-Path Traversal / Cross-Tenant File Access)
+        resolved_file = Path(file_path).resolve()
+        base_dir = Path(os.getenv("EXRS_DATA_DIR", "output")).resolve()
+        authorized_dir = (base_dir / tenant_id / job_id).resolve()
+        if not resolved_file.is_relative_to(authorized_dir):
+>           raise PermissionError(
+                f"Arquivo n�o confinado � pasta autorizada do tenant/job: {resolved_file} fora de {authorized_dir}"
+            )
+E           PermissionError: Arquivo n�o confinado � pasta autorizada do tenant/job: C:\tmp\x.xlsx fora de C:\Users\rodri\AppData\Local\Temp\pytest-of-rodri\pytest-55\test_observability_failure_nev0\default\f3ad8c6cf3934b7793414c945e4f73c9
+
+src\worker\celery_app.py:58: PermissionError
+______________ test_unexpected_sealing_error_does_not_crash_job _______________
+
+tmp_path = WindowsPath('C:/Users/rodri/AppData/Local/Temp/pytest-of-rodri/pytest-55/test_unexpected_sealing_error_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000020FD825B410>
+
+    def test_unexpected_sealing_error_does_not_crash_job(tmp_path, monkeypatch):
+        """seal_module levanta erro gen\xe9rico (n\xe3o SigningKeyUnavailable) \u2192 job completa sem selo,
+        evento FACTORY_TOOL_UNAVAILABLE gravado, artefato final N�O tem selo forjado."""
+        from orchestrator import pipeline_orchestrator
+        from orchestrator.storage_manager import StorageManager
+    
+        def _boom(*_a, **_k):
+            raise RuntimeError("falha simulada de hardware criptogr�fico")
+    
+        # Chave v�lida configurada: load_private_key() deve suceder, para que a falha simulada
+        # ocorra especificamente dentro de seal_module() (o caminho de exce��o gen�rica).
+        key_path = tmp_path / "signing.pem"
+        key_path.write_bytes(Ed25519PrivateKey.generate().private_bytes(
+            serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8,
+            serialization.NoEncryption(),
+        ))
+        monkeypatch.setenv("EXRS_SIGNING_KEY_FILE", str(key_path))
+        monkeypatch.setattr(pipeline_orchestrator, "seal_module", _boom)
+        monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+    
+        fixture = REPO_ROOT / "tests" / "fixtures" / "coverage_test.xlsx"
+>       storage = StorageManager("job-unexpected-seal-error", str(tmp_path))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_pipeline_seal_integration.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <orchestrator.storage_manager.StorageManager object at 0x0000020FD8503930>
+job_id = 'job-unexpected-seal-error'
+tenant_id = 'C:\\Users\\rodri\\AppData\\Local\\Temp\\pytest-of-rodri\\pytest-55\\test_unexpected_sealing_error_0'
+output_base_dir = 'C:\\Users\\rodri\\AppData\\Local\\Temp\\pytest-of-rodri\\pytest-55\\test_unexpected_sealing_error_0'
+
+    def __init__(self, job_id: str, tenant_id: str = "default", output_base_dir: str | Path | None = None):
+        if output_base_dir is None:
+            output_base_dir = os.getenv("EXRS_DATA_DIR", "output")
+    
+        if not _ID_PATTERN.match(job_id):
+            raise ValueError(f"Identificador de job_id inv�lido ou tentativa de traversal: {job_id}")
+        if not _ID_PATTERN.match(tenant_id):
+>           raise ValueError(f"Identificador de tenant_id inv�lido ou tentativa de traversal: {tenant_id}")
+E           ValueError: Identificador de tenant_id inv�lido ou tentativa de traversal: C:\Users\rodri\AppData\Local\Temp\pytest-of-rodri\pytest-55\test_unexpected_sealing_error_0
+
+src\orchestrator\storage_manager.py:19: ValueError
+___________________________ test_storage_isolation ____________________________
+
+tmp_path = WindowsPath('C:/Users/rodri/AppData/Local/Temp/pytest-of-rodri/pytest-55/test_storage_isolation0')
+
+    def test_storage_isolation(tmp_path):
+        """Garante que jobs paralelos n�o colidem arquivos."""
+        s1 = StorageManager("job_A", output_base_dir=tmp_path)
+        s2 = StorageManager("job_B", output_base_dir=tmp_path)
+    
+        s1.write_artifact("stem", "phase1", DummyModel(val="A"))
+        s2.write_artifact("stem", "phase1", DummyModel(val="B"))
+    
+        a_path = tmp_path / "job_A" / "stem_phase1.json"
+        b_path = tmp_path / "job_B" / "stem_phase1.json"
+    
+>       assert a_path.exists()
+E       AssertionError: assert False
+E        +  where False = exists()
+E        +    where exists = WindowsPath('C:/Users/rodri/AppData/Local/Temp/pytest-of-rodri/pytest-55/test_storage_isolation0/job_A/stem_phase1.json').exists
+
+tests\test_storage_isolation.py:25: AssertionError
+_____ test_worker_run_compile_reaches_terminal_status_without_signing_key _____
+
+tmp_path = WindowsPath('C:/Users/rodri/AppData/Local/Temp/pytest-of-rodri/pytest-55/test_worker_run_compile_reache0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000020FD6728750>
+
+    def test_worker_run_compile_reaches_terminal_status_without_signing_key(tmp_path, monkeypatch):
+        monkeypatch.delenv("EXRS_SIGNING_KEY_FILE", raising=False)
+        monkeypatch.setenv("EXRS_DATA_DIR", str(tmp_path))
+    
+        from worker import celery_app
+        from api.jobs import JobStore
+    
+        fixture = REPO_ROOT / "tests" / "fixtures" / "coverage_test.xlsx"
+        store = JobStore()  # usa EXRS_DATA_DIR (tmp_path) por default
+        job_id = "worker-seal-no-orphan-1"
+        store.create(job_id, "coverage_test.xlsx")
+    
+>       status = celery_app.run_compile(job_id, str(fixture))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_worker_seal_no_orphan.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+job_id = 'worker-seal-no-orphan-1'
+file_path = 'C:\\Projetos\\Aurora\\AuroraControler\\tests\\fixtures\\coverage_test.xlsx'
+tenant_id = 'default'
+
+    def run_compile(job_id: str, file_path: str, tenant_id: str = "default") -> str:
+        """
+        Corpo do processamento de um job. Independente de Celery � reaproveit�vel.
+        Transiciona o job no store: RUNNING \u2192 status terminal do orquestrador.
+        Valida confinamento estrito de arquivo e correspond�ncia de tenant_id.
+        """
+        from libs.trustware.factory_events import emit_event, trace, set_job
+        set_job(job_id)  # correlaciona eventos emitidos l� no fundo (ex.: sandbox sem Docker)
+    
+        # 1. Confinamento estrito de arquivo (Anti-Path Traversal / Cross-Tenant File Access)
+        resolved_file = Path(file_path).resolve()
+        base_dir = Path(os.getenv("EXRS_DATA_DIR", "output")).resolve()
+        authorized_dir = (base_dir / tenant_id / job_id).resolve()
+        if not resolved_file.is_relative_to(authorized_dir):
+>           raise PermissionError(
+                f"Arquivo n�o confinado � pasta autorizada do tenant/job: {resolved_file} fora de {authorized_dir}"
+            )
+E           PermissionError: Arquivo n�o confinado � pasta autorizada do tenant/job: C:\Projetos\Aurora\AuroraControler\tests\fixtures\coverage_test.xlsx fora de C:\Users\rodri\AppData\Local\Temp\pytest-of-rodri\pytest-55\test_worker_run_compile_reache0\default\worker-seal-no-orphan-1
+
+src\worker\celery_app.py:58: PermissionError
+============================== warnings summary ===============================
+tests/test_empty_dataset_robustness.py::test_all_rows_discarded_produces_empty_report_not_a_crash
+  C:\Projetos\Aurora\AuroraControler\src\kernel\tabular.py:260: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+    return pd.to_datetime(series, dayfirst=dayfirst, errors="coerce")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_observability.py::test_worker_exception_is_not_silent - Per...
+FAILED tests/test_observability.py::test_observability_failure_never_orphans_job
+FAILED tests/test_pipeline_seal_integration.py::test_unexpected_sealing_error_does_not_crash_job
+FAILED tests/test_storage_isolation.py::test_storage_isolation - AssertionErr...
+FAILED tests/test_worker_seal_no_orphan.py::test_worker_run_compile_reaches_terminal_status_without_signing_key
+5 failed, 1136 passed, 3 skipped, 1 warning in 274.51s (0:04:34)
+
+EXIT_CODE=1

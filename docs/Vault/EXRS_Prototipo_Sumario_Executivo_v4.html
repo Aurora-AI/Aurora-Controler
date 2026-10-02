@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Audit Report — Sumário Executivo</title>
+<style>
+  :root{
+    --bg:#faf9f7; --ink:#26241f; --ink-soft:#6b675e; --line:#e4e1da;
+    --card:#ffffff; --red:#b3261e; --red-soft:#fbeae9; --green:#2c6e49;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .sans{font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 48px 80px;}
+
+  /* Cabeçalho de jornal */
+  .masthead{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:3px solid var(--ink);padding-bottom:14px;}
+  .masthead h1{font-size:15px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;}
+  .masthead .meta{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;}
+  .kicker{margin-top:36px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ink-soft);}
+
+  /* Ato 1 — o soco */
+  .punch{margin-top:18px;}
+  .punch .money{font-size:clamp(64px,10vw,118px);font-weight:700;line-height:1;
+    letter-spacing:-.02em;}
+  .punch .money .bleed{color:var(--red);}
+  .headline{margin-top:20px;font-size:clamp(24px,3.2vw,34px);line-height:1.28;
+    font-weight:400;max-width:19em;}
+  .subhead{margin-top:18px;font-size:17px;line-height:1.6;color:var(--ink-soft);max-width:44em;}
+  .subhead strong{color:var(--ink);font-weight:600;}
+
+  .composition{margin-top:26px;font-size:12.5px;color:var(--ink-soft);
+    border-left:2px solid var(--line);padding-left:14px;line-height:1.7;max-width:52em;}
+  .composition em{font-style:normal;color:var(--ink);}
+
+  /* Os 3 cards */
+  .cards{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:820px){.cards{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--ink);
+    padding:28px 26px 24px;display:flex;flex-direction:column;min-height:280px;}
+  .card.alert{border-top-color:var(--red);}
+  .card .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);}
+  .card .value{margin-top:14px;font-size:38px;font-weight:700;letter-spacing:-.01em;}
+  .card.alert .value{color:var(--red);}
+  .card .cause{margin-top:14px;font-size:15px;line-height:1.55;flex:1;}
+  .card .label-fact{margin-top:14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-soft);}
+  .card .go{margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);
+    text-decoration:none;}
+  .card .go::after{content:" →";}
+
+  /* Rodapé: honestidade + CTA */
+  .footerband{margin-top:64px;padding-top:28px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:40px;align-items:flex-start;flex-wrap:wrap;}
+  .honesty{max-width:34em;font-size:14px;line-height:1.65;color:var(--ink-soft);}
+  .honesty b{color:var(--green);font-weight:600;}
+  .cta{font-size:14px;white-space:nowrap;color:var(--ink);text-decoration:none;
+    border:1px solid var(--ink);padding:12px 22px;letter-spacing:.04em;}
+  .provenance{margin-top:40px;font-size:11px;color:var(--ink-soft);letter-spacing:.04em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead sans">
+    <h1>EXRS Data Oracle · Executive Audit Report</h1>
+    <div class="meta">Rede de Óticas — Rodada v3 · dados verificados linha a linha</div>
+  </header>
+
+  <p class="kicker sans">Sumário executivo</p>
+
+  <!-- ATO 1 — O SOCO -->
+  <section class="punch">
+    <div class="money sans">R$ <span class="bleed">131 mil</span></div>
+    <h2 class="headline">escapando pelo ralo agora — e o pior vazamento está na sua melhor loja.</h2>
+    <p class="subhead">
+      A loja que os seus relatórios apontam como campeã <strong>perde dinheiro em cada
+      óculos que vende</strong>. O balcão de conserto está pagando a conta do produto —
+      e escondendo o rombo: produto <strong>−R$ 3.346</strong>, serviço +R$ 13.840,
+      total “no verde” de R$ 10.494. O número que você olha todo mês está mentindo para você.
+    </p>
+    <p class="composition sans">
+      <em>Composição do total (fatos medidos):</em> R$ 92.078 em clientes que sumiram
+      + R$ 35.040 parados em prateleira + prejuízo estrutural de margem nas lojas L7 e L9.
+      Cenários projetados (ex.: R$ 4.531 de segunda venda) <em>não</em> entram nesta soma
+      e aparecem sempre rotulados à parte.
+    </p>
+  </section>
+
+  <!-- OS 3 SANGRAMENTOS -->
+  <section class="cards sans">
+    <article class="card alert">
+      <div class="tag">Sangramento 01</div>
+      <div class="value">R$ 92.078</div>
+      <p class="cause">47 clientes deixaram de comprar — em silêncio. Ninguém percebeu,
+        ninguém ligou. Essa receita histórica foi embora sem um único alarme.</p>
+      <div class="label-fact">Fato medido</div>
+      <a class="go" href="#cap-clientes">Capítulo: Clientes Evaporando</a>
+    </article>
+
+    <article class="card alert">
+      <div class="tag">Sangramento 02</div>
+      <div class="value">R$ 35.040</div>
+      <p class="cause">Capital dormindo em 16 produtos que não giram há mais de um ano.
+        É caixa seu, parado em prateleira, perdendo valor todo mês.</p>
+      <div class="label-fact">Fato medido</div>
+      <a class="go" href="#cap-caixa">Capítulo: Caixa Preso</a>
+    </article>
+
+    <article class="card alert">
+      <div class="tag">Sangramento 03</div>
+      <div class="value">2 lojas</div>
+      <p class="cause">vendem produto no vermelho. Na L7, o serviço mascara o prejuízo;
+        na L9 não há máscara — só prejuízo. E há produtos em que você paga R$ 190
+        para vender a R$ 200.</p>
+      <div class="label-fact">Fato medido</div>
+      <a class="go" href="#cap-lucro">Capítulo: Lucro Fantasma</a>
+    </article>
+  </section>
+
+  <!-- HONESTIDADE + CTA -->
+  <footer class="footerband sans">
+    <p class="honesty">
+      <b>O que NÃO é problema:</b> este laudo também descartou os alarmes falsos —
+      queda sazonal de solares, clientes de ciclo anual, promoção deliberada e
+      vendedores em início de rampa. Um sistema que só encontra problemas está
+      vendendo medo. Os vermelhos acima são reais. <span style="color:var(--green)">Ver seção completa →</span>
+    </p>
+    <a class="cta" href="#implantacao">Falar sobre a implantação</a>
+  </footer>
+
+  <p class="provenance sans">
+    Todos os valores extraídos do audit_report congelado da rodada v3, com procedência
+    linha a linha · Metodologia e limiares: anexo · Fato medido ≠ cenário projetado, sempre rotulado.
+  </p>
+
+</div>
+</body>
+</html>

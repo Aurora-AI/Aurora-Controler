@@ -3,14 +3,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "phase_c2",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from dashboard_contracts import KPI, AggregationRow, Aggregation, Anomaly, MetricsReport
+from libs.trustware.dashboard_contracts import KPI, AggregationRow, Aggregation, Anomaly, MetricsReport
 
 
 def test_kpi_carries_evidence():
@@ -40,7 +34,7 @@ def test_metrics_report_roundtrip():
 
 
 # --- Task 11: aggregate ---
-from aggregate import aggregate_by
+from phase_c2.aggregate import aggregate_by
 
 _DATASET = [
     {"row_id": 1, "cnpj": "X1", "status": "Aprovado", "quantidade": 10.0},
@@ -65,11 +59,11 @@ def test_aggregate_by_entity():
 
 
 # --- Task 12: metrics ---
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     C0Dataset, IngestionStrategy, DetectedStructure, ValidationSummary,
     SemanticModel, SemanticField,
 )
-from metrics import compute_kpis, detect_anomalies, build_metrics_report
+from phase_c2.metrics import compute_kpis, detect_anomalies, build_metrics_report
 
 
 def _c0() -> C0Dataset:

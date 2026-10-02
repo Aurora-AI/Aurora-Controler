@@ -6,13 +6,12 @@ from openpyxl import Workbook
 
 # Setup paths
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
 
 from kernel.phase_a1.extractor import extract_structure
 from kernel.phase_a1_5.normalizer import normalize_workbook
 from product_a.phase_a2.graph_builder import build_dag, detect_cycles, topological_sort
-from product_a.trustware.pipeline_contracts import ExecutionDAG, DAGNode, DAGEdge, CycleType
+from libs.trustware.pipeline_contracts import ExecutionDAG, DAGNode, DAGEdge, CycleType
 
 
 def test_simple_dag():

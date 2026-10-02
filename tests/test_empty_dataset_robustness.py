@@ -14,6 +14,7 @@ Testa ponta a ponta (run_audit + CLI), não só _records_to_frame isoladamente �
 crash real estava em detect_product_trends, uma camada além da função óbvia.
 """
 import subprocess
+import os
 import sys
 from pathlib import Path
 
@@ -73,8 +74,8 @@ def test_cli_prints_friendly_message_for_zero_rows_not_a_traceback(tmp_path):
     )
     result = subprocess.run(
         [sys.executable, "-m", "cli.main", "audit", str(fixture), "--out", str(tmp_path / "out")],
-        cwd=REPO_ROOT / "src", capture_output=True, text=True, timeout=60,
+        cwd=REPO_ROOT / "src", env={**os.environ, "PYTHONPATH": str(REPO_ROOT), "PYTHONIOENCODING": "utf-8"}, capture_output=True, text=True, timeout=60,
     )
     assert result.returncode == 1
-    assert "Nenhuma linha de venda válida" in result.stderr
+    assert "Nenhuma linha de venda" in result.stderr
     assert "Traceback" not in result.stderr

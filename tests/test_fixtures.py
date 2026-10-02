@@ -17,21 +17,14 @@ import pytest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for p in [
-    REPO_ROOT / "src" / "product_a" / "phase_a4",
-    REPO_ROOT / "src" / "kernel" / "phase_a1_5",
-    REPO_ROOT / "src" / "product_a" / "phase_a2_5",
-    REPO_ROOT / "src" / "product_a" / "trustware",
-]:
-    sys.path.insert(0, str(p))
 
 try:
     from openpyxl import load_workbook
 except ImportError:
     pytest.skip("openpyxl não instalado", allow_module_level=True)
 
-from formula_evaluator import evaluate_formula
-from normalizer import expand_range
+from product_a.phase_a4.formula_evaluator import evaluate_formula
+from kernel.phase_a1_5.normalizer import expand_range
 
 # ── Caminho da planilha ────────────────────────────────────────────────────
 

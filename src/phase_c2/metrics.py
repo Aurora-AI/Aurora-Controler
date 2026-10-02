@@ -13,10 +13,10 @@ import sys
 import unicodedata
 from typing import Any
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     Aggregation, Anomaly, C0Dataset, KPI, MetricsReport, SemanticModel,
 )
-from aggregate import aggregate_by
+from phase_c2.aggregate import aggregate_by
 
 _SCALE_LIMIT = 100_000
 _CONCENTRATION_THRESHOLD = 0.5

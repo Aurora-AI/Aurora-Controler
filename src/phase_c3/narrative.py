@@ -5,7 +5,7 @@ altera data_views. Sem LLM disponível, retorna lista vazia.
 """
 from __future__ import annotations
 
-from dashboard_contracts import MetricsReport, NarrativeBlock
+from libs.trustware.dashboard_contracts import MetricsReport, NarrativeBlock
 
 
 def build_narrative_prompt(metrics: MetricsReport) -> str:

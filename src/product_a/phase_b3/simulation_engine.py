@@ -13,7 +13,7 @@ import re
 from collections import deque
 from typing import Any
 
-from product_a.trustware.pipeline_contracts import GraphEdge, GraphNode, SimulationStep, StagedRuleGraph
+from libs.trustware.pipeline_contracts import GraphEdge, GraphNode, SimulationStep, StagedRuleGraph
 
 # ---------------------------------------------------------------------------
 # Mapeamento de operadores AST -> operator module

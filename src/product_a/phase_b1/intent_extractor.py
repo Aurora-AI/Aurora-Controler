@@ -10,7 +10,7 @@ import logging
 import os
 
 from litellm import completion
-from product_a.trustware.pipeline_contracts import InputParameter, IntentCapture, OutputMetric
+from libs.trustware.pipeline_contracts import InputParameter, IntentCapture, OutputMetric
 
 _log = logging.getLogger(__name__)
 

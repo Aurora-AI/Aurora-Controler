@@ -3,14 +3,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "phase_c0",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     IngestionStrategy, DetectedStructure, SourceMapEntry,
     DiscardedRow, ValidationSummary, C0Dataset,
 )
@@ -50,7 +44,7 @@ def test_c0_dataset_roundtrip():
 
 # --- Task 5: ingest ---
 import csv as _csv
-from ingest import read_table
+from phase_c0.ingest import read_table
 
 
 def test_read_table_csv(tmp_path):
@@ -74,7 +68,7 @@ def test_read_table_rejects_unknown_format(tmp_path):
 
 
 # --- Task 6: detecção + un-pivot wide ---
-from unpivot import _is_number, classify_columns, detect_structure, unpivot_wide
+from phase_c0.unpivot import _is_number, classify_columns, detect_structure, unpivot_wide
 
 
 def test_is_number_handles_locale():
@@ -118,19 +112,19 @@ def test_unpivot_wide_emits_long_rows():
 
 
 def test_to_number_en_us_decimal():
-    from unpivot import _to_number
+    from phase_c0.unpivot import _to_number
     assert _to_number("12.5") == 12.5          # ponto decimal en-US
     assert _to_number("1,234.56") == 1234.56   # milhar en-US
 
 
 def test_to_number_pt_br_decimal():
-    from unpivot import _to_number
+    from phase_c0.unpivot import _to_number
     assert _to_number("12,5") == 12.5          # vírgula decimal pt-BR
     assert _to_number("1.234,56") == 1234.56   # milhar pt-BR
 
 
 def test_unpivot_wide_skips_empty_and_ragged():
-    from unpivot import unpivot_wide
+    from phase_c0.unpivot import unpivot_wide
     header = ["cnpj", "Aprovado", "Reprovado"]
     data = [["X1", "10", ""], ["X2"]]  # célula vazia + linha ragged
     long_rows = unpivot_wide(header, data, [0], [1, 2])
@@ -140,7 +134,7 @@ def test_unpivot_wide_skips_empty_and_ragged():
 
 
 # --- Task 7: build_c0_dataset ---
-from unpivot import build_c0_dataset
+from phase_c0.unpivot import build_c0_dataset
 
 
 def test_build_c0_dataset_flat_csv(tmp_path):
@@ -234,7 +228,7 @@ def test_phase_c0_cli_writes_artifact(tmp_path):
 
 
 # --- Task 21: un-pivot hierárquico ---
-from unpivot import detect_hierarchical, _is_parent_row
+from phase_c0.unpivot import detect_hierarchical, _is_parent_row
 
 
 def test_is_parent_row_detects_context_row():

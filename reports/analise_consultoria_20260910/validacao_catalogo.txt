@@ -1,0 +1,221 @@
+══════════════════════════════════════════════════════════════════════════
+VALIDADOR DO REGISTRO AURORA — ESQUEMA_PECA.md §7
+══════════════════════════════════════════════════════════════════════════
+arquivos: 6 · peças: 210
+  por tipo:   ART=6 · FOR=99 · LAC=91 · REG=14
+  por status: ?=91 · CANDIDATO=6 · CANONICO=99 · CONFLITANTE=12 · SUPERADO=2
+
+──────────────────────────────────────────────────────────────────────────
+🔴 REPROVA — 4
+──────────────────────────────────────────────────────────────────────────
+  [V4] FOR-AUD-003
+        símbolo 'Desconto' usado na expressão e não declarado em 'variaveis'
+  [V4] FOR-BAS-004
+        símbolo 'hoje' usado na expressão e não declarado em 'variaveis'
+  [V4] FOR-BAS-006
+        símbolo 'hoje' usado na expressão e não declarado em 'variaveis'
+  [V4] FOR-CNC-002
+        símbolo 'rede' usado na expressão e não declarado em 'variaveis'
+
+──────────────────────────────────────────────────────────────────────────
+🟡 FILA — 23
+──────────────────────────────────────────────────────────────────────────
+  [V12] FOR-AUD-002
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: clientes…)
+  [V12] FOR-AUD-004
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: atrelada…)
+  [V12] FOR-AUD-005
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: fizeram, total…)
+  [V12] FOR-BAS-003
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: mediana…)
+  [V12] FOR-BAS-007
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: categoria…)
+  [V12] FOR-BAS-011
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: compraram, total…)
+  [V12] FOR-CMP-002
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: quem, saiu…)
+  [V12] FOR-CNC-004
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: antes, concentração, depois…)
+  [V12] FOR-EST-001
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: período…)
+  [V12] FOR-EST-005
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: mais, meses, venda…)
+  [V12] FOR-EST-006
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: mortos…)
+  [V12] FOR-FIN-006
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: parceiro…)
+  [V12] FOR-FIN-007
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: varejo…)
+  [V12] FOR-FIN-008
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: parceiro…)
+  [V12] FOR-FIN-009
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: juros, transação…)
+  [V12] FOR-TMI-006
+        expressão em PROSA, não simbólica — não implementável sem tradução (termos: período…)
+  [V9] FOR-AUD-001
+        CONFLITANTE sem LAC associada
+  [V9] FOR-AUD-002
+        CONFLITANTE sem LAC associada
+  [V9] FOR-AUD-003
+        CONFLITANTE sem LAC associada
+  [V9] FOR-BAS-007
+        CONFLITANTE sem LAC associada
+  [V9] FOR-BAS-010
+        CONFLITANTE sem LAC associada
+  [V9] FOR-EST-003
+        CONFLITANTE sem LAC associada
+  [V9] FOR-EST-005
+        CONFLITANTE sem LAC associada
+
+──────────────────────────────────────────────────────────────────────────
+⚪ AVISO — 72
+──────────────────────────────────────────────────────────────────────────
+  [V11] FOR-BAS-008
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-BAS-009
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-BAS-011
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-BAS-012
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-CMP-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-CMP-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-CNC-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-CNC-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-CNC-003
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-CNC-004
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-EST-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-EST-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-EST-007
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FCT-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FCT-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-003
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-004
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-005
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-006
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-007
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-008
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-FIN-009
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-003
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-004
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-005
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-006
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-007
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-008
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-009
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-010
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-012
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-013
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MET-014
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-003
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-004
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-005
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-006
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-007
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-008
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-009
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-010
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-011
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-012
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-015
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-016
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-018
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-019
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-022
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-023
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-MRG-024
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-003
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-004
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-005
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-006
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-008
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-009
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-010
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-SEV-011
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-TMI-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-TMI-002
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-TMI-003
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-TMI-004
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] FOR-TMI-005
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] PAR-MET-001
+        sem implementação e sem gabarito → HIPÓTESE
+  [V11] PAR-SEV-001
+        sem implementação e sem gabarito → HIPÓTESE
+
+══════════════════════════════════════════════════════════════════════════
+RESULTADO: 4 reprova · 23 fila · 72 aviso
+→ Registro NÃO pode gerar código nem render/ enquanto houver REPROVA.
+══════════════════════════════════════════════════════════════════════════

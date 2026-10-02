@@ -1,0 +1,56 @@
+=== ART-FIL-002 · Fila de Auditoria Manual (v1.0) ===
+Número Âncora: 42 itens aguardando veredito humano
+Total Disparos: 964 | Auto-classificados: 922 | Resíduo: 4.36% [GOVERNANÇA OK]
+Princípio Dimensionador: Fila manual recebe o resíduo não classificável (teto: 10.0%).
+---------------------------------------------------------------------------------------------------------
+#    ID         LOJA     VEND.    SKU          PRAT.      TABELA     NF CUSTO   EVIDÊNCIAS                         
+---------------------------------------------------------------------------------------------------------
+1    DTQ-0019   L6 - Leste V-21     AGX-005      R$ 282.92  R$ 720.45  [S/NF]     Sem evidência conclusiva           
+2    DTQ-0025   L10 - Industrial V-32     AGX-006      R$ 290.31  R$ 734.25  [S/NF]     Sem evidência conclusiva           
+3    DTQ-0026   L5 - Norte V-19     AGX-006      R$ 231.79  R$ 734.25  [S/NF]     Sem evidência conclusiva           
+4    DTQ-0034   L10 - Industrial V-34     AGX-007      R$ 255.40  R$ 716.62  [S/NF]     Sem evidência conclusiva           
+5    DTQ-0035   L4 - Zona Sul V-16     AGX-007      R$ 259.19  R$ 716.62  [S/NF]     Sem evidência conclusiva           
+6    DTQ-0036   L6 - Leste V-21     AGX-007      R$ 263.47  R$ 716.62  [S/NF]     Sem evidência conclusiva           
+7    DTQ-0093   L8 - Praia V-28     ARM-003      R$ 120.79  R$ 392.96  [S/NF]     Sem evidência conclusiva           
+8    DTQ-0107   L10 - Industrial V-32     ARM-006      R$ 143.01  R$ 399.30  R$ 58.98   Sem evidência conclusiva           
+9    DTQ-0115   L9 - Serra V-31     ARM-006      R$ 59.40   R$ 399.30  R$ 58.98   Sem evidência conclusiva           
+10   DTQ-0122   L3 - Bairro V-09     ARM-008      R$ 553.83  R$ 199.38  [S/NF]     Sem evidência conclusiva           
+11   DTQ-0158   L1 - Centro V-04     ARM-015      R$ 622.81  R$ 191.22  [S/NF]     Sem evidência conclusiva           
+12   DTQ-0159   L7 - Oeste V-25     ARM-015      R$ 62.58   R$ 191.22  [S/NF]     Sem evidência conclusiva           
+13   DTQ-0186   L3 - Bairro V-10     ARM-024      R$ 621.05  R$ 204.60  [S/NF]     Sem evidência conclusiva           
+14   DTQ-0200   L1 - Centro V-03     ARM-030      R$ 714.56  R$ 306.34  [S/NF]     Sem evidência conclusiva           
+15   DTQ-0202   L3 - Bairro V-10     ARM-030      R$ 658.45  R$ 306.34  [S/NF]     Sem evidência conclusiva           
+16   DTQ-0236   L1 - Centro V-03     ARM-045      R$ 510.26  R$ 295.54  [S/NF]     Sem evidência conclusiva           
+17   DTQ-0272   L1 - Centro V-03     ARM-059      R$ 631.03  R$ 305.74  [S/NF]     Sem evidência conclusiva           
+18   DTQ-0296   L1 - Centro V-02     ARM-069      R$ 608.65  R$ 163.28  [S/NF]     Sem evidência conclusiva           
+19   DTQ-0299   L1 - Centro V-03     ARM-070      R$ 513.45  R$ 160.50  [S/NF]     Sem evidência conclusiva           
+20   DTQ-0300   L3 - Bairro V-10     ARM-070      R$ 647.90  R$ 160.50  [S/NF]     Sem evidência conclusiva           
+21   DTQ-0312   L2 - Shopping V-08     ARM-076      R$ 576.48  R$ 287.48  [S/NF]     Sem evidência conclusiva           
+22   DTQ-0323   L2 - Shopping V-06     ARM-080      R$ 781.07  R$ 217.31  [S/NF]     Sem evidência conclusiva           
+23   DTQ-0324   L3 - Bairro V-12     ARM-081      R$ 518.10  R$ 276.79  [S/NF]     Sem evidência conclusiva           
+24   DTQ-0342   L3 - Bairro V-11     ARM-089      R$ 629.42  R$ 318.79  [S/NF]     Sem evidência conclusiva           
+25   DTQ-0627   L2 - Shopping V-08     ARP-027      R$ 1,689.57 R$ 652.26  [S/NF]     Sem evidência conclusiva           
+26   DTQ-0659   L2 - Shopping V-05     ARP-034      R$ 1,636.93 R$ 588.51  [S/NF]     Sem evidência conclusiva           
+27   DTQ-0676   L1 - Centro V-04     ARP-038      R$ 1,816.22 R$ 651.94  [S/NF]     Sem evidência conclusiva           
+28   DTQ-0712   L2 - Shopping V-08     LC-006       R$ 150.00  R$ 485.67  R$ 59.43   Sem evidência conclusiva           
+29   DTQ-0720   L10 - Industrial V-33     LC-009       R$ 267.40  R$ 140.89  [S/NF]     Sem evidência conclusiva           
+30   DTQ-0721   L2 - Shopping V-05     LC-009       R$ 260.76  R$ 140.89  [S/NF]     Sem evidência conclusiva           
+31   DTQ-0722   L3 - Bairro V-12     LC-009       R$ 287.12  R$ 140.89  [S/NF]     Sem evidência conclusiva           
+32   DTQ-0758   L1 - Centro V-03     LEN-005      R$ 866.39  R$ 471.96  [S/NF]     Sem evidência conclusiva           
+33   DTQ-0759   L3 - Bairro V-12     LEN-005      R$ 839.60  R$ 471.96  [S/NF]     Sem evidência conclusiva           
+34   DTQ-0779   L4 - Zona Sul V-16     LEN-008      R$ 140.29  R$ 635.61  R$ 62.71   Sem evidência conclusiva           
+35   DTQ-0825   L1 - Centro V-03     LEN-019      R$ 737.68  R$ 287.20  [S/NF]     Sem evidência conclusiva           
+36   DTQ-0856   L2 - Shopping V-05     LEN-066      R$ 648.46  R$ 324.75  [S/NF]     Sem evidência conclusiva           
+37   DTQ-0863   L1 - Centro V-03     LEN-080      R$ 686.57  R$ 306.57  [S/NF]     Sem evidência conclusiva           
+38   DTQ-0869   L3 - Bairro V-10     SOL-002      R$ 187.93  R$ 491.91  [S/NF]     Sem evidência conclusiva           
+39   DTQ-0930   L4 - Zona Sul V-14     SOL-013      R$ 219.86  R$ 587.60  R$ 98.28   Sem evidência conclusiva           
+40   DTQ-0937   L3 - Bairro V-12     SOL-014      R$ 605.59  R$ 352.01  R$ 157.19  Sem evidência conclusiva           
+41   DTQ-0950   L9 - Serra V-29     SOL-016      R$ 112.65  R$ 334.85  R$ 121.83  Sem evidência conclusiva           
+42   DTQ-0963   L2 - Shopping V-08     SOL-028      R$ 190.22  R$ 526.18  R$ 134.37  Sem evidência conclusiva           
+
+--- RESUMO DE GOVERNANCA E RESIDUO ---
+Disparos Totais: 964
+Auto-classificados: 922
+Pendentes: 42
+Taxa de Residuo Real: 4.36%
+Alerta de Dimensionamento: False

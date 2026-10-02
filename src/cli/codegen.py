@@ -7,7 +7,7 @@ para validar o workbook (src/product_a/phase_a4/runner.py::validate_workbook), s
 código-fonte estático em vez de executado inline. Fórmulas EXTERNAL_REF e UNRESOLVED são
 excluídas (não avaliáveis deterministicamente — mesma regra do validador).
 """
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     ExecutionDAG, FormulaRegistryMap, NormalizedWorkbookIR, PatternClass,
 )
 

@@ -106,6 +106,35 @@
   .prov{font-size:11px;color:var(--ink-soft);letter-spacing:.04em;max-width:40em;line-height:1.6;}
   .cta{font-size:14px;white-space:nowrap;color:var(--ink);text-decoration:none;
     border:1px solid var(--ink);padding:12px 22px;letter-spacing:.04em;}
+
+  /* Ato 6 — Anexo de Evidências (Spec v4 §16). Neutro de propósito: o vermelho já
+     gritou no corpo (§4.2, moeda escassa) — aqui é prova, não drama. */
+  .anexo-link{display:inline-block;margin-top:10px;font-size:12px;color:var(--ink-soft);
+    text-decoration:underline;text-underline-offset:3px;}
+  .anexo-section{margin-top:20px;background:var(--card);border:1px solid var(--line);}
+  .anexo-section + .anexo-section{margin-top:14px;}
+  .anexo-section summary{padding:18px 22px;cursor:pointer;font-weight:600;font-size:15px;
+    display:flex;justify-content:space-between;align-items:center;list-style:none;gap:12px;}
+  .anexo-section summary::-webkit-details-marker{display:none;}
+  .anexo-section summary::after{content:'+ expandir';font-size:11px;font-weight:400;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .anexo-section[open] summary::after{content:'– recolher';}
+  .anexo-section summary .meta{font-size:12.5px;color:var(--ink-soft);font-weight:400;}
+  .anexo-table-wrap{overflow-x:auto;}
+  .anexo-table{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap;}
+  .anexo-table th{text-align:left;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-soft);padding:8px 16px;border-top:1px solid var(--line);white-space:nowrap;}
+  .anexo-table td{padding:10px 16px;border-top:1px solid var(--line);vertical-align:top;
+    white-space:normal;}
+  .anexo-table td.src{font-family:'Courier New',monospace;font-size:10.5px;
+    color:var(--ink-soft);white-space:nowrap;}
+  .anexo-table td.neg{color:var(--red);}
+  .anexo-note{margin-top:2px;font-size:11px;color:var(--green);}
+  .anexo-meta-line{margin-top:2px;font-size:11px;color:var(--ink-soft);}
+  .anexo-legend{padding:14px 22px;font-size:11.5px;color:var(--ink-soft);border-top:1px solid var(--line);}
+  .anexo-flags{display:flex;gap:4px;flex-wrap:wrap;}
+  .anexo-flag{font-size:9.5px;padding:2px 7px;background:var(--red-soft);color:var(--red);
+    text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -214,6 +243,12 @@
 const D = JSON.parse(document.getElementById('AUDIT_DATA').textContent);
 const app = document.getElementById('app');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Compartilhados por Ato 6 (anexo) e Ato 7 (team) — ambos são formatação pura de
+// dado já conferido a montante (Zero Contradição), nunca cálculo aqui.
+const brlCents = n => (n == null) ? '—' :
+  'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const pct = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + '%';
+const pp = n => (n == null) ? '—' : Number(n).toFixed(1).replace('.', ',') + 'pp';
 const mast = sub => `<header class="masthead sans"><h1>EXRS Data Oracle · Executive Audit Report</h1>
   <div class="meta">${esc(D.cliente)} — Rodada ${esc(D.rodada)} · ${esc(sub)}</div></header>`;
 const foot = () => `<footer class="footerband sans"><p class="prov">${esc(D.procedencia)}</p>
@@ -236,14 +271,52 @@ app.insertAdjacentHTML('beforeend', `
         <p class="cause">${esc(s.soco)}</p>
         <div class="fact">Fato medido</div>
         <a href="#${esc(s.id)}">Capítulo: ${esc(s.titulo)}</a>
+        ${s.anexo_ref && D.anexo ? `<a class="anexo-link" href="#anexo-${esc(s.anexo_ref)}">ver evidências no anexo ↓</a>` : ''}
       </article>`).join('')}
   </div>
   ${foot()}
 </section>`);
 
-/* ---------- ATO 2 — O PARADOXO (waterfall calculado) ---------- */
+/* ---------- ATO 2 — O PARADOXO (waterfall calculado) ----------
+   O mecanismo mais comum é máscara produto×serviço (v3: L7-Oeste) — mas o
+   waterfall é, na essência, uma identidade aditiva de 3 números reais
+   (esquerda + meio = direita), não um conceito fixo de "produto/serviço".
+   Rótulos e narrativa são PARAMETRIZÁVEIS via AUDIT_DATA (defaults =
+   texto original da história produto×serviço) para reaproveitar a MESMA
+   estrutura visual em qualquer identidade aditiva real — nunca force um
+   dado numa história que ele não sustenta (Spec v4 §1.5), generalize o
+   rótulo em vez de inventar um paradoxo. Ver Spec v4 §13.6. */
 (() => {
   const P = D.paradoxo;
+  const col1Label = P.col1_label ?? 'Produto';
+  const col1Context = P.col1_context ?? 'o que a loja vende';
+  const col2Label = P.col2_label ?? 'Serviço';
+  const col2Context = P.col2_context ?? 'o que paga a conta';
+  const col3Label = P.col3_label ?? 'Total que você vê';
+  const col3Context = P.col3_context ?? 'o "verde" de mentira';
+  const headlineHtml = P.headline_html ??
+    'Sua loja campeã <span class="bleed">perde dinheiro em cada produto que vende.</span>';
+  const subHtml = P.sub_html ??
+    `A ${esc(P.loja)} lidera os seus relatórios. Mas separando <strong>o que ela vende</strong>
+     do <strong>que ela conserta</strong> (${esc(P.contexto)}), o produto opera no prejuízo e o serviço
+     paga a conta — e esconde o rombo.`;
+  const axisNoteHtml = P.axis_note_html ??
+    'A barra final é hachurada de propósito: o número é verdadeiro, a saúde é falsa — enquanto o total ' +
+    'parecer saudável, o produto sangra sem alarme.';
+  const recommendationHtml = P.recommendation_html ??
+    'Recompor mix e preço do produto <b>sem enfraquecer o serviço</b> que sustenta a loja — na ordem ' +
+    'certa. Esse rebalanceamento é o trabalho de implantação.';
+  const controlValueLabel = P.controle.value_label ?? 'produto';
+  // 'fake' (default) = hachura diagonal — o total PARECE bom mas esconde o problema
+  // (v3: L7-Oeste). 'true' = verde sólido — o total É a verdade boa, escondida por um
+  // primeiro número errado (não force a textura de "mentira" numa história onde o
+  // resultado final é genuinamente a correção, não a máscara).
+  const col3Style = P.col3_style ?? 'fake';
+  const col3Background = col3Style === 'true'
+    ? 'background:var(--green);opacity:.85;'
+    : `background:var(--fake-green);background-image:repeating-linear-gradient(45deg,
+       transparent,transparent 8px,rgba(255,255,255,.45) 8px,rgba(255,255,255,.45) 12px);`;
+
   const H = 340, PAD = 34;                       // área útil do gráfico
   const maxUp = Math.max(P.total, P.servico + P.produto, 0);
   const maxDown = Math.min(P.produto, 0);
@@ -257,41 +330,36 @@ app.insertAdjacentHTML('beforeend', `
 <section class="act" id="ato2">
   ${mast('Ato 2 · A causa raiz — ' + P.loja)}
   <p class="kicker sans">O paradoxo</p>
-  <h2 class="headline">Sua loja campeã <span class="bleed">perde dinheiro em cada produto que vende.</span></h2>
-  <p class="sub">A ${esc(P.loja)} lidera os seus relatórios. Mas separando <strong>o que ela vende</strong>
-    do <strong>que ela conserta</strong> (${esc(P.contexto)}), o produto opera no prejuízo e o serviço
-    paga a conta — e esconde o rombo.</p>
+  <h2 class="headline">${headlineHtml}</h2>
+  <p class="sub">${subHtml}</p>
   <div class="chartbox sans"><div class="wf">
     <div class="baseline" style="top:${zeroY}px;"><span class="zero">R$ 0</span></div>
     <div class="col" style="left:6%;">
       <div class="bar" style="top:${prodTop}px;height:${prodH}px;background:var(--red);"></div>
       <div class="blab" style="top:${prodTop+prodH+8}px;color:var(--red);">−${brl(P.produto)}</div>
-      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>Produto</b>o que a loja vende</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>${esc(col1Label)}</b>${esc(col1Context)}</div>
     </div>
     <div class="col" style="left:38%;">
       <div class="bar" style="top:${svcTop}px;height:${svcH}px;background:var(--green);opacity:.85;"></div>
       <div class="blab" style="top:${svcTop-30}px;color:var(--green);">+${brl(P.servico)}</div>
-      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>Serviço</b>o que paga a conta</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>${esc(col2Label)}</b>${esc(col2Context)}</div>
     </div>
     <div class="col" style="left:70%;">
-      <div class="bar" style="top:${totTop}px;height:${totH}px;background:var(--fake-green);
-        background-image:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.45) 8px,rgba(255,255,255,.45) 12px);"></div>
+      <div class="bar" style="top:${totTop}px;height:${totH}px;${col3Background}"></div>
       <div class="blab" style="top:${totTop-30}px;color:var(--ink-soft);">+${brl(P.total)}</div>
-      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>Total que você vê</b>o “verde” de mentira</div>
+      <div class="clab" style="top:${zeroY+prodH+44}px;"><b>${esc(col3Label)}</b>${esc(col3Context)}</div>
     </div>
   </div>
-  <p class="axis-note" style="margin-top:100px;">A barra final é hachurada de propósito: o número é
-    verdadeiro, a saúde é falsa — enquanto o total parecer saudável, o produto sangra sem alarme.</p>
+  <p class="axis-note" style="margin-top:100px;">${axisNoteHtml}</p>
   </div>
   <div class="evidence sans">
     <div class="ev" style="border-left:4px solid var(--red);">
       <div class="tag">A prova de controle</div>
-      <p><b>${esc(P.controle.loja)}</b> ${esc(P.controle.frase)} (produto ${P.controle.produto<0?'−':''}${brl(P.controle.produto)})</p>
+      <p><b>${esc(P.controle.loja)}</b> ${esc(P.controle.frase)} (${esc(controlValueLabel)} ${P.controle.produto<0?'−':''}${brl(P.controle.produto)})</p>
     </div>
     <div class="ev" style="border-left:4px solid var(--ink);">
       <div class="tag">O que isso pede</div>
-      <p>Recompor mix e preço do produto <b>sem enfraquecer o serviço</b> que sustenta a loja —
-      na ordem certa. Esse rebalanceamento é o trabalho de implantação.</p>
+      <p>${recommendationHtml}</p>
     </div>
   </div>
   ${foot()}
@@ -352,6 +420,7 @@ D.sangramentos.forEach((s, i) => {
   </div>
   <p class="cost-line"><b>Se nada mudar:</b> ${esc(s.custo_mensal)}</p>
   <div class="hookband sans">${esc(s.gancho)}</div>
+  ${s.anexo_ref && D.anexo ? `<p class="sans"><a class="anexo-link" href="#anexo-${esc(s.anexo_ref)}">ver evidências no anexo ↓</a></p>` : ''}
   ${foot()}
 </section>`);
 });
@@ -373,7 +442,7 @@ app.insertAdjacentHTML('beforeend', `
 /* ---------- ATO 5 — A SAÍDA (ordenado por impacto; cenário sempre por último entre iguais) ---------- */
 const plano = [...D.plano].sort((a,b) => (a.cenario - b.cenario) || (b.impacto - a.impacto));
 app.insertAdjacentHTML('beforeend', `
-<section class="act" id="plano" style="border-bottom:none;">
+<section class="act" id="plano"${D.anexo ? '' : ' style="border-bottom:none;"'}>
   ${mast('Ato 5 · O plano — ordenado pelo que mais custa')}
   <p class="kicker sans">A saída</p>
   <h2 class="headline">O diagnóstico está feito. A ordem abaixo é a ordem do dinheiro.</h2>
@@ -389,6 +458,202 @@ app.insertAdjacentHTML('beforeend', `
   </div>
   ${foot()}
 </section>`);
+
+/* ---------- ATO 6 — ANEXO DE EVIDÊNCIAS (Spec v4 §16) ----------
+   Só renderiza quando D.anexo existe — AUDIT_DATA sem anexo continua
+   idêntico a antes (retrocompatibilidade §16.7). Cada seção é <details>
+   recolhido; o dado já vem pronto do build_anexo (Zero Contradição já
+   conferiu as somas ANTES deste HTML existir) — aqui é só formatação,
+   zero cálculo. */
+if (D.anexo) {
+  const A = D.anexo;
+
+  const secEstoque = A.estoque_parado ? `
+    <details class="anexo-section" id="anexo-estoque_parado">
+      <summary><span>Estoque parado</span>
+        <span class="meta">${A.estoque_parado.itens.length} produtos · ${brlCents(A.estoque_parado.total)}</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Produto</th><th>Descrição</th><th>Capital preso</th><th>Meses parado</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.estoque_parado.itens.map(i => `<tr>
+          <td>${esc(i.sku)}</td><td>${esc(i.descricao || '—')}</td>
+          <td>${brlCents(i.capital_preso)}</td><td>${i.meses_parado ?? '—'}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secFila = A.fila_reativacao ? `
+    <details class="anexo-section" id="anexo-fila_reativacao">
+      <summary><span>Fila de reativação</span>
+        <span class="meta">${A.fila_reativacao.clientes} clientes · ${brlCents(A.fila_reativacao.total)}</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Cliente</th><th>Última compra</th><th>Ciclo próprio</th><th>Silêncio</th>
+        <th>Índice de aquecimento</th><th>R$ histórico</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.fila_reativacao.itens.map(i => `<tr>
+          <td>${esc(i.cliente)}</td><td>${esc(i.ultima_compra || '—')}</td>
+          <td>${i.ciclo_dias != null ? Math.round(i.ciclo_dias) + 'd' : '—'}</td>
+          <td>${i.silencio_dias ?? '—'}d</td>
+          <td>${i.indice_aquecimento != null ? Number(i.indice_aquecimento).toFixed(2).replace('.', ',') + '×' : '—'}</td>
+          <td>${brlCents(i.valor_historico)}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">Ordenado por índice de aquecimento (dias em silêncio ÷ ciclo próprio do
+        cliente) — 1,2× = acabou de estourar o ritmo, ligar primeiro; 4× = frio, não queimar energia
+        de balcão nele. Nunca por R$ histórico puro.</p>
+    </details>` : '';
+
+  const secVendedores = A.vendedores ? `
+    <details class="anexo-section" id="anexo-vendedores">
+      <summary><span>Vendedores</span><span class="meta">${A.vendedores.itens.length} avaliados</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Receita</th><th>Margem</th><th>Margem da loja</th>
+        <th>Gap</th><th>Captura</th><th>Sinais</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.vendedores.itens.map(v => `<tr>
+          <td>${esc(v.vendedor)}</td><td>${esc(v.loja)}</td><td>${brlCents(v.receita)}</td>
+          <td class="${v.margem_pct != null && v.margem_pct < 0 ? 'neg' : ''}">${pct(v.margem_pct)}</td>
+          <td>${pct(v.margem_loja_pct)}</td><td>${pp(v.gap_pp)}</td><td>${pct(v.captura_pct)}</td>
+          <td>
+            <div class="anexo-flags">${v.flags.map(f => `<span class="anexo-flag">${esc(f.replace(/_/g, ' '))}</span>`).join('')}</div>
+            ${v.notas.map(n => `<div class="anexo-note">${esc(n)}</div>`).join('')}
+            ${v.mix_top_desvio ? `<div class="anexo-meta-line">${esc(v.mix_top_desvio.categoria)}: +${pp(v.mix_top_desvio.desvio_pp)} vs. loja (categoria margeia ${pct(v.mix_top_desvio.margem_categoria_pct)})</div>` : ''}
+          </td>
+          <td class="src">${esc(v.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secTriagem = A.triagem_discrepancias ? `
+    <details class="anexo-section" id="anexo-triagem_discrepancias">
+      <summary><span>Triagem de discrepâncias</span>
+        <span class="meta">${A.triagem_discrepancias.disparos} casos · ${A.triagem_discrepancias.pendentes} pendentes${
+          A.triagem_discrepancias.total_abaixo_custo != null
+            ? ` · ${brlCents(A.triagem_discrepancias.total_abaixo_custo)} abaixo do custo` : ''
+        }</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Produto</th><th>Loja</th><th>Vendedor</th><th>Veredito</th><th>Perda</th><th>Evidências</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${A.triagem_discrepancias.itens.map(i => `<tr>
+          <td>${esc(i.sku)}${i.descricao ? `<div class="anexo-meta-line">${esc(i.descricao)}</div>` : ''}</td>
+          <td>${esc(i.loja)}</td><td>${esc(i.vendedor)}</td>
+          <td>${esc((i.veredito || 'em auditoria').replace(/_/g, ' '))}${i.veredito_origem === 'pending_manual_review' ? ' <span class="anexo-meta-line">(pendente)</span>' : ''}</td>
+          <td>${i.perda_confirmada ? brlCents(i.perda_abaixo_custo) : '—'}</td>
+          <td>${i.evidencias.map(e => `<div>${esc(e)}</div>`).join('')}</td>
+          <td class="src">${esc(i.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secMetodologia = A.metodologia ? `
+    <details class="anexo-section" id="anexo-metodologia">
+      <summary><span>Metodologia</span><span class="meta">como calculamos</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr><th>Limiar</th><th>Valor</th></tr></thead><tbody>
+        ${A.metodologia.limiares.map(l => `<tr><td>${esc(l.nome)}</td><td>${esc(String(l.valor))}</td></tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">${A.metodologia.limpeza.linhas_lidas ?? '—'} linhas lidas ·
+        ${A.metodologia.limpeza.aceitas ?? '—'} aceitas ·
+        ${A.metodologia.limpeza.podas_outlier ?? 0} podas de outlier.</p>
+    </details>` : '';
+
+  // Ato 6 só fecha a borda (é o último) quando o Ato 7 (team) não for renderizar
+  // logo em seguida — mesmo padrão condicional já usado no Ato 5 para o Ato 6.
+  const temTeam = !!(D.team && (D.team.evasao || D.team.comissionamento || D.team.habilidade));
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="anexo"${temTeam ? '' : ' style="border-bottom:none;"'}>
+  ${mast('Ato 6 · Anexo de evidências')}
+  <p class="kicker sans">A prova, linha a linha</p>
+  <h2 class="headline">Cada número deste laudo pode ser refeito à mão.</h2>
+  <p class="sub">O detalhamento que sustenta cada capítulo — nomes, valores e a linha exata
+    do seu arquivo de onde cada número saiu.</p>
+  <div class="sans" style="margin-top:32px;">
+    ${secEstoque}${secFila}${secVendedores}${secTriagem}${secMetodologia}
+  </div>
+  ${foot()}
+</section>`);
+}
+
+/* Ato 7 · A Física da Equipe (Fase E parte 1) — só renderiza quando D.team tem
+   pelo menos uma seção; AUDIT_DATA sem team continua idêntico a antes
+   (retrocompatibilidade). Mesmo padrão de <details> recolhido do Ato 6; o dado já
+   vem pronto do build_team (Zero Contradição/Z7/Z8 já conferiram a montante) —
+   aqui é só formatação, zero cálculo. */
+if (D.team && (D.team.evasao || D.team.comissionamento || D.team.habilidade)) {
+  const T = D.team;
+
+  const secEvasao = T.evasao ? `
+    <details class="anexo-section" id="team-evasao">
+      <summary><span>Evasão de talentos</span>
+        <span class="meta">${T.evasao.itens.length} em risco</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Meses avaliados</th><th>Captura</th>
+        <th>Desconto</th><th>Ticket</th><th>Sinais</th><th>Carteira em risco</th><th>Origem</th>
+      </tr></thead><tbody>
+        ${T.evasao.itens.map(e => `<tr>
+          <td>${esc(e.vendedor)}</td><td>${esc(e.loja)}</td><td>${e.meses_avaliados ?? '—'}</td>
+          <td>${e.captura_trend_pp != null ? '↓ ' + pp(e.captura_trend_pp) : '—'}</td>
+          <td>${e.desconto_trend_pp != null ? '↑ ' + pp(e.desconto_trend_pp) : '—'}</td>
+          <td>${e.ticket_trend_pct != null ? '↓ ' + pct(e.ticket_trend_pct) : '—'}</td>
+          <td><div class="anexo-flags">${e.sinais.map(s => `<span class="anexo-flag">${esc(s.replace(/_/g, ' '))}</span>`).join('')}</div></td>
+          <td>${brlCents(e.carteira_em_risco)}</td>
+          <td class="src">${esc(e.src)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+      <p class="anexo-legend">Carteira em risco = receita bruta do vendedor no período (inclui venda
+        anônima e estorno) — é o que evapora SE o vendedor sair, não uma perda já ocorrida. Nunca somado
+        aos sangramentos do corpo do laudo (naturezas diferentes).</p>
+    </details>` : '';
+
+  const secComissionamento = T.comissionamento ? `
+    <details class="anexo-section" id="team-comissionamento">
+      <summary><span>Conflito de comissionamento</span>
+        <span class="meta">${T.comissionamento.itens.length} vendedores</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Base de comissão</th><th>Achado</th><th>Recomendação</th>
+      </tr></thead><tbody>
+        ${T.comissionamento.itens.map(c => `<tr>
+          <td>${esc(c.vendedor)}</td><td>${esc(c.loja)}</td>
+          <td>${esc((c.base_comissao || '').replace(/_/g, ' '))}</td>
+          <td>${esc(c.resumo_achado)}</td>
+          <td>${esc(c.recomendacao)}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  const secHabilidade = T.habilidade ? `
+    <details class="anexo-section" id="team-habilidade">
+      <summary><span>Matriz de habilidade</span>
+        <span class="meta">${T.habilidade.itens.length} hipóteses</span></summary>
+      <div class="anexo-table-wrap"><table class="anexo-table"><thead><tr>
+        <th>Vendedor</th><th>Loja</th><th>Categoria</th><th>Desvio de mix</th>
+        <th>Margem da categoria</th><th>Hipótese</th>
+      </tr></thead><tbody>
+        ${T.habilidade.itens.map(h => `<tr>
+          <td>${esc(h.vendedor)}</td><td>${esc(h.loja)}</td><td>${esc(h.categoria)}</td>
+          <td>${pp(h.desvio_mix_pp)}</td><td>${pct(h.margem_categoria_pct)}</td>
+          <td>${esc(h.hipotese)}
+            <div class="anexo-meta-line">hipótese derivada de padrão de mix, não diagnóstico confirmado —
+              conversão real exigiria dado de tentativas (aba Orçamentos, fora desta rodada)</div>
+          </td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </details>` : '';
+
+  app.insertAdjacentHTML('beforeend', `
+<section class="act" id="team" style="border-bottom:none;">
+  ${mast('Ato 7 · A Física da Equipe')}
+  <p class="kicker sans">O sistema em volta do vendedor</p>
+  <h2 class="headline">Nem todo resultado ruim é falta de esforço.</h2>
+  <p class="sub">Incentivo, habilidade e evasão — o que o sistema permite ou impede, não só o
+    resultado que ele produz.</p>
+  <div class="sans" style="margin-top:32px;">
+    ${secEvasao}${secComissionamento}${secHabilidade}
+  </div>
+  ${foot()}
+</section>`);
+}
 </script>
 </body>
 </html>

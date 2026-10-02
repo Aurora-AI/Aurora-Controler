@@ -8,7 +8,7 @@ import json
 import logging
 from pathlib import Path
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     GraphEdge, GraphNode, GraphNodeType, IntentCapture, StagedRuleGraph,
 )
 

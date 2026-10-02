@@ -30,15 +30,14 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / "libs" / "trustware"))
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from pydantic import ValidationError
 
-from pipeline_contracts import CertifiedModule
-from sealing import canonical_digest
+from libs.trustware.pipeline_contracts import CertifiedModule
+from libs.trustware.sealing import canonical_digest
 
 
 class SealInvalid(Exception):

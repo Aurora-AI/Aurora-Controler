@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any, Optional
 
-from dashboard_contracts import C0Dataset, SemanticField, SemanticModel
+from libs.trustware.dashboard_contracts import C0Dataset, SemanticField, SemanticModel
 
 _ENTITY_HINTS = ("cnpj", "cpf", "id", "codigo", "documento")
 _TEMPORAL_HINTS = ("data", "date", "mes", "ano", "periodo")

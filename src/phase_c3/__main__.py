@@ -7,13 +7,10 @@ from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
 _REPO = _HERE.parents[1]
-for _p in [str(_HERE), str(_REPO / "libs" / "trustware")]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
-from dashboard_contracts import MetricsReport, SemanticModel
-from spec_builder import build_dashboard_spec, validate_spec_self_contained
-from narrative import generate_narrative
+from libs.trustware.dashboard_contracts import MetricsReport, SemanticModel
+from phase_c3.spec_builder import build_dashboard_spec, validate_spec_self_contained
+from phase_c3.narrative import generate_narrative
 
 
 def main() -> None:

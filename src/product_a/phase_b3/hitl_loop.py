@@ -8,8 +8,8 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from product_a.trustware.pipeline_contracts import ComplianceEvent, SimulationAudit, StagedRuleGraph
-from simulation_engine import make_step, run_simulation
+from libs.trustware.pipeline_contracts import ComplianceEvent, SimulationAudit, StagedRuleGraph
+from product_a.phase_b3.simulation_engine import make_step, run_simulation
 
 # Tokens que encerram o loop
 _DONE_TOKENS = {"", "ok", "done", "confirmar", "pronto", "sair", "exit", "quit"}

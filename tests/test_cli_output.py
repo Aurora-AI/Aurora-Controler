@@ -3,11 +3,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in (REPO_ROOT / "src", REPO_ROOT / "src" / "product_a" / "trustware"):
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     CertifiedModule, DAGEdge, DAGNode, DomainModule, ExecutionDAG,
     FormulaPattern, FormulaRegistryMap, MismatchReport, NormalizedCell,
     NormalizedSheet, NormalizedWorkbookIR, PatternClass, ValidationResult,

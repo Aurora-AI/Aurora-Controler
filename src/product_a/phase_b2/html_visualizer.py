@@ -9,7 +9,7 @@ import json
 import logging
 from pathlib import Path
 
-from product_a.trustware.pipeline_contracts import GraphNodeType, StagedRuleGraph
+from libs.trustware.pipeline_contracts import GraphNodeType, StagedRuleGraph
 
 _log = logging.getLogger(__name__)
 

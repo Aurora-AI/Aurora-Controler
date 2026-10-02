@@ -3,17 +3,11 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "phase_c4",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from dashboard_contracts import (
+from libs.trustware.dashboard_contracts import (
     DashboardSpec, DataView, DashboardComponent, Layout, Resolution,
 )
-from html_render import render_html
+from phase_c4.html_render import render_html
 
 
 def _spec() -> DashboardSpec:

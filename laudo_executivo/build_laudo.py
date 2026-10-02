@@ -19,6 +19,7 @@ Padrões: template = EXRS_Template_Laudo_Executivo_v4.html (mesma pasta do scrip
 """
 import argparse
 import json
+import math
 import re
 import sys
 import unicodedata
@@ -33,6 +34,11 @@ VOCAB_PROIBIDO = [
 CAMPOS_NARRATIVOS = (
     "frase", "composicao", "soco", "custo_mensal", "gancho", "contexto",
     "titulo", "valor_display", "alarme", "motivo", "acao", "como", "cta",
+    # Spec v4 §13.6 — rótulos parametrizáveis do Ato 2 (identidade aditiva genérica):
+    # texto de cliente tanto quanto os campos acima, precisa da mesma varredura.
+    "col1_label", "col1_context", "col2_label", "col2_context",
+    "col3_label", "col3_context", "headline_html", "sub_html",
+    "axis_note_html", "recommendation_html", "value_label",
 )
 
 ERROS = []
@@ -78,6 +84,7 @@ def valida(d):
     if n != 3:
         erro(f"§2/§5 sangramentos devem ser exatamente 3 (encontrados: {n})")
 
+    refs_vistos: set[str] = set()
     for i, s in enumerate(d["sangramentos"]):
         for campo in ("id", "titulo", "valor_display", "soco", "evidencias",
                       "custo_mensal", "gancho"):
@@ -92,6 +99,15 @@ def valida(d):
             for j, it in enumerate(itens):
                 if not isinstance(it.get("valor"), (int, float)) or it["valor"] <= 0:
                     erro(f"§4.3 treemap_itens[{j}] de sangramento[{i}] sem 'valor' numérico > 0")
+        # §16.2 (QA Fase D2) — anexo_ref duplicado entre sangramentos faria o 2º
+        # card escapar em silêncio de Z1/Z2/Z3, que resolvem só o PRIMEIRO match
+        # do ref (`_sangramento_por_ref`).
+        ref = s.get("anexo_ref")
+        if ref:
+            if ref in refs_vistos:
+                erro(f"§16.1 sangramento[{i}].anexo_ref '{ref}' duplicado — cada seção do "
+                     f"anexo só pode ser referenciada por 1 card")
+            refs_vistos.add(ref)
 
     # §2 Ato 4 — a absolvição nunca é vazia
     if not d["honestidade"]:
@@ -141,6 +157,475 @@ def valida(d):
     caca_vocabulario(d)
 
 
+# ---------------------------------------------------------------- D1 — Anexo Vivo
+
+_TRADUCAO_EVIDENCIA = (
+    # (chave em DiscrepancyEvidence, frase humana)
+    ("cost_diverges_from_nf", "custo da venda diverge da nota fiscal de compra"),
+    ("store_systemic_pattern", "padrão de desconto repetido por 2+ vendedores da mesma loja"),
+    ("is_promo_flagged", "forma de pagamento registrada como promoção"),
+    ("sku_in_dead_stock", "produto está na lista de estoque parado"),
+    ("below_cost", "preço praticado abaixo do custo registrado na venda"),
+)
+
+
+def _fmt_src(aba, linhas, cap):
+    """Chave de rastreabilidade padronizada (Spec v4 §16.4): '<Aba> #<linha>...',
+    amostra com corte SEMPRE declarado — nunca silencioso."""
+    if not linhas:
+        return ""
+    ordenadas = sorted(int(r) for r in linhas)
+    mostradas = ordenadas[:cap]
+    texto = f"{aba} " + ", ".join(f"#{r}" for r in mostradas)
+    if len(ordenadas) > cap:
+        texto += f" (+{len(ordenadas) - cap})"
+    return texto
+
+
+def _traduz_evidencias(evidence):
+    return [frase for chave, frase in _TRADUCAO_EVIDENCIA if evidence.get(chave)]
+
+
+def build_anexo(report, cap=10):
+    """Fase D2, D1 — formatador determinístico: lê SOMENTE o `audit_report`
+    congelado (já com vereditos manuais fundidos, se houver — ver
+    `carregar_relatorio`), zero recálculo. Cada seção ausente do relatório (aba
+    Estoque sem dado, sem churn, etc.) simplesmente não aparece no anexo — fallback
+    honesto, nunca uma seção vazia fingindo dado que não existe."""
+    anexo = {"audit_report_generated_at": report.get("generated_at")}
+    am = report.get("advanced_metrics") or {}
+
+    # --- estoque_parado ---
+    dead_list = report.get("dead_stock") or []
+    if dead_list:
+        d = dead_list[0]
+        capital = d.get("sku_capital") or {}
+        descricoes = d.get("sku_descriptions") or {}
+        meses = d.get("sku_months_since") or {}
+        origem = d.get("sku_source_rows") or {}
+        itens = [
+            {
+                "sku": sku, "descricao": descricoes.get(sku),
+                "capital_preso": capital.get(sku, 0.0), "meses_parado": meses.get(sku),
+                "src": _fmt_src("Estoque", origem.get(sku, []), cap),
+            }
+            for sku in sorted(d.get("skus", []))
+        ]
+        anexo["estoque_parado"] = {"total": d.get("capital_frozen", 0.0), "itens": itens}
+
+    # --- fila_reativacao (Pilar 3: ordenada por aquecimento, R$ como desempate) ---
+    churn = report.get("churn_findings") or []
+    if churn:
+        def _safe_churn_sort_key(c):
+            r = c.get("silence_to_cycle_ratio")
+            v = c.get("historical_annual_value")
+            valid_r = r if isinstance(r, (int, float)) and math.isfinite(r) and r > 0 else float("inf")
+            valid_v = v if isinstance(v, (int, float)) and math.isfinite(v) else 0.0
+            return (valid_r, -valid_v)
+
+        ordenado = sorted(churn, key=_safe_churn_sort_key)
+        itens = [
+            {
+                "cliente": c["customer_id"], "ultima_compra": c.get("last_purchase"),
+                "ciclo_dias": c.get("avg_cadence_days"), "silencio_dias": c.get("days_since_last"),
+                "indice_aquecimento": c.get("silence_to_cycle_ratio"),
+                "valor_historico": c["historical_annual_value"],
+                "src": _fmt_src("Vendas", c.get("source_rows", []), cap),
+            }
+            for c in ordenado
+        ]
+        anexo["fila_reativacao"] = {
+            "total": sum(c["historical_annual_value"] for c in churn),
+            "clientes": len(churn), "itens": itens,
+        }
+
+    # --- vendedores (junção de 3 análises independentes: mix, corrosão, captura) ---
+    mix_list = am.get("seller_margin_mix") or []
+    corrosion_list = am.get("seller_margin_corrosion") or []
+    mix_by_key = {(m["store"], m["salesperson"]): m for m in mix_list}
+    corrosion_by_key = {(c["store"], c["salesperson"]): c for c in corrosion_list}
+    capture_by_seller = {sp["salesperson"]: sp for sp in report.get("salesperson_performance") or []}
+    chaves = sorted(set(mix_by_key) | set(corrosion_by_key))
+    if chaves:
+        itens = []
+        for store, salesperson in chaves:
+            m = mix_by_key.get((store, salesperson))
+            c = corrosion_by_key.get((store, salesperson))
+            sp = capture_by_seller.get(salesperson)
+            flags, notas = [], []
+            if m and m.get("is_margin_destructive"):
+                flags.append("destroi_margem")
+            if c and c.get("is_corrosive"):
+                flags.append("desconto_fora_da_curva")
+            if c and c.get("tainted_by_triage"):
+                notas.append("desconto vem de tabela cadastralmente errada — não imputável ao vendedor")
+            if sp and sp.get("low_capture_flag"):
+                flags.append("captura_baixa")
+            if sp and sp.get("has_sufficient_tenure") is False:
+                notas.append("vendedor em maturação (rampa) — não avaliado por volume")
+            mix_top = None
+            if m and m.get("mix"):
+                topo = m["mix"][0]
+                mix_top = {
+                    "categoria": topo["category"], "desvio_pp": topo["mix_deviation_pp"],
+                    "margem_categoria_pct": topo["category_margin_pct"],
+                }
+            fonte = m or c or {}
+            src_rows = (m or {}).get("sample_source_rows") or (c or {}).get("sample_source_rows") or []
+            itens.append({
+                "vendedor": salesperson, "loja": store,
+                "receita": fonte.get("total_revenue", 0.0),
+                "n_vendas": (m or {}).get("sample_size") or (c or {}).get("sample_size"),
+                "captura_pct": sp.get("capture_rate_pct") if sp else None,
+                "margem_pct": m.get("seller_margin_pct") if m else None,
+                "margem_loja_pct": m.get("store_margin_pct") if m else None,
+                "gap_pp": m.get("margin_gap_pp") if m else None,
+                "flags": flags, "notas": notas, "mix_top_desvio": mix_top,
+                "src": _fmt_src("Vendas", src_rows, cap),
+            })
+        anexo["vendedores"] = {"itens": itens}
+
+    # --- triagem_discrepancias ---
+    dt = am.get("discrepancy_triage")
+    if dt:
+        def _item_triagem(i):
+            return {
+                "id": i["id"], "sku": i["sku"], "descricao": i.get("sku_description"),
+                "loja": i["store"], "vendedor": i["salesperson"], "veredito": i.get("verdict"),
+                "veredito_origem": i.get("status"), "evidencias": _traduz_evidencias(i.get("evidence", {})),
+                "src": _fmt_src("Vendas", i.get("source_rows", []), cap),
+                # §16.2 Z3 — perda real da linha (None quando o item não disparou por
+                # below_cost; fallback honesto, nunca 0.0 fingido).
+                "perda_abaixo_custo": i.get("below_cost_loss_brl"),
+                # QA (achado de revisão) — flag pré-calculada no motor: única fonte
+                # da verdade sobre "conta no total agregado" (Z3/template leem isto,
+                # nenhum dos dois volta a comparar veredito=="below_cost_sale").
+                "perda_confirmada": i.get("below_cost_confirmed", False),
+            }
+        todos = list(dt.get("auto_classified") or []) + list(dt.get("manual_queue") or [])
+        anexo["triagem_discrepancias"] = {
+            "disparos": dt.get("triggered_count", 0),
+            "pendentes": len(dt.get("manual_queue") or []),
+            "itens": [_item_triagem(i) for i in todos],
+        }
+        # §16.2 Z3 — total omitido (não None) quando nenhum item disparou por custo:
+        # não há total a cruzar, e a checagem Z3 nem aciona (retrocompatível).
+        below_cost_total = dt.get("below_cost_total_brl")
+        if below_cost_total is not None:
+            anexo["triagem_discrepancias"]["total_abaixo_custo"] = below_cost_total
+
+    # --- metodologia ---
+    thresholds = report.get("thresholds") or {}
+    cleaning = report.get("cleaning") or {}
+    anexo["metodologia"] = {
+        "limiares": [{"nome": k, "valor": v} for k, v in sorted(thresholds.items())],
+        "limpeza": {
+            "linhas_lidas": cleaning.get("rows_read"), "aceitas": cleaning.get("rows_accepted"),
+            "descartes": cleaning.get("rows_discarded_by_reason", {}),
+            "podas_outlier": len(cleaning.get("values_winsorized") or []),
+        },
+    }
+    return anexo
+
+
+def build_team(report, cap=10):
+    """Fase E parte 1 — Ato 7: formatador determinístico que lê SOMENTE
+    `report["team_diagnostics"]` congelado, zero recálculo — mesmo espírito de
+    `build_anexo`. Cada seção (evasão/comissionamento/habilidade) ausente do
+    relatório (nenhum achado) simplesmente não aparece — fallback honesto.
+
+    Cada item de `evasao` ganha uma `chave` estável ("<vendedor>@<loja>") — é o
+    valor que `plano[].team_ref` referencia (§16.2 Z7); só evasão tem valor
+    monetário (`carteira_em_risco`), por isso só ela precisa ser referenciável."""
+    team = {}
+    td = report.get("team_diagnostics") or {}
+
+    evasao = td.get("flight_risk") or []
+    if evasao:
+        team["evasao"] = {"itens": [
+            {
+                "chave": f"{a['salesperson']}@{a['store']}",
+                "vendedor": a["salesperson"], "loja": a["store"],
+                "meses_avaliados": a.get("months_evaluated"),
+                "captura_trend_pp": a.get("capture_trend_pct"),
+                "desconto_trend_pp": a.get("discount_trend_pp"),
+                "ticket_trend_pct": a.get("ticket_trend_pct"),
+                "sinais": a.get("risk_flags", []),
+                "carteira_em_risco": a.get("carteira_em_risco_brl"),
+                "src": _fmt_src("Vendas", a.get("sample_source_rows", []), cap),
+            }
+            for a in evasao
+        ]}
+
+    comissionamento = td.get("incentive_misalignment") or []
+    if comissionamento:
+        team["comissionamento"] = {"itens": [
+            {
+                "vendedor": a["salesperson"], "loja": a["store"],
+                "base_comissao": a.get("commission_basis"), "achado_origem": a.get("linked_finding_type"),
+                "resumo_achado": a.get("linked_finding_summary"), "recomendacao": a.get("recommended_fix"),
+            }
+            for a in comissionamento
+        ]}
+
+    habilidade = td.get("skill_gaps") or []
+    if habilidade:
+        team["habilidade"] = {"itens": [
+            {
+                "vendedor": a["salesperson"], "loja": a["store"], "categoria": a.get("category"),
+                "desvio_mix_pp": a.get("mix_deviation_pp"), "margem_categoria_pct": a.get("category_margin_pct"),
+                "hipotese": a.get("hypothesis"), "e_proxy": a.get("is_proxy", True),
+                "lacuna_dado": a.get("data_gap"),
+            }
+            for a in habilidade
+        ]}
+
+    return team
+
+
+def carregar_relatorio(caminho_report, caminho_manual_review=None):
+    """Carrega o `audit_report` congelado e funde vereditos manuais (Fase C §3.4)
+    ANTES de derivar o anexo (Spec v4 §16.3). Import tardio do motor (só quando
+    --report é usado) — o caminho comum sem anexo não precisa de pandas/pydantic no
+    processo."""
+    src_path = Path(__file__).resolve().parent.parent / "src"
+    # sys.path removed
+    from product_b.oracle.commercial_auditor import apply_manual_review_verdicts
+    from product_b.oracle.forensic_contracts import ExecutiveAuditReport
+
+    report = ExecutiveAuditReport.model_validate(
+        json.loads(caminho_report.read_text(encoding="utf-8"))
+    )
+    if caminho_manual_review and caminho_manual_review.exists():
+        report = apply_manual_review_verdicts(report, caminho_manual_review)
+    return report.model_dump(mode="json")
+
+
+# ---------------------------------------------------------- D3 — Zero Contradição
+
+TOLERANCIA_ZERO_CONTRADICAO = 0.01
+
+
+def _todas_strings(obj):
+    """Todo valor string na árvore, em qualquer profundidade — a varredura de
+    'anexo' (§16.1) é deliberadamente mais ampla que `caca_vocabulario` (que só olha
+    CAMPOS_NARRATIVOS): uma promessa de anexo pode aparecer em QUALQUER texto."""
+    if isinstance(obj, str):
+        yield obj
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            yield from _todas_strings(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from _todas_strings(v)
+
+
+def _sangramento_por_ref(dados, ref):
+    for s in dados.get("sangramentos", []):
+        if s.get("anexo_ref") == ref:
+            return s
+    return None
+
+
+def _item_por_team_ref(dados, chave):
+    """Espelha `_sangramento_por_ref`, mas resolve contra `dados["team"]["evasao"]`
+    (Ato 7) em vez do `anexo` (Ato 6) — só evasão (E1) tem `chave`/valor monetário
+    referenciável; comissionamento/habilidade não têm R$ (§16.2 Z7)."""
+    team = dados.get("team") or {}
+    for item in (team.get("evasao") or {}).get("itens", []):
+        if item.get("chave") == chave:
+            return item
+    return None
+
+
+def valida_anexo_sintatico(dados, anexo_gerado):
+    """§16.1 — promessa de anexo sem anexo é laudo reprovado. Duas checagens
+    INDEPENDENTES (achado de teste: a segunda não pode depender da primeira —
+    um `anexo_ref` órfão é inválido mesmo que nenhum texto narrativo use a palavra
+    "anexo" literalmente):
+    1. Texto narrativo menciona "anexo" mas nenhum --report foi passado.
+    2. `anexo_ref` de um sangramento aponta pra seção que não existe no anexo
+       gerado — independente de qualquer menção textual."""
+    menciona = any("anexo" in _norm(s) for s in _todas_strings(dados))
+    if menciona and anexo_gerado is None:
+        erro(
+            "§16.1 o corpo menciona \"anexo\" mas nenhum --report foi passado "
+            "(nenhum anexo foi gerado) — passe --report ou remova a menção; "
+            "nunca promessa vazia"
+        )
+
+    if anexo_gerado is not None:
+        for i, s in enumerate(dados.get("sangramentos", [])):
+            ref = s.get("anexo_ref")
+            if ref and ref not in anexo_gerado:
+                erro(f"§16.1 sangramentos[{i}].anexo_ref='{ref}' não existe no anexo gerado")
+
+
+def _parse_valor_display(texto):
+    """Parser tolerante SÓ para a checagem Z4 (nunca inflar) — nunca fonte de
+    verdade. 'R$ 69 mil' -> 69000.0; 'R$ 5.101,24' -> 5101.24. None se ilegível."""
+    t = texto.lower().replace("r$", "").strip()
+    mult = 1000.0 if "mil" in t else 1.0
+    t = t.replace("mil", "").strip()
+    t = re.sub(r"[^\d,.\-]", "", t)
+    if not t:
+        return None
+    if "," in t:
+        t = t.replace(".", "").replace(",", ".")
+    try:
+        return float(t) * mult
+    except ValueError:
+        return None
+
+
+def valida_zero_contradicao(dados, anexo, report):
+    """§16.2 — o corpo É a soma do anexo. Cada checagem roda só quando os campos
+    de que precisa estão presentes (retrocompatível: AUDIT_DATA sem `valor`/
+    `total_risco`/anexo simplesmente não aciona nenhuma checagem daqui)."""
+    # Z1 — estoque parado: itens ≡ total do anexo ≡ card ≡ motor
+    if anexo and "estoque_parado" in anexo:
+        soma = sum(i["capital_preso"] for i in anexo["estoque_parado"]["itens"])
+        total_anexo = anexo["estoque_parado"]["total"]
+        if abs(soma - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z1: soma dos itens de estoque_parado ({soma:.2f}) != "
+                 f"anexo.estoque_parado.total ({total_anexo:.2f})")
+        card = _sangramento_por_ref(dados, "estoque_parado")
+        if card and "valor" in card and abs(card["valor"] - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z1: card '{card.get('titulo', card.get('id'))}'.valor "
+                 f"({card['valor']:.2f}) != anexo.estoque_parado.total ({total_anexo:.2f})")
+        if report is not None:
+            motor = (report.get("dead_stock") or [{}])
+            motor_total = motor[0].get("capital_frozen") if motor else None
+            if motor_total is not None and abs(motor_total - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z1: audit_report.dead_stock.capital_frozen ({motor_total:.2f}) "
+                     f"!= anexo.estoque_parado.total ({total_anexo:.2f})")
+
+    # Z2 — fila de reativação: itens ≡ total ≡ card
+    if anexo and "fila_reativacao" in anexo:
+        soma = sum(i["valor_historico"] for i in anexo["fila_reativacao"]["itens"])
+        total_anexo = anexo["fila_reativacao"]["total"]
+        if abs(soma - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z2: soma da fila_reativacao ({soma:.2f}) != "
+                 f"anexo.fila_reativacao.total ({total_anexo:.2f})")
+        card = _sangramento_por_ref(dados, "fila_reativacao")
+        if card and "valor" in card and abs(card["valor"] - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z2: card '{card.get('titulo', card.get('id'))}'.valor "
+                 f"({card['valor']:.2f}) != anexo.fila_reativacao.total ({total_anexo:.2f})")
+        if report is not None:
+            motor_total = sum(c.get("historical_annual_value", 0.0) for c in (report.get("churn_findings") or []))
+            if abs(motor_total - total_anexo) > TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z2: soma de audit_report.churn_findings.historical_annual_value "
+                     f"({motor_total:.2f}) != anexo.fila_reativacao.total ({total_anexo:.2f})")
+
+    # Z3 — sangramento vindo da triagem (venda abaixo do custo): itens ≡ total ≡ card ≡ motor
+    # Soma só itens com perda_confirmada=True (flag do motor — item reclassificado
+    # para suspected_cadastral_error tem perda_abaixo_custo preenchida, fato honesto
+    # por linha, mas perda_confirmada=False; não entra no total, mesmo princípio de
+    # §15.5). Lê a flag, nunca recompara veredito=="below_cost_sale" aqui de novo.
+    triagem = (anexo or {}).get("triagem_discrepancias") or {}
+    total_abaixo_custo = triagem.get("total_abaixo_custo")
+    if total_abaixo_custo is not None:
+        soma = sum(
+            i["perda_abaixo_custo"] for i in triagem.get("itens", [])
+            if i.get("perda_confirmada") and i.get("perda_abaixo_custo") is not None
+        )
+        if abs(soma - total_abaixo_custo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z3: soma de perda_abaixo_custo nos itens ({soma:.2f}) != "
+                 f"anexo.triagem_discrepancias.total_abaixo_custo ({total_abaixo_custo:.2f})")
+        card = _sangramento_por_ref(dados, "triagem_discrepancias")
+        if card and "valor" in card and abs(card["valor"] - total_abaixo_custo) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z3: card '{card.get('titulo', card.get('id'))}'.valor "
+                 f"({card['valor']:.2f}) != anexo.triagem_discrepancias.total_abaixo_custo "
+                 f"({total_abaixo_custo:.2f})")
+        if report is not None:
+            motor_total = ((report.get("advanced_metrics") or {}).get("discrepancy_triage") or {}).get(
+                "below_cost_total_brl"
+            )
+            if motor_total is not None and abs(motor_total - total_abaixo_custo) > TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z3: audit_report...discrepancy_triage.below_cost_total_brl "
+                     f"({motor_total:.2f}) != anexo.triagem_discrepancias.total_abaixo_custo "
+                     f"({total_abaixo_custo:.2f})")
+
+    # Z4 — a manchete é a soma dos sangramentos; o display nunca infla o fato
+    manchete = dados.get("manchete", {})
+    total_risco = manchete.get("total_risco")
+    if total_risco is not None:
+        sangramentos_com_valor = [s["valor"] for s in dados.get("sangramentos", []) if "valor" in s]
+        if sangramentos_com_valor:
+            soma_cards = sum(sangramentos_com_valor)
+            if abs(total_risco - soma_cards) > TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z4: manchete.total_risco ({total_risco:.2f}) != "
+                     f"soma dos sangramentos ({soma_cards:.2f})")
+        display = manchete.get("total_risco_display")
+        if display:
+            valor_display = _parse_valor_display(display)
+            if valor_display is not None and valor_display > total_risco + TOLERANCIA_ZERO_CONTRADICAO:
+                erro(f"§16.2 Z4: total_risco_display ('{display}' ≈ {valor_display:.2f}) "
+                     f"excede o fato (total_risco={total_risco:.2f}) — display nunca infla")
+
+    # Z5 — plano vinculado a um sangramento precisa bater o mesmo valor
+    for i, p in enumerate(dados.get("plano", [])):
+        ref = p.get("sangramento_ref")
+        if not ref:
+            continue
+        card = _sangramento_por_ref(dados, ref)
+        impacto = p.get("impacto")
+        if not isinstance(impacto, (int, float)):
+            continue  # já reprovado por valida() (§11); Z5 não avalia tipo inválido
+        if card and "valor" in card and abs(impacto - card["valor"]) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§16.2 Z5: plano[{i}].impacto ({impacto:.2f}) != "
+                 f"sangramento '{ref}'.valor ({card['valor']:.2f})")
+
+    # Z6 — contagem exibida nunca diverge do detalhamento
+    if anexo and "fila_reativacao" in anexo:
+        declarado = anexo["fila_reativacao"]["clientes"]
+        real = len(anexo["fila_reativacao"]["itens"])
+        if declarado != real:
+            erro(f"§16.2 Z6: fila_reativacao.clientes declarado={declarado} "
+                 f"mas o detalhamento tem {real} itens")
+
+    # Z7 — plano vinculado a um item de evasão (Ato 7) precisa bater a mesma
+    # carteira em risco. Mesmo espírito de Z5, mas resolve contra `team.evasao`
+    # (Ato 7) em vez de `sangramentos`/`anexo` (Ato 6) — team_ref é o mecanismo
+    # (§16.2bis/§17), nunca `nature` (achado de arquitetura, ver §3.1 da OS).
+    for i, p in enumerate(dados.get("plano", [])):
+        team_ref = p.get("team_ref")
+        if not team_ref:
+            continue
+        item = _item_por_team_ref(dados, team_ref)
+        impacto = p.get("impacto")
+        if not isinstance(impacto, (int, float)):
+            continue  # já reprovado por valida() (§11); Z7 não avalia tipo inválido
+        if item and "carteira_em_risco" in item and abs(
+            impacto - item["carteira_em_risco"]
+        ) > TOLERANCIA_ZERO_CONTRADICAO:
+            erro(f"§17 Z7: plano[{i}].impacto ({impacto:.2f}) != "
+                 f"team.evasao['{team_ref}'].carteira_em_risco ({item['carteira_em_risco']:.2f})")
+        if item is None:
+            erro(f"§17 Z7: plano[{i}].team_ref '{team_ref}' não resolve para nenhum "
+                 f"item em team.evasao — referência órfã")
+
+    # Z8 — resolução de menção do Ato 7 (escopo desta OS: só evasão/incentivo/
+    # hipótese — capacidade/escalonamento são E4/E5, fora desta OS; varrê-los aqui
+    # reprovaria por engano qualquer menção futura antes de E4/E5 existirem).
+    # Vocabulário SEM acento (mesma convenção de VOCAB_PROIBIDO — `_norm()` já
+    # normaliza a string comparada removendo diacríticos, então uma entrada
+    # acentuada aqui nunca poderia casar) e com fronteira de palavra (mesmo padrão
+    # `\b` de `caca_vocabulario`), nunca substring solta.
+    team = dados.get("team")
+    vocab_ato7 = ("evasao", "incentivo", "hipotese")
+    menciona_ato7 = any(
+        any(re.search(r"\b" + re.escape(v), _norm(s)) for v in vocab_ato7)
+        for s in _todas_strings(dados)
+    )
+    if menciona_ato7 and team is None:
+        erro(
+            "§17 Z8: o corpo menciona evasão/incentivo/hipótese mas nenhum --report "
+            "foi passado (Ato 7 não foi gerado) — passe --report ou remova a menção; "
+            "nunca promessa vazia"
+        )
+
+
 def injeta(template_html, dados):
     """Substitui APENAS o conteúdo do bloco AUDIT_DATA (Spec §13.1)."""
     padrao = re.compile(
@@ -159,15 +644,51 @@ def main():
     ap.add_argument("dados", help="caminho do audit_data.json da rodada")
     ap.add_argument("-t", "--template", default=None, help="template mestre (padrão: v4 na pasta do script)")
     ap.add_argument("-o", "--saida", default=None, help="arquivo HTML de saída")
+    ap.add_argument("--report", default=None,
+                     help="audit_report_<rodada>.json congelado — habilita o Anexo Vivo (D1) "
+                          "e o validador Zero Contradição (D3, Spec v4 §16)")
+    ap.add_argument("--manual-review", default=None,
+                     help="manual_review_<rodada>.json (vereditos humanos da triagem, Spec v4 §15.6) "
+                          "— fundido ANTES de derivar o anexo. Padrão: rodadas/manual_review_<rodada>.json, "
+                          "se existir")
     args = ap.parse_args()
 
+    ERROS.clear()  # defesa contra reentrância (main() chamado 2x no mesmo processo)
     caminho_dados = Path(args.dados)
     template = Path(args.template) if args.template else \
         Path(__file__).parent / "EXRS_Template_Laudo_Executivo_v4.html"
 
     dados = json.loads(caminho_dados.read_text(encoding="utf-8"))
 
+    report = None
+    anexo = None
+    if args.report:
+        caminho_report = Path(args.report)
+        if args.manual_review:
+            caminho_manual_review = Path(args.manual_review)
+        else:
+            caminho_manual_review = caminho_report.parent / f"manual_review_{dados.get('rodada')}.json"
+        report = carregar_relatorio(
+            caminho_report, caminho_manual_review if caminho_manual_review.exists() else None,
+        )
+        # Trava anti-fusão-errada (mesmo espírito de ManualReviewMismatchError/§15.6):
+        # se o AUDIT_DATA declarar de qual relatório o anexo deveria vir, os dois
+        # precisam bater — nunca funde o anexo de uma rodada errada em silêncio.
+        declarado = dados.get("audit_report_generated_at")
+        if declarado is not None and declarado != report.get("generated_at"):
+            sys.exit(
+                f"ERRO: audit_data declara audit_report_generated_at={declarado!r}, "
+                f"mas --report tem generated_at={report.get('generated_at')!r} — "
+                f"relatório de outra rodada, anexo NÃO gerado."
+            )
+        cap = (report.get("thresholds") or {}).get("provenance_sample_cap", 10)
+        anexo = build_anexo(report, cap=cap)
+        dados["anexo"] = anexo
+        dados["team"] = build_team(report, cap=cap)
+
     valida(dados)
+    valida_anexo_sintatico(dados, anexo)
+    valida_zero_contradicao(dados, anexo, report)
     if ERROS:
         print("LAUDO REPROVADO — violações da Spec v4 (nada foi gerado):", file=sys.stderr)
         for e in ERROS:
@@ -183,6 +704,13 @@ def main():
     print(f"OK — laudo no padrão EXRS gerado: {saida}")
     print(f"     {len(dados['sangramentos'])} sangramentos · {len(dados['plano'])} ações · "
           f"{len(dados['honestidade'])} alarmes descartados · 0 violações da lei.")
+    if anexo:
+        secoes = [k for k in anexo if k != "audit_report_generated_at"]
+        print(f"     Anexo Vivo: {len(secoes)} seções ({', '.join(secoes)}) · Zero Contradição OK.")
+    if args.report:
+        secoes_team = list(dados.get("team") or {})
+        if secoes_team:
+            print(f"     Física da Equipe: {len(secoes_team)} seções ({', '.join(secoes_team)}).")
 
 
 if __name__ == "__main__":

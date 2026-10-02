@@ -2,35 +2,21 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-for mod_path in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "kernel" / "phase_a0",
-    REPO_ROOT / "src" / "kernel" / "phase_a1",
-    REPO_ROOT / "src" / "kernel" / "phase_a1_5",
-    REPO_ROOT / "src" / "product_a" / "phase_a2",
-    REPO_ROOT / "src" / "product_a" / "phase_a2_5",
-    REPO_ROOT / "src" / "product_a" / "phase_a3",
-    REPO_ROOT / "src" / "product_a" / "phase_a4",
-    REPO_ROOT / "src" / "orchestrator",
-]:
-    p = str(mod_path)
-    if p not in sys.path:
-        sys.path.insert(0, p)
+# sys.path injection removido
 
-from storage_manager import StorageManager
-from classifier import classify_workbook
-from extractor import extract_structure
-from normalizer import normalize_workbook
-from graph_builder import build_dag
-from pattern_registry import classify_workbook as classify_patterns, build_registry
-from gabarito_extractor import extract_gabarito
-from runner import validate_workbook
-from repair_orchestrator import identify_repair_candidates
-from product_a.trustware.pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
-from certification_gate import verify_certification, CertificationGateError
-from factory_events import trace, set_job, factory_tool_unavailable
-from sealing import seal_module, load_private_key, SigningKeyUnavailable
+from orchestrator.storage_manager import StorageManager
+from kernel.phase_a0.classifier import classify_workbook
+from kernel.phase_a1.extractor import extract_structure
+from kernel.phase_a1_5.normalizer import normalize_workbook
+from product_a.phase_a2.graph_builder import build_dag
+from product_a.phase_a2_5.pattern_registry import classify_workbook as classify_patterns, build_registry
+from product_a.phase_a4.gabarito_extractor import extract_gabarito
+from product_a.phase_a4.runner import validate_workbook
+from product_a.phase_a4.repair_orchestrator import identify_repair_candidates
+from libs.trustware.pipeline_contracts import CertifiedModule, CompileDecision, DomainModule, WorkbookClass
+from libs.trustware.certification_gate import verify_certification, CertificationGateError
+from libs.trustware.factory_events import trace, set_job, factory_tool_unavailable
+from libs.trustware.sealing import seal_module, load_private_key, SigningKeyUnavailable
 
 class UnsupportedInAsyncMode(Exception):
     pass
@@ -102,7 +88,7 @@ def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: boo
             translation_metadata={"total_unresolved": unresolved_count, "total_functions": 0}
         )
     else:
-        from translator import translate_workbook
+        from product_a.phase_a3.translator import translate_workbook
         domain = translate_workbook(norm_ir, fmap)
 
     storage.write_artifact(stem, "a3_domain", domain)
@@ -116,7 +102,7 @@ def orchestrate_pipeline(xlsx_path: Path, storage: StorageManager, skip_llm: boo
 
     results = validate_workbook(dag, domain, fmap, norm_ir, gabarito, missing_cache)
     passed = [r for r in results if r.passed]
-    skipped = [r for r in results if r.status == "SKIPPED_NO_CACHE"]
+    skipped = [r for r in results if r.status in ("SKIPPED_NO_CACHE", "SKIPPED_EXTERNAL_REF", "CYCLIC_SKIP")]
     evaluated = len(results) - len(skipped)
     parity = len(passed) / evaluated if evaluated > 0 else 1.0
 

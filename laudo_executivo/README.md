@@ -12,6 +12,13 @@ O entregável oficial da fase 1 é o **HTML standalone** enviado ao cliente.
 | `build_laudo.py` | Gerador determinístico: valida o dado contra a Spec e injeta no template. Sem LLM. |
 | `rodadas/` | Um `audit_data_<...>.json` congelado por rodada + o laudo gerado. |
 
+## Rodadas de referência
+
+| Rodada | Fixture | Papel |
+|---|---|---|
+| `v3` | `tests/fixtures/consultoria_real_test.xlsx` | Dado real de reunião — golden master trava o laudo exato apresentado ao cliente. |
+| `beta` | `tests/fixtures/rede_oticas_beta_test.xlsx` | Teste de aceite adversarial — aba Gabarito com 7 "pegadinhas" plantadas contra o motor (sangria isolada, tabela desalinhada/E5, vendedor fantasma, promoção legítima, divergência de custo NF/E4, estoque morto, completude baixa). Também a rodada que validou a generalização do Ato 2 (§13.6) — não tem história de máscara produto×serviço, usou a identidade aditiva do erro cadastral do ARP-013 no lugar. |
+
 ## Gerar um laudo
 
 ```bash
@@ -33,6 +40,13 @@ as violações por seção da lei. Nada é gerado.
 
 ## Regras de ouro
 
-- Forma nunca muda por rodada/cliente (Spec §13). Evolução = Spec v5 + template novo.
+- Forma nunca muda por rodada/cliente (Spec §13). Estrutura nova (novo gráfico, novo
+  Ato) = Spec v5 + template novo. Generalizar um rótulo já existente para caber uma
+  história real diferente (ex.: Ato 2 §13.6) é permitido SEM bump de versão, desde
+  que seja um campo opcional com default = comportamento atual — retrocompatibilidade
+  é o teste, não o número da versão.
 - Campo sem dado real = `null` → o template renderiza fallback honesto. Nunca estimar.
+- Nunca force uma rodada numa história que o dado não sustenta (§1.5/§13.6) — se o
+  Ato 2 não tem paradoxo real, reaproveite os rótulos para a identidade aditiva que
+  existe, ou omita o Ato. Nunca invente a máscara produto×serviço que não está lá.
 - Fase 2 (declarada na Spec §14.4): portar para o `aurora-frontend` lendo o mesmo JSON.

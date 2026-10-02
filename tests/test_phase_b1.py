@@ -5,13 +5,9 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for p in [
-    REPO_ROOT / "src" / "product_a" / "phase_b1",
-    REPO_ROOT / "src" / "product_a" / "trustware",
-]:
-    sys.path.insert(0, str(p))
+# sys.path loop removido
 
-from product_a.trustware.pipeline_contracts import InputParameter, OutputMetric, IntentCapture
+from libs.trustware.pipeline_contracts import InputParameter, OutputMetric, IntentCapture
 
 
 def test_input_parameter_model():
@@ -67,7 +63,7 @@ def test_intent_capture_timestamp_auto():
 
 # ── context_builder ────────────────────────────────────────────────────────
 
-from context_builder import identify_input_nodes, identify_output_nodes, build_workbook_summary
+from product_a.phase_b1.context_builder import identify_input_nodes, identify_output_nodes, build_workbook_summary
 
 
 _SAMPLE_DAG = {
@@ -142,7 +138,7 @@ def test_build_workbook_summary_output_candidates_have_formula():
 
 # ── intent_extractor ───────────────────────────────────────────────────────
 
-from intent_extractor import extract_intent, build_extraction_prompt
+from product_a.phase_b1.intent_extractor import extract_intent, build_extraction_prompt
 
 
 def _mock_completion(json_payload: dict):
@@ -174,7 +170,7 @@ def test_extract_intent_returns_intent_capture():
         "input_candidates": [{"node_id": "S!A1", "current_value": 0.1}],
         "output_candidates": [{"node_id": "S!C1", "formula": "=B1*2"}],
     }
-    with patch("intent_extractor.completion", return_value=_mock_completion(_SAMPLE_INTENT_JSON)):
+    with patch('product_a.phase_b1.intent_extractor.completion', return_value=_mock_completion(_SAMPLE_INTENT_JSON)):
         result = extract_intent(messages=messages, summary=summary)
 
     assert isinstance(result, IntentCapture)
@@ -193,7 +189,7 @@ def test_extract_intent_handles_missing_optional_fields():
         "input_parameters": [{"node_id": "S!A1", "label": "Receita"}],
         "output_metrics": [{"node_id": "S!C1", "label": "Lucro"}],
     }
-    with patch("intent_extractor.completion", return_value=_mock_completion(payload)):
+    with patch('product_a.phase_b1.intent_extractor.completion', return_value=_mock_completion(payload)):
         result = extract_intent(
             messages=[{"role": "user", "content": "analisar lucro"}],
             summary={"workbook_name": "WB", "sheets": [], "input_candidates": [], "output_candidates": []},
@@ -211,7 +207,7 @@ def test_build_extraction_prompt_contains_workbook_name():
 
 # ── chat_loop ──────────────────────────────────────────────────────────────
 
-from chat_loop import build_system_prompt, _is_done_signal
+from product_a.phase_b1.chat_loop import build_system_prompt, _is_done_signal
 
 
 def test_is_done_signal_detects_keywords():
@@ -237,7 +233,7 @@ def test_build_system_prompt_contains_workbook_name():
 
 
 def test_run_chat_with_mocked_llm(monkeypatch):
-    from chat_loop import run_chat
+    from product_a.phase_b1.chat_loop import run_chat
 
     inputs = iter(["quero simular o impacto do desconto no lucro", "ok"])
     monkeypatch.setattr("builtins.input", lambda _: next(inputs))
@@ -257,8 +253,8 @@ def test_run_chat_with_mocked_llm(monkeypatch):
         call_count["n"] += 1
         return mock_chat_resp if call_count["n"] == 1 else mock_extract_resp
 
-    with patch("chat_loop.completion", side_effect=mock_completion):
-        with patch("intent_extractor.completion", return_value=mock_extract_resp):
+    with patch('product_a.phase_b1.chat_loop.completion', side_effect=mock_completion):
+        with patch('product_a.phase_b1.intent_extractor.completion', return_value=mock_extract_resp):
             result = run_chat(
                 summary={
                     "workbook_name": "Pasta1",
@@ -277,13 +273,11 @@ def test_phase_b1_package_imports_cleanly():
     """O pacote phase_b1 importa sem erros."""
     import importlib
     import sys as _sys
-    _src = str(REPO_ROOT / "src")
-    if _src not in _sys.path:
-        _sys.path.insert(0, _src)
+    # sys.path injection removed
     import product_a.phase_b1
-    import context_builder
-    import intent_extractor
-    import chat_loop
+    from product_a.phase_b1 import context_builder
+    from product_a.phase_b1 import intent_extractor
+    from product_a.phase_b1 import chat_loop
     assert True
 
 

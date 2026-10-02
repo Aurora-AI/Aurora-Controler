@@ -84,11 +84,26 @@ def classify_workbook(filepath: Path) -> CompatibilityReport:
             escalate_reasons=[f"Failed to load workbook: {str(e)}"]
         )
     
-    # Detecção real de VBA (vba_archive contém todo o zip se keep_vba=True)
+    # Detecção real de VBA (vba_archive contém todo o zip se keep_vba=True).
+    #
+    # `keep_vba=True` faz o openpyxl manter um SEGUNDO ZipFile (`wb.vba_archive`,
+    # aberto em modo 'a' sobre um BytesIO) além do arquivo principal. `wb.close()`
+    # fecha só o principal — o `__del__` do vba_archive roda depois, tenta
+    # `fp.seek(start_dir)` para gravar o índice central do zip e estoura
+    # "ValueError: I/O operation on closed file" como *unraisable* no coletor de
+    # lixo. Não derruba o processo (é ignorado), mas suja a saída de qualquer
+    # comando e vira `PytestUnraisableExceptionWarning` na suíte. Como só
+    # precisamos do `namelist()`, extraímos a resposta aqui e fechamos o handle
+    # imediatamente — nunca deixamos os dois zips vivos ao mesmo tempo.
     has_vba = False
-    if getattr(wb, 'vba_archive', None):
-        has_vba = 'xl/vbaProject.bin' in wb.vba_archive.namelist()
-    
+    vba_archive = getattr(wb, 'vba_archive', None)
+    if vba_archive is not None:
+        try:
+            has_vba = 'xl/vbaProject.bin' in vba_archive.namelist()
+        finally:
+            vba_archive.close()
+            wb.vba_archive = None
+
     has_external_links = False
     classification = WorkbookClass.SUPPORTED
     construct_details: list[dict] = []

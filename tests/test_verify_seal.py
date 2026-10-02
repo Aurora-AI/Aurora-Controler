@@ -13,13 +13,11 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "src" / "product_a" / "trustware"))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     CertifiedModule, DomainModule, MismatchReport, ValidationResult,
 )
-from sealing import seal_module
+from libs.trustware.sealing import seal_module
 from verify_seal import SealInvalid, verify_artifact
 
 

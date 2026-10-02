@@ -3,14 +3,8 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _p in [
-    REPO_ROOT / "src" / "product_a" / "trustware",
-    REPO_ROOT / "src" / "phase_c1",
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
-from dashboard_contracts import SemanticField, SemanticModel
+from libs.trustware.dashboard_contracts import SemanticField, SemanticModel
 
 
 def test_semantic_field_model():
@@ -35,8 +29,8 @@ def test_semantic_model_roundtrip():
 
 
 # --- Task 9: semantic ---
-from dashboard_contracts import C0Dataset, IngestionStrategy, DetectedStructure, ValidationSummary
-from semantic import infer_type, infer_semantic_role, build_semantic_model
+from libs.trustware.dashboard_contracts import C0Dataset, IngestionStrategy, DetectedStructure, ValidationSummary
+from phase_c1.semantic import infer_type, infer_semantic_role, build_semantic_model
 
 
 def _c0_fixture() -> C0Dataset:

@@ -1,0 +1,9 @@
+{
+  "_aviso": "Este arquivo contém identidades REAIS de clientes — NÃO enviar a serviços externos/nuvem. Use apenas para tradução local no ecrã.",
+  "identity_map": {
+    "Carlos Silva": "Client_A",
+    "Ana Costa": "Client_B",
+    "Roberto M.": "Client_C",
+    "Marcos Lima": "Client_D"
+  }
+}

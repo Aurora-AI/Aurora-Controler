@@ -1,0 +1,100 @@
+{
+  "rodada": "v1",
+  "cliente": "Retail Hostile",
+  "manchete": {
+    "total_risco": 0.0,
+    "total_risco_display": "R$ 0",
+    "frase": "Operação sólida — sem sangramentos críticos detectados.",
+    "composicao": "Nenhum cliente perdido, estoque morto material ou margem mascarada identificados."
+  },
+  "paradoxo": {
+    "loja": "Geral",
+    "produto": 0,
+    "servico": 0,
+    "total": 0,
+    "contexto": "Nenhuma divergência detectada",
+    "controle": {
+      "loja": "Controle",
+      "produto": 0,
+      "frase": "Sem mascaramento de resultados."
+    }
+  },
+  "sangramentos": [
+    {
+      "id": "cap-lucro",
+      "titulo": "Lucro Fantasma",
+      "valor": 0,
+      "valor_display": "R$ 0",
+      "soco": "Nenhum produto vendido com margem negativa.",
+      "evidencias": [
+        "A operação está vendendo todos os produtos acima do custo.",
+        "Não há divergência material de preços.",
+        "Margens auditadas e aprovadas."
+      ],
+      "custo_mensal": "Não há impacto.",
+      "gancho": "Manter a consistência de margem."
+    },
+    {
+      "id": "cap-clientes",
+      "titulo": "Clientes Evaporando",
+      "valor": 0,
+      "valor_display": "R$ 0",
+      "soco": "Nenhum cliente crítico abandonou a marca.",
+      "evidencias": [
+        "Base de clientes saudável.",
+        "Frequência mantida dentro dos ciclos normais.",
+        "Zero impacto detectado."
+      ],
+      "custo_mensal": "Zero perda.",
+      "gancho": "Campanhas normais continuam valendo."
+    },
+    {
+      "id": "cap-caixa",
+      "titulo": "Caixa Preso",
+      "valor": 0,
+      "valor_display": "R$ 0",
+      "soco": "Capital girando perfeitamente.",
+      "evidencias": [
+        "Zero produtos mortos.",
+        "Estoque otimizado.",
+        "Nenhum capital bloqueado."
+      ],
+      "custo_mensal": "Nenhum valor preso.",
+      "gancho": "Manter a operação enxuta."
+    }
+  ],
+  "honestidade": [
+    {
+      "alarme": "Vendedores com números baixos",
+      "motivo": "estão em início de rampa (menos de 180 dias) — cedo demais para julgar."
+    }
+  ],
+  "plano": [
+    {
+      "acao": "Manter consistência de margem",
+      "impacto": 0,
+      "impacto_display": "R$ 0",
+      "cenario": false,
+      "sangramento_ref": "cap-lucro",
+      "como": "Continuar operação normal."
+    },
+    {
+      "acao": "Monitorar base ativa",
+      "impacto": 0,
+      "impacto_display": "R$ 0",
+      "cenario": false,
+      "sangramento_ref": "cap-clientes",
+      "como": "Continuar operação normal."
+    },
+    {
+      "acao": "Garantir giro de estoque",
+      "impacto": 0,
+      "impacto_display": "R$ 0",
+      "cenario": false,
+      "sangramento_ref": "cap-caixa",
+      "como": "Continuar operação normal."
+    }
+  ],
+  "cta": "Falar sobre a implantação",
+  "procedencia": "Todos os valores extraídos do audit_report congelado da rodada, com procedência linha a linha · Fato medido ≠ cenário projetado, sempre rotulado · Como calculamos → anexo de metodologia."
+}

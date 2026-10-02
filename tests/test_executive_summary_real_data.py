@@ -47,7 +47,9 @@ def test_executive_summary_natures_are_never_summed_together():
 def test_discarded_alarms_only_uses_categories_the_engine_actually_checks():
     report = run_audit(FIXTURE)
     categories = {a.category for a in report.executive_summary.discarded_alarms}
-    assert categories <= {"salesperson_ramp", "store_cold_start"}
+    # Fase E, E2 — commission_basis_unknown sempre aparece com o threshold default
+    # ("unknown"), somado às duas categorias pré-existentes.
+    assert categories <= {"salesperson_ramp", "store_cold_start", "commission_basis_unknown"}
 
 
 def test_action_plan_is_sorted_by_tier_then_impact_descending():

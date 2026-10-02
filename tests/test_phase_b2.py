@@ -4,13 +4,9 @@ import json
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for p in [
-    REPO_ROOT / "src" / "product_a" / "phase_b2",
-    REPO_ROOT / "src" / "product_a" / "trustware",
-]:
-    sys.path.insert(0, str(p))
+# sys.path loop removido
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     GraphNodeType, GraphNode, GraphEdge, StagedRuleGraph,
     InputParameter, OutputMetric, IntentCapture,
 )
@@ -104,7 +100,7 @@ def test_staged_rule_graph_timestamp_iso_format():
 
 # ── graph_assembler ───────────────────────────────────────────────────────
 
-from graph_assembler import build_graph, _get_label, _filter_nodes
+from product_a.phase_b2.graph_assembler import build_graph, _get_label, _filter_nodes
 
 
 _SAMPLE_DAG = {
@@ -202,7 +198,7 @@ def test_build_graph_node_has_current_value():
 
 # ── html_visualizer ───────────────────────────────────────────────────────
 
-from html_visualizer import generate_html, _node_color
+from product_a.phase_b2.html_visualizer import generate_html, _node_color
 
 
 _SAMPLE_GRAPH = StagedRuleGraph(
@@ -265,7 +261,7 @@ def test_generate_html_includes_edges():
 
 
 def test_generate_html_save_to_file(tmp_path):
-    from html_visualizer import save_html
+    from product_a.phase_b2.html_visualizer import save_html
     out = tmp_path / "graph.html"
     save_html(_SAMPLE_GRAPH, out)
     assert out.exists()
@@ -277,20 +273,18 @@ def test_generate_html_save_to_file(tmp_path):
 
 def test_phase_b2_package_imports_cleanly():
     import sys as _sys
-    _src = str(REPO_ROOT / "src")
-    if _src not in _sys.path:
-        _sys.path.insert(0, _src)
+    # sys.path injection removed
     import product_a.phase_b2
-    import graph_assembler
-    import html_visualizer
+    from product_a.phase_b2 import graph_assembler
+    from product_a.phase_b2 import html_visualizer
     assert True
 
 
 def test_full_pipeline_mock(tmp_path):
     """Pipeline completo: DAG + norm_ir + intent → HTML + JSON."""
     import json
-    from graph_assembler import build_graph
-    from html_visualizer import save_html
+    from product_a.phase_b2.graph_assembler import build_graph
+    from product_a.phase_b2.html_visualizer import save_html
 
     dag_file = tmp_path / "test_a2_dag.json"
     norm_file = tmp_path / "test_a15_norm.json"

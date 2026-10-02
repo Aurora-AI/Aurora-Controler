@@ -6,11 +6,10 @@ from pathlib import Path
 
 # Garantir que o repositório esteja no path
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
 
 from kernel.phase_a0.classifier import classify_workbook, classify_formula
-from product_a.trustware.pipeline_contracts import WorkbookClass, CompileDecision
+from libs.trustware.pipeline_contracts import WorkbookClass, CompileDecision
 import openpyxl
 import tempfile
 
@@ -99,6 +98,39 @@ def test_compile_decision_mapping():
     assert CompileDecision.PROCEED.value == "proceed"
     assert CompileDecision.PROCEED_WITH_RESTRICTIONS.value == "proceed_with_restrictions"
     assert CompileDecision.ESCALATE.value == "escalate"
+
+
+def test_classify_workbook_nao_deixa_handle_zip_vazado(tmp_path):
+    """Regressão (30/07/2026, planilha hostil `retail_hostile_test_v1.xlsx`):
+    `classify_workbook` abre o workbook com `keep_vba=True`, o que faz o openpyxl
+    manter um SEGUNDO ZipFile (`wb.vba_archive`, modo 'a' sobre um BytesIO). O
+    `wb.close()` fechava só o principal; o `__del__` do vba_archive rodava depois no
+    coletor de lixo, tentava `fp.seek()` no arquivo já fechado e cuspia
+    `ValueError: I/O operation on closed file` como *unraisable*.
+
+    Não derrubava o processo (é "Exception ignored"), mas sujava a saída de TODO
+    comando `exrs diagnose` e virava `PytestUnraisableExceptionWarning` na suíte.
+    Este teste captura o hook de unraisable e força o GC — se o handle voltar a
+    vazar, falha aqui em vez de virar ruído silencioso na saída do cliente."""
+    import gc
+
+    caminho = _make_workbook({"Dados": [("A1", 10), ("A2", "=A1*2")]}, tmp_path / "wb.xlsx")
+
+    capturadas: list[str] = []
+    hook_original = sys.unraisablehook
+    sys.unraisablehook = lambda arg: capturadas.append(
+        f"{arg.exc_type.__name__}: {arg.exc_value}"
+    )
+    try:
+        classify_workbook(caminho)
+        gc.collect()  # força o __del__ do ZipFile a rodar AGORA, não em momento aleatório
+    finally:
+        sys.unraisablehook = hook_original
+
+    assert not capturadas, (
+        "handle de ZipFile vazou em classify_workbook (vba_archive não foi fechado): "
+        + "; ".join(capturadas)
+    )
 
 
 if __name__ == "__main__":

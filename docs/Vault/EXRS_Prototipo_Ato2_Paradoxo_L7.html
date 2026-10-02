@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Audit Report — O Paradoxo da Sua Melhor Loja</title>
+<style>
+  :root{
+    --bg:#faf9f7; --ink:#26241f; --ink-soft:#6b675e; --line:#e4e1da;
+    --card:#ffffff; --red:#b3261e; --red-soft:#fbeae9;
+    --green:#2c6e49; --fake-green:#9dbfa9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;}
+  .sans{font-family:'Segoe UI',Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 48px 80px;}
+
+  .masthead{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:3px solid var(--ink);padding-bottom:14px;}
+  .masthead h1{font-size:15px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;}
+  .masthead .meta{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;}
+  .kicker{margin-top:36px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ink-soft);}
+
+  .headline{margin-top:16px;font-size:clamp(26px,3.4vw,38px);line-height:1.25;
+    font-weight:400;max-width:22em;}
+  .headline .bleed{color:var(--red);font-weight:700;}
+  .sub{margin-top:16px;font-size:16.5px;line-height:1.6;color:var(--ink-soft);max-width:46em;}
+  .sub strong{color:var(--ink);}
+
+  /* Waterfall */
+  .chartbox{margin-top:48px;background:var(--card);border:1px solid var(--line);
+    padding:44px 44px 30px;}
+  .chart{position:relative;height:360px;}
+  .baseline{position:absolute;left:0;right:0;border-top:1px dashed #c9c5bc;}
+  .baseline .zero{position:absolute;right:0;top:-18px;font-size:11px;color:var(--ink-soft);}
+  .col{position:absolute;width:20%;}
+  .bar{position:absolute;left:0;right:0;}
+  .barlabel{position:absolute;left:0;right:0;text-align:center;font-weight:700;
+    font-size:19px;letter-spacing:-.01em;}
+  .catlabel{position:absolute;left:0;right:0;top:100%;margin-top:52px;text-align:center;
+    font-size:13px;color:var(--ink-soft);line-height:1.4;}
+  .catlabel b{display:block;color:var(--ink);font-size:14px;}
+  .connector{position:absolute;border-top:1px dotted #b8b4aa;}
+
+  .legendline{margin-top:86px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:13.5px;line-height:1.65;color:var(--ink-soft);}
+  .legendline em{font-style:normal;color:var(--ink);font-weight:600;}
+
+  /* consequência + gancho */
+  .consequence{margin-top:44px;display:flex;gap:20px;flex-wrap:wrap;}
+  .cq{flex:1;min-width:260px;background:var(--card);border:1px solid var(--line);
+    padding:24px 26px;}
+  .cq .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);}
+  .cq p{margin-top:12px;font-size:15px;line-height:1.6;}
+  .cq.control{border-top:4px solid var(--red);}
+  .cq.hook{border-top:4px solid var(--ink);}
+
+  .footerband{margin-top:56px;padding-top:26px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;}
+  .prov{font-size:11px;color:var(--ink-soft);letter-spacing:.04em;max-width:40em;line-height:1.6;}
+  .cta{font-size:14px;white-space:nowrap;color:var(--ink);text-decoration:none;
+    border:1px solid var(--ink);padding:12px 22px;letter-spacing:.04em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead sans">
+    <h1>EXRS Data Oracle · Executive Audit Report</h1>
+    <div class="meta">Ato 2 · A causa raiz — Loja L7-Oeste</div>
+  </header>
+
+  <p class="kicker sans">O paradoxo</p>
+  <h2 class="headline">Sua loja campeã <span class="bleed">perde dinheiro em cada óculos que vende.</span></h2>
+  <p class="sub">
+    A L7-Oeste lidera os seus relatórios de faturamento. Mas quando separamos
+    <strong>o que ela vende</strong> do <strong>que ela conserta</strong>, o retrato muda:
+    o produto opera no prejuízo e é o balcão de conserto (~235 serviços) que paga a conta —
+    e esconde o rombo. O total “no verde” que você vê todo mês é uma média que mente.
+  </p>
+
+  <!-- WATERFALL: escala 1px = R$40 · zero em y=190 -->
+  <div class="chartbox sans">
+    <div class="chart">
+      <div class="baseline" style="top:190px;"><span class="zero">R$ 0</span></div>
+
+      <!-- Col 1: Produto (−3.346 → 84px abaixo do zero) -->
+      <div class="col" style="left:6%;top:0;height:360px;">
+        <div class="bar" style="top:190px;height:84px;background:var(--red);"></div>
+        <div class="barlabel" style="top:282px;color:var(--red);">−R$ 3.346</div>
+        <div class="catlabel" style="top:190px;"><b>Produto</b>o que a loja vende</div>
+      </div>
+
+      <!-- conector do fundo do produto até a base do serviço -->
+      <div class="connector" style="left:26%;width:12%;top:274px;"></div>
+
+      <!-- Col 2: Serviço (+13.840 → 346px, partindo de −3.346 e subindo até +10.494) -->
+      <div class="col" style="left:38%;top:0;height:360px;">
+        <div class="bar" style="top:-72px;height:346px;background:var(--green);opacity:.85;"></div>
+        <div class="barlabel" style="top:-104px;color:var(--green);">+R$ 13.840</div>
+        <div class="catlabel" style="top:190px;"><b>Serviço (conserto)</b>o que paga a conta</div>
+      </div>
+
+      <!-- conector do topo do serviço até o total -->
+      <div class="connector" style="left:58%;width:12%;top:-72px;"></div>
+
+      <!-- Col 3: Total (+10.494 → 262px acima do zero) -->
+      <div class="col" style="left:70%;top:0;height:360px;">
+        <div class="bar" style="top:-72px;height:262px;background:var(--fake-green);
+          background-image:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.45) 8px,rgba(255,255,255,.45) 12px);"></div>
+        <div class="barlabel" style="top:-104px;color:var(--ink-soft);">+R$ 10.494</div>
+        <div class="catlabel" style="top:190px;"><b>Total que você vê</b>o “verde” de mentira</div>
+      </div>
+    </div>
+
+    <p class="legendline">
+      <em>Leitura:</em> o serviço cobre o prejuízo do produto quatro vezes. Enquanto o total
+      parecer saudável, o produto pode sangrar indefinidamente sem disparar nenhum alarme —
+      é por isso que a barra final aparece hachurada: o número é verdadeiro, a saúde é falsa.
+    </p>
+  </div>
+
+  <!-- CONSEQUÊNCIA E CONTROLE -->
+  <section class="consequence sans">
+    <div class="cq control">
+      <div class="tag">A prova de controle</div>
+      <p>A <b>L9-Serra</b> vende os mesmos produtos, <b>sem balcão de conserto</b> — e aparece
+      no vermelho (−R$ 4.702). Ela é a L7 sem a máscara: mesma doença, sem o curativo.
+      O problema não é uma loja; é estrutural no produto.</p>
+    </div>
+    <div class="cq hook">
+      <div class="tag">O que isso pede</div>
+      <p>Recompor o mix e o preço do produto <b>sem enfraquecer o serviço</b> que hoje sustenta
+      a loja. Esse rebalanceamento — feito na ordem certa, sem quebrar o que funciona —
+      é exatamente o trabalho de implantação.</p>
+    </div>
+  </section>
+
+  <footer class="footerband sans">
+    <p class="prov">
+      Produto −R$ 3.346,09 · Serviço +R$ 13.840,12 · Total +R$ 10.494,03 — fatos medidos,
+      extraídos do audit_report congelado da rodada v3, com procedência linha a linha ·
+      Como calculamos → anexo de metodologia.
+    </p>
+    <a class="cta" href="#implantacao">Falar sobre a implantação</a>
+  </footer>
+
+</div>
+</body>
+</html>

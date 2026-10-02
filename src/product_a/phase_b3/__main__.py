@@ -14,11 +14,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 _HERE = Path(__file__).resolve().parent
-for _p in [str(_HERE), str(REPO_ROOT / "src" / "product_a" / "trustware")]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
-from product_a.trustware.pipeline_contracts import StagedRuleGraph
+from libs.trustware.pipeline_contracts import StagedRuleGraph
 from hitl_loop import run_hitl
 
 

@@ -1,0 +1,37 @@
+# Log de Evidência — CHRONOS UI Web / Frontend (v2 Editorial Warm Paper)
+
+**Data:** 2026-08-18  
+**Base do Design:** `C:\Projetos\Aurora\ElysianConsult\docs\SPEC\prototipo_chronos_v2.html`  
+**Aplicativo:** `apps/chronos-backoffice` (Next.js 16.1.6, React 19, TypeScript, Tailwind CSS)  
+**Rotas Geradas:**
+- `/chronos` (Static Prerendered Page — 8 telas de gestão e auditoria)
+- `/api/chronos/report` (Dynamic Server-Rendered API)
+
+---
+
+## 1. Verificação de Tipagem e Lint
+- `typecheck:chronos`: PASS (0 erros)
+- `lint:chronos`: PASS (0 warnings)
+
+## 2. Build de Produção
+```
+Route (app)
+├ ƒ /api/chronos/report
+├ ○ /chronos
+✓ Compiled successfully in 10.1s
+✓ Generating static pages using 11 workers (26/26) in 771.1ms
+```
+
+## 3. Testes de Sobrevivência e Sabotagem
+```
+PASS src/lib/chronos-dashboard.test.ts
+✓ ART-COC-001: Cockpit has FOR-BAS-003 mother indicator and strict 7 KPIs
+✓ REG-NUM-001: Unverified or missing columns are strictly quarantined as SEM_BASE / null
+✓ ART-ANX-001 & Zero Contradiction: Sum of dead stock items matches the cockpit card to the cent
+✓ REG-SEV-004: Collective seller band performance contains ZERO individual seller names
+✓ TMI Dynamic Rule: Interactive alpha glide path calculation
+✓ reprova: Sabotaging zero contradiction between card and anexo fails verification
+✓ reprova: Attempting to expose fake non-null metric for SEM_BASE throws violation
+```
+
+Total: 5 suites passed, 14 tests passed (100% verde).

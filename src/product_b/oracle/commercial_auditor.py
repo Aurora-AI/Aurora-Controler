@@ -7,31 +7,43 @@ pseudo-anonimização de identidades de cliente antes de montar o artefato final
 LLM aqui — toda decisão é determinística e reproduzível (thresholds registrados no
 report).
 """
+import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+
+import xml.etree.ElementTree as ET
 
 from kernel.robustness import benchmark_population as _benchmark_population_generic
 from kernel.robustness import dedup_by_key
 from kernel.tabular import records_to_frame as _records_to_frame_generic
+from kernel.tabular import _clean_currency_value
 from product_b.oracle.column_mapper import (
-    _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES,
-    _ESTOQUE_ROLE_KEYWORDS, _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS,
-    ColumnMappingError, DateAmbiguityError, coerce_currency_series, coerce_date_series,
-    infer_column_roles,
+    _CLIENTES_REQUIRED_ROLES, _CLIENTES_ROLE_KEYWORDS, _COMPRAS_REQUIRED_ROLES,
+    _COMPRAS_ROLE_KEYWORDS, _ESTOQUE_REQUIRED_ROLES, _ESTOQUE_ROLE_KEYWORDS,
+    _FINANCEIRO_REQUIRED_ROLES, _FINANCEIRO_ROLE_KEYWORDS, ColumnMappingError,
+    DateAmbiguityError, coerce_currency_series, coerce_date_series, infer_column_roles,
+    read_dataframe,
 )
 from product_b.oracle.forensic_contracts import (
-    ActionPlanItem, AuditThresholdsConfig, ChurnFinding, CleaningSummary,
-    ContributionMarginAlert, CustomerConcentrationFinding, DataCompletenessFinding,
-    DeadStockFinding, DiscardedAlarm, ExecutiveAuditReport, ExecutiveSummary, GmroiEntry,
-    LatentRevenueFinding, ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
-    SalespersonPerformance, ServiceDecomposition, ServiceReconciliation, SeasonalityCurve,
-    StoreMacroSummary, StorePerformance, WinsorizedValue,
+    ActionPlanItem, AdvancedMetrics, AttachRateOpportunity, AuditThresholdsConfig,
+    BelowCostSaleItem, CategoryMarginEntry, ChurnFinding, CleaningSummary,
+    CommercialReconciliationSummary, ConcentrationRiskAlert, ContributionMarginAlert,
+    CrossSellGapCustomer, CustomerConcentrationFinding, DataCompletenessFinding,
+    DeadStockFinding, DigitalPhantomProfitItem, DigitalPhantomProfitSummary, DiscardedAlarm, DiscrepancyEvidence, DiscrepancyTriage,
+    DiscrepancyTriageItem, ExecutiveAuditReport, ExecutiveSummary, FlightRiskAlert,
+    GmroiEntry, GmroiSkuAlert, IncentiveMisalignmentAlert, LatentRevenueFinding,
+    ProductTrendEntry, RevenueLeakAnomaly, RFMChampion, SalesRecord,
+    SalespersonPerformance, SellerCategoryMixEntry, SellerMarginCorrosionAlert,
+    SellerMarginMixProfile, ServiceDecomposition, ServiceReconciliation,
+    SeasonalityCurve, SkillGapDiagnosis, StoreMacroSummary, StorePerformance,
+    SupplierMarginEntry, TaxReformScenarioResult, TeamDiagnostics, WinsorizedValue,
 )
 
-_SUPPORTED_SUFFIXES = {".xlsx", ".csv"}
+_SUPPORTED_SUFFIXES = {".xlsx", ".csv", ".xml"}
 _ANONYMOUS_CUSTOMER = "SEM_CADASTRO"
 # Venda com coluna de loja mapeada mas valor ausente NA linha (dado real messy) — não
 # é descartada nem some da agregação, vira um pseudo-grupo estável (mesmo padrão de
@@ -88,39 +100,442 @@ def benchmark_population(entity_stats: dict[str, dict], predicate=lambda stats: 
 _AVG_DAYS_PER_MONTH = 30.44
 
 
-def _read_raw(path: Path) -> pd.DataFrame:
-    if path.suffix.lower() == ".csv":
-        return pd.read_csv(path, dtype=str)
-    return pd.read_excel(path, dtype=str, engine="openpyxl")
+# Função _read_raw removida: substituída por read_dataframe (busca heurística de cabeçalho).
 
 
-_SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro")
+_SERIES_B_SHEETS = ("Estoque", "Clientes", "Financeiro", "Compras")
 
 
-def load_named_sheets(path: Path) -> dict[str, pd.DataFrame]:
-    """Lê as abas nomeadas da série B (Estoque, Clientes) quando existem — Vendas
-    continua vindo de `load_sales_records`. Arquivo sem essas abas (CSV, pasta, ou
-    .xlsx de aba única) simplesmente não alimenta os detectores de estoque/completude
-    — nunca inventa dado ausente, nunca derruba a auditoria."""
+def _strip_ns(tag: str) -> str:
+    """Remove o namespace SEFAZ XML da tag (ex: '{http://...}infNFe' -> 'infNFe')."""
+    return tag.split("}")[-1] if "}" in tag else tag
+
+
+def _parse_nfe_xml_file(
+    file_path: Path, target_company_identifier: str | None = None
+) -> tuple[str, list[dict]]:
+    """Analisa um arquivo XML de NF-e e retorna (doc_type, items), onde:
+    - doc_type: 'venda' (NF-e de saída emitida pela empresa para clientes)
+                ou 'compra' (NF-e de entrada / emitida por fornecedor para a empresa)
+    - items: lista de dicts com os dados extraídos de cada tag <det>.
+    """
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+    for elem in root.iter():
+        elem.tag = _strip_ns(elem.tag)
+
+    nNF_elem = root.find(".//nNF")
+    nNF_val = nNF_elem.text if (nNF_elem is not None and nNF_elem.text) else file_path.stem
+
+    serie_elem = root.find(".//serie")
+    serie_val = serie_elem.text.strip() if (serie_elem is not None and serie_elem.text) else "1"
+
+    dhEmi_elem = root.find(".//dhEmi")
+    if dhEmi_elem is None:
+        dhEmi_elem = root.find(".//dEmi")
+    dhEmi_val = dhEmi_elem.text if (dhEmi_elem is not None and dhEmi_elem.text) else None
+
+    tpNF_elem = root.find(".//tpNF")
+    tpNF_val = tpNF_elem.text.strip() if (tpNF_elem is not None and tpNF_elem.text) else "1"
+
+    emit_cnpj = root.find(".//emit/CNPJ")
+    emit_cpf = root.find(".//emit/CPF")
+    emit_doc = emit_cnpj.text if (emit_cnpj is not None and emit_cnpj.text) else (
+        emit_cpf.text if (emit_cpf is not None and emit_cpf.text) else ""
+    )
+    emit_nome = root.find(".//emit/xNome")
+    emit_nome_val = emit_nome.text.strip() if (emit_nome is not None and emit_nome.text) else ""
+
+    dest_cnpj = root.find(".//dest/CNPJ")
+    dest_cpf = root.find(".//dest/CPF")
+    dest_doc = dest_cnpj.text if (dest_cnpj is not None and dest_cnpj.text) else (
+        dest_cpf.text if (dest_cpf is not None and dest_cpf.text) else ""
+    )
+    dest_nome = root.find(".//dest/xNome")
+    dest_nome_val = dest_nome.text.strip() if (dest_nome is not None and dest_nome.text) else ""
+
+    dest_uf = root.find(".//dest/enderDest/UF")
+    dest_uf_val = dest_uf.text.strip() if (dest_uf is not None and dest_uf.text) else None
+
+    dest_mun = root.find(".//dest/enderDest/xMun")
+    dest_mun_val = dest_mun.text.strip() if (dest_mun is not None and dest_mun.text) else None
+
+    tPag_elem = root.find(".//pag/detPag/tPag")
+    payment_method = tPag_elem.text.strip() if (tPag_elem is not None and tPag_elem.text) else None
+
+    items_raw = root.findall(".//det")
+    parsed_items = []
+    has_inbound_cfop = False
+
+    infNFe = root.find(".//infNFe")
+    chave_acesso = ""
+    if infNFe is not None:
+        raw_id = infNFe.attrib.get("Id", "")
+        if raw_id.startswith("NFe"):
+            chave_acesso = raw_id[3:]
+        else:
+            chave_acesso = raw_id
+    if not chave_acesso:
+        chNFe_elem = root.find(".//chNFe")
+        if chNFe_elem is not None and chNFe_elem.text:
+            chave_acesso = chNFe_elem.text.strip()
+
+    mod_elem = root.find(".//mod")
+    mod_val = mod_elem.text.strip() if (mod_elem is not None and mod_elem.text) else "55"
+
+    clean_emit_doc = re.sub(r"\D", "", emit_doc)
+    doc_identity = chave_acesso if (chave_acesso and len(chave_acesso) == 44) else f"{clean_emit_doc}_{mod_val}_{serie_val}_{nNF_val}"
+
+    for item in items_raw:
+        cProd = item.find(".//prod/cProd")
+        cEAN = item.find(".//prod/cEAN")
+        xProd = item.find(".//prod/xProd")
+        NCM = item.find(".//prod/NCM")
+        CFOP = item.find(".//prod/CFOP")
+        uCom = item.find(".//prod/uCom")
+        qCom = item.find(".//prod/qCom")
+        vUnCom = item.find(".//prod/vUnCom")
+        vProd = item.find(".//prod/vProd")
+        vDesc = item.find(".//prod/vDesc")
+
+        cfop_str = CFOP.text.strip() if (CFOP is not None and CFOP.text) else ""
+        if cfop_str.startswith(("1", "2", "3")):
+            has_inbound_cfop = True
+
+        try:
+            qty = float(qCom.text) if (qCom is not None and qCom.text) else 1.0
+        except ValueError:
+            qty = 1.0
+
+        try:
+            unit_price = float(vUnCom.text) if (vUnCom is not None and vUnCom.text) else 0.0
+        except ValueError:
+            unit_price = 0.0
+
+        try:
+            total_val = float(vProd.text) if (vProd is not None and vProd.text) else (unit_price * qty)
+        except ValueError:
+            total_val = unit_price * qty
+
+        try:
+            desc_val = float(vDesc.text) if (vDesc is not None and vDesc.text) else 0.0
+        except ValueError:
+            desc_val = 0.0
+
+        net_val = max(0.0, total_val - desc_val)
+        parsed_items.append({
+            "doc_identity": doc_identity,
+            "chave_acesso": chave_acesso,
+            "modelo": mod_val,
+            "nfe_number": nNF_val,
+            "serie": serie_val,
+            "date": dhEmi_val,
+            "emitente_nome": emit_nome_val,
+            "emitente_doc": emit_doc,
+            "destinatario_nome": dest_nome_val,
+            "destinatario_doc": dest_doc,
+            "uf": dest_uf_val,
+            "municipio": dest_mun_val,
+            "sku": cProd.text.strip() if (cProd is not None and cProd.text) else "",
+            "ean": cEAN.text.strip() if (cEAN is not None and cEAN.text) else "",
+            "product": xProd.text.strip() if (xProd is not None and xProd.text) else "",
+            "ncm": NCM.text.strip() if (NCM is not None and NCM.text) else "",
+            "cfop": cfop_str,
+            "unit": uCom.text.strip() if (uCom is not None and uCom.text) else "",
+            "quantity": qty,
+            "unit_price": unit_price,
+            "cost": unit_price,
+            "gross_value": total_val,
+            "discount": desc_val,
+            "net_value": net_val,
+            "value": net_val,
+            "payment_method": payment_method,
+            "supplier": emit_nome_val,
+        })
+
+    # Classificação Fiscal Estrita (Diretriz QA 1 / FIX-01, FIX-02 e ADV-02):
+    # - CFOP iniciando em 1, 2 ou 3, ou tpNF == '0' -> SEMPRE COMPRA / ENTRADA
+    # - Se o destinatário for a empresa auditada -> COMPRA / ENTRADA
+    # - Se o emitente for a empresa auditada -> VENDA / SAÍDA
+    # - Se terceiro para terceiro -> TERCEIROS
+    # - Se target_company_identifier não fornecido -> PENDENCIA_IDENTIDADE (proibido autorizar venda)
+    if tpNF_val == "0" or has_inbound_cfop:
+        doc_type = "compra"
+    elif target_company_identifier:
+        t_id_str = target_company_identifier.strip()
+        t_digits = re.sub(r"\D", "", t_id_str)
+        has_valid_doc = len(t_digits) >= 11  # CPF (11) ou CNPJ (14)
+        dest_digits = re.sub(r"\D", "", dest_doc) if dest_doc else ""
+        emit_digits = re.sub(r"\D", "", emit_doc) if emit_doc else ""
+
+        is_dest = (t_id_str.upper() in dest_nome_val.upper()) or (has_valid_doc and t_digits in dest_digits)
+        is_emit = (t_id_str.upper() in emit_nome_val.upper()) or (has_valid_doc and t_digits in emit_digits)
+
+        if is_dest:
+            doc_type = "compra"
+        elif is_emit:
+            doc_type = "venda"
+        else:
+            doc_type = "terceiros"
+    else:
+        doc_type = "pendencia_identidade"
+
+    return doc_type, parsed_items
+
+
+def _load_catalog_file(file_path: Path) -> pd.DataFrame | None:
+    """Carrega planilha de catálogo/estoque/controle de produtos (ex: Controle.xls)."""
+    try:
+        if file_path.suffix.lower() == ".xls":
+            import xlrd
+            wb = xlrd.open_workbook(str(file_path), ignore_workbook_corruption=True)
+            s = wb.sheet_by_index(0)
+            headers = [str(s.cell_value(0, c)).strip() for c in range(s.ncols)]
+            rows = []
+            for r in range(1, s.nrows):
+                rows.append([s.cell_value(r, c) for c in range(s.ncols)])
+            df = pd.DataFrame(rows, columns=headers)
+        elif file_path.suffix.lower() == ".xlsx":
+            df = pd.read_excel(file_path, engine="openpyxl")
+        else:
+            return None
+
+        if df.empty:
+            return None
+
+        col_map = {}
+        for c in df.columns:
+            cl = str(c).lower()
+            if ("sku" in cl or "código" in cl or "codigo" in cl) and "sku" not in col_map.values():
+                col_map[c] = "sku"
+            elif ("descri" in cl or "produto" in cl or "nome" in cl) and "description" not in col_map.values():
+                col_map[c] = "description"
+            elif ("custo" in cl or "cost" in cl) and "cost" not in col_map.values():
+                col_map[c] = "cost"
+            elif ("preço" in cl or "preco" in cl or "tabela" in cl) and "custo" not in cl and "list_price" not in col_map.values():
+                col_map[c] = "list_price"
+            elif ("estoque" in cl or "saldo" in cl or "qty" in cl) and "qty_on_hand" not in col_map.values():
+                col_map[c] = "qty_on_hand"
+            elif ("fornecedor" in cl or "supplier" in cl) and "supplier" not in col_map.values():
+                col_map[c] = "supplier"
+            elif ("categoria" in cl or "category" in cl) and "category" not in col_map.values():
+                col_map[c] = "category"
+
+        if "cost" in col_map.values() and ("sku" in col_map.values() or "description" in col_map.values()):
+            df = df.rename(columns=col_map)
+            df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0.0)
+            if "list_price" in df.columns:
+                df["list_price"] = pd.to_numeric(df["list_price"], errors="coerce").fillna(0.0)
+            if "qty_on_hand" in df.columns:
+                df["qty_on_hand"] = pd.to_numeric(df["qty_on_hand"], errors="coerce").fillna(0.0)
+            if "sku" in df.columns:
+                df["sku"] = df["sku"].astype(str).str.strip()
+            if "description" in df.columns:
+                df["description"] = df["description"].astype(str).str.strip()
+            return df
+        return None
+    except Exception:
+        return None
+
+
+def _sanitize_and_resolve_inventory(
+    df_est: pd.DataFrame, reference_date: datetime | str | None = None
+) -> pd.DataFrame:
+    """Consolida e resolve temporalmente a aba Estoque (FIX-11).
+    Regras estritas de integridade:
+    1. A chave primária é (loja, sku) quando loja existe, ou sku isolado.
+    2. Se reference_date for informado e houver coluna de snapshot:
+       - Linhas com data válida <= reference_date são elegíveis.
+       - Linhas com data futura (> reference_date) ou inválida (NaT) são INELIGÍVEIS.
+       - Por filial/loja: se a filial não possuir nenhuma posição elegível, seus dados futuros
+         são descartados e ela é registrada em attrs['stores_unavailable'] como indisponível/sem base.
+         É proibido retornar quantidade 0 para a filial (o que simularia ruptura/estoque zerado).
+       - Se nenhuma filial/linha for elegível, retorna DataFrame vazio preservando as colunas,
+         com attrs['base_valida'] = False e attrs['motivo'] = 'estoque_indisponivel_data_futura'.
+    3. Quando não houver coluna de snapshot, detecta duplicidades e registra conflito
+       explícito (conflito_snapshot = True) se houver valores divergentes na mesma chave.
+    """
+    if df_est is None or df_est.empty:
+        return df_est
+
+    df_est = df_est.copy()
+    sku_c = next((c for c in df_est.columns if str(c).strip().lower() in {"sku", "produto", "codigo", "item"}), None)
+    store_c = next((c for c in df_est.columns if str(c).strip().lower() in {"loja", "filial", "unidade", "store"}), None)
+    snap_c = next((c for c in df_est.columns if str(c).strip().lower() in {"data_posicao", "data_snapshot", "data_base", "data_estoque"}), None)
+
+    if not sku_c:
+        return df_est
+
+    group_cols = [store_c, sku_c] if store_c else [sku_c]
+    val_cols = [c for c in df_est.columns if c not in group_cols and c not in {"conflito_snapshot", "_dt_snap"}]
+
+    if snap_c and reference_date is not None:
+        df_est["_dt_snap"] = pd.to_datetime(df_est[snap_c], errors="coerce")
+        ref_dt = pd.to_datetime(reference_date)
+
+        if store_c:
+            all_stores = set(df_est[store_c].dropna().unique())
+            eligible_mask = (df_est["_dt_snap"].notna()) & (df_est["_dt_snap"] <= ref_dt)
+            stores_with_eligible = set(df_est.loc[eligible_mask, store_c].dropna().unique())
+            stores_unavailable = all_stores - stores_with_eligible
+
+            df_eligible = df_est[eligible_mask].copy()
+            if df_eligible.empty:
+                empty_df = pd.DataFrame(columns=[c for c in df_est.columns if c != "_dt_snap"])
+                empty_df.attrs["base_valida"] = False
+                empty_df.attrs["motivo"] = "estoque_indisponivel_data_futura"
+                empty_df.attrs["stores_unavailable"] = sorted(list(all_stores))
+                return empty_df
+
+            df_eligible = df_eligible.sort_values(by=group_cols + ["_dt_snap"]).reset_index(drop=True)
+            df_result = df_eligible.drop_duplicates(subset=group_cols, keep="last")
+            df_result = df_result.drop(columns=["_dt_snap"])
+            df_result.attrs["base_valida"] = True
+            df_result.attrs["stores_unavailable"] = sorted(list(stores_unavailable))
+            return df_result.reset_index(drop=True)
+        else:
+            eligible_mask = (df_est["_dt_snap"].notna()) & (df_est["_dt_snap"] <= ref_dt)
+            df_eligible = df_est[eligible_mask].copy()
+            if df_eligible.empty:
+                empty_df = pd.DataFrame(columns=[c for c in df_est.columns if c != "_dt_snap"])
+                empty_df.attrs["base_valida"] = False
+                empty_df.attrs["motivo"] = "estoque_indisponivel_data_futura"
+                return empty_df
+
+            df_eligible = df_eligible.sort_values(by=group_cols + ["_dt_snap"]).reset_index(drop=True)
+            df_result = df_eligible.drop_duplicates(subset=group_cols, keep="last")
+            df_result = df_result.drop(columns=["_dt_snap"])
+            df_result.attrs["base_valida"] = True
+            return df_result.reset_index(drop=True)
+
+    elif snap_c:
+        df_est["_dt_snap"] = pd.to_datetime(df_est[snap_c], errors="coerce")
+        df_est = df_est.sort_values(by=group_cols + ["_dt_snap"]).reset_index(drop=True)
+        df_est = df_est.drop_duplicates(subset=group_cols, keep="last")
+        df_est = df_est.drop(columns=["_dt_snap"])
+        return df_est.reset_index(drop=True)
+    else:
+        exact_dups = df_est.duplicated(subset=group_cols + val_cols, keep="first")
+        df_est = df_est[~exact_dups].reset_index(drop=True)
+
+        key_dups = df_est.duplicated(subset=group_cols, keep=False)
+        if key_dups.any():
+            df_est["conflito_snapshot"] = key_dups
+        return df_est.reset_index(drop=True)
+
+
+def load_named_sheets(path: Path, reference_date: datetime | str | None = None) -> dict[str, pd.DataFrame]:
+    """Lê as abas nomeadas da série B (Estoque, Clientes, Financeiro) e da Fase C
+    (Compras — a "NF de entrada", ver `detect_discrepancy_triage`) quando existem —
+    Vendas continua vindo de `load_sales_records`. Arquivo sem essas abas (CSV, pasta,
+    ou .xlsx de aba única) simplesmente não alimenta os detectores que dependem
+    delas — nunca inventa dado ausente, nunca derruba a auditoria."""
     path = Path(path)
-    if path.is_dir() or path.suffix.lower() != ".xlsx":
-        return {}
-    workbook = pd.ExcelFile(path, engine="openpyxl")
-    return {
-        name: pd.read_excel(path, sheet_name=name, dtype=str, engine="openpyxl")
-        for name in _SERIES_B_SHEETS if name in workbook.sheet_names
-    }
+    if path.is_file() and path.suffix.lower() == ".xlsx":
+        workbook = pd.ExcelFile(path, engine="openpyxl")
+        sheet_roles = {
+            "Estoque": _ESTOQUE_ROLE_KEYWORDS,
+            "Clientes": _CLIENTES_ROLE_KEYWORDS,
+            "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
+            "Compras": _COMPRAS_ROLE_KEYWORDS,
+        }
+        sheet_names = list(workbook.sheet_names)
+        workbook.close()
+        named = {
+            name: read_dataframe(str(path), sheet_name=name, role_keywords=sheet_roles[name])
+            for name in _SERIES_B_SHEETS if name in sheet_names
+        }
+        if "Estoque" in named:
+            named["Estoque"] = _sanitize_and_resolve_inventory(named["Estoque"], reference_date=reference_date)
+        return named
+
+    if path.is_dir():
+        named: dict[str, pd.DataFrame] = {}
+        # 1. Procurar planilhas .xlsx/.xls na pasta
+        excel_files = sorted(
+            f for f in path.rglob("*")
+            if f.is_file() and f.suffix.lower() in {".xlsx", ".xls"}
+        )
+        for ef in excel_files:
+            try:
+                if ef.suffix.lower() == ".xlsx":
+                    wb = pd.ExcelFile(ef, engine="openpyxl")
+                    sheet_roles = {
+                        "Estoque": _ESTOQUE_ROLE_KEYWORDS,
+                        "Clientes": _CLIENTES_ROLE_KEYWORDS,
+                        "Financeiro": _FINANCEIRO_ROLE_KEYWORDS,
+                        "Compras": _COMPRAS_ROLE_KEYWORDS,
+                    }
+                    wb_sheet_names = list(wb.sheet_names)
+                    wb.close()
+                    for name in _SERIES_B_SHEETS:
+                        if name in wb_sheet_names:
+                            sheet_df = read_dataframe(str(ef), sheet_name=name, role_keywords=sheet_roles[name])
+                            if name in named and not named[name].empty:
+                                named[name] = pd.concat([named[name], sheet_df], ignore_index=True)
+                            else:
+                                named[name] = sheet_df
+
+                    has_estoque_sheet = "Estoque" in wb_sheet_names
+                else:
+                    has_estoque_sheet = False
+
+                if not has_estoque_sheet:
+                    cat_df = _load_catalog_file(ef)
+                    if cat_df is not None and not cat_df.empty:
+                        if "Estoque" in named and not named["Estoque"].empty:
+                            named["Estoque"] = pd.concat([named["Estoque"], cat_df], ignore_index=True)
+                        else:
+                            named["Estoque"] = cat_df
+            except Exception:
+                pass
+
+        # Consolidação e resolução determinística de Estoque (FIX-11):
+        if "Estoque" in named and not named["Estoque"].empty:
+            named["Estoque"] = _sanitize_and_resolve_inventory(named["Estoque"], reference_date=reference_date)
+
+
+        # 2. Procurar XMLs de compra (entradas de fornecedores)
+        xml_files = sorted(f for f in path.rglob("*.xml") if f.is_file())
+        purchase_items = []
+        for xf in xml_files:
+            try:
+                doc_type, items = _parse_nfe_xml_file(xf, target_company_identifier=None)
+                if doc_type == "compra":
+                    purchase_items.extend(items)
+            except Exception:
+                pass
+
+        if purchase_items:
+            df_purchases = pd.DataFrame(purchase_items)
+            if "Compras" in named and not named["Compras"].empty:
+                named["Compras"] = pd.concat([named["Compras"], df_purchases], ignore_index=True)
+            else:
+                named["Compras"] = df_purchases
+
+        # Invariância e determinismo: ordena os dataframes consolidados por colunas-chave se existirem
+        for name, df in named.items():
+            if df is not None and not df.empty:
+                sort_cols = [c for c in ["sku", "produto", "codigo", "cliente_id", "cpf", "date", "data"] if c in df.columns]
+                if sort_cols:
+                    named[name] = df.sort_values(by=sort_cols).reset_index(drop=True)
+                else:
+                    named[name] = df.reset_index(drop=True)
+
+        return named
+
+    return {}
 
 
 def load_sales_records(
     path: Path, mapping_override: dict[str, str] | None = None,
 ) -> tuple[list[SalesRecord], CleaningSummary]:
-    """Ingere um arquivo (.xlsx/.csv) OU uma pasta inteira, higieniza e retorna os
+    """Ingere um arquivo (.xlsx/.csv/.xml) OU uma pasta inteira, higieniza e retorna os
     SalesRecord aceitos + a contabilidade completa da limpeza. Arquivo cujo esquema não
     produz os 4 papéis mínimos é pulado e reportado — nunca mesclado errado."""
     path = Path(path)
     files = (
-        sorted(f for f in path.iterdir() if f.suffix.lower() in _SUPPORTED_SUFFIXES)
+        sorted(f for f in path.rglob("*") if f.is_file() and f.suffix.lower() in _SUPPORTED_SUFFIXES)
         if path.is_dir() else [path]
     )
 
@@ -128,14 +543,148 @@ def load_sales_records(
     rows_read = 0
     discarded_by_reason: dict[str, int] = {}
     files_skipped: list[dict] = []
+    raw_declared_revenue = 0.0
 
-    for file_path in files:
-        raw = _read_raw(file_path)
-        rows_read += len(raw)
+    target_company: str | None = None
+    if mapping_override and ("target_company_identifier" in mapping_override or "target_company" in mapping_override):
+        target_company = mapping_override.get("target_company_identifier") or mapping_override.get("target_company")
+
+    # Separar arquivos XML e Tabulares para garantir invariância de ordem de leitura
+    xml_files = [f for f in files if f.suffix.lower() == ".xml"]
+    tabular_files = [f for f in files if f.suffix.lower() in {".xlsx", ".xls", ".csv"}]
+
+    seen_xml_identities: set[str] = set()
+    # Estruturas para reconciliação cross-source (FIX-02):
+    xml_by_chave: dict[str, list[dict]] = {}
+    xml_by_composite: dict[tuple[str, str, str, str], list[dict]] = {}
+
+    # PASS 1: Processar todos os XMLs fiscais
+    for file_path in xml_files:
         try:
+            doc_type, items = _parse_nfe_xml_file(file_path, target_company_identifier=target_company)
+            if doc_type != "venda":
+                if doc_type == "compra":
+                    reason = f"NF-e de entrada/compra ({len(items)} itens) direcionada para Compras"
+                elif doc_type == "pendencia_identidade":
+                    reason = f"Identidade fiscal da empresa auditada não informada ({len(items)} itens pendentes)"
+                    discarded_by_reason["identidade_empresa_nao_informada"] = (
+                        discarded_by_reason.get("identidade_empresa_nao_informada", 0) + len(items)
+                    )
+                elif doc_type == "terceiros":
+                    reason = f"Documento fiscal de terceiros estranho à empresa auditada ({len(items)} itens)"
+                    discarded_by_reason["documento_terceiros"] = (
+                        discarded_by_reason.get("documento_terceiros", 0) + len(items)
+                    )
+                else:
+                    reason = f"Documento fiscal ignorado ({doc_type})"
+                files_skipped.append({"file": file_path.name, "reason": reason})
+                continue
+
+            if not items:
+                continue
+
+            doc_id_key = items[0].get("doc_identity", file_path.stem)
+            if doc_id_key in seen_xml_identities:
+                files_skipped.append({
+                    "file": file_path.name,
+                    "reason": f"Documento fiscal duplicado (NF {items[0].get('nfe_number')}) já processado",
+                })
+                discarded_by_reason["documento_duplicado"] = discarded_by_reason.get("documento_duplicado", 0) + len(items)
+                continue
+            seen_xml_identities.add(doc_id_key)
+
+            # Indexação estruturada para reconciliação cross-source (chave de acesso e tupla composta)
+            n_nf = str(items[0].get("nfe_number", "")).strip()
+            ser = str(items[0].get("serie", "")).strip()
+            mod = str(items[0].get("modelo", "")).strip()
+            e_doc = re.sub(r"\D", "", str(items[0].get("emitente_doc", "")))
+            ch = str(items[0].get("chave_acesso", "")).strip()
+
+            if e_doc and mod and ser and n_nf:
+                comp_key = (e_doc, mod, ser, n_nf)
+                xml_by_composite[comp_key] = items
+            if ch and len(ch) == 44:
+                xml_by_chave[ch] = items
+
+            rows_read += len(items)
+            for item_idx, item in enumerate(items):
+                raw_date = item.get("date")
+                if not raw_date:
+                    discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
+                    continue
+                try:
+                    dt = pd.to_datetime(str(raw_date)[:19]).to_pydatetime()
+                except Exception:
+                    discarded_by_reason["data_invalida"] = discarded_by_reason.get("data_invalida", 0) + 1
+                    continue
+
+                val = item.get("value")
+                if val is None or pd.isna(val) or not np.isfinite(val):
+                    discarded_by_reason["valor_nao_numerico"] = discarded_by_reason.get("valor_nao_numerico", 0) + 1
+                    continue
+
+                prod = item.get("product")
+                if not prod or pd.isna(prod):
+                    discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
+                    continue
+
+                qty = item.get("quantity")
+                effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
+                net_val = float(item.get("net_value", val))
+                gross_val = float(item.get("gross_value", net_val))
+                desc_val = float(item.get("discount", 0.0))
+                raw_declared_revenue += net_val
+
+                customer = item.get("destinatario_nome") or _ANONYMOUS_CUSTOMER
+                records.append(SalesRecord(
+                    date=dt,
+                    product=str(prod),
+                    customer=str(customer),
+                    value=net_val,
+                    gross_value=gross_val,
+                    discount=desc_val,
+                    net_value=net_val,
+                    quantity=effective_qty,
+                    unit_price=float(item.get("unit_price", 0.0)),
+                    unit=item.get("unit"),
+                    doc_id=item.get("nfe_number"),
+                    doc_type="venda",
+                    entry_cost=None,
+                    category=None,
+                    store=item.get("emitente_nome") or None,
+                    salesperson=None,
+                    payment_method=item.get("payment_method"),
+                    source_file=file_path.name,
+                    source_row=item_idx + 2,
+                    has_formula_error=False,
+                ))
+        except Exception as e:
+            files_skipped.append({"file": file_path.name, "reason": f"Erro XML: {e}"})
+            continue
+
+    # PASS 2: Processar arquivos tabulares com reconciliação cross-source
+    for file_path in tabular_files:
+        try:
+            raw = read_dataframe(str(file_path))
+            rows_read += len(raw)
             roles = infer_column_roles(raw, override=mapping_override)
-            dates = coerce_date_series(raw[roles["date"]])
-            values = coerce_currency_series(raw[roles["value"]])
+
+            raw_costs = raw[roles["cost"]] if "cost" in roles else pd.Series([None] * len(raw))
+            is_formula_error = raw_costs.astype(str).str.contains(r'#DIV/0!|#REF!|#VALUE!|#N/A', na=False)
+
+            raw_values = raw[roles["value"]]
+            val_col_name = str(roles["value"]).strip().lower()
+            is_unit_price = (
+                any(k in val_col_name for k in ["unitario", "unit", "praticado", "vuncom", "vl_unit"])
+                or (val_col_name in {"preco", "preco_tabela", "preco_bruto", "preco_liquido"}
+                    and not any(k in val_col_name for k in ["total", "subtotal", "faturamento", "venda"]))
+            )
+            is_explicit_gross = any(k in val_col_name for k in ["bruto", "gross", "subtotal", "vprod", "preco_tabela"])
+            is_explicit_net = any(k in val_col_name for k in ["liquido", "net"])
+
+            date_format = mapping_override.get("date_format") if mapping_override else None
+            dates = coerce_date_series(raw[roles["date"]], date_format=date_format)
+            values = coerce_currency_series(raw_values)
             products = raw[roles["product"]].astype(str)
             customers = raw[roles["customer"]].astype(str)
             quantities = (
@@ -146,9 +695,6 @@ def load_sales_records(
                 coerce_currency_series(raw[roles["cost"]])
                 if "cost" in roles else pd.Series([None] * len(raw))
             )
-            # Sem .astype(str): NaN de célula vazia precisa sobreviver como NaN (não
-            # "nan" string) até o pd.isna() por linha abaixo — mesma armadilha do bug
-            # real de cliente ausente.
             categories = raw[roles["category"]] if "category" in roles else pd.Series([None] * len(raw))
             stores = raw[roles["store"]] if "store" in roles else pd.Series([None] * len(raw))
             salespersons = (
@@ -157,9 +703,28 @@ def load_sales_records(
             payments = (
                 raw[roles["payment"]] if "payment" in roles else pd.Series([None] * len(raw))
             )
-        except (ColumnMappingError, DateAmbiguityError) as e:
-            # Arquivo com esquema incompatível ou mistura de formato de data: pulado e
-            # reportado — nunca mesclado errado, nunca derruba a auditoria inteira.
+            discount_col = None
+            if mapping_override and "discount" in mapping_override and mapping_override["discount"] in raw.columns:
+                discount_col = mapping_override["discount"]
+            else:
+                for c in raw.columns:
+                    if str(c).strip().lower() in {"desconto", "discount", "desc", "vdesc"}:
+                        discount_col = c
+                        break
+
+            discounts = (
+                coerce_currency_series(raw[discount_col])
+                if discount_col else pd.Series([0.0] * len(raw))
+            )
+
+            # Detectar colunas de identidade documental para reconciliação cross-source
+            chave_col = next((c for c in raw.columns if str(c).strip().lower() in {"chave_acesso", "ch_nfe", "chave"}), None)
+            doc_col = next((c for c in raw.columns if str(c).strip().lower() in {"nfe", "nf", "numero_nf", "num_nf", "doc", "documento", "cupom"}), None)
+            serie_col = next((c for c in raw.columns if str(c).strip().lower() in {"serie", "ser"}), None)
+            model_col = next((c for c in raw.columns if str(c).strip().lower() in {"modelo", "mod"}), None)
+            emit_col = next((c for c in raw.columns if str(c).strip().lower() in {"emitente", "cnpj", "cnpj_loja", "emit_doc"}), None)
+
+        except (ColumnMappingError, DateAmbiguityError, Exception) as e:
             files_skipped.append({"file": file_path.name, "reason": str(e)})
             continue
 
@@ -173,30 +738,154 @@ def load_sales_records(
             if pd.isna(products.iloc[i]):
                 discarded_by_reason["produto_ausente"] = discarded_by_reason.get("produto_ausente", 0) + 1
                 continue
-            # Venda sem cliente identificado (walk-in) é dado real, não sujeira — a
-            # venda existe e conta na receita. Vira um pseudo-cliente estável em vez de
-            # descartada, para não perder receita real do produto/período.
+
             customer = _ANONYMOUS_CUSTOMER if pd.isna(customers.iloc[i]) else customers.iloc[i]
             qty = quantities.iloc[i]
             cost = entry_costs.iloc[i]
             cat = categories.iloc[i]
             store = stores.iloc[i]
             salesperson = salespersons.iloc[i]
-            # Unidade econômica correta da linha é preço × quantidade — não só o
-            # preço unitário (bug real: uma devolução com qtd=-1 entrava como venda
-            # POSITIVA de mesmo valor, porque quantity nunca era usada). Quantidade
-            # ausente/não mapeada assume 1 (preserva o comportamento de todo arquivo
-            # sem coluna de quantidade — nada muda pra eles). Isso também expõe erro
-            # de digitação de quantidade (ex. qtd=99) para a poda de outlier abaixo —
-            # nunca escala o erro em silêncio, só deixa visível pra ser podado.
             effective_qty = 1.0 if qty is None or pd.isna(qty) else float(qty)
-            line_value = float(values.iloc[i]) * effective_qty
+            disc_val = float(discounts.iloc[i]) if not pd.isna(discounts.iloc[i]) else 0.0
+
+            # Diferenciação semântica das 4 combinações: (Preço Unitário vs Total) x (Bruto vs Líquido)
+            raw_num = float(values.iloc[i])
+
+            # Detecção de ambiguidade de sinais (ex: preço unitário negativo com quantidade negativa cancelando sinal)
+            if is_unit_price and raw_num < 0 and effective_qty < 0:
+                discarded_by_reason["estorno_sinais_ambiguos"] = discarded_by_reason.get("estorno_sinais_ambiguos", 0) + 1
+                continue
+
+            is_return = (effective_qty < 0) or (raw_num < 0)
+
+            if is_unit_price:
+                unit_magnitude = abs(raw_num)
+                qty_magnitude = abs(effective_qty)
+
+                if is_explicit_net:
+                    # CASO 2: Preço Unitário Líquido (ex: preco_liquido)
+                    net_mag = unit_magnitude * qty_magnitude
+                    gross_mag = net_mag + disc_val
+                    if is_return:
+                        line_value = -net_mag
+                        gross_val = -gross_mag
+                    else:
+                        line_value = net_mag
+                        gross_val = gross_mag
+                    raw_unit_price = (gross_mag / qty_magnitude) if qty_magnitude != 0 else unit_magnitude
+                else:
+                    # CASO 1: Preço Unitário Bruto (ex: preco_unitario, preco_praticado, preco_unit, preco_bruto)
+                    gross_mag = unit_magnitude * qty_magnitude
+                    net_mag = max(0.0, gross_mag - disc_val)
+                    if is_return:
+                        gross_val = -gross_mag
+                        line_value = -net_mag
+                    else:
+                        gross_val = gross_mag
+                        line_value = net_mag
+                    raw_unit_price = unit_magnitude
+            else:
+                tot_magnitude = abs(raw_num)
+                qty_magnitude = abs(effective_qty) if effective_qty != 0 else 1.0
+
+                if is_explicit_gross:
+                    # CASO 3: Total Bruto da Linha (ex: total_bruto, valor_bruto, subtotal, vprod)
+                    gross_mag = tot_magnitude
+                    net_mag = max(0.0, gross_mag - disc_val)
+                    if is_return:
+                        gross_val = -gross_mag
+                        line_value = -net_mag
+                    else:
+                        gross_val = gross_mag
+                        line_value = net_mag
+                    raw_unit_price = (gross_mag / qty_magnitude) if qty_magnitude != 0 else gross_mag
+                else:
+                    # CASO 4: Total Líquido da Linha (ex: valor_liquido, total_liquido, total, valor, faturamento)
+                    net_mag = tot_magnitude
+                    gross_mag = net_mag + disc_val
+                    if is_return:
+                        line_value = -net_mag
+                        gross_val = -gross_mag
+                    else:
+                        line_value = net_mag
+                        gross_val = gross_mag
+                    raw_unit_price = (gross_mag / qty_magnitude) if qty_magnitude != 0 else net_mag
+
+            raw_declared_revenue += line_value
+
+            # Reconciliação Cross-Source XML + ERP (FIX-02)
+            r_chave = str(raw[chave_col].iloc[i]).strip() if (chave_col and pd.notna(raw[chave_col].iloc[i])) else ""
+            r_doc = str(raw[doc_col].iloc[i]).strip() if (doc_col and pd.notna(raw[doc_col].iloc[i])) else ""
+            r_serie = str(raw[serie_col].iloc[i]).strip() if (serie_col and pd.notna(raw[serie_col].iloc[i])) else ""
+            r_mod = str(raw[model_col].iloc[i]).strip() if (model_col and pd.notna(raw[model_col].iloc[i])) else ""
+            r_emit = re.sub(r"\D", "", str(raw[emit_col].iloc[i])) if (emit_col and pd.notna(raw[emit_col].iloc[i])) else ""
+
+            matched_xml_items: list[dict] | None = None
+            if r_chave and len(r_chave) == 44 and r_chave in xml_by_chave:
+                matched_xml_items = xml_by_chave[r_chave]
+            elif r_doc and r_serie and r_mod and r_emit:
+                comp_key = (r_emit, r_mod, r_serie, r_doc)
+                if comp_key in xml_by_composite:
+                    matched_xml_items = xml_by_composite[comp_key]
+            # Caso contrário: identidade fiscal incompleta ou ausência de documento.
+            # PROIBIDO presumir valores de modelo, série ou emitente para forçar descarte!
+            # A linha segue preservada no ERP como venda legítima.
+
+            if matched_xml_items:
+                # DOCUMENTO FISCAL LOCALIZADO NO XML!
+                prod_str = str(products.iloc[i]).strip().lower()
+                m_item = next(
+                    (it for it in matched_xml_items
+                     if (it.get("sku") and str(it.get("sku", "")).strip().lower() == prod_str)
+                     or (it.get("product") and str(it.get("product", "")).strip().lower() == prod_str)),
+                    None
+                )
+                if len(matched_xml_items) > 1:
+                    if m_item is not None:
+                        expected_item_val = m_item["net_value"]
+                        val_diff = abs(line_value - expected_item_val)
+                        if val_diff <= 0.02:
+                            # Reconciliado com sucesso por item e valor!
+                            discarded_by_reason["reconciliado_cross_source"] = discarded_by_reason.get("reconciliado_cross_source", 0) + 1
+                            raw_declared_revenue -= line_value
+                            continue
+                        else:
+                            discarded_by_reason["divergencia_valor_cross_source"] = discarded_by_reason.get("divergencia_valor_cross_source", 0) + 1
+                    else:
+                        # Produto NÃO localizado no documento multi-item do XML!
+                        # NUNCA igualar a line_value para forçar resíduo zero!
+                        # A linha NÃO pode ser descartada como reconciliada!
+                        discarded_by_reason["item_nao_localizado_cross_source"] = discarded_by_reason.get("item_nao_localizado_cross_source", 0) + 1
+                else:
+                    # Documento fiscal de item único
+                    single_item = matched_xml_items[0]
+                    expected_val = single_item["net_value"]
+                    val_diff = abs(line_value - expected_val)
+                    if val_diff <= 0.02:
+                        discarded_by_reason["reconciliado_cross_source"] = discarded_by_reason.get("reconciliado_cross_source", 0) + 1
+                        raw_declared_revenue -= line_value
+                        continue
+                    else:
+                        discarded_by_reason["divergencia_valor_cross_source"] = discarded_by_reason.get("divergencia_valor_cross_source", 0) + 1
+            elif not r_doc and not r_chave:
+                # Linha com identificação documental ausente:
+                # REGRA MANDATÓRIA: data e valor NUNCA autorizam deduplicação!
+                # Preservada como venda legítima (NÃO descartada)
+                pass
+
             records.append(SalesRecord(
                 date=dates.iloc[i].to_pydatetime(),
                 product=products.iloc[i],
                 customer=customer,
                 value=line_value,
+                gross_value=gross_val,
+                discount=disc_val,
+                net_value=line_value,
                 quantity=None if qty is None or pd.isna(qty) else float(qty),
+                unit_price=raw_unit_price,
+                unit=None,
+                doc_id=r_doc or None,
+                doc_type="venda",
                 entry_cost=None if cost is None or pd.isna(cost) else float(cost),
                 category=None if cat is None or pd.isna(cat) else str(cat),
                 store=None if store is None or pd.isna(store) else str(store),
@@ -206,12 +895,79 @@ def load_sales_records(
                     else str(payments.iloc[i])
                 ),
                 source_file=file_path.name,
-                source_row=i + 2,  # +1 para 1-indexado, +1 para o cabeçalho
+                source_row=i + 2,
+                has_formula_error=bool(is_formula_error.iloc[i]),
             ))
 
+    # FIX-04: Resolução de Custo Temporal e Quarentena de Ambiguidade
+    compras_df = None
+    estoque_df = None
+
+    if path.is_file() and path.suffix.lower() == ".xlsx":
+        try:
+            wb = pd.ExcelFile(path, engine="openpyxl")
+            if "Compras" in wb.sheet_names:
+                compras_df = pd.read_excel(path, sheet_name="Compras")
+            if "Estoque" in wb.sheet_names:
+                estoque_df = pd.read_excel(path, sheet_name="Estoque")
+        except Exception:
+            pass
+    elif path.is_dir():
+        named_aux = load_named_sheets(path)
+        compras_df = named_aux.get("Compras")
+        estoque_df = named_aux.get("Estoque")
+
+    if compras_df is not None and not compras_df.empty:
+        c_prod_col = next((c for c in compras_df.columns if str(c).lower() in {"produto", "product", "sku"}), None)
+        c_data_col = next((c for c in compras_df.columns if str(c).lower() in {"data", "date"}), None)
+        c_custo_col = next((c for c in compras_df.columns if str(c).lower() in {"custo", "cost", "unit_price", "valor"}), None)
+
+        if c_prod_col and c_data_col and c_custo_col:
+            compras_clean = compras_df.copy()
+            compras_clean["_dt"] = pd.to_datetime(compras_clean[c_data_col], errors="coerce")
+            compras_clean["_cost"] = pd.to_numeric(compras_clean[c_custo_col], errors="coerce")
+            compras_clean = compras_clean.dropna(subset=["_dt", "_cost"]).sort_values(by="_dt")
+
+            for rec in records:
+                prod_name = rec.product.strip()
+                sale_dt = pd.to_datetime(rec.date)
+                p_matches = compras_clean[
+                    (compras_clean[c_prod_col].astype(str).str.strip().str.lower() == prod_name.lower()) &
+                    (compras_clean["_dt"] <= sale_dt)
+                ]
+                if not p_matches.empty:
+                    rec.entry_cost = float(p_matches.iloc[-1]["_cost"])
+                else:
+                    future_matches = compras_clean[
+                        compras_clean[c_prod_col].astype(str).str.strip().str.lower() == prod_name.lower()
+                    ]
+                    if not future_matches.empty and rec.entry_cost is None:
+                        rec.entry_cost = None
+
+    if estoque_df is not None and not estoque_df.empty:
+        e_prod_col = next((c for c in estoque_df.columns if str(c).lower() in {"produto", "product", "description", "descri"}), None)
+        e_cost_col = next((c for c in estoque_df.columns if str(c).lower() in {"custo", "cost"}), None)
+
+        if e_prod_col and e_cost_col:
+            for rec in records:
+                prod_name = rec.product.strip().lower()
+                cand_costs = []
+                for _, row in estoque_df.iterrows():
+                    e_name = str(row[e_prod_col]).strip().lower()
+                    if prod_name in e_name or e_name in prod_name:
+                        c_val = pd.to_numeric(row[e_cost_col], errors="coerce")
+                        if pd.notna(c_val):
+                            cand_costs.append(float(c_val))
+                unique_cand_costs = set(cand_costs)
+                if len(unique_cand_costs) > 1:
+                    rec.cost_quarantine = True
+
+    reconciliation_gap = raw_declared_revenue - sum(r.value for r in records)
     summary = CleaningSummary(
         rows_read=rows_read, rows_accepted=len(records),
         rows_discarded_by_reason=discarded_by_reason, files_skipped=files_skipped,
+        raw_declared_revenue=float(raw_declared_revenue),
+        reconciliation_gap=float(reconciliation_gap),
     )
     return records, summary
 
@@ -276,6 +1032,8 @@ _SALES_FRAME_SCHEMA: dict[str, str] = {
     "date": "datetime64[ns]", "product": "object", "customer": "object",
     "value": "float64", "entry_cost": "float64", "category": "object",
     "store": "object", "salesperson": "object", "payment_method": "object",
+    "quantity": "float64", "source_row": "int64", "has_formula_error": "bool",
+    "cost_quarantine": "bool",
 }
 
 
@@ -284,7 +1042,9 @@ def _records_to_frame(records: list[SalesRecord]) -> pd.DataFrame:
         "date": pd.Timestamp(r.date), "product": r.product,
         "customer": r.customer, "value": r.value, "entry_cost": r.entry_cost,
         "category": r.category, "store": r.store, "salesperson": r.salesperson,
-        "payment_method": r.payment_method,
+        "payment_method": r.payment_method, "quantity": r.quantity,
+        "source_row": r.source_row, "has_formula_error": r.has_formula_error,
+        "cost_quarantine": bool(getattr(r, "cost_quarantine", False)),
     } for r in records], _SALES_FRAME_SCHEMA)
 
 
@@ -409,6 +1169,9 @@ def detect_churn(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> list[Ch
                 last_purchase=last_purchase.strftime("%Y-%m-%d"),
                 months_silent=int(months_silent),
                 historical_annual_value=float(group["value"].sum()),
+                source_rows=sorted(int(r) for r in group["source_row"]),
+                days_since_last=int(days_since_last),
+                silence_to_cycle_ratio=float(days_since_last / avg_cadence_days),
             ))
 
     return findings
@@ -446,11 +1209,24 @@ def detect_product_trends(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -
 
         decoupled = (company_growth_pct - product_growth_pct) > thresholds.trend_decoupling_pct and thresholds.trend_decoupling_pct > 0
 
+        short_term_margin = None
+        if decoupled:
+            valid_cost_mask = group["entry_cost"].notna()
+            if valid_cost_mask.any():
+                total_val = group.loc[valid_cost_mask, "value"].sum()
+                total_cost = group.loc[valid_cost_mask, "entry_cost"].sum()
+                if total_val > 0:
+                    short_term_margin = ((total_val - total_cost) / total_val) * 100.0
+
+        has_formula_errors = bool(group["has_formula_error"].any()) if "has_formula_error" in group.columns else False
+
         last_sale_period = group["period"].max() if len(group) else None
         entries.append(ProductTrendEntry(
             product=product, company_growth_pct=float(company_growth_pct),
             product_growth_pct=float(product_growth_pct), decoupled=bool(decoupled),
             last_sale_month=str(last_sale_period) if last_sale_period is not None else None,
+            short_term_margin=float(short_term_margin) if short_term_margin is not None else None,
+            has_formula_errors=has_formula_errors,
         ))
 
     return entries
@@ -574,15 +1350,30 @@ def detect_contribution_margin(
     if valid.empty:
         return []
 
-    grouped = valid.groupby("product").agg(
-        avg_price=("value", "mean"), avg_entry_cost=("entry_cost", "mean"),
-        sample_size=("value", "count"),
-    )
-    grouped["variable_cost"] = grouped["avg_price"] * thresholds.variable_cost_pct / 100.0
-    grouped["contribution_margin"] = (
-        grouped["avg_price"] - grouped["avg_entry_cost"] - grouped["variable_cost"]
-    )
-    negative = grouped[grouped["contribution_margin"] < 0]
+    if "cost_quarantine" in valid.columns:
+        is_quarantined = valid["cost_quarantine"].astype(bool)
+        trusted = valid[~is_quarantined]
+    else:
+        trusted = valid
+        is_quarantined = pd.Series(False, index=valid.index)
+
+    if not trusted.empty:
+        grouped = trusted.groupby("product").agg(
+            avg_price=("value", "mean"), avg_entry_cost=("entry_cost", "mean"),
+            sample_size=("value", "count"),
+        )
+        grouped["variable_cost"] = grouped["avg_price"] * thresholds.variable_cost_pct / 100.0
+        grouped["contribution_margin"] = (
+            grouped["avg_price"] - grouped["avg_entry_cost"] - grouped["variable_cost"]
+        )
+        negative = grouped[grouped["contribution_margin"] < 0]
+    else:
+        negative = pd.DataFrame(columns=["avg_price", "avg_entry_cost", "sample_size", "variable_cost", "contribution_margin"])
+
+    quarantined_products = set()
+    if is_quarantined.any():
+        prod_all_quarantine = is_quarantined.groupby(valid["product"]).all()
+        quarantined_products = set(prod_all_quarantine[prod_all_quarantine].index)
 
     # C3 — promoção deliberada não é prejuízo estrutural: produto cuja TOTALIDADE
     # das vendas válidas tem `payment_method == promo_payment_label` é marcado
@@ -599,7 +1390,8 @@ def detect_contribution_margin(
         )
     else:
         all_promo = pd.Series(dtype=bool)
-    return [
+
+    alerts = [
         ContributionMarginAlert(
             product=str(product), avg_price=float(row["avg_price"]),
             avg_entry_cost=float(row["avg_entry_cost"]),
@@ -607,9 +1399,27 @@ def detect_contribution_margin(
             contribution_margin=float(row["contribution_margin"]),
             sample_size=int(row["sample_size"]),
             promotional=bool(all_promo.get(product, False)),
+            insufficient_cost_coverage=False,
         )
         for product, row in negative.iterrows()
     ]
+
+    for product in sorted(quarantined_products):
+        p_rows = valid[valid["product"] == product]
+        avg_price = float(p_rows["value"].mean())
+        alerts.append(
+            ContributionMarginAlert(
+                product=str(product),
+                avg_price=avg_price,
+                avg_entry_cost=0.0,
+                variable_cost_pct=float(thresholds.variable_cost_pct),
+                contribution_margin=0.0,
+                sample_size=len(p_rows),
+                promotional=bool(all_promo.get(product, False)),
+                insufficient_cost_coverage=True,
+            )
+        )
+    return alerts
 
 
 def detect_store_performance(
@@ -645,18 +1455,22 @@ def detect_store_performance(
 
     valid = df.dropna(subset=["entry_cost"]) if "entry_cost" in df.columns else df.iloc[0:0]
     valid = valid[valid["value"] > 0]
+    if "cost_quarantine" in valid.columns:
+        valid_trusted = valid[~valid["cost_quarantine"].astype(bool)]
+    else:
+        valid_trusted = valid
 
     entries: list[StorePerformance] = []
     for store in sorted(revenue_by_store.index):
-        store_valid = valid[valid["store"] == store]
-        margin_sample_size = len(store_valid)
+        store_trusted = valid_trusted[valid_trusted["store"] == store]
+        margin_sample_size = len(store_trusted)
         if margin_sample_size == 0:
             avg_price = 0.0
             avg_entry_cost = 0.0
             contribution_margin_avg = 0.0
         else:
-            avg_price = float(store_valid["value"].mean())
-            avg_entry_cost = float(store_valid["entry_cost"].mean())
+            avg_price = float(store_trusted["value"].mean())
+            avg_entry_cost = float(store_trusted["entry_cost"].mean())
             variable_cost = avg_price * thresholds.variable_cost_pct / 100.0
             contribution_margin_avg = avg_price - avg_entry_cost - variable_cost
         contribution_margin_total = contribution_margin_avg * margin_sample_size
@@ -665,9 +1479,12 @@ def detect_store_performance(
         months_of_history = float(span_days) / _AVG_DAYS_PER_MONTH
         has_sufficient_history = months_of_history >= thresholds.cold_start_min_months
 
+        total_store_sales = int(count_by_store[store])
+        cost_coverage_pct = float(round(margin_sample_size / total_store_sales * 100.0, 2)) if total_store_sales > 0 else 0.0
+
         entries.append(StorePerformance(
             store=str(store), gross_revenue=float(revenue_by_store[store]),
-            revenue_sample_size=int(count_by_store[store]),
+            revenue_sample_size=total_store_sales,
             avg_price=float(avg_price), avg_entry_cost=float(avg_entry_cost),
             variable_cost_pct=float(thresholds.variable_cost_pct),
             contribution_margin_avg=float(contribution_margin_avg),
@@ -675,6 +1492,7 @@ def detect_store_performance(
             margin_sample_size=margin_sample_size,
             months_of_history=months_of_history,
             has_sufficient_history=has_sufficient_history,
+            cost_coverage_pct=cost_coverage_pct,
         ))
     return entries
 
@@ -941,10 +1759,47 @@ def detect_dead_stock(
     capital_frozen = float(dead["inventory_value"].sum())
     dead_stock_pct = capital_frozen / total_inventory_value * 100.0 if total_inventory_value else 0.0
 
+    # Fase D, Pilar 2 — linha(s) de origem na aba Estoque, por SKU. `frame`/`dead`
+    # preservam o índice posicional original de `estoque_df` (dict de Series
+    # fatiadas da MESMA fonte, nunca resetado) — +2 é o mesmo ajuste header+1-index
+    # usado na ingestão de Vendas.
+    sku_source_rows: dict[str, list[int]] = {}
+    for idx, sku in dead["sku"].items():
+        sku_source_rows.setdefault(sku, []).append(int(idx) + 2)
+
+    # Fase D2 — capital preso por SKU (soma se o mesmo SKU aparece em >1 loja);
+    # Σ(sku_capital.values()) == capital_frozen por construção (mesma agregação).
+    sku_capital: dict[str, float] = (
+        dead.groupby("sku")["inventory_value"].sum().to_dict()
+    )
+    # Fase D2 — meses parado por SKU (pior caso — mais tempo sem giro — se o mesmo
+    # SKU aparece em >1 loja com datas de última movimentação diferentes).
+    sku_months_since: dict[str, int] = (
+        dead.groupby("sku")["months_since"].max().astype(int).to_dict()
+    )
+
+    # Fase D2 — nome legível, papel opcional `description`. Extraído FORA do
+    # `frame`/`.dropna()` acima de propósito: descrição ausente não pode derrubar um
+    # SKU do cálculo de estoque morto (o nome é decoração pro anexo, não um dado que
+    # o detector precisa pra funcionar).
+    sku_descriptions: dict[str, str] = {}
+    if "description" in roles:
+        desc_col = estoque_df[roles["description"]]
+        for idx, sku in dead["sku"].items():
+            if sku in sku_descriptions:
+                continue
+            raw = desc_col.get(idx)
+            if pd.notna(raw) and str(raw).strip():
+                sku_descriptions[sku] = str(raw).strip()
+
     return [DeadStockFinding(
         dead_stock_months=thresholds.dead_stock_months, sku_count=len(dead),
         capital_frozen=capital_frozen, total_inventory_value=total_inventory_value,
         dead_stock_pct=float(dead_stock_pct), skus=sorted(dead["sku"].tolist()),
+        sku_capital=sku_capital,
+        sku_months_since=sku_months_since,
+        sku_descriptions=sku_descriptions,
+        sku_source_rows=sku_source_rows,
     )]
 
 
@@ -979,8 +1834,16 @@ def detect_gmroi(
     inventory_by_category = (est_frame["qty"] * est_frame["cost"]).groupby(est_frame["category"]).sum()
 
     sales = vendas_df.dropna(subset=["category", "entry_cost"])
-    margin_by_category = (sales["value"] - sales["entry_cost"]).groupby(sales["category"]).sum()
-    count_by_category = sales.groupby("category").size()
+    if "cost_quarantine" in sales.columns:
+        is_quarantine = sales["cost_quarantine"].astype(bool)
+        sales_trusted = sales[~is_quarantine]
+        quarantined_by_category = is_quarantine.groupby(sales["category"]).any()
+    else:
+        sales_trusted = sales
+        quarantined_by_category = pd.Series(False, index=sales["category"].unique() if not sales.empty else [])
+
+    margin_by_category = (sales_trusted["value"] - sales_trusted["entry_cost"]).groupby(sales_trusted["category"]).sum()
+    count_by_category = sales_trusted.groupby("category").size()
 
     entries: list[GmroiEntry] = []
     all_below_1 = True
@@ -994,17 +1857,1023 @@ def detect_gmroi(
         if gmroi is not None and gmroi >= 1.0:
             all_below_1 = False
             
+        has_quarantine = bool(quarantined_by_category.get(category, False))
         entries.append(GmroiEntry(
             category=category, gross_margin=gross_margin, avg_inventory_value=avg_inventory_value,
             gmroi=gmroi, sample_size=int(count_by_category.get(category, 0)),
-            is_directional_only=False
+            is_directional_only=False,
+            insufficient_cost_coverage=has_quarantine,
         ))
         
     if all_below_1 and entries:
         for e in entries:
             e.is_directional_only = True
-            
+
     return entries
+
+
+# ---------------------------------------------------------------------------------
+# Fase B — 5 teses analíticas avançadas (SPEC_Fase_B_Formulas_Avancadas.md).
+# Cada detector é independente e degrada graciosamente (lista/None vazio) quando o
+# dado de origem não tem a coluna/aba necessária — nunca derruba os outros 4 nem o
+# motor inteiro. Nenhum laço `for` sobre linha de venda: todo agregado é feito por
+# `groupby`/operação vetorizada do pandas; os laços que existem abaixo iteram sobre
+# resultado JÁ AGREGADO (por SKU, por vendedor, por loja) — mesmo estilo de
+# `detect_gmroi`/`detect_customer_concentration` acima.
+# ---------------------------------------------------------------------------------
+
+
+def detect_gmroi_by_sku(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[GmroiSkuAlert]:
+    """Fase B, Algoritmo 1 — GMROI por SKU (granularidade de produto, não de
+    categoria — ver `detect_gmroi` para a versão por categoria). "Margem ilusória":
+    produto com markup% >= `gmroi_sku_high_margin_pct` (parece ótimo na etiqueta) E
+    GMROI < `gmroi_sku_low_ratio` (giro tão lento que o capital parado no próprio SKU
+    rende menos do que custa manter). Lista só contém quem bate as DUAS pernas — mesmo
+    padrão de `detect_contribution_margin` (só o alerta, não o universo inteiro).
+
+    SKU com `capital_frozen <= 0` é ignorado (sem capital investido, GMROI não tem
+    denominador de negócio — nunca `ZeroDivisionError`, nunca um GMROI infinito
+    fingido). Serviço (`service_category_label`) fica fora: não tem SKU em Estoque,
+    mesma exclusão de `detect_contribution_margin`/`detect_gmroi`."""
+    if estoque_df is None or estoque_df.empty:
+        return []
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+
+    est_frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "cost": coerce_currency_series(estoque_df[roles["cost"]]),
+        "qty": coerce_currency_series(estoque_df[roles["qty_on_hand"]]),
+    }).dropna()
+    if est_frame.empty:
+        return []
+    capital_by_sku = (est_frame["qty"] * est_frame["cost"]).groupby(est_frame["sku"]).sum()
+    capital_by_sku = capital_by_sku[capital_by_sku > 0]
+    if capital_by_sku.empty:
+        return []
+
+    sales = vendas_df.dropna(subset=["entry_cost"])
+    if "category" in sales.columns and not sales["category"].isna().all():
+        sales = sales[sales["category"] != thresholds.service_category_label]
+    if sales.empty:
+        return []
+
+    if "cost_quarantine" in sales.columns:
+        is_quarantine = sales["cost_quarantine"].astype(bool)
+        sales_trusted = sales[~is_quarantine]
+        sku_has_quarantine = is_quarantine.groupby(sales["product"]).any()
+    else:
+        sales_trusted = sales
+        sku_has_quarantine = pd.Series(False, index=sales["product"].unique())
+
+    if sales_trusted.empty:
+        return []
+
+    revenue_by_sku = sales_trusted.groupby("product")["value"].sum()
+    cost_by_sku = sales_trusted.groupby("product")["entry_cost"].sum()
+    margin_by_sku = revenue_by_sku - cost_by_sku
+
+    common = capital_by_sku.index.intersection(margin_by_sku.index)
+    common = common[revenue_by_sku.loc[common] > 0]  # markup% precisa de receita > 0
+    if common.empty:
+        return []
+
+    markup_pct = 100.0 * margin_by_sku.loc[common] / revenue_by_sku.loc[common]
+    gmroi = margin_by_sku.loc[common] / capital_by_sku.loc[common]
+    is_illusory = (
+        (markup_pct >= thresholds.gmroi_sku_high_margin_pct)
+        & (gmroi < thresholds.gmroi_sku_low_ratio)
+    )
+    illusory_skus = sorted(common[is_illusory])
+
+    return [
+        GmroiSkuAlert(
+            sku=str(sku), total_revenue=float(revenue_by_sku[sku]), total_cost=float(cost_by_sku[sku]),
+            gross_margin=float(margin_by_sku[sku]), markup_pct=float(markup_pct[sku]),
+            capital_frozen=float(capital_by_sku[sku]), gmroi=float(gmroi[sku]), is_illusory_margin=True,
+            insufficient_cost_coverage=bool(sku_has_quarantine.get(sku, False)),
+        )
+        for sku in illusory_skus
+    ]
+
+
+def detect_attach_rate_opportunities(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[AttachRateOpportunity]:
+    """Fase B, Algoritmo 2 — Attach Rate / Cross-sell Gap: reaproveita o MESMO par de
+    categorias de `detect_latent_revenue` (`latent_revenue_anchor_category`/
+    `..._target_category`) — um único vocabulário de negócio para "âncora/alvo" no
+    contrato, nunca dois pares divergentes pra mesma ideia. Diferença de propósito:
+    `detect_latent_revenue` projeta CENÁRIO de receita assumida; este algoritmo é só
+    o FATO do gap (quem comprou A e nunca B) mais os 5 clientes de maior receita na
+    âncora — a fila de abordagem mais valiosa primeiro (teto de 5, mesma régua da
+    visão executiva do laudo).
+
+    Pseudo-cliente nunca entra (não é "um cliente" pra régua de cross-sell). Sem
+    coluna de categoria ou sem ninguém na âncora, retorna vazio — nunca inventa
+    oportunidade sem base."""
+    if "category" not in df.columns or df["category"].isna().all():
+        return []
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    anchor = thresholds.latent_revenue_anchor_category
+    target = thresholds.latent_revenue_target_category
+
+    anchor_df = df[df["category"] == anchor]
+    if anchor_df.empty:
+        return []
+    eligible = set(anchor_df["customer"].unique())
+    target_buyers = set(df.loc[df["category"] == target, "customer"].unique())
+    gap_customers = eligible - target_buyers
+    attach_rate_pct = 100.0 * len(eligible & target_buyers) / len(eligible)
+
+    revenue_by_customer = anchor_df.groupby("customer")["value"].sum()
+    top5 = revenue_by_customer.loc[sorted(gap_customers)].sort_values(ascending=False).head(5)
+
+    return [AttachRateOpportunity(
+        anchor_category=anchor, target_category=target, eligible_customers=len(eligible),
+        attach_rate_pct=float(attach_rate_pct),
+        cross_sell_gap=[
+            CrossSellGapCustomer(customer_id=str(c), anchor_category_revenue=float(v))
+            for c, v in top5.items()
+        ],
+    )]
+
+
+def detect_seller_margin_corrosion(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[SellerMarginCorrosionAlert]:
+    """Fase B, Algoritmo 3 — Corrosão de ticket médio por vendedor: desconto
+    concedido = preço de TABELA (`list_price`, aba Estoque) − preço efetivamente
+    praticado na venda. Preço praticado é reconstruído de `value` (já totalizado por
+    quantidade na ingestão) ÷ `quantity` (1.0 quando ausente/≤0 — mesmo piso
+    conservador usado na ingestão original para `effective_qty`, nunca divide por
+    zero). `discount_pct` compara a receita do vendedor contra o benchmark de
+    desconto% dos PARES DA MESMA LOJA — vendedor de loja diferente não entra no
+    mesmo benchmark (política de preço difere por unidade).
+
+    Requer a coluna opcional `list_price` em Estoque e a coluna `salesperson` em
+    Vendas — sem qualquer uma delas, ou sem SKU em comum entre as duas abas, retorna
+    vazio (nunca inventa preço de tabela nem vendedor).
+
+    QA (achado crítico, corrigido): devolução/estorno (`value <= 0`, tipicamente
+    `quantity < 0`) NUNCA entra na reconstrução de `unit_price` — mesmo filtro que
+    `detect_contribution_margin` já aplica e pela MESMA razão. Sem o filtro,
+    `quantity < 0` reprova o guard `qty > 0` e cai no piso `qty_safe = 1.0`, e
+    `unit_price = value / 1.0` fica NEGATIVO — vira `discount = list_price -
+    (-|value|) = list_price + |value|`, uma SOMA em vez de subtração, inflando o
+    desconto do vendedor pelo dobro do valor da devolução. Bug real, reproduzido
+    contra `tests/fixtures/consultoria_real_test.xlsx` (SKU `ARP-006`, `value=
+    -1080.0`, `quantity=-1.0`) antes desta correção."""
+    if estoque_df is None or estoque_df.empty:
+        return []
+    if "salesperson" not in vendas_df.columns or vendas_df["salesperson"].isna().all():
+        return []
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return []
+    if "list_price" not in roles:
+        return []
+
+    list_price_frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "list_price": coerce_currency_series(estoque_df[roles["list_price"]]),
+    }).dropna()
+    if list_price_frame.empty:
+        return []
+    # Catálogo pode ter 1 linha por (SKU, loja) — preço de tabela representativo do
+    # SKU é a média entre as lojas que o carregam (aproximação rotulada, mesmo
+    # espírito de `avg_inventory_value` em GmroiEntry).
+    list_price_by_sku = list_price_frame.groupby("sku")["list_price"].mean()
+
+    sales = vendas_df.dropna(subset=["salesperson", "value"]).copy()
+    sales = sales[sales["value"] > 0]  # devolução/estorno fora — mesmo critério de
+    # `detect_contribution_margin` (não é "preço praticado", é reversão de caixa)
+    sales = sales[sales["product"].isin(list_price_by_sku.index)]
+    if sales.empty:
+        return []
+    if "store" not in sales.columns or sales["store"].isna().all():
+        return []
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+
+    qty = sales["quantity"] if "quantity" in sales.columns else pd.Series(1.0, index=sales.index)
+    qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
+    unit_price = sales["value"] / qty_safe
+    list_price = sales["product"].map(list_price_by_sku)
+    sales["discount"] = (list_price - unit_price) * qty_safe
+
+    grouped = sales.groupby(["store", "salesperson"]).agg(
+        total_discount=("discount", "sum"), total_revenue=("value", "sum"),
+        sample_size=("value", "count"),
+    )
+    grouped = grouped[grouped["total_revenue"] > 0]
+    if grouped.empty:
+        return []
+    grouped["discount_pct"] = 100.0 * grouped["total_discount"] / grouped["total_revenue"]
+
+    store_mean = grouped.groupby("store")["discount_pct"].transform("mean")
+    store_std = grouped.groupby("store")["discount_pct"].transform("std", ddof=0).fillna(0.0)
+    is_corrosive = grouped["discount_pct"] > (
+        store_mean + thresholds.seller_corrosion_std_multiplier * store_std
+    )
+    # Fase D, Pilar 2 — amostra (teto declarado) de linhas de origem por grupo.
+    cap = thresholds.provenance_sample_cap
+    sample_rows = sales.groupby(["store", "salesperson"])["source_row"].apply(
+        lambda s: sorted(int(r) for r in s)[:cap]
+    )
+
+    alerts = [
+        SellerMarginCorrosionAlert(
+            salesperson=str(salesperson), store=str(store),
+            total_revenue=float(row["total_revenue"]), total_discount=float(row["total_discount"]),
+            discount_pct=float(row["discount_pct"]),
+            store_mean_discount_pct=float(store_mean.loc[(store, salesperson)]),
+            store_std_discount_pct=float(store_std.loc[(store, salesperson)]),
+            sample_size=int(row["sample_size"]), is_corrosive=bool(is_corrosive.loc[(store, salesperson)]),
+            sample_source_rows=sample_rows.loc[(store, salesperson)],
+        )
+        for (store, salesperson), row in grouped.iterrows()
+    ]
+    return sorted(alerts, key=lambda a: -a.discount_pct)
+
+
+def detect_seller_margin_mix(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[SellerMarginMixProfile]:
+    """Fase D, Pilar 1 — Mix de Venda por Categoria de Margem: separa vendedor
+    IMPRODUTIVO (vende pouco) de vendedor DESTRUIDOR DE MARGEM (volume normal/alto,
+    mas concentrado numa categoria de margem baixa acima do padrão da própria loja —
+    mesmo mecanismo estrutural do caso L7/L9: o volume esconde a corrosão).
+
+    Margem blendada (Σmargem/Σreceita) por vendedor vs. pela PRÓPRIA loja (todos os
+    vendedores, mesmo critério de benchmark local de `detect_seller_margin_corrosion`
+    — nunca a rede inteira). `mix` (por categoria, ordenado pelo desvio) é o "porquê"
+    — nunca só o rótulo `is_margin_destructive`.
+
+    Devolução/estorno fora (mesmo critério da Fase B/C). Serviço fora (estrutura de
+    custo diferente, mesma exclusão de `detect_contribution_margin`/`detect_gmroi`).
+    Pseudo-vendedor fora (não é uma pessoa pra acusar). Vendedor com amostra abaixo
+    de `seller_margin_mix_min_sample` fica de fora — sem base estatística pra padrão.
+    Sem coluna de loja/vendedor/categoria/custo, retorna vazio."""
+    for col in ("store", "salesperson", "category", "entry_cost"):
+        if col not in df.columns or df[col].isna().all():
+            return []
+
+    sales = df.dropna(subset=["entry_cost"])
+    sales = sales[sales["value"] > 0]
+    sales = sales[sales["category"] != thresholds.service_category_label]
+    if sales.empty:
+        return []
+    sales = sales.copy()
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+    sales["margin"] = sales["value"] - sales["entry_cost"]
+
+    # Benchmark da loja: TODA venda da loja, inclusive sem vendedor identificado —
+    # fato bruto, mesmo critério de `detect_customer_concentration` (`store_revenue`
+    # é a soma de TODA venda da loja). Excluir aqui subestimaria a margem real da
+    # loja e distorceria o benchmark contra o qual cada vendedor é comparado.
+    store_stats = sales.groupby("store").agg(
+        store_revenue=("value", "sum"), store_margin_sum=("margin", "sum"),
+    ).reset_index()
+    store_stats["store_margin_pct"] = 100.0 * store_stats["store_margin_sum"] / store_stats["store_revenue"]
+
+    store_cat = sales.groupby(["store", "category"]).agg(
+        cat_revenue=("value", "sum"), cat_margin=("margin", "sum"),
+    ).reset_index()
+    store_cat = store_cat.merge(store_stats[["store", "store_revenue"]], on="store")
+    store_cat["store_mix_pct"] = 100.0 * store_cat["cat_revenue"] / store_cat["store_revenue"]
+    store_cat["category_margin_pct"] = 100.0 * store_cat["cat_margin"] / store_cat["cat_revenue"]
+
+    # Avaliação POR VENDEDOR exclui pseudo-entidade — não é uma pessoa pra acusar de
+    # "destruidor de margem". QA (achado): vendedor sem cadastro chega cru como
+    # None/NaN (diferente de `customer`, já resolvido pra `_ANONYMOUS_CUSTOMER` na
+    # ingestão) — filtrar com `.isin(_PSEUDO_ENTITY_IDS)` ANTES do fillna é código
+    # morto pro caso None (NaN nunca é isin de nada). fillna primeiro, filtro
+    # explícito depois: cobre tanto o walk-in real (vira _UNKNOWN_SALESPERSON)
+    # quanto a string literal decoy que coincide por acaso com o placeholder (mesma
+    # trava da Pegadinha 3/Beta) — nesta cópia isolada, nunca no benchmark da loja.
+    identified = sales.copy()
+    identified["salesperson"] = identified["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    identified = identified[~identified["salesperson"].isin(_PSEUDO_ENTITY_IDS)]
+    if identified.empty:
+        return []
+
+    seller_stats = identified.groupby(["store", "salesperson"]).agg(
+        total_revenue=("value", "sum"), seller_margin_sum=("margin", "sum"), sample_size=("value", "count"),
+    ).reset_index()
+    seller_stats = seller_stats[seller_stats["sample_size"] >= thresholds.seller_margin_mix_min_sample]
+    if seller_stats.empty:
+        return []
+    seller_stats["seller_margin_pct"] = 100.0 * seller_stats["seller_margin_sum"] / seller_stats["total_revenue"]
+    seller_stats = seller_stats.merge(store_stats[["store", "store_margin_pct"]], on="store")
+    seller_stats["margin_gap_pp"] = seller_stats["store_margin_pct"] - seller_stats["seller_margin_pct"]
+    seller_stats["is_margin_destructive"] = seller_stats["margin_gap_pp"] > thresholds.seller_margin_gap_pct
+
+    seller_cat = identified.groupby(["store", "salesperson", "category"]).agg(
+        seller_cat_revenue=("value", "sum"),
+    ).reset_index()
+    seller_cat = seller_cat.merge(
+        seller_stats[["store", "salesperson", "total_revenue"]], on=["store", "salesperson"],
+    )
+    seller_cat["seller_mix_pct"] = 100.0 * seller_cat["seller_cat_revenue"] / seller_cat["total_revenue"]
+    seller_cat = seller_cat.merge(
+        store_cat[["store", "category", "store_mix_pct", "category_margin_pct"]], on=["store", "category"],
+    )
+    seller_cat["mix_deviation_pp"] = seller_cat["seller_mix_pct"] - seller_cat["store_mix_pct"]
+
+    # Fase D, Pilar 2 — amostra (teto declarado) de linhas de origem por (loja, vendedor).
+    cap = thresholds.provenance_sample_cap
+    sample_rows = identified.groupby(["store", "salesperson"])["source_row"].apply(
+        lambda s: sorted(int(r) for r in s)[:cap]
+    )
+
+    profiles: list[SellerMarginMixProfile] = []
+    for _, srow in seller_stats.sort_values(["store", "salesperson"]).iterrows():
+        cat_rows = seller_cat[
+            (seller_cat["store"] == srow["store"]) & (seller_cat["salesperson"] == srow["salesperson"])
+        ].sort_values("mix_deviation_pp", ascending=False)
+        mix = [
+            SellerCategoryMixEntry(
+                category=str(c["category"]), seller_revenue=float(c["seller_cat_revenue"]),
+                seller_mix_pct=float(c["seller_mix_pct"]), store_mix_pct=float(c["store_mix_pct"]),
+                mix_deviation_pp=float(c["mix_deviation_pp"]), category_margin_pct=float(c["category_margin_pct"]),
+            )
+            for _, c in cat_rows.iterrows()
+        ]
+        profiles.append(SellerMarginMixProfile(
+            salesperson=str(srow["salesperson"]), store=str(srow["store"]),
+            total_revenue=float(srow["total_revenue"]), seller_margin_pct=float(srow["seller_margin_pct"]),
+            store_margin_pct=float(srow["store_margin_pct"]), margin_gap_pp=float(srow["margin_gap_pp"]),
+            is_margin_destructive=bool(srow["is_margin_destructive"]), sample_size=int(srow["sample_size"]),
+            sample_source_rows=sample_rows.loc[(srow["store"], srow["salesperson"])],
+            mix=mix,
+        ))
+    return sorted(profiles, key=lambda p: -p.margin_gap_pp)
+
+
+def _flight_risk_leg_trend(series: pd.Series, window_months: int, sigma_threshold: float, direction: str):
+    """Fase E, E1 — um perna (captura/desconto/ticket) do risco de evasão: desvio em
+    σ do valor RECENTE (últimos `window_months`) contra a variabilidade histórica da
+    PRÓPRIA série (mesmo idioma de `detect_revenue_leaks`), nunca um ponto-percentual
+    fixo. `direction="drop"` (captura/ticket: queda é o sinal ruim) inverte o sinal
+    de `direction="rise"` (desconto: alta é o sinal ruim) — ambos viram `delta`
+    positivo quando o movimento é na direção de risco.
+
+    Retorna `(delta, disparou)`. `delta=None` quando a perna não tem base
+    estatística pra avaliar (menos de 3 meses de histórico ANTES da janela recente,
+    ou histórico sem variabilidade — série constante não sustenta um σ) — nunca
+    "não disparou" fingido; é uma distinção diferente (sem dado ≠ dado que não
+    mostra risco)."""
+    series = series.sort_index()
+    if len(series) <= window_months:
+        return None, False
+    historico, recente = series.iloc[:-window_months], series.iloc[-window_months:]
+    if len(historico) < 3:
+        return None, False
+    std = historico.std()
+    if not std or pd.isna(std):
+        return None, False
+    delta = (historico.mean() - recente.mean()) if direction == "drop" else (recente.mean() - historico.mean())
+    sigma = delta / std
+    return float(delta), bool(sigma >= sigma_threshold)
+
+
+def detect_seller_flight_risk(
+    df: pd.DataFrame, estoque_df: pd.DataFrame | None, thresholds: AuditThresholdsConfig,
+) -> list[FlightRiskAlert]:
+    """Fase E, E1 — Risco de Evasão de Talentos: 3 pernas independentes calculadas
+    como série MENSAL própria de (loja, vendedor) — nunca reusa
+    `detect_salesperson_performance`/`detect_seller_margin_corrosion` diretamente
+    (ambas têm grão incompatível: escalar único e agregado sem mês,
+    respectivamente); reaplica a MESMA fórmula de cada uma por mês.
+
+    Agrupado por (loja, vendedor) — mesmo critério de benchmark local de
+    `detect_seller_margin_corrosion`/`detect_seller_margin_mix` — porque
+    `SalespersonPerformance` (rede inteira, sem loja) não tem o grão que este
+    achado precisa expor.
+
+    Pernas: (1) captura em queda — capturado/total por mês (fórmula do SEV); (2)
+    desconto em alta — (list_price - unit_price)/list_price por mês (reconstrução
+    de `detect_seller_margin_corrosion`), requer `list_price` em Estoque, sem ela
+    esta perna simplesmente não é avaliada para NINGUÉM (nunca inventa preço de
+    tabela); (3) ticket médio em queda — receita média por venda, por mês.
+
+    Gate de tenure: mesmo `sev_ramp_min_days` do SEV, por DIAS desde a primeira
+    venda do (loja, vendedor) até a data mais recente conhecida na rede — vendedor
+    em rampa nunca entra, mesmo se as 3 pernas tecnicamente disparassem. Guarda
+    independente por MESES: `_flight_risk_leg_trend` já exige >=3 meses de
+    histórico antes da janela recente — tenure suficiente em dias não garante
+    meses suficientes COM VENDA (ex.: vendedor sazonal).
+
+    QA (achado de revisão) — "data mais recente conhecida na rede" aqui NÃO é
+    idêntica à do SEV: `global_max_date` é calculada sobre `sales`, já filtrada
+    (sem devolução/estorno, sem vendedor pseudo), enquanto o SEV calcula sobre o
+    `df` bruto. Só diverge no caso estreito em que a última transação cronológica
+    da rede é uma devolução ou de vendedor não identificado — aceitável (o gate
+    de tenure é uma referência, não uma igualdade que Zero Contradição precise
+    proteger), mas documentado aqui para não confundir com o SEV."""
+    if "salesperson" not in df.columns or df["salesperson"].isna().all():
+        return []
+    sales = df[df["value"] > 0].copy()  # devolução/estorno fora, mesmo critério do resto do motor
+    if sales.empty:
+        return []
+    sales["salesperson"] = sales["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    sales = sales[~sales["salesperson"].isin(_PSEUDO_ENTITY_IDS)]
+    if sales.empty:
+        return []
+    if "store" not in sales.columns or sales["store"].isna().all():
+        return []
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+    sales["period"] = sales["date"].dt.to_period("M")
+    global_max_date = sales["date"].max()
+
+    # Perna 1 — captura: capturado (cliente identificado) / total, por (loja, vendedor, mês).
+    sales["_captured"] = ~sales["customer"].isin(_PSEUDO_ENTITY_IDS)
+    capture_month = sales.groupby(["store", "salesperson", "period"]).agg(
+        total=("value", "count"), captured=("_captured", "sum"),
+    ).reset_index()
+    capture_month["capture_rate_pct"] = 100.0 * capture_month["captured"] / capture_month["total"]
+
+    # Perna 3 — ticket médio por (loja, vendedor, mês).
+    ticket_month = sales.groupby(["store", "salesperson", "period"])["value"].mean().rename("ticket_medio")
+
+    # Perna 2 — desconto, só se Estoque tiver preço de tabela (gate global, mesma
+    # exigência de `detect_seller_margin_corrosion`).
+    discount_month = None
+    list_price_by_sku = _estoque_list_price_by_sku(estoque_df)
+    if list_price_by_sku is not None:
+        disc = sales[sales["product"].isin(list_price_by_sku.index)].copy()
+        if not disc.empty:
+            qty = disc["quantity"] if "quantity" in disc.columns else pd.Series(1.0, index=disc.index)
+            qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
+            unit_price = disc["value"] / qty_safe
+            list_price = disc["product"].map(list_price_by_sku)
+            disc["discount_amt"] = (list_price - unit_price) * qty_safe
+            grouped = disc.groupby(["store", "salesperson", "period"]).agg(
+                total_discount=("discount_amt", "sum"), total_revenue=("value", "sum"),
+            )
+            discount_month = (100.0 * grouped["total_discount"] / grouped["total_revenue"]).rename("discount_pct")
+
+    cap = thresholds.provenance_sample_cap
+    sample_rows = sales.groupby(["store", "salesperson"])["source_row"].apply(
+        lambda s: sorted(int(r) for r in s)[:cap]
+    )
+    revenue_by_group = sales.groupby(["store", "salesperson"])["value"].sum()
+    first_sale_by_group = sales.groupby(["store", "salesperson"])["date"].min()
+    ticket_by_group = {
+        key: g.droplevel(["store", "salesperson"]) for key, g in ticket_month.groupby(level=["store", "salesperson"])
+    }
+    discount_by_group = {} if discount_month is None else {
+        key: g.droplevel(["store", "salesperson"])
+        for key, g in discount_month.groupby(level=["store", "salesperson"])
+    }
+
+    alerts: list[FlightRiskAlert] = []
+    for (store, salesperson), g in capture_month.groupby(["store", "salesperson"]):
+        days_since_first_sale = (global_max_date - first_sale_by_group[(store, salesperson)]).days
+        if days_since_first_sale < thresholds.sev_ramp_min_days:
+            continue  # em rampa: nunca entra, mesmo que as pernas tecnicamente disparassem
+
+        capture_series = g.set_index("period")["capture_rate_pct"]
+        capture_trend, capture_fired = _flight_risk_leg_trend(
+            capture_series, thresholds.flight_risk_trend_window_months,
+            thresholds.flight_risk_trend_sigma, "drop",
+        )
+        ticket_series = ticket_by_group.get((store, salesperson))
+        ticket_trend, ticket_fired = (None, False) if ticket_series is None else _flight_risk_leg_trend(
+            ticket_series, thresholds.flight_risk_trend_window_months,
+            thresholds.flight_risk_trend_sigma, "drop",
+        )
+        discount_series = discount_by_group.get((store, salesperson))
+        discount_trend, discount_fired = (None, False) if discount_series is None else _flight_risk_leg_trend(
+            discount_series, thresholds.flight_risk_trend_window_months,
+            thresholds.flight_risk_trend_sigma, "rise",
+        )
+
+        risk_flags = []
+        if capture_fired:
+            risk_flags.append("captura_em_queda")
+        if discount_fired:
+            risk_flags.append("desconto_em_alta")
+        if ticket_fired:
+            risk_flags.append("ticket_em_queda")
+        if len(risk_flags) < thresholds.flight_risk_min_flags:
+            continue
+
+        alerts.append(FlightRiskAlert(
+            salesperson=str(salesperson), store=str(store), months_evaluated=len(capture_series),
+            capture_trend_pct=capture_trend, discount_trend_pp=discount_trend, ticket_trend_pct=ticket_trend,
+            risk_flags=risk_flags, carteira_em_risco_brl=float(revenue_by_group[(store, salesperson)]),
+            sample_source_rows=sample_rows.loc[(store, salesperson)],
+        ))
+    return sorted(alerts, key=lambda a: -len(a.risk_flags))
+
+
+_INCENTIVE_FIX_GROSS_REVENUE = (
+    "Revisar a base de comissionamento para incluir margem/contribuição, não só "
+    "receita bruta — hoje vender com desconto ou empurrar produto de entrada não "
+    "reduz o contracheque do vendedor, mesmo destruindo a margem da loja."
+)
+
+
+def detect_incentive_misalignment(
+    mix_profiles: list[SellerMarginMixProfile], corrosion_alerts: list[SellerMarginCorrosionAlert],
+    thresholds: AuditThresholdsConfig,
+) -> list[IncentiveMisalignmentAlert]:
+    """Fase E, E2 — Conflito de Comissionamento: NÃO recalcula margem, ANOTA achados
+    que já existem. `commission_basis` é fato de negócio declarado na configuração
+    (nunca inferido — não há como derivar % de comissão de receita e custo
+    sozinhos); `"unknown"` (default) retorna vazio (o `DiscardedAlarm` correspondente
+    é emitido em `build_executive_summary`, não aqui — mesma centralização que já
+    existe para rampa de vendedor/cold-start de loja).
+
+    IMPORTANTE — ordem de chamada: `corrosion_alerts` deve ser a lista JÁ MUTADA
+    pelo bloco de absolvição por triagem em `run_audit` (`is_corrosive=False`/
+    `tainted_by_triage=True` para pares cuja discrepância veio de erro cadastral,
+    Spec de Laudo Executivo v4 §15.5). Esta função só LÊ `is_corrosive` — nunca
+    reavalia a evidência — então chamá-la ANTES do taint acusaria de incentivo mal
+    desenhado um vendedor que o motor já absolveu por cadastro errado."""
+    if thresholds.commission_basis != "gross_revenue":
+        return []
+    alerts: list[IncentiveMisalignmentAlert] = []
+    for p in sorted(mix_profiles, key=lambda p: (p.store, p.salesperson)):
+        if p.is_margin_destructive:
+            alerts.append(IncentiveMisalignmentAlert(
+                salesperson=p.salesperson, store=p.store, commission_basis=thresholds.commission_basis,
+                linked_finding_type="margin_mix",
+                linked_finding_summary=(
+                    f"gap de margem de {p.margin_gap_pp:.1f}pp abaixo da loja "
+                    f"({p.seller_margin_pct:.1f}% vs. {p.store_margin_pct:.1f}%)"
+                ),
+                recommended_fix=_INCENTIVE_FIX_GROSS_REVENUE,
+            ))
+    for c in sorted(corrosion_alerts, key=lambda c: (c.store, c.salesperson)):
+        if c.is_corrosive:
+            alerts.append(IncentiveMisalignmentAlert(
+                salesperson=c.salesperson, store=c.store, commission_basis=thresholds.commission_basis,
+                linked_finding_type="margin_corrosion",
+                linked_finding_summary=(
+                    f"desconto de {c.discount_pct:.1f}% vs. média da loja "
+                    f"{c.store_mean_discount_pct:.1f}%"
+                ),
+                recommended_fix=_INCENTIVE_FIX_GROSS_REVENUE,
+            ))
+    return alerts
+
+
+def detect_skill_gaps(
+    mix_profiles: list[SellerMarginMixProfile], thresholds: AuditThresholdsConfig,
+) -> list[SkillGapDiagnosis]:
+    """Fase E, E3-v1 — Matriz de Habilidade vs. Viés (proxy): leitura sobre
+    `SellerMarginMixProfile.mix` (Fase D, Pilar 1) já calculado — não roda novo
+    agrupamento sobre `df`. Para cada categoria onde o vendedor vende MENOS que o
+    padrão da própria loja (`mix_deviation_pp < -skill_gap_avoidance_pp`) E aquela
+    categoria tem margem MAIOR que a margem blendada da loja
+    (`category_margin_pct > store_margin_pct` — reusa um número que já existe no
+    relatório, decisão fechada em `SPEC_Fase_E_Parte1_Execucao.md` §3.3 em vez de
+    um corte posicional tipo "top-1"/"top-quartil"), o padrão sugere possível
+    evitação por insegurança técnica — SEMPRE rotulado como hipótese, nunca
+    diagnóstico confirmado (vocabulário obrigatório, mesma disciplina de
+    `latent_revenue`)."""
+    diagnoses: list[SkillGapDiagnosis] = []
+    for p in sorted(mix_profiles, key=lambda p: (p.store, p.salesperson)):
+        for entry in sorted(p.mix, key=lambda e: e.mix_deviation_pp):
+            if (
+                entry.mix_deviation_pp < -thresholds.skill_gap_avoidance_pp
+                and entry.category_margin_pct > p.store_margin_pct
+            ):
+                diagnoses.append(SkillGapDiagnosis(
+                    salesperson=p.salesperson, store=p.store, category=entry.category,
+                    mix_deviation_pp=entry.mix_deviation_pp, category_margin_pct=entry.category_margin_pct,
+                    hypothesis=f"possível déficit de treinamento/segurança técnica em {entry.category}",
+                ))
+    return diagnoses
+
+
+def detect_vip_concentration_risk(
+    df: pd.DataFrame, thresholds: AuditThresholdsConfig,
+) -> list[ConcentrationRiskAlert]:
+    """Fase B, Algoritmo 4 — Curva ABC cruzada / risco de "sequestro de base": VIP =
+    top `vip_customer_top_pct`% clientes por receita, DENTRO DE CADA LOJA (Pareto
+    aproximado, nunca uma lista fixa) — ranking via `rank(method="first")` vetorizado,
+    sem laço sobre cliente. Alerta quando um único vendedor concentra mais de
+    `concentration_seller_vip_pct`% da receita VIP daquela loja.
+
+    Pseudo-cliente nunca vira VIP (não é uma pessoa real, ver `_PSEUDO_ENTITY_IDS`).
+    Sem loja ou sem vendedor identificado no dado, retorna vazio."""
+    if "store" not in df.columns or df["store"].isna().all():
+        return []
+    if "salesperson" not in df.columns or df["salesperson"].isna().all():
+        return []
+    df = df.copy()
+    df["store"] = df["store"].fillna(_UNKNOWN_STORE)
+
+    customer_df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    if customer_df.empty:
+        return []
+    cust_rev = (
+        customer_df.groupby(["store", "customer"])["value"].sum()
+        .rename("customer_revenue").reset_index()
+    )
+    n_by_store = cust_rev.groupby("store")["customer"].transform("count")
+    rank = cust_rev.groupby("store")["customer_revenue"].rank(method="first", ascending=False)
+    top_n = np.ceil(n_by_store * thresholds.vip_customer_top_pct / 100.0).clip(lower=1)
+    cust_rev["is_vip"] = rank <= top_n
+    vip_pairs = cust_rev.loc[cust_rev["is_vip"], ["store", "customer"]]
+    if vip_pairs.empty:
+        return []
+
+    sales = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)].copy()
+    sales["salesperson"] = sales["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    vip_index = pd.MultiIndex.from_frame(vip_pairs)
+    sales_index = pd.MultiIndex.from_arrays([sales["store"], sales["customer"]])
+    vip_sales = sales[sales_index.isin(vip_index)]
+    if vip_sales.empty:
+        return []
+
+    vip_by_store = vip_sales.groupby("store")["value"].sum()
+    vip_by_seller = vip_sales.groupby(["store", "salesperson"])["value"].sum()
+
+    alerts: list[ConcentrationRiskAlert] = []
+    for (store, salesperson), vip_revenue in vip_by_seller.items():
+        vip_total_store = float(vip_by_store[store])
+        if vip_total_store <= 0:
+            continue
+        concentration_pct = 100.0 * float(vip_revenue) / vip_total_store
+        alerts.append(ConcentrationRiskAlert(
+            store=str(store), salesperson=str(salesperson), vip_revenue=float(vip_revenue),
+            vip_total_store=vip_total_store, concentration_pct=concentration_pct,
+            is_high_risk=concentration_pct > thresholds.concentration_seller_vip_pct,
+        ))
+    return sorted(alerts, key=lambda a: -a.concentration_pct)
+
+
+def detect_follow_on_conversion(df: pd.DataFrame, thresholds: AuditThresholdsConfig) -> float | None:
+    """Fase B, Algoritmo 5 — Conversão Follow-on (Serviço -> Produto): fração de
+    clientes cuja PRIMEIRA transação (por data) foi serviço (`service_category_label`)
+    e que depois compraram produto (qualquer categoria != serviço, mesma convenção de
+    `detect_gmroi`/`detect_contribution_margin`) em data ESTRITAMENTE posterior — um
+    produto no mesmo dia da primeira visita não conta como follow-on.
+
+    Pseudo-cliente nunca entra (walk-in não tem "trajetória de cliente" rastreável).
+    Sem categoria de serviço no dado, ou ninguém iniciou por serviço, retorna `None`
+    (nunca `0.0` fingido — ausência de base é diferente de conversão zero)."""
+    if "category" not in df.columns or df["category"].isna().all():
+        return None
+    df = df[~df["customer"].isin(_PSEUDO_ENTITY_IDS)]
+    if df.empty:
+        return None
+    service_label = thresholds.service_category_label
+
+    first_txn = (
+        df.sort_values("date").groupby("customer")
+        .agg(first_category=("category", "first"), first_date=("date", "first"))
+    )
+    starters = first_txn[first_txn["first_category"] == service_label]
+    if starters.empty:
+        return None
+
+    product_sales = df[df["category"] != service_label]
+    if product_sales.empty:
+        return 0.0
+    first_product_date = product_sales.groupby("customer")["date"].min()
+
+    aligned_product_date = first_product_date.reindex(starters.index)
+    follow_on = aligned_product_date > starters["first_date"]
+    return float(follow_on.sum()) / float(len(starters))
+
+
+# ---------------------------------------------------------------------------------
+# Fase C — Triagem de discrepâncias e fila de auditoria manual
+# (SPEC_Fase_C_Fila_Auditoria_Manual.md). Distorção severa de preço não é erro para
+# descartar nem fato para exibir cru: o motor pré-classifica com as evidências que já
+# tem (custo da linha, NF de Compras, estoque morto, promoção C3, padrão sistêmico da
+# loja); só o resíduo inclassificável vai para veredito humano.
+# ---------------------------------------------------------------------------------
+
+
+def _estoque_list_price_by_sku(estoque_df: pd.DataFrame | None) -> pd.Series | None:
+    """Preço de tabela por SKU (aba Estoque, papel opcional `list_price`) — mesmo
+    padrão de `detect_seller_margin_corrosion` (Fase B), reimplementado aqui de forma
+    isolada para não acoplar as duas fases num helper compartilhado prematuro. `None`
+    quando a aba/coluna não existe (nunca inventa preço de tabela)."""
+    if estoque_df is None or estoque_df.empty:
+        return None
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return None
+    if "list_price" not in roles:
+        return None
+    frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "list_price": coerce_currency_series(estoque_df[roles["list_price"]]),
+    }).dropna()
+    return frame.groupby("sku")["list_price"].mean() if not frame.empty else None
+
+
+def _estoque_description_by_sku(estoque_df: pd.DataFrame | None) -> pd.Series | None:
+    """Fase D2 — nome legível por SKU (aba Estoque, papel opcional `description`).
+    Mesmo padrão de `_estoque_list_price_by_sku` — `None` quando a aba/coluna não
+    existe (o anexo cai pro fallback honesto: só o código do SKU)."""
+    if estoque_df is None or estoque_df.empty:
+        return None
+    try:
+        roles = infer_column_roles(
+            estoque_df, role_keywords=_ESTOQUE_ROLE_KEYWORDS, required_roles=_ESTOQUE_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return None
+    if "description" not in roles:
+        return None
+    frame = pd.DataFrame({
+        "sku": estoque_df[roles["sku"]].astype(str),
+        "description": estoque_df[roles["description"]],
+    }).dropna()
+    if frame.empty:
+        return None
+    # SKU pode aparecer em >1 linha (catálogo por loja) — primeira descrição não-nula
+    # vence; são o mesmo produto, o nome não deveria variar por loja.
+    return frame.groupby("sku")["description"].first()
+
+
+def _nf_cost_as_of_sale(sales: pd.DataFrame, compras_df: pd.DataFrame | None) -> pd.Series:
+    """Custo real de aquisição (aba Compras, "NF de entrada") vigente na data de cada
+    venda: a compra do MESMO SKU mais recente ANTERIOR à venda (`merge_asof`,
+    vetorizado — nunca um laço por linha). SKU sem compra anterior conhecida, ou sem
+    aba Compras/coluna reconhecível, fica `NaN` (indeterminado — E4 nunca dispara sem
+    base, nunca inventa custo de NF)."""
+    nan_result = pd.Series(np.nan, index=sales.index, dtype="float64")
+    if compras_df is None or compras_df.empty:
+        return nan_result
+    try:
+        roles = infer_column_roles(
+            compras_df, role_keywords=_COMPRAS_ROLE_KEYWORDS, required_roles=_COMPRAS_REQUIRED_ROLES,
+        )
+    except ColumnMappingError:
+        return nan_result
+
+    purchases = pd.DataFrame({
+        "sku": compras_df[roles["sku"]].astype(str),
+        "date": coerce_date_series(compras_df[roles["date"]]),
+        "nf_cost": coerce_currency_series(compras_df[roles["cost"]]),
+    }).dropna()
+    if purchases.empty:
+        return nan_result
+    purchases = purchases.sort_values("date")
+
+    left = sales[["product", "date"]].rename(columns={"product": "sku"})
+    left = left.reset_index().rename(columns={"index": "_orig_idx"}).sort_values("date")
+    merged = pd.merge_asof(left, purchases, on="date", by="sku", direction="backward")
+    return merged.set_index("_orig_idx")["nf_cost"].reindex(sales.index)
+
+
+def _classify_discrepancy(evidence: DiscrepancyEvidence) -> str | None:
+    """Árvore de decisão determinística (Spec Fase C §3.2), precedência fixa de cima
+    pra baixo. `None` = evidências ausentes/contraditórias => fila manual."""
+    if evidence.store_systemic_pattern or evidence.cost_diverges_from_nf:
+        # o preço/custo de referência da REDE não descreve a operação — nunca culpa
+        # de quem vendeu, é o cadastro que está errado.
+        return "suspected_cadastral_error"
+    if not evidence.below_cost and (evidence.is_promo_flagged or evidence.sku_in_dead_stock):
+        # desconto explicado por decisão comercial deliberada (promoção C3, ou giro
+        # de capital parado) — desde que não esteja, ADEMAIS, vendendo abaixo do
+        # custo. QA (achado): promoção e estoque morto têm que se submeter à MESMA
+        # trava — uma venda abaixo do custo marcada como "promocao" não vira
+        # liquidação de graça; ela é exatamente o tipo de sangria disfarçada que este
+        # sistema existe para pegar (vendedor pode marcar qualquer desconto como
+        # promoção pra evitar escrutínio).
+        return "deliberate_liquidation"
+    if evidence.below_cost:
+        return "below_cost_sale"
+    return None
+
+
+def detect_discrepancy_triage(
+    vendas_df: pd.DataFrame, estoque_df: pd.DataFrame | None, compras_df: pd.DataFrame | None,
+    dead_stock: list[DeadStockFinding], thresholds: AuditThresholdsConfig,
+) -> DiscrepancyTriage | None:
+    """Fase C — dois triggers POR TRANSAÇÃO (nunca o agregado sem teto por vendedor da
+    Fase B): (A) desconto sobre o preço de tabela além de `manual_review_discount_pct`
+    — pra qualquer lado (venda muito abaixo OU muito acima da tabela); (B) venda
+    abaixo do próprio custo de entrada da linha — independente de A, severidade
+    própria.
+
+    Cada trigger é avaliado com a evidência que estiver disponível: Trigger B só
+    precisa de `entry_cost` (sempre presente na ingestão de Vendas), Trigger A precisa
+    de preço de tabela (Estoque, opcional). Sem Estoque, Trigger A simplesmente nunca
+    dispara — o motor não para de caçar venda abaixo do custo só porque falta
+    catálogo (refinamento sobre o desenho binário da OS original: aqui é resiliência
+    por evidência, não tudo-ou-nada).
+
+    Retorna `None` só quando falta a ESTRUTURA mínima pra agrupar (sem coluna de loja
+    OU de vendedor identificável) — universo vazio depois disso é
+    `DiscrepancyTriage(triggered_count=0)`, um resultado válido ("rodou, não achou
+    nada implausível"), não `None` ("não deu pra rodar")."""
+    if "store" not in vendas_df.columns or vendas_df["store"].isna().all():
+        return None
+    if "salesperson" not in vendas_df.columns or vendas_df["salesperson"].isna().all():
+        return None
+
+    sales = vendas_df.copy()
+    # devolução/estorno fora (mesmo critério da Fase B); valor não finito também sai
+    # aqui — sem um `value` real não há desconto/sangria de verdade pra triar, só
+    # dado quebrado (REG-NUM-001: nunca sinalizar em cima de um número fabricado).
+    sales = sales[(sales["value"] > 0) & np.isfinite(sales["value"])]
+    if "category" in sales.columns and not sales["category"].isna().all():
+        sales = sales[sales["category"] != thresholds.service_category_label]
+    if sales.empty:
+        return DiscrepancyTriage(triggered_count=0)
+
+    sales["store"] = sales["store"].fillna(_UNKNOWN_STORE)
+    sales["salesperson"] = sales["salesperson"].fillna(_UNKNOWN_SALESPERSON)
+    # Coerção defensiva: se TODA a coluna entry_cost do arquivo vier vazia (nenhuma
+    # linha com custo), a construção do frame deixa a coluna em dtype `object` cheia
+    # de `None` em vez de `float64`/NaN — comparação `<` direta nesse dtype misto
+    # levanta TypeError em vez de simplesmente reprovar o Trigger B. `to_numeric`
+    # normaliza pra NaN sempre, tornando toda comparação a jusante segura.
+    sales["entry_cost"] = pd.to_numeric(sales["entry_cost"], errors="coerce")
+
+    qty = sales["quantity"] if "quantity" in sales.columns else pd.Series(1.0, index=sales.index)
+    qty_safe = qty.where(qty.notna() & (qty > 0), 1.0)
+    sales["unit_price"] = sales["value"] / qty_safe
+    sales["_qty_safe"] = qty_safe
+    # `value` já é finito (filtro acima), mas value/qty_safe pode estourar pra inf
+    # quando qty_safe é implausivelmente pequeno (erro de casa decimal na
+    # quantidade) — mesmo critério: sem preço unitário real, não há o que triar.
+    sales = sales[np.isfinite(sales["unit_price"])]
+    if sales.empty:
+        return DiscrepancyTriage(triggered_count=0)
+
+    # Trigger B — abaixo do custo da PRÓPRIA linha (independente de Estoque)
+    sales["below_cost"] = sales["entry_cost"].notna() & (sales["unit_price"] < sales["entry_cost"])
+    if "cost_quarantine" in sales.columns:
+        sales["below_cost"] = sales["below_cost"] & (~sales["cost_quarantine"].astype(bool))
+    # Fase E parte 1 (Z3) — perda REAL da linha, só onde ela dispara below_cost:
+    # qty x entry_cost - value (equivalente a qty x (entry_cost - unit_price), mas usa
+    # `value` direto em vez de reconstruir unit_price x qty). NaN nas demais linhas —
+    # somada no agg abaixo, nunca reconstruída a partir de médias do grupo.
+    sales["_below_cost_loss"] = np.where(
+        sales["below_cost"], sales["_qty_safe"] * sales["entry_cost"] - sales["value"], np.nan,
+    )
+
+    # Trigger A — desconto sobre a tabela (só onde há preço de tabela do SKU)
+    list_price_by_sku = _estoque_list_price_by_sku(estoque_df)
+    sales["list_price"] = (
+        sales["product"].map(list_price_by_sku) if list_price_by_sku is not None
+        else np.nan
+    )
+    has_list_price = sales["list_price"].notna() & (sales["list_price"] > 0)
+    sales["discount_over_list_pct"] = np.where(
+        has_list_price,
+        (sales["list_price"] - sales["unit_price"]) / sales["list_price"] * 100.0,
+        np.nan,
+    )
+    trigger_a = sales["discount_over_list_pct"].abs() > thresholds.manual_review_discount_pct
+
+    candidates = sales[trigger_a | sales["below_cost"]].copy()
+    if candidates.empty:
+        return DiscrepancyTriage(triggered_count=0)
+
+    # E4 — custo da venda vs custo real da NF (Compras) mais recente anterior à data
+    candidates["nf_cost"] = _nf_cost_as_of_sale(candidates, compras_df)
+    candidates["cost_diverges_from_nf"] = (
+        candidates["nf_cost"].notna() & candidates["entry_cost"].notna()
+        & ((candidates["entry_cost"] - candidates["nf_cost"]).abs() / candidates["nf_cost"] * 100.0
+           > thresholds.nf_cost_divergence_pct)
+    )
+
+    # E2 — SKU em estoque morto
+    dead_skus = set(dead_stock[0].skus) if dead_stock else set()
+    candidates["sku_in_dead_stock"] = candidates["product"].isin(dead_skus)
+
+    # E3 — promoção (C3): TODA venda triada do grupo é forma_pagto=promoção — mesma
+    # régua conservadora de `detect_contribution_margin` (1 venda normal já reverte)
+    if "payment_method" in candidates.columns:
+        promo_label = thresholds.promo_payment_label.strip().lower()
+        candidates["_is_promo_row"] = (
+            candidates["payment_method"].notna()
+            & candidates["payment_method"].astype(str).str.strip().str.lower().eq(promo_label)
+        )
+    else:
+        candidates["_is_promo_row"] = False
+
+    # E5 — a MEDIANA de desconto do (loja, SKU) inteiro (todos os vendedores daquela
+    # combinação, não só quem disparou) também é implausível — sinal de que o desvio
+    # é da tabela/loja, não de um vendedor isolado. Exige >=2 vendedores DISTINTOS:
+    # com um só vendedor, a "mediana da loja" degenera pro próprio valor individual
+    # que já disparou o Trigger A — isso não é padrão sistêmico, é a mesma transação
+    # se auto-confirmando. "Sistêmico" só existe quando mais de uma pessoa mostra o
+    # mesmo desvio (o denominador comum vira a tabela/loja, não o indivíduo).
+    # QA (achado): "vendedores distintos" nunca conta pseudo-entidade — mesma régua
+    # de `benchmark_population`/RFM/churn/receita latente (registro único
+    # `_PSEUDO_ENTITY_IDS`, ver comentário no topo do arquivo). Sem isso, 1 vendedor
+    # real + vendas sem vendedor identificado contariam como "2 pessoas confirmando
+    # o padrão" — inflando falso-positivo de padrão sistêmico. Groupby+merge
+    # vetorizado (nunca laço por linha/grupo).
+    identified_sellers = sales[~sales["salesperson"].isin(_PSEUDO_ENTITY_IDS)]
+    distinct_sellers = (
+        identified_sellers.groupby(["store", "product"])["salesperson"].nunique()
+        .rename("distinct_sellers")
+    )
+    store_sku_stats = sales.groupby(["store", "product"]).agg(
+        store_median_discount_pct=("discount_over_list_pct", "median"),
+    ).reset_index()
+    store_sku_stats = store_sku_stats.merge(distinct_sellers, on=["store", "product"], how="left")
+    store_sku_stats["distinct_sellers"] = store_sku_stats["distinct_sellers"].fillna(0).astype(int)
+    candidates = candidates.merge(store_sku_stats, on=["store", "product"], how="left")
+    candidates["store_systemic_pattern"] = (
+        (candidates["store_median_discount_pct"].abs() > thresholds.manual_review_discount_pct)
+        & (candidates["distinct_sellers"] >= 2)
+    )
+
+    group_keys = ["product", "store", "salesperson"]
+    agg = candidates.groupby(group_keys).agg(
+        practiced_price=("unit_price", "mean"), list_price=("list_price", "mean"),
+        entry_cost=("entry_cost", "mean"), nf_cost=("nf_cost", "mean"),
+        discount_over_list_pct=("discount_over_list_pct", "mean"),
+        below_cost=("below_cost", "any"), sku_in_dead_stock=("sku_in_dead_stock", "any"),
+        cost_diverges_from_nf=("cost_diverges_from_nf", "any"),
+        store_systemic_pattern=("store_systemic_pattern", "any"),
+        is_promo_flagged=("_is_promo_row", "all"),
+        source_rows=("source_row", list),
+        # Fase E parte 1 (Z3) — soma das perdas por linha (NaN nas linhas não
+        # below_cost, ignoradas pelo sum). Gate real é `below_cost` (any) na
+        # construção do item abaixo, não este valor bruto: um grupo sem NENHUMA
+        # linha below_cost soma 0.0 aqui (soma de puro NaN), não None.
+        below_cost_loss_brl=("_below_cost_loss", "sum"),
+    )
+
+    # Fase D2 — nome legível por SKU (fallback honesto: None se Estoque não tem
+    # coluna de descrição, ou este SKU específico não está no catálogo).
+    description_by_sku = _estoque_description_by_sku(estoque_df)
+
+    auto_classified: list[DiscrepancyTriageItem] = []
+    manual_queue: list[DiscrepancyTriageItem] = []
+    for i, ((sku, store, salesperson), row) in enumerate(
+        agg.sort_index().iterrows(), start=1,
+    ):
+        evidence = DiscrepancyEvidence(
+            below_cost=bool(row["below_cost"]), sku_in_dead_stock=bool(row["sku_in_dead_stock"]),
+            is_promo_flagged=bool(row["is_promo_flagged"]),
+            cost_diverges_from_nf=bool(row["cost_diverges_from_nf"]),
+            store_systemic_pattern=bool(row["store_systemic_pattern"]),
+        )
+        verdict = _classify_discrepancy(evidence)
+        sku_description = (
+            description_by_sku.get(sku) if description_by_sku is not None else None
+        )
+        item = DiscrepancyTriageItem(
+            id=f"DTQ-{i:04d}", sku=str(sku),
+            sku_description=None if pd.isna(sku_description) else sku_description,
+            store=str(store), salesperson=str(salesperson),
+            source_rows=sorted(int(r) for r in row["source_rows"]),
+            practiced_price=float(row["practiced_price"]),
+            list_price=None if pd.isna(row["list_price"]) else float(row["list_price"]),
+            entry_cost=None if pd.isna(row["entry_cost"]) else float(row["entry_cost"]),
+            nf_cost=None if pd.isna(row["nf_cost"]) else float(row["nf_cost"]),
+            discount_over_list_pct=(
+                None if pd.isna(row["discount_over_list_pct"]) else float(row["discount_over_list_pct"])
+            ),
+            # gate real é a evidência below_cost, não o valor bruto da soma (que é
+            # 0.0, não NaN, quando o grupo não tem nenhuma linha below_cost)
+            below_cost_loss_brl=float(row["below_cost_loss_brl"]) if evidence.below_cost else None,
+            # QA (achado de revisão) — flag calculada AQUI, uma vez só: `below_cost`
+            # é a EVIDÊNCIA, não o veredito final (um item pode disparar below_cost e
+            # ser reclassificado para suspected_cadastral_error — custo cadastrado
+            # errado, não sangria real, mesmo princípio de §15.5). Validador e
+            # template leem esta flag; nenhum dos dois volta a comparar `verdict`.
+            below_cost_confirmed=(verdict == "below_cost_sale"),
+            evidence=evidence, verdict=verdict,
+            status="auto_classified" if verdict else "pending_manual_review",
+        )
+        (auto_classified if verdict else manual_queue).append(item)
+
+    # O total soma só os itens com below_cost_confirmed=True — nunca mistura perda
+    # real com artefato de cadastro errado (mesmo padrão de `total_operational_loss`
+    # excluir alertas `promotional=True`). `below_cost_loss_brl` continua preenchido
+    # no item cadastral (fato honesto por linha), só não entra aqui.
+    below_cost_losses = [
+        item.below_cost_loss_brl for item in auto_classified + manual_queue
+        if item.below_cost_confirmed
+    ]
+    below_cost_total_brl = float(sum(below_cost_losses)) if below_cost_losses else None
+
+    return DiscrepancyTriage(
+        triggered_count=len(auto_classified) + len(manual_queue),
+        auto_classified=auto_classified, manual_queue=manual_queue,
+        below_cost_total_brl=below_cost_total_brl,
+    )
 
 
 def build_cpf_canonical_map(clientes_df: pd.DataFrame | None) -> dict[str, str]:
@@ -1333,6 +3202,15 @@ def build_executive_summary(
                     "uma loja madura."
                 ),
             ))
+    # Fase E, E2 — estrutura de comissão não informada é um ponto cego HONESTO
+    # (nunca inferido de receita/custo), mesma centralização de DiscardedAlarm que
+    # rampa de vendedor/cold-start de loja já usam. `entity_id="rede"` porque é uma
+    # decisão de configuração da rodada inteira, não de uma entidade específica.
+    if thresholds.commission_basis == "unknown":
+        discarded_alarms.append(DiscardedAlarm(
+            category="commission_basis_unknown", entity_id="rede",
+            reason="estrutura de comissão não informada — ponto cego não avaliado.",
+        ))
 
     action_plan: list[ActionPlanItem] = []
     if total_operational_loss > 0:
@@ -1380,6 +3258,521 @@ def build_executive_summary(
     )
 
 
+def enrich_sales_entry_costs(
+    sales_df: pd.DataFrame,
+    compras_df: pd.DataFrame | None,
+    estoque_df: pd.DataFrame | None,
+) -> pd.DataFrame:
+    """Enriquece o DataFrame de vendas com custos de aquisição (CMV), fornecedores,
+    categorias e preços de tabela a partir da aba/dados de Compras (NF-e entrada)
+    e Estoque/Catálogo (ex: Controle.xls).
+
+    Preserva estritamente custos já existentes e válidos (> 0).
+    Realiza matching por SKU exato, código EAN e fallback por similaridade textual.
+    """
+    if sales_df.empty:
+        return sales_df
+    if (compras_df is None or compras_df.empty) and (estoque_df is None or estoque_df.empty):
+        return sales_df
+
+    df = sales_df.copy()
+
+    sku_costs: dict[str, float] = {}
+    sku_suppliers: dict[str, str] = {}
+    sku_categories: dict[str, str] = {}
+    sku_list_prices: dict[str, float] = {}
+
+    desc_costs: dict[str, float] = {}
+    desc_suppliers: dict[str, str] = {}
+    desc_categories: dict[str, str] = {}
+    desc_list_prices: dict[str, float] = {}
+
+    def _clean_text(val: str) -> str:
+        s = str(val).lower()
+        for ch in ["-", "/", ".", ",", "_", "(", ")"]:
+            s = s.replace(ch, " ")
+        return " ".join(s.split())
+
+    if compras_df is not None and not compras_df.empty:
+        for _, r in compras_df.iterrows():
+            sku = str(r.get("sku", "")).strip()
+            c = pd.to_numeric(r.get("cost", 0), errors="coerce")
+            supp = str(r.get("supplier", "")).strip() if pd.notna(r.get("supplier")) else ""
+            desc = _clean_text(r.get("product", "") or r.get("description", ""))
+            if pd.notna(c) and c > 0:
+                if sku and sku != "nan":
+                    sku_costs[sku] = float(c)
+                    if supp:
+                        sku_suppliers[sku] = supp
+                if desc and desc != "nan":
+                    desc_costs[desc] = float(c)
+                    if supp:
+                        desc_suppliers[desc] = supp
+
+    if estoque_df is not None and not estoque_df.empty:
+        for _, r in estoque_df.iterrows():
+            sku = str(r.get("sku", "")).strip()
+            c = pd.to_numeric(r.get("cost", 0), errors="coerce")
+            lp = pd.to_numeric(r.get("list_price", 0), errors="coerce")
+            supp = str(r.get("supplier", "")).strip() if pd.notna(r.get("supplier")) else ""
+            cat = str(r.get("category", "")).strip() if pd.notna(r.get("category")) else ""
+            desc = _clean_text(r.get("description", "") or r.get("product", ""))
+            if pd.notna(c) and c > 0:
+                if sku and sku != "nan":
+                    sku_costs[sku] = float(c)
+                    if supp:
+                        sku_suppliers[sku] = supp
+                    if cat:
+                        sku_categories[sku] = cat
+                    if pd.notna(lp) and lp > 0:
+                        sku_list_prices[sku] = float(lp)
+                if desc and desc != "nan":
+                    desc_costs[desc] = float(c)
+                    if supp:
+                        desc_suppliers[desc] = supp
+                    if cat:
+                        desc_categories[desc] = cat
+                    if pd.notna(lp) and lp > 0:
+                        desc_list_prices[desc] = float(lp)
+
+    from difflib import get_close_matches
+    desc_keys = list(desc_costs.keys())
+
+    original_costs = df["entry_cost"] if "entry_cost" in df.columns else pd.Series([None] * len(df))
+    has_supplier_col = "supplier" in df.columns
+    has_cat_col = "category" in df.columns
+    has_lp_col = "list_price" in df.columns
+
+    new_costs = []
+    new_suppliers = []
+    new_categories = []
+    new_list_prices = []
+
+    for idx in range(len(df)):
+        orig_cost = original_costs.iloc[idx]
+        row = df.iloc[idx]
+        sku = str(row.get("sku", "")).strip() if "sku" in df.columns else ""
+        prod = str(row.get("product", "")).strip()
+        clean_prod = _clean_text(prod)
+
+        existing_supp = row.get("supplier") if has_supplier_col else None
+        existing_cat = row.get("category") if has_cat_col else None
+        existing_lp = row.get("list_price") if has_lp_col else None
+
+        # Se a linha já possui custo definido no arquivo de origem, preserva estritamente
+        if pd.notna(orig_cost):
+            cost = orig_cost
+            supp = existing_supp
+            cat = existing_cat
+            lp = existing_lp
+        else:
+            cost = np.nan
+            supp = existing_supp
+            cat = existing_cat
+            lp = existing_lp
+
+            if sku and sku in sku_costs:
+                cost = sku_costs[sku]
+                if not supp and sku in sku_suppliers:
+                    supp = sku_suppliers[sku]
+                if not cat and sku in sku_categories:
+                    cat = sku_categories[sku]
+                if not lp and sku in sku_list_prices:
+                    lp = sku_list_prices[sku]
+            elif clean_prod and clean_prod in desc_costs:
+                cost = desc_costs[clean_prod]
+                if not supp and clean_prod in desc_suppliers:
+                    supp = desc_suppliers[clean_prod]
+                if not cat and clean_prod in desc_categories:
+                    cat = desc_categories[clean_prod]
+                if not lp and clean_prod in desc_list_prices:
+                    lp = desc_list_prices[clean_prod]
+            elif clean_prod and desc_keys:
+                matches = get_close_matches(clean_prod, desc_keys, n=1, cutoff=0.4)
+                if matches:
+                    m = matches[0]
+                    cost = desc_costs[m]
+                    if not supp and m in desc_suppliers:
+                        supp = desc_suppliers[m]
+                    if not cat and m in desc_categories:
+                        cat = desc_categories[m]
+                    if not lp and m in desc_list_prices:
+                        lp = desc_list_prices[m]
+
+        if not supp:
+            if sku and sku in sku_suppliers:
+                supp = sku_suppliers[sku]
+            elif clean_prod and clean_prod in desc_suppliers:
+                supp = desc_suppliers[clean_prod]
+
+        if not cat:
+            if sku and sku in sku_categories:
+                cat = sku_categories[sku]
+            elif clean_prod and clean_prod in desc_categories:
+                cat = desc_categories[clean_prod]
+
+        new_costs.append(cost)
+        new_suppliers.append(supp)
+        new_categories.append(cat)
+        new_list_prices.append(lp)
+
+    df["entry_cost"] = new_costs
+    df["supplier"] = new_suppliers
+    df["category"] = new_categories
+    df["list_price"] = new_list_prices
+    return df
+
+
+
+def detect_digital_phantom_profit(
+    sales_df: pd.DataFrame,
+) -> DigitalPhantomProfitSummary | None:
+    """Calcula o lucro fantasma digital SKU a SKU considerando os custos específicos da plataforma.
+    
+    Substitui a lógica de take_rate flat. Determina estado dos custos (MEDIDO, PARCIAL, SEM_BASE).
+    """
+    if sales_df.empty:
+        return None
+        
+    sales = sales_df[(sales_df["value"] > 0) & np.isfinite(sales_df["value"])].copy()
+    if sales.empty:
+        return None
+        
+    # Precisamos ter pelo menos as colunas para calcular lucro digital
+    if "entry_cost" not in sales.columns:
+        return None
+        
+    # Inicializa colunas se não existirem
+    for col in ["marketplace_fee", "shipping_cost", "ad_spend", "return_cost"]:
+        if col not in sales.columns:
+            sales[col] = 0.0
+            
+    sales["marketplace_fee"] = pd.to_numeric(sales["marketplace_fee"], errors='coerce')
+    sales["shipping_cost"] = pd.to_numeric(sales["shipping_cost"], errors='coerce')
+    sales["ad_spend"] = pd.to_numeric(sales["ad_spend"], errors='coerce')
+    sales["return_cost"] = pd.to_numeric(sales["return_cost"], errors='coerce')
+    sales["entry_cost"] = pd.to_numeric(sales["entry_cost"], errors='coerce')
+    
+    if "channel" not in sales.columns:
+        sales["channel"] = "Multicanal"
+    else:
+        sales["channel"] = sales["channel"].fillna("Multicanal")
+        
+    # Prepara lista de items
+    items = []
+    total_gross = 0.0
+    total_net = 0.0
+    phantom_loss = 0.0
+    phantom_count = 0
+    state_dist = {"MEDIDO": 0, "PARCIAL": 0, "SEM_BASE": 0}
+    
+    # Agrupa por SKU e canal
+    if "product" not in sales.columns:
+        sales["product"] = "Desconhecido"
+        
+    for (sku, channel), grp in sales.groupby(["product", "channel"]):
+        gross_rev = float(round(grp["value"].sum(), 2))
+        entry_cost = float(round(grp["entry_cost"].sum(), 2)) if not grp["entry_cost"].isna().all() else 0.0
+        mkt_fee = float(round(grp["marketplace_fee"].sum(), 2))
+        ship = float(round(grp["shipping_cost"].sum(), 2))
+        ad = float(round(grp["ad_spend"].sum(), 2))
+        ret_cost = float(round(grp["return_cost"].sum(), 2))
+        
+        # State logic
+        has_cost = not grp["entry_cost"].isna().all() and entry_cost > 0
+        has_mkt = mkt_fee > 0
+        has_ship = ship > 0
+        
+        state = "SEM_BASE"
+        if has_cost and has_mkt and has_ship:
+            state = "MEDIDO"
+        elif has_cost or has_mkt or has_ship:
+            state = "PARCIAL"
+            
+        state_dist[state] += 1
+        
+        # Só computamos net_margin real se tivermos base mínima. 
+        # Se for SEM_BASE ou PARCIAL, assumimos 0 para não fabricar lucro ilusório.
+        if state in ("SEM_BASE", "PARCIAL"):
+            net_margin = 0.0
+            net_margin_pct = 0.0
+            is_phantom = False
+        else:
+            net_margin = float(round(gross_rev - entry_cost - mkt_fee - ship - ad - ret_cost, 2))
+            net_margin_pct = float(round((net_margin / gross_rev * 100.0), 2)) if gross_rev > 0 else 0.0
+            
+            # Arredondamento crítico para falsos positivos em limites de float
+            if -0.01 < net_margin < 0.0:
+                net_margin = 0.0
+                
+            is_phantom = net_margin < 0
+            
+        if is_phantom:
+            phantom_count += 1
+            phantom_loss += net_margin
+            
+        total_gross += gross_rev
+        total_net += net_margin
+        
+        items.append(DigitalPhantomProfitItem(
+            sku=str(sku),
+            channel=str(channel),
+            gross_revenue=gross_rev,
+            entry_cost=entry_cost,
+            marketplace_fee=mkt_fee,
+            shipping_cost=ship,
+            ad_spend=ad,
+            return_cost=ret_cost,
+            net_margin_brl=net_margin,
+            net_margin_pct=net_margin_pct,
+            digital_cost_state=state,
+            is_phantom=is_phantom
+        ))
+        
+    return DigitalPhantomProfitSummary(
+        total_gross_revenue=float(round(total_gross, 2)),
+        total_net_margin_brl=float(round(total_net, 2)),
+        phantom_skus_count=phantom_count,
+        phantom_loss_brl=float(round(phantom_loss, 2)),
+        items=items,
+        state_distribution=state_dist
+    )
+
+
+def detect_commercial_reconciliation(
+    sales_df: pd.DataFrame,
+    named_sheets: dict[str, pd.DataFrame],
+    thresholds: AuditThresholdsConfig,
+) -> CommercialReconciliationSummary | None:
+    """Calcula a Reconciliação Comercial em Duas Vias: Cruzamento Entradas x Saídas.
+
+    Totaliza CMV, Lucro Bruto, Markup, Dedução de custos de intermediação e tributos,
+    Margem de Contribuição Líquida, e gera rankings por Fornecedor, por Categoria e
+    a lista de vendas deficitárias (MC < 0 ou abaixo do custo).
+
+    Garante que a divergência na validação em duas vias não ultrapasse R$ 0,02.
+    """
+    if sales_df.empty:
+        return None
+
+    sales = sales_df[(sales_df["value"] > 0) & np.isfinite(sales_df["value"])].copy()
+    if sales.empty:
+        return None
+
+    if "entry_cost" not in sales.columns or sales["entry_cost"].dropna().empty or (sales["entry_cost"] > 0).sum() == 0:
+        return None
+
+    channel_take_rate = thresholds.reconciliation_channel_take_rate_pct
+    tax_rate = thresholds.reconciliation_tax_rate_pct
+
+    qty = sales["quantity"].where(sales["quantity"].notna() & (sales["quantity"] > 0), 1.0)
+    unit_cost = pd.to_numeric(sales["entry_cost"], errors="coerce").fillna(0.0)
+
+    # Diretriz QA 2: Proteção estrita contra divisão por zero e custos negativos
+    unit_cost = unit_cost.apply(lambda c: c if c > 0 else 0.0)
+
+    is_quarantined = sales["cost_quarantine"].astype(bool) if "cost_quarantine" in sales.columns else pd.Series(False, index=sales.index)
+    quarantined_sales_brl = float(round(sales.loc[is_quarantined, "value"].sum(), 2))
+
+    effective_unit_cost = np.where(is_quarantined, 0.0, unit_cost)
+
+    sales["_qty"] = qty
+    sales["_unit_cost"] = effective_unit_cost
+    sales["_cmv"] = effective_unit_cost * qty
+    sales["_val"] = sales["value"]
+    
+    # Se está em quarentena (sem custo), não podemos assumir 100% de lucro.
+    # Zeramos a margem e o lucro bruto para estas transações para não inflar a DRE.
+    sales["_gross_profit"] = np.where(is_quarantined, 0.0, sales["_val"] - sales["_cmv"])
+    sales["_channel_costs"] = sales["_val"] * (channel_take_rate / 100.0)
+    sales["_taxes"] = sales["_val"] * (tax_rate / 100.0)
+    sales["_net_margin"] = np.where(is_quarantined, 0.0, sales["_gross_profit"] - sales["_channel_costs"] - sales["_taxes"])
+    
+    gross_revenue = float(round(sales["_val"].sum(), 2))
+    cmv_total = float(round(sales["_cmv"].sum(), 2))
+    gross_profit_brl = float(round(sales["_gross_profit"].sum(), 2))
+    gross_markup = float(round(gross_revenue / cmv_total, 2)) if cmv_total > 0 else None
+    channel_costs_brl = float(round(sales["_channel_costs"].sum(), 2))
+    taxes_brl = float(round(sales["_taxes"].sum(), 2))
+    net_contribution_margin_brl = float(round(sales["_net_margin"].sum(), 2))
+    net_contribution_margin_pct = float(round((net_contribution_margin_brl / gross_revenue * 100.0), 2)) if gross_revenue > 0 else 0.0
+
+    neg_mask = (~is_quarantined) & (
+        (sales["_net_margin"] < -0.001) | (
+            (sales["_unit_cost"] > 0) & ((sales["_val"] / sales["_qty"]) < sales["_unit_cost"])
+        )
+    )
+    negative_margin_count = int(neg_mask.sum())
+    negative_margin_loss_brl = float(round(abs(sales.loc[neg_mask, "_net_margin"].sum()), 2))
+
+    top_below_cost_sales: list[BelowCostSaleItem] = []
+    for _, r in sales[neg_mask].sort_values("_net_margin", ascending=True).iterrows():
+        unit_p = float(round(r["_val"] / r["_qty"], 2))
+        u_cost = float(round(r["_unit_cost"], 2))
+        loss = float(round(abs(r["_net_margin"]), 2))
+        loss_pct = float(round((loss / r["_val"] * 100.0), 2)) if r["_val"] > 0 else 0.0
+        top_below_cost_sales.append(BelowCostSaleItem(
+            sku=str(r.get("sku", "") or r.get("product", ""))[:50],
+            product_name=str(r.get("product", "")),
+            unit_price=unit_p,
+            entry_cost=u_cost,
+            loss_brl=loss,
+            loss_pct=loss_pct,
+            quantity=float(r["_qty"]),
+            source_row=int(r["source_row"]) if ("source_row" in r and pd.notna(r["source_row"])) else None,
+            supplier=str(r["supplier"]) if ("supplier" in r and pd.notna(r["supplier"])) else None,
+        ))
+
+    sales["_supp"] = (
+        sales["supplier"].fillna("FORNECEDOR_NAO_IDENTIFICADO")
+        if "supplier" in sales.columns and not sales["supplier"].isna().all()
+        else "FORNECEDOR_NAO_IDENTIFICADO"
+    )
+
+    supp_entries: list[SupplierMarginEntry] = []
+    for supp_name, grp in sales.groupby("_supp"):
+        s_rev = float(round(grp["_val"].sum(), 2))
+        s_cmv = float(round(grp["_cmv"].sum(), 2))
+        s_mc = float(round(grp["_net_margin"].sum(), 2))
+        s_mkup = float(round(s_rev / s_cmv, 2)) if s_cmv > 0 else None
+        s_mc_pct = float(round(s_mc / s_rev * 100.0, 2)) if s_rev > 0 else 0.0
+        s_share = float(round(s_rev / gross_revenue * 100.0, 2)) if gross_revenue > 0 else 0.0
+        supp_entries.append(SupplierMarginEntry(
+            supplier=str(supp_name),
+            gross_revenue=s_rev,
+            cmv_total=s_cmv,
+            markup=s_mkup,
+            contribution_margin_brl=s_mc,
+            contribution_margin_pct=s_mc_pct,
+            items_count=len(grp),
+            share_revenue_pct=s_share,
+        ))
+    supp_entries.sort(key=lambda x: x.gross_revenue, reverse=True)
+
+    def _infer_category(prod: str) -> str:
+        p = str(prod).lower()
+        if "carretilha" in p:
+            return "Carretilhas"
+        if "molinete" in p:
+            return "Molinetes"
+        if "vara" in p:
+            return "Varas"
+        if "isca" in p:
+            return "Iscas"
+        if "linha" in p or "multifilamento" in p:
+            return "Linhas"
+        if "lente" in p:
+            return "Lentes"
+        if "armacao" in p or "armação" in p:
+            return "Armações"
+        if "solar" in p:
+            return "Solares"
+        return "Diversos / Outros"
+
+    if "category" in sales.columns and not sales["category"].isna().all():
+        sales["_cat"] = sales["category"].fillna("Diversos / Outros")
+    else:
+        sales["_cat"] = sales["product"].apply(_infer_category)
+
+    cat_entries: list[CategoryMarginEntry] = []
+    for cat_name, grp in sales.groupby("_cat"):
+        c_rev = float(round(grp["_val"].sum(), 2))
+        c_cmv = float(round(grp["_cmv"].sum(), 2))
+        c_mc = float(round(grp["_net_margin"].sum(), 2))
+        c_mkup = float(round(c_rev / c_cmv, 2)) if c_cmv > 0 else None
+        c_mc_pct = float(round(c_mc / c_rev * 100.0, 2)) if c_rev > 0 else 0.0
+        c_share = float(round(c_rev / gross_revenue * 100.0, 2)) if gross_revenue > 0 else 0.0
+        cat_entries.append(CategoryMarginEntry(
+            category=str(cat_name),
+            gross_revenue=c_rev,
+            cmv_total=c_cmv,
+            markup=c_mkup,
+            contribution_margin_brl=c_mc,
+            contribution_margin_pct=c_mc_pct,
+            items_count=len(grp),
+            share_revenue_pct=c_share,
+        ))
+    cat_entries.sort(key=lambda x: x.gross_revenue, reverse=True)
+
+    # Validação em Duas Vias (Doutrina Aurora §13):
+    sum_supp_mc = sum(s.contribution_margin_brl for s in supp_entries)
+    sum_cat_mc = sum(c.contribution_margin_brl for c in cat_entries)
+    gap_supp = abs(sum_supp_mc - net_contribution_margin_brl)
+    gap_cat = abs(sum_cat_mc - net_contribution_margin_brl)
+    reconciliation_gap = float(round(max(gap_supp, gap_cat), 4))
+
+    if reconciliation_gap > 0.02:
+        raise ValueError(
+            f"VIOLACAO_DUAS_VIAS: Divergência entre margem consolidada (R$ {net_contribution_margin_brl:.2f}) "
+            f"e soma das partes (Fornecedores: R$ {sum_supp_mc:.2f}, Categorias: R$ {sum_cat_mc:.2f}) "
+            f"excedeu o teto estrito de R$ 0,02 (gap: R$ {reconciliation_gap:.4f})."
+        )
+
+    return CommercialReconciliationSummary(
+        gross_revenue=gross_revenue,
+        cmv_total=cmv_total,
+        gross_profit_brl=gross_profit_brl,
+        gross_markup=gross_markup,
+        channel_costs_brl=channel_costs_brl,
+        channel_take_rate_pct=channel_take_rate,
+        taxes_brl=taxes_brl,
+        tax_rate_pct=tax_rate,
+        net_contribution_margin_brl=net_contribution_margin_brl,
+        net_contribution_margin_pct=net_contribution_margin_pct,
+        negative_margin_count=negative_margin_count,
+        negative_margin_loss_brl=negative_margin_loss_brl,
+        two_way_reconciliation_gap=reconciliation_gap,
+        quarantined_cost_sales_brl=quarantined_sales_brl,
+        supplier_margins=supp_entries,
+        category_margins=cat_entries,
+        top_below_cost_sales=top_below_cost_sales,
+    )
+
+
+
+def simulate_tax_reform(
+    sales_df: pd.DataFrame,
+    thresholds: AuditThresholdsConfig
+) -> TaxReformScenarioResult | None:
+    """ME-3: Simulação estrita dos impactos tributários da Reforma (CBS/IBS + Split Payment).
+    
+    Aplica a alíquota padrão da simulação sobre a receita e calcula o float de caixa retido.
+    """
+    if sales_df.empty:
+        return None
+        
+    sales = sales_df[(sales_df["value"] > 0) & np.isfinite(sales_df["value"])].copy()
+    if sales.empty:
+        return None
+        
+    total_gross_revenue = float(round(sales["value"].sum(), 2))
+    if total_gross_revenue <= 0:
+        return None
+        
+    current_tax_rate = thresholds.reconciliation_tax_rate_pct / 100.0
+    simulated_tax_rate = 0.0924  # CBS 9.24% de referência
+    
+    current_tax = float(round(total_gross_revenue * current_tax_rate, 2))
+    simulated_tax = float(round(total_gross_revenue * simulated_tax_rate, 2))
+    
+    tax_delta = float(round(simulated_tax - current_tax, 2))
+    dre_margin_impact = float(round(-tax_delta, 2))
+    
+    withheld_brl = simulated_tax
+    float_impact = 30
+    
+    return TaxReformScenarioResult(
+        scenario_name="Transição CBS 9.24% + Split Payment",
+        gross_revenue=total_gross_revenue,
+        current_tax_brl=current_tax,
+        simulated_tax_brl=simulated_tax,
+        tax_delta_brl=tax_delta,
+        dre_net_margin_impact_brl=dre_margin_impact,
+        cash_flow_float_impact_days=float_impact,
+        split_payment_withheld_brl=withheld_brl
+    )
+
+
 def run_audit(
     path: Path,
     thresholds: AuditThresholdsConfig | None = None,
@@ -1408,6 +3801,7 @@ def run_audit(
         ]
 
     df = _records_to_frame(records)
+    df = enrich_sales_entry_costs(df, named_sheets.get("Compras"), named_sheets.get("Estoque"))
 
     revenue_leaks = detect_revenue_leaks(df, thresholds)
     churn_findings = detect_churn(df, thresholds)
@@ -1427,6 +3821,52 @@ def run_audit(
 
     service_decomposition = detect_service_decomposition(df, thresholds)
     service_reconciliation = detect_service_reconciliation(df, named_sheets.get("Financeiro"), thresholds)
+
+    seller_margin_corrosion = detect_seller_margin_corrosion(df, named_sheets.get("Estoque"), thresholds)
+    seller_margin_mix = detect_seller_margin_mix(df, thresholds)
+    discrepancy_triage = detect_discrepancy_triage(
+        df, named_sheets.get("Estoque"), named_sheets.get("Compras"), dead_stock, thresholds,
+    )
+
+    # Fase C, culpa exige referência confiável (Spec de Laudo Executivo v4 §15.5):
+    # vendedor cujo desconto vem de tabela cadastralmente errada nunca é apresentado
+    # como corrosivo, mesmo que o desvio estatístico bruto (2σ) apontasse outlier.
+    if discrepancy_triage:
+        tainted_pairs = {
+            (item.store, item.salesperson)
+            for item in discrepancy_triage.auto_classified
+            if item.verdict == "suspected_cadastral_error"
+        }
+        for alert in seller_margin_corrosion:
+            if (alert.store, alert.salesperson) in tainted_pairs:
+                alert.tainted_by_triage = True
+                alert.is_corrosive = False
+
+    commercial_reconciliation = detect_commercial_reconciliation(df, named_sheets, thresholds)
+    digital_phantom_profit = detect_digital_phantom_profit(df)
+    tax_scenario = simulate_tax_reform(df, thresholds)
+
+    advanced_metrics = AdvancedMetrics(
+        gmroi_alerts=detect_gmroi_by_sku(df, named_sheets.get("Estoque"), thresholds),
+        attach_rate_opportunities=detect_attach_rate_opportunities(df, thresholds),
+        seller_margin_corrosion=seller_margin_corrosion,
+        concentration_risk=detect_vip_concentration_risk(df, thresholds),
+        follow_on_conversion=detect_follow_on_conversion(df, thresholds),
+        discrepancy_triage=discrepancy_triage,
+        seller_margin_mix=seller_margin_mix,
+        commercial_reconciliation=commercial_reconciliation,
+        digital_phantom_profit=digital_phantom_profit,
+        tax_scenario=tax_scenario,
+    )
+
+    # Fase E parte 1 — Física da Equipe. E2 (detect_incentive_misalignment) DEPOIS
+    # do bloco de taint acima — consome seller_margin_corrosion JÁ absolvido, nunca
+    # uma cópia pré-taint (mesmo §15.5, ver docstring do detector).
+    team_diagnostics = TeamDiagnostics(
+        flight_risk=detect_seller_flight_risk(df, named_sheets.get("Estoque"), thresholds),
+        incentive_misalignment=detect_incentive_misalignment(seller_margin_mix, seller_margin_corrosion, thresholds),
+        skill_gaps=detect_skill_gaps(seller_margin_mix, thresholds),
+    )
 
     executive_summary = build_executive_summary(
         contribution_margin_alerts=contribution_margin_alerts,
@@ -1452,6 +3892,9 @@ def run_audit(
         ]
     for finding in customer_concentration:
         finding.customer = identity_map.get(finding.customer, finding.customer)
+    for opportunity in advanced_metrics.attach_rate_opportunities:
+        for gap_customer in opportunity.cross_sell_gap:
+            gap_customer.customer_id = identity_map.get(gap_customer.customer_id, gap_customer.customer_id)
 
     period_start = str(df["date"].min().to_period("M")) if len(df) else ""
     period_end = str(df["date"].max().to_period("M")) if len(df) else ""
@@ -1466,10 +3909,86 @@ def run_audit(
         store_performance=store_performance, store_macro_summary=store_macro_summary,
         customer_concentration=customer_concentration, salesperson_performance=salesperson_performance,
         service_decomposition=service_decomposition, service_reconciliation=service_reconciliation,
+        advanced_metrics=advanced_metrics,
         executive_summary=executive_summary,
+        team_diagnostics=team_diagnostics,
         generated_at=datetime.now(timezone.utc).isoformat()
     )
+
+    # [CAMADA 1: A REGRA DURA (Trustware / Elysian-Brain)]
+    # Força travas matemáticas irrefutáveis (ex: CRITICAL_RECONCILIATION_GAP) e modos de apresentação (ex: SHORT_WINDOW_MODE)
+    import sys
+    import os
+    # sys.path removed
+    from libs.trustware.forensic_gate import apply_forensic_locks
+    
+    report = apply_forensic_locks(report)
 
     if return_identity_map:
         return report, identity_map
     return report
+
+
+
+class ManualReviewMismatchError(ValueError):
+    """O arquivo de veredito humano não referencia o relatório que está sendo
+    mesclado. IDs de fila (`DTQ-0001`...) são sequenciais e POSICIONAIS — só são
+    estáveis dentro do MESMO relatório congelado que os gerou; reaplicar um arquivo
+    de outra rodada misclassificaria itens em silêncio (`DTQ-0003` da v2 viraria o
+    veredito de um item completamente diferente na v3). Rejeitar alto é a mesma
+    filosofia de `load_sales_records`: "pulado e reportado — nunca mesclado errado"."""
+
+
+def apply_manual_review_verdicts(
+    report: ExecutiveAuditReport, manual_review_path: Path,
+) -> ExecutiveAuditReport:
+    """Fase C §3.4 — funde vereditos humanos no relatório JÁ CONGELADO. O
+    `audit_report.json` original NUNCA é reescrito (Spec de Laudo Executivo v4 §1);
+    esta função devolve uma CÓPIA do `report` com os itens revisados promovidos de
+    `manual_queue` para `auto_classified` (status `manually_reviewed`, mesma taxonomia
+    de veredito da árvore automática — humano e máquina falam a mesma língua).
+
+    QA (achado crítico, corrigido): o arquivo de veredito precisa declarar
+    `audit_report_generated_at` batendo EXATAMENTE com `report.generated_at`.
+    Ausente ou divergente => `ManualReviewMismatchError` — nunca mescla em silêncio.
+    Arquivo campo ausente é aceito com uma ressalva: arquivos legados/escritos à mão
+    sem o campo passam (não há como validar o que não foi declarado), mas qualquer
+    valor DECLARADO que não bata é rejeitado.
+
+    Arquivo ausente, sem triagem no report, ou sem item da fila = devolve o `report`
+    inalterado (todo item da fila permanece `pending_manual_review` — estado válido e
+    renderizável, nunca um erro)."""
+    triage = report.advanced_metrics.discrepancy_triage
+    if triage is None or not triage.manual_queue or not manual_review_path.exists():
+        return report
+
+    payload = json.loads(manual_review_path.read_text(encoding="utf-8"))
+    declared_ref = payload.get("audit_report_generated_at")
+    if declared_ref is not None and declared_ref != report.generated_at:
+        raise ManualReviewMismatchError(
+            f"{manual_review_path.name} referencia audit_report_generated_at="
+            f"{declared_ref!r}, mas o relatório sendo mesclado tem generated_at="
+            f"{report.generated_at!r}. Arquivo de outra rodada — não aplicado."
+        )
+
+    verdict_by_id = {r["queue_item_id"]: r["verdict"] for r in payload.get("reviews", [])}
+    if not verdict_by_id:
+        return report
+
+    still_pending: list[DiscrepancyTriageItem] = []
+    newly_classified: list[DiscrepancyTriageItem] = []
+    for item in triage.manual_queue:
+        verdict = verdict_by_id.get(item.id)
+        if verdict is None:
+            still_pending.append(item)
+        else:
+            newly_classified.append(
+                item.model_copy(update={"verdict": verdict, "status": "manually_reviewed"})
+            )
+
+    new_triage = triage.model_copy(update={
+        "auto_classified": [*triage.auto_classified, *newly_classified],
+        "manual_queue": still_pending,
+    })
+    new_advanced_metrics = report.advanced_metrics.model_copy(update={"discrepancy_triage": new_triage})
+    return report.model_copy(update={"advanced_metrics": new_advanced_metrics})

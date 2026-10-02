@@ -18,21 +18,12 @@ from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
 _ROOT = _HERE.parents[1]
-for _p in [
-    _ROOT / "src" / "product_a" / "trustware",
-    _ROOT / "src" / "orchestrator",
-    _ROOT / "src" / "api",
-    *[_ROOT / "src" / f"phase_{x}" for x in
-      ("a0", "a1", "a1_5", "a2", "a2_5", "a3", "a4", "c0", "c1", "c2", "c3")],
-]:
-    if str(_p) not in sys.path:
-        sys.path.insert(0, str(_p))
 
 from celery import Celery
 
-from jobs import JobStore
-from storage_manager import StorageManager
-from pipeline_orchestrator import orchestrate_pipeline
+from api.jobs import JobStore
+from orchestrator.storage_manager import StorageManager
+from orchestrator.pipeline_orchestrator import orchestrate_pipeline
 
 REDIS_URL = os.getenv("EXRS_REDIS_URL", "redis://localhost:6399/0")
 
@@ -50,27 +41,44 @@ celery_app.conf.broker_transport_options = {
 celery_app.conf.redis_socket_keepalive = True
 
 
-def run_compile(job_id: str, file_path: str) -> str:
+def run_compile(job_id: str, file_path: str, tenant_id: str) -> str:
     """
     Corpo do processamento de um job. Independente de Celery — reaproveitável.
     Transiciona o job no store: RUNNING → status terminal do orquestrador.
+    Valida confinamento estrito de arquivo e correspondência de tenant_id.
     """
-    from factory_events import emit_event, trace, set_job
+    from libs.trustware.factory_events import emit_event, trace, set_job
     set_job(job_id)  # correlaciona eventos emitidos lá no fundo (ex.: sandbox sem Docker)
+
+    # 1. Confinamento estrito de arquivo incondicional (Anti-Path Traversal / Cross-Tenant File Access)
+    resolved_file = Path(file_path).resolve()
+    base_dir = Path(os.getenv("EXRS_DATA_DIR", "output")).resolve()
+    authorized_dir = (base_dir / tenant_id / job_id).resolve()
+    if not resolved_file.is_relative_to(authorized_dir):
+        raise PermissionError(
+            f"Arquivo não confinado à pasta autorizada do tenant/job: {resolved_file} fora de {authorized_dir}"
+        )
+
     store = JobStore()
-    store.update_status(job_id, "RUNNING")
+    store.update_status(job_id, status="RUNNING", tenant_id=tenant_id)
+
     try:
-        storage = StorageManager(job_id)
-        result = orchestrate_pipeline(Path(file_path), storage)
+        storage = StorageManager(job_id=job_id, tenant_id=tenant_id)
+        result = orchestrate_pipeline(resolved_file, storage)
         status = result.get("status", "ERROR")
-        store.update_status(job_id, status, track=result.get("track"),
-                            detail=result.get("reason"))
+        store.update_status(
+            job_id,
+            status,
+            track=result.get("track"),
+            detail=result.get("reason"),
+            tenant_id=tenant_id
+        )
         return status
     except Exception as e:  # noqa: BLE001 — falha do job NUNCA é silenciosa
         detail = f"{type(e).__name__}: {e}"
         # Persiste o status terminal PRIMEIRO: uma falha de escrita de observabilidade
         # (disco cheio, EXRS_DATA_DIR não-gravável) jamais pode deixar o job órfão em RUNNING.
-        store.update_status(job_id, "ERROR", detail=detail)
+        store.update_status(job_id, status="ERROR", detail=detail, tenant_id=tenant_id)
         # Observabilidade best-effort (proibida falha silenciosa de ferramenta de fábrica).
         try:
             emit_event("JOB_EXECUTION_FAILED", job_id=job_id, error=detail)
@@ -83,5 +91,6 @@ def run_compile(job_id: str, file_path: str) -> str:
 
 
 @celery_app.task(name="exrs.compile_job")
-def compile_job(job_id: str, file_path: str) -> str:
-    return run_compile(job_id, file_path)
+def compile_job(job_id: str, file_path: str, tenant_id: str) -> str:
+    return run_compile(job_id, file_path, tenant_id=tenant_id)
+

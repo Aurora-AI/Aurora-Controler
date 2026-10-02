@@ -9,9 +9,8 @@ from pathlib import Path
 # Setup paths for trustware and other phases
 REPO_ROOT = Path(r"C:\Projetos\ExcelReverseEngine")
 
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     FormulaPattern, PatternRegistryEntry, PatternClass,
     NormalizedWorkbookIR, FormulaTokenType, FormulaRegistryMap
 )

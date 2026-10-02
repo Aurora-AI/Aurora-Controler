@@ -3,11 +3,10 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "src"))
 
 
 from product_a.phase_a2_5.pattern_registry import build_registry, classify_formula, classify_workbook
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     FormulaToken, FormulaTokenType, PatternClass,
     NormalizedWorkbookIR, NormalizedSheet, NormalizedCell
 )
@@ -111,7 +110,7 @@ def test_external_ref_classified():
 def test_bracket_in_string_literal_not_external_ref():
     """Colchete dentro de string literal NÃO deve ser detectado como ref externa."""
     import sys
-    from normalizer import _has_external_ref
+    from kernel.phase_a1_5.normalizer import _has_external_ref
     assert _has_external_ref('=IF(A1>0,"[ok]","err")') is False
     assert _has_external_ref("=SUM('[Sales.xlsx]Jan'!A:A)") is True
     assert _has_external_ref('=VLOOKUP(A1,Sheet2!A:B,2,0)') is False
@@ -121,8 +120,8 @@ def test_bracket_in_string_literal_not_external_ref():
 def test_external_ref_evaluator_returns_ext():
     """evaluate_formula deve retornar '#EXT!' para fórmulas com referência externa."""
     import sys
-    from formula_evaluator import evaluate_formula
-    from normalizer import expand_range
+    from product_a.phase_a4.formula_evaluator import evaluate_formula
+    from kernel.phase_a1_5.normalizer import expand_range
     result = evaluate_formula("=SUM('[Sales.xlsx]Jan'!A:A)", {}, "Sheet1", expand_range)
     assert result == '#EXT!'
 

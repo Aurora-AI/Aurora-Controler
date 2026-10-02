@@ -7,12 +7,9 @@ from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
 _REPO = _HERE.parents[1]
-for _p in [str(_HERE), str(_REPO / "libs" / "trustware")]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
 
-from dashboard_contracts import C0Dataset, SemanticModel
-from metrics import build_metrics_report
+from libs.trustware.dashboard_contracts import C0Dataset, SemanticModel
+from phase_c2.metrics import build_metrics_report
 
 
 def main() -> None:

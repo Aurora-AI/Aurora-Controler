@@ -8,10 +8,10 @@ from pathlib import Path
 
 
 
-from product_a.trustware.pipeline_contracts import (
+from libs.trustware.pipeline_contracts import (
     CertifiedModule, DomainModule, MismatchReport, ValidationResult,
 )
-from sealing import canonical_digest
+from libs.trustware.sealing import canonical_digest
 
 
 def _certified(actual_value="100", expected_value="100") -> CertifiedModule:
@@ -41,7 +41,7 @@ def test_digest_is_deterministic_across_iterations():
 
 def test_digest_ignores_seal_field():
     """Preencher `seal` não muda o digest — o selo não cobre a si mesmo."""
-    from product_a.trustware.pipeline_contracts import CertificationSeal
+    from libs.trustware.pipeline_contracts import CertificationSeal
 
     base = _certified()
     sealed = base.model_copy(update={"seal": CertificationSeal(
